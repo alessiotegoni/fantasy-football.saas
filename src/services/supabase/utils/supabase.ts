@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { headers } from "next/headers";
+import { match } from "path-to-regexp";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
@@ -38,12 +38,14 @@ export async function updateSession(request: NextRequest) {
   return { user, supabase, supabaseResponse };
 }
 
-export function createRouteMatcher<T extends string>(routes: T[]) {
+export function createRouteMatcher<T extends string>(patterns: T[]) {
+  const matchers = patterns.map((pattern) =>
+    match(pattern, { decode: decodeURIComponent })
+  );
+
   return (request: NextRequest): boolean => {
     const url = new URL(request.url);
-    const pathname = url.pathname;
-
-    return routes.some((route) => pathname.startsWith(route));
+    return matchers.some((fn) => !!fn(url.pathname));
   };
 }
 
@@ -60,10 +62,8 @@ export async function isAdmin(
 }
 
 export async function getRedirectUrl(request: NextRequest, url: string = "/") {
-  const head = await headers();
-  const origin = head.get("origin");
-
-  if (origin) return origin;
+  const referer = request.headers.get("referer");
+  if (referer) return referer;
 
   const redirectUrl = request.nextUrl.clone();
   redirectUrl.pathname = url;

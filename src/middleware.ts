@@ -6,19 +6,14 @@ import {
   updateSession,
 } from "./services/supabase/utils/supabase";
 
-const isAuthRoute = createRouteMatcher(["/login", "/verify"]);
+const isAuthRoute = createRouteMatcher(["/auth/*rest"]);
 const isAdminRoute = createRouteMatcher(["/admin"]);
-const isPrivateRoute = createRouteMatcher(["/leagues"]);
+const isPrivateRoute = createRouteMatcher(["/", "/leagues/*rest"]);
 
 export async function middleware(request: NextRequest) {
   const { user, supabase, supabaseResponse } = await updateSession(request);
 
-  console.log(user, supabaseResponse);
-
-  if (isAdminRoute(request) && user && !(await isAdmin(supabase, user.id))) {
-    const url = await getRedirectUrl(request);
-    return NextResponse.redirect(url);
-  }
+  console.log(user?.email);
 
   if (isAuthRoute(request) && user) {
     const url = await getRedirectUrl(request);
@@ -26,7 +21,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isPrivateRoute(request) && !user) {
-    return NextResponse.redirect(new URL("/login", request.nextUrl));
+    return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+  }
+
+  if (isAdminRoute(request) && user && !(await isAdmin(supabase, user.id))) {
+    const url = await getRedirectUrl(request);
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;
