@@ -12,7 +12,7 @@ const isPrivateRoute = createRouteMatcher(["/", "/leagues/*rest"]);
 
 export async function middleware(request: NextRequest) {
   const { user, supabase, supabaseResponse } = await updateSession(request);
-
+  
   console.log(user?.email);
 
   if (isAuthRoute(request) && user) {

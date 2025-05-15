@@ -63,7 +63,8 @@ export async function isAdmin(
 
 export async function getRedirectUrl(request: NextRequest, url: string = "/") {
   const referer = request.headers.get("referer");
-  if (referer) return referer;
+
+  if (referer && referer !== request.url) return referer;
 
   const redirectUrl = request.nextUrl.clone();
   redirectUrl.pathname = url;

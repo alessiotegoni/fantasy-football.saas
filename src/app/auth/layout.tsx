@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className="min-h-screen flex flex-col p-6">
-      <BackButton />
+      {/* <BackButton /> */}
       <div className="flex-1 flex flex-col items-center">
         <div className="w-full max-w-md flex flex-col items-center gap-8">
           <Logo />

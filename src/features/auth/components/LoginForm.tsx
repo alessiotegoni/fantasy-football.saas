@@ -15,7 +15,6 @@ import {
 import { loginSchema, LoginSchemaType, oauthProviders } from "../schema/login";
 import { login } from "../actions/login";
 import { useRouter } from "next/navigation";
-import { SignInWithOAuthCredentials } from "@supabase/supabase-js";
 import { cn } from "@/lib/utils";
 
 export default function LoginForm() {
@@ -25,6 +24,7 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       type: "email",
+      email: "",
     },
   });
 
@@ -71,7 +71,7 @@ export default function LoginForm() {
           />
         </div>
 
-        <LoginwithEmailButton />
+        <LoginWithEmailButton />
 
         <div className="relative flex items-center justify-center my-8">
           <div className="border-t border-border flex-grow"></div>
@@ -79,14 +79,14 @@ export default function LoginForm() {
           <div className="border-t border-border flex-grow"></div>
         </div>
 
-        <OauthProviderButtons />
+        <OauthProvidersButtons />
       </form>
     </Form>
   );
 }
 
 const oauthProvidersStyles: Record<
-  SignInWithOAuthCredentials["provider"],
+  (typeof oauthProviders)[number],
   { className?: string; imageUrl: string }
 > = {
   google: {
@@ -100,7 +100,22 @@ const oauthProvidersStyles: Record<
   },
 };
 
-function OauthProviderButtons() {
+function LoginWithEmailButton() {
+  const { handleChangeLoginType } = useChangeLoginType();
+
+  return (
+    <Button
+      type="submit"
+      variant="gradient"
+      onClick={handleChangeLoginType.bind(null, "email", false)}
+    >
+      Continua
+    </Button>
+  );
+}
+
+function OauthProvidersButtons() {
+
   const { handleChangeLoginType } = useChangeLoginType();
 
   return (
@@ -126,19 +141,6 @@ function OauthProviderButtons() {
   );
 }
 
-function LoginwithEmailButton() {
-  const { handleChangeLoginType } = useChangeLoginType();
-
-  return (
-    <Button
-      type="submit"
-      variant="gradient"
-      onClick={handleChangeLoginType.bind(null, "email", false)}
-    >
-      Continua
-    </Button>
-  );
-}
 
 function useChangeLoginType() {
   const form = useFormContext<LoginSchemaType>();

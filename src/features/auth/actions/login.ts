@@ -3,6 +3,7 @@
 import { createClient } from "@/services/supabase/server/supabase";
 import { loginSchema, LoginSchemaType } from "../schema/login";
 import { SignInWithOAuthCredentials } from "@supabase/supabase-js";
+import { getUrl } from "@/lib/utils";
 
 export async function login(values: LoginSchemaType) {
   const { success, data } = loginSchema.safeParse(values);
@@ -27,7 +28,9 @@ async function emailLogin(email: string) {
 
   const res = await supabase.auth.signInWithOtp({
     email,
-    options: { emailRedirectTo: "/" },
+    options: {
+      emailRedirectTo: getUrl("/api/auth/verify-token"),
+    },
   });
 
   return { error: res.error, url: null };
@@ -39,20 +42,9 @@ async function oauthLogin(provider: SignInWithOAuthCredentials["provider"]) {
   const res = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: getUrl(),
+      redirectTo: getUrl("/api/auth/callback"),
     },
   });
 
   return { error: res.error, url: res.error ? null : res.data.url };
-}
-
-function getUrl() {
-  let url =
-    process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
-    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
-    "http://localhost:3000/";
-
-  url = url.startsWith("http") ? url : `https://${url}`;
-  url = url.endsWith("/") ? url : `${url}/`;
-  return url;
 }
