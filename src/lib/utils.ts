@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { match } from "path-to-regexp";
 import { ExternalToast, toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 
@@ -16,8 +17,21 @@ export function actionToast(
   return toast[variant](message, toastData);
 }
 
-export function getErrorObject(message = "Errore nell'esecuzione dell'operazione") {
+export function getErrorObject(
+  message = "Errore nell'esecuzione dell'operazione"
+) {
   return { error: true, message };
+}
+
+export function createRouteMatcher<T extends string>(patterns: T[]) {
+  const matchers = patterns.map((pattern) =>
+    match(pattern, { decode: decodeURIComponent })
+  );
+
+  return (request: NextRequest): boolean => {
+    const url = new URL(request.url);
+    return matchers.some((fn) => !!fn(url.pathname));
+  };
 }
 
 export function routeRedirect(request: Request, defaultRedirect = "/") {
@@ -39,6 +53,17 @@ export function routeRedirect(request: Request, defaultRedirect = "/") {
   }
 
   return response;
+}
+
+export async function getRedirectUrl(request: NextRequest, url: string = "/") {
+  const referer = request.headers.get("referer");
+
+  if (referer && referer !== request.url) return referer;
+
+  const redirectUrl = request.nextUrl.clone();
+  redirectUrl.pathname = url;
+
+  return redirectUrl;
 }
 
 export function getUrl(pathname = "/") {

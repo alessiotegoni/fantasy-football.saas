@@ -1,6 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
 import { SupabaseClient } from "@supabase/supabase-js";
-import { match } from "path-to-regexp";
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "../server/supabase";
 
@@ -39,17 +38,6 @@ export async function updateSession(request: NextRequest) {
   return { user, supabase, supabaseResponse };
 }
 
-export function createRouteMatcher<T extends string>(patterns: T[]) {
-  const matchers = patterns.map((pattern) =>
-    match(pattern, { decode: decodeURIComponent })
-  );
-
-  return (request: NextRequest): boolean => {
-    const url = new URL(request.url);
-    return matchers.some((fn) => !!fn(url.pathname));
-  };
-}
-
 export async function isAdmin(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
@@ -67,15 +55,4 @@ export async function getUserId() {
   const { data } = await supabase.auth.getUser();
 
   return data.user?.id;
-}
-
-export async function getRedirectUrl(request: NextRequest, url: string = "/") {
-  const referer = request.headers.get("referer");
-
-  if (referer && referer !== request.url) return referer;
-
-  const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = url;
-
-  return redirectUrl;
 }

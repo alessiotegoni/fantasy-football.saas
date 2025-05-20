@@ -23,7 +23,7 @@ export default function CreateLeaguePage() {
       </LeagueHeader>
 
       <div className="flex-1">
-        <div className="mx-auto max-w-[800px] p-6 mb-6">
+        <div className="mx-auto max-w-[800px] p-6">
           <CreateLeagueForm />
         </div>
       </div>

@@ -1,10 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
-import {
-  createRouteMatcher,
-  getRedirectUrl,
-  isAdmin,
-  updateSession,
-} from "./services/supabase/utils/supabase";
+import { isAdmin, updateSession } from "./services/supabase/utils/supabase";
+import { createRouteMatcher, getRedirectUrl } from "./lib/utils";
 
 const isAuthRoute = createRouteMatcher(["/auth/*rest"]);
 const isAdminRoute = createRouteMatcher(["/admin"]);

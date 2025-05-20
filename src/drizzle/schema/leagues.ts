@@ -32,7 +32,7 @@ export const leagues = pgTable(
       .references(() => authUsers.id, { onDelete: "set null" }),
     name: text("name").notNull(),
     imageUrl: text("image_url"),
-    visibility: leagueVisibilityStatusEnum("status")
+    visibility: leagueVisibilityStatusEnum("visibility")
       .notNull()
       .default("public"),
     description: text("description"),

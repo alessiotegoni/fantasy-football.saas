@@ -9,7 +9,17 @@ import {
   FormMessage,
   FormDescription,
 } from "@/components/ui/form";
-import { Upload, Trophy, Lock, Globe, Copy, Refresh } from "iconoir-react";
+import {
+  Upload,
+  Trophy,
+  Lock,
+  Globe,
+  Copy,
+  Refresh,
+  XmarkCircle,
+  XmarkCircleSolid,
+  Xmark,
+} from "iconoir-react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import SubmitButton from "@/components/SubmitButton";
@@ -33,43 +43,42 @@ export default function CreateLeagueForm() {
     resolver: zodResolver(createLeagueSchema),
     defaultValues: {
       name: "",
-      image_url: null,
+      image: null,
       visibility: "private",
-      description: "",
-      join_code: "",
+      description: null,
+      joinCode: "",
     },
   });
 
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.item(0);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setPreviewImage(result);
-      };
-      reader.readAsDataURL(file);
-    }
+  function handleSetPreviewImg(file: File) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setPreviewImage(result);
+    };
+    reader.readAsDataURL(file);
   }
 
   async function onSubmit(data: CreateLeagueSchema) {
-    await createLeague(data);
+    const res = await createLeague(data);
+
+    if (res.error) toast.error(res.message);
   }
 
   const leagueType = form.watch("visibility");
 
-  function handleSetJoinCode(code: string = generateJoinCode()) {
-    form.setValue("join_code", code);
-  }
-
   useEffect(() => {
     if (leagueType === "public") {
-      handleSetJoinCode("");
+      form.setValue("joinCode", "");
       return;
     }
 
-    handleSetJoinCode();
+    const code = generateJoinCode();
+    form.setValue("joinCode", code);
   }, [leagueType]);
+
+  console.log(form.watch("image"));
 
   return (
     <Form {...form}>
@@ -88,40 +97,69 @@ export default function CreateLeagueForm() {
           )}
         />
 
-        <FormItem>
-          <FormLabel>Logo della Lega</FormLabel>
-          <div className="flex items-center space-x-4">
-            <div className="relative w-16 h-16 bg-muted rounded-full flex items-center justify-center overflow-hidden">
-              {previewImage ? (
-                <Image
-                  src={previewImage || "/placeholder.svg"}
-                  alt="Logo preview"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <Trophy className="w-8 h-8 text-muted-foreground" />
-              )}
-            </div>
-            <div className="flex-1">
-              <label
-                htmlFor="image_upload"
-                className="flex items-center justify-center w-full py-2 px-4 border border-border rounded-lg cursor-pointer bg-muted/30 hover:bg-muted transition-colors mb-1"
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                <span className="text-sm">Carica logo</span>
-                <input
-                  id="image_upload"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-              </label>
-              <FormDescription>Formato: JPG, PNG. Max 2MB</FormDescription>
-            </div>
-          </div>
-        </FormItem>
+        <FormField
+          control={form.control}
+          name="image"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Logo della Lega</FormLabel>
+              <div className="flex items-center space-x-4">
+                <div className="relative w-16 h-16 bg-muted rounded-full flex items-center justify-center overflow-hidden">
+                  {previewImage ? (
+                    <Image
+                      src={previewImage || "/placeholder.svg"}
+                      alt="Logo preview"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <Trophy className="w-8 h-8 text-muted-foreground" />
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex gap-1">
+                    <label
+                      htmlFor="image_upload"
+                      className="flex items-center justify-center w-full py-2 px-4 border border-border rounded-lg cursor-pointer bg-muted/30 hover:bg-muted transition-colors mb-1"
+                    >
+                      <Upload className="size-4 mr-2" />
+                      <span className="text-sm">Carica logo</span>
+                      <input
+                        id="image_upload"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.item(0);
+                          if (file) {
+                            handleSetPreviewImg(file);
+                            field.onChange(file);
+                          }
+                        }}
+                      />
+                    </label>
+                    {field.value instanceof File && (
+                      <Button
+                        type="button"
+                        size="icon"
+                        variant="destructive"
+                        onClick={() => {
+                          field.onChange(null);
+                          setPreviewImage(null);
+                        }}
+                        className="rounded-lg h-[38px]"
+                        // asChild
+                      >
+                        <Xmark className="size-6" />
+                      </Button>
+                    )}
+                  </div>
+                  <FormDescription>Formato: JPG, PNG. Max 2MB</FormDescription>
+                </div>
+              </div>
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={form.control}
@@ -204,7 +242,7 @@ export default function CreateLeagueForm() {
         {leagueType === "private" && (
           <FormField
             control={form.control}
-            name="join_code"
+            name="joinCode"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Codice di Invito</FormLabel>
@@ -217,7 +255,9 @@ export default function CreateLeagueForm() {
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={handleSetJoinCode.bind(null, generateJoinCode())}
+                      onClick={() =>
+                        form.setValue("joinCode", generateJoinCode())
+                      }
                       title="Rigenera codice"
                     >
                       <Refresh />
@@ -246,14 +286,16 @@ export default function CreateLeagueForm() {
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...restField } }) => (
             <FormItem>
               <FormLabel>Descrizione</FormLabel>
               <FormControl>
                 <Textarea
                   className="w-full bg-background border border-border rounded-xl py-4 px-4 focus:outline-none focus:border-primary transition-colors min-h-[100px] resize-none"
                   placeholder="Descrivi la tua lega..."
-                  {...field}
+                  value={value || ""}
+                  onChange={(e) => onChange(e.target.value || null)}
+                  {...restField}
                 />
               </FormControl>
               <FormMessage />
