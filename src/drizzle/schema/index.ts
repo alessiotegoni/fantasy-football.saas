@@ -6,7 +6,7 @@ export * from "./splits";
 export * from "./splitMatchdays";
 export * from "./playerRoles";
 export * from "./players";
-export * from "./matchDayVotes";
+export * from "./matchdayVotes";
 export * from "./bonusMalusTypes";
 export * from "./matchdayBonusMalus";
 export * from "./leagues";

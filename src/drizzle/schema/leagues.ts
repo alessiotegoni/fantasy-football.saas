@@ -35,7 +35,6 @@ export const leagues = pgTable(
     visibility: leagueVisibilityStatusEnum("status")
       .notNull()
       .default("public"),
-    password: text("password"),
     description: text("description"),
     joinCode: text("join_code").unique("leagues_join_code_key"),
     createdAt: timestamp("created_at", { withTimezone: true })

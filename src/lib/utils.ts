@@ -16,6 +16,10 @@ export function actionToast(
   return toast[variant](message, toastData);
 }
 
+export function getErrorObject(message = "Errore nell'esecuzione dell'operazione") {
+  return { error: true, message };
+}
+
 export function routeRedirect(request: Request, defaultRedirect = "/") {
   const { origin, searchParams } = new URL(request.url);
 

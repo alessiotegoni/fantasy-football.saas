@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { match } from "path-to-regexp";
 import { NextResponse, type NextRequest } from "next/server";
+import { createClient } from "../server/supabase";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -59,6 +60,13 @@ export async function isAdmin(
     .eq("id", userId);
 
   return !!data?.[0] && !error;
+}
+
+export async function getUserId() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getUser();
+
+  return data.user?.id;
 }
 
 export async function getRedirectUrl(request: NextRequest, url: string = "/") {

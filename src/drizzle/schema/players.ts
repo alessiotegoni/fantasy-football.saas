@@ -2,7 +2,7 @@ import { pgTable, text, smallint, uuid, index } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { teams } from "./teams";
 import { playerRoles } from "./playerRoles";
-import { matchdayVotes } from "./matchDayVotes";
+import { matchdayVotes } from "./matchdayVotes";
 
 export const players = pgTable(
   "players",

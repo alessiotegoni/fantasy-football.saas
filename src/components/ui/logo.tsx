@@ -3,11 +3,15 @@ import Image from "next/image";
 
 type Props = {
   className?: string;
-  size?: "small" | "medium" | "large";
   withImage?: boolean;
+  withText?: boolean;
 };
 
-export default function Logo({ className = "", withImage = true }: Props) {
+export default function Logo({
+  className,
+  withImage = true,
+  withText = true,
+}: Props) {
   return (
     <div className={cn("flex flex-col items-center justify-center", className)}>
       {withImage && (
@@ -18,9 +22,11 @@ export default function Logo({ className = "", withImage = true }: Props) {
           height={150}
         />
       )}
-      <div className="font-heading text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-        KikLeague
-      </div>
+      {withText && (
+        <div className="font-heading text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          KikLeague
+        </div>
+      )}
     </div>
   );
 }
