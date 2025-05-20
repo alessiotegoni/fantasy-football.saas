@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import VerifyOtpForm from "@/features/auth/components/VerifyOtpForm";
 
 export default function VerifyPage() {
@@ -11,16 +10,6 @@ export default function VerifyPage() {
       </p>
 
       <VerifyOtpForm />
-
-      <div className="mt-6 text-center">
-        <p className="text-sm text-muted-foreground">
-          Non hai ricevuto il codice?
-        </p>
-        <Button variant="link" className="mt-1.5 p-0 h-auto w-fit">
-          Invia di nuovo
-        </Button>
-      </div>
     </>
   );
 }
-

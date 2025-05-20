@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const oauthProviders = ["google", "twitch"] as const;
+export type OauthProviderType = (typeof oauthProviders)[number]
 
 export const loginSchema = z.discriminatedUnion("type", [
   z.object({

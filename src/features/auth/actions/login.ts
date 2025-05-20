@@ -5,7 +5,12 @@ import { loginSchema, LoginSchemaType } from "../schema/login";
 import { SignInWithOAuthCredentials } from "@supabase/supabase-js";
 import { getUrl } from "@/lib/utils";
 
-export async function login(values: LoginSchemaType) {
+export async function login(
+  values: LoginSchemaType
+): Promise<
+  | { error: true; message: string }
+  | { error: false; url: string; message: string }
+> {
   const { success, data } = loginSchema.safeParse(values);
 
   if (!success) return { error: true, message: "Errore nel login, riprovare" };
@@ -20,7 +25,11 @@ export async function login(values: LoginSchemaType) {
 
   if (res.error) return { error: true, message: "Errore nel login, riprovare" };
 
-  return { error: false, url: res.url };
+  return {
+    error: false,
+    url: res.url,
+    message: "Login effettuato con successo",
+  };
 }
 
 async function emailLogin(email: string) {
@@ -33,7 +42,7 @@ async function emailLogin(email: string) {
     },
   });
 
-  return { error: res.error, url: null };
+  return { error: res.error, url: "" };
 }
 
 async function oauthLogin(provider: SignInWithOAuthCredentials["provider"]) {
@@ -46,5 +55,5 @@ async function oauthLogin(provider: SignInWithOAuthCredentials["provider"]) {
     },
   });
 
-  return { error: res.error, url: res.error ? null : res.data.url };
+  return { error: res.error, url: res.data.url ?? "" };
 }

@@ -1,14 +1,9 @@
-"use client";
-
 import Link from "next/link";
 import { WarningCircle, Mail } from "iconoir-react";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
 import { Refresh } from "iconoir-react/regular";
 
 export default function AuthErrorPage() {
-  const router = useRouter();
-
   return (
     <>
       <div className="w-full flex flex-col items-center text-center">
@@ -30,7 +25,6 @@ export default function AuthErrorPage() {
               Riprova
             </Link>
           </Button>
-
           <Button variant="outline" asChild>
             <Link href="/support">
               <Mail className="size-5" />
@@ -39,13 +33,12 @@ export default function AuthErrorPage() {
           </Button>
         </div>
       </div>
-
-      <div className="space-y-2 text-center mt-8">
+      {/* <div className="space-y-2 text-center mt-8">
         <p className="text-sm text-muted-foreground">Problemi con l'accesso?</p>
         <Link href="/auth/login" className="text-primary hover:underline">
           Accedi con un altro metodo
         </Link>
-      </div>
+      </div> */}
     </>
   );
 }

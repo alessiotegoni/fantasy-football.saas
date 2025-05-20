@@ -1,5 +1,6 @@
 import type React from "react";
 import { Inter, Space_Grotesk } from "next/font/google";
+import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
@@ -41,6 +42,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Toaster richColors position="top-center" />
         </ThemeProvider>
       </body>
     </html>

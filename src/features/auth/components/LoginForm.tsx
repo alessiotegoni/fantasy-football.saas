@@ -1,8 +1,7 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useForm, useFormContext } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -12,44 +11,61 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { loginSchema, LoginSchemaType, oauthProviders } from "../schema/login";
+import {
+  loginSchema,
+  LoginSchemaType,
+  oauthProviders,
+  OauthProviderType,
+} from "../schema/login";
 import { login } from "../actions/login";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useEmailLogin } from "@/hooks/useLoginEmail";
+import SubmitButton from "@/components/SubmitButton";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export default function LoginForm() {
+  const { getEmail, saveEmail } = useEmailLogin();
+
   const router = useRouter();
 
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       type: "email",
-      email: "",
+      email: getEmail() ?? "",
     },
   });
 
-  async function onSubmit(data: LoginSchemaType) {
-    // if (form.formState.isSubmitting) return;
+  function changeLoginType(
+    type: LoginSchemaType["type"] = "email",
+    shouldTrigger: boolean = false
+  ) {
+    form.setValue("type", type);
+    if (shouldTrigger) form.trigger();
+  }
 
-    console.log("login entry client");
-
+  async function emailLogin(data: LoginSchemaType) {
     const res = await login(data);
 
-    console.log(res);
-
     if (res.error) {
-      form.setError("root", { message: res.message });
+      toast.error(res.message);
       return;
     }
 
-    const url = data.type === "email" ? "/auth/verify-otp" : res.url;
+    const isEmailType = data.type === "email";
+
+    const url = isEmailType ? "/auth/verify-otp" : res.url;
+    if (isEmailType) saveEmail(data.email);
+
     if (url) router.push(url);
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(emailLogin)} className="space-y-6">
           <FormField
             control={form.control}
             name="email"
@@ -69,24 +85,66 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-        </div>
+          <SubmitButton
+            loadingText="Invio codice"
+            variant="gradient"
+            onClick={changeLoginType.bind(null, "email", false)}
+          >
+            Continua
+          </SubmitButton>
+        </form>
+      </Form>
 
-        <LoginWithEmailButton />
+      <div className="relative flex items-center justify-center my-8">
+        <div className="border-t border-border flex-grow"></div>
+        <span className="px-4 text-sm text-muted-foreground">oppure</span>
+        <div className="border-t border-border flex-grow"></div>
+      </div>
 
-        <div className="relative flex items-center justify-center my-8">
-          <div className="border-t border-border flex-grow"></div>
-          <span className="px-4 text-sm text-muted-foreground">oppure</span>
-          <div className="border-t border-border flex-grow"></div>
-        </div>
-
-        <OauthProvidersButtons />
-      </form>
-    </Form>
+      <div className="space-y-3">
+        {oauthProviders.map((provider) => (
+          <form action={socialLogin.bind(null, router)} key={provider}>
+            <input type="hidden" name="provider" value={provider} />
+            <SubmitButton
+              loadingText={`Accedo con ${provider}`}
+              className={cn(
+                "py-3 px-4",
+                oauthProvidersStyles[provider].className
+              )}
+              onClick={changeLoginType.bind(null, provider, false)}
+            >
+              <img
+                src={oauthProvidersStyles[provider].imageUrl}
+                width={20}
+                height={20}
+                alt={provider}
+              />
+              <p>
+                Accedi con <span className="capitalize">{provider}</span>
+              </p>
+            </SubmitButton>
+          </form>
+        ))}
+      </div>
+    </>
   );
 }
 
+async function socialLogin(router: AppRouterInstance, formData: FormData) {
+  const type = formData.get("provider") as OauthProviderType;
+
+  const res = await login({ type });
+  console.log(res);
+
+  if (res.error) {
+    toast.error(res.message);
+    return;
+  }
+  if (res.url) router.push(res.url);
+}
+
 const oauthProvidersStyles: Record<
-  (typeof oauthProviders)[number],
+  OauthProviderType,
   { className?: string; imageUrl: string }
 > = {
   google: {
@@ -99,59 +157,3 @@ const oauthProvidersStyles: Record<
     imageUrl: "",
   },
 };
-
-function LoginWithEmailButton() {
-  const { handleChangeLoginType } = useChangeLoginType();
-
-  return (
-    <Button
-      type="submit"
-      variant="gradient"
-      onClick={handleChangeLoginType.bind(null, "email", false)}
-    >
-      Continua
-    </Button>
-  );
-}
-
-function OauthProvidersButtons() {
-
-  const { handleChangeLoginType } = useChangeLoginType();
-
-  return (
-    <div className="space-y-3">
-      {oauthProviders.map((provider) => (
-        <Button
-          key={provider}
-          className={cn("py-3 px-4", oauthProvidersStyles[provider].className)}
-          onClick={handleChangeLoginType.bind(null, provider, true)}
-        >
-          <img
-            src={oauthProvidersStyles[provider].imageUrl}
-            width={20}
-            height={20}
-            alt={provider}
-          />
-          <p>
-            Accedi con <span className="capitalize">{provider}</span>
-          </p>
-        </Button>
-      ))}
-    </div>
-  );
-}
-
-
-function useChangeLoginType() {
-  const form = useFormContext<LoginSchemaType>();
-
-  function handleChangeLoginType(
-    type: LoginSchemaType["type"],
-    shouldTrigger: boolean
-  ) {
-    form.setValue("type", type);
-    if (shouldTrigger) form.trigger();
-  }
-
-  return { handleChangeLoginType };
-}
