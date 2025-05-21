@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     dynamicIO: true,
     viewTransition: true,
     authInterrupts: true,
+    serverActions: {
+      bodySizeLimit: "3mb"
+    }
   },
 };
 

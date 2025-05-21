@@ -2,17 +2,18 @@ import path from "path";
 import { createClient } from "../server/supabase";
 import { randomUUID } from "crypto";
 
+type Folder =
+  | "app-images"
+  | "leagues-logos"
+  | "players-avatars"
+  | "teams-logos";
+
 type UploadProps = {
   bucket?: string;
-  folder: string;
+  folder: Folder;
   file: File;
   name?: string;
 };
-
-
-// FIXME: image upload (image upload throw an error: "new row violates row-level security policy")
-// TODO: add cache tags for leagues (revalidate tags in db/league)
-
 
 export async function uploadImage({
   file,
@@ -24,19 +25,12 @@ export async function uploadImage({
   const fileName = (name || randomUUID()) + fileExt;
   const filePath = folder ? `${folder}/${fileName}` : fileName;
 
-  const [{ storage }, arrayBuffer] = await Promise.all([
-    createClient(),
-    file.arrayBuffer(),
-  ]);
-  const buffer = new Uint8Array(arrayBuffer);
+  const { storage } = await createClient();
 
-  const { error } = await storage.from(bucket).upload(filePath, buffer, {
+  const { error } = await storage.from(bucket).upload(filePath, file, {
     contentType: file.type,
     upsert: true,
   });
-
-  console.log(error);
-
 
   if (error) throw new Error("Errore nell'upload dell'immagine");
 

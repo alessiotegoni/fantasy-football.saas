@@ -49,11 +49,9 @@ async function updateLeagueImage(leagueId: string, file: File) {
     name: leagueId,
   });
 
-  console.log(imageUrl);
-
   if (imageUrl) await updateLeague(leagueId, { imageUrl });
 }
- 
+
 async function isUniqueName(leagueName: string) {
   const [res] = await db
     .select({ count: count() })

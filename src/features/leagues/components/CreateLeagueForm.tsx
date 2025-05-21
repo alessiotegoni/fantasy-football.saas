@@ -16,8 +16,6 @@ import {
   Globe,
   Copy,
   Refresh,
-  XmarkCircle,
-  XmarkCircleSolid,
   Xmark,
 } from "iconoir-react";
 import Image from "next/image";
@@ -25,11 +23,13 @@ import { Input } from "@/components/ui/input";
 import SubmitButton from "@/components/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import {
   createLeagueSchema,
   type CreateLeagueSchema,
+  isValidImage,
   JOIN_CODE_LENGTH,
+  MAX_IMAGE_SIZE,
 } from "../schema/league";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,10 @@ export default function CreateLeagueForm() {
   });
 
   function handleSetPreviewImg(file: File) {
-    if (!file) return;
+    if (!isValidImage(file)) {
+      setPreviewImage(null);
+      return;
+    }
     const reader = new FileReader();
     reader.onloadend = () => {
       const result = reader.result as string;
@@ -124,19 +127,18 @@ export default function CreateLeagueForm() {
                     >
                       <Upload className="size-4 mr-2" />
                       <span className="text-sm">Carica logo</span>
-                      <input
-                        id="image_upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => {
-                          const file = e.target.files?.item(0);
-                          if (file) {
+                      <FormControl>
+                        <Input
+                          id="image_upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleSetImage.bind(null, (file: File) => {
                             handleSetPreviewImg(file);
                             field.onChange(file);
-                          }
-                        }}
-                      />
+                          })}
+                        />
+                      </FormControl>
                     </label>
                     {field.value instanceof File && (
                       <Button
@@ -154,7 +156,12 @@ export default function CreateLeagueForm() {
                       </Button>
                     )}
                   </div>
-                  <FormDescription>Formato: JPG, PNG. Max 2MB</FormDescription>
+                  <div className="sm:flex gap-2">
+                    <FormDescription>
+                      Formato: JPG, PNG. Max {MAX_IMAGE_SIZE / (1024 * 1024)}MB
+                    </FormDescription>
+                    <FormMessage />
+                  </div>
                 </div>
               </div>
             </FormItem>
@@ -309,6 +316,14 @@ export default function CreateLeagueForm() {
       </form>
     </Form>
   );
+}
+
+function handleSetImage(
+  setImage: (file: File) => void,
+  e: ChangeEvent<HTMLInputElement>
+) {
+  const file = e.target.files?.item(0);
+  if (file) setImage(file);
 }
 
 function generateJoinCode() {
