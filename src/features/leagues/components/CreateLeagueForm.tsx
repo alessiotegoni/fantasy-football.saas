@@ -81,8 +81,6 @@ export default function CreateLeagueForm() {
     form.setValue("joinCode", code);
   }, [leagueType]);
 
-  console.log(form.watch("image"));
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

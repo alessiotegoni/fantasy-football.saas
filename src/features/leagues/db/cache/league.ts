@@ -1,9 +1,9 @@
 import { revalidateTag } from "next/cache";
-import { getGlobalTag, getLeagueTag, getMatchTag } from "@/cache/helpers";
+import { getLeagueTag } from "@/cache/helpers";
 import { LeagueVisibilityStatusType } from "@/drizzle/schema";
+import { getLeagueGlobalTag } from "@/cache/global";
 
 export type LEAGUE_TAG =
-  | "leagues"
   | "league-options"
   | "league-members"
   | "league-members-teams"
@@ -13,8 +13,6 @@ export type LEAGUE_TAG =
   | "league-players-list"
   | "league-standing"
   | "league-bans";
-
-export const getLeagueGlobalTag = () => getGlobalTag("leagues");
 
 export const getLeagueLeagueTag = (leagueId: string) =>
   getLeagueTag("leagues", leagueId);

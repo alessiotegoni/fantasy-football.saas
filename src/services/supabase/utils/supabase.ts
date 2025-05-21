@@ -50,9 +50,13 @@ export async function isAdmin(
   return !!data?.[0] && !error;
 }
 
-export async function getUserId() {
+export function getUserId() {
+  return getUser().then((user) => user?.id);
+}
+
+export async function getUser() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
-  return data.user?.id;
+  return data.user;
 }

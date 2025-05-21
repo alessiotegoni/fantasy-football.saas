@@ -1,6 +1,7 @@
 import { getGlobalTag } from "./helpers";
 
 export type GLOBAL_TAG =
+  | "leagues"
   | "seasons"
   | "splits"
   | "split-matchdays"
@@ -13,6 +14,7 @@ export type GLOBAL_TAG =
   | "bonuses"
   | "maluses";
 
+export const getLeagueGlobalTag = () => getGlobalTag("leagues");
 export const getSeasonsTag = () => getGlobalTag("seasons");
 export const getSplitsTag = () => getGlobalTag("splits");
 export const getSplitsMatchdaysTag = () => getGlobalTag("split-matchdays");

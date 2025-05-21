@@ -134,7 +134,6 @@ async function socialLogin(router: AppRouterInstance, formData: FormData) {
   const type = formData.get("provider") as OauthProviderType;
 
   const res = await login({ type });
-  console.log(res);
 
   if (res.error) {
     toast.error(res.message);

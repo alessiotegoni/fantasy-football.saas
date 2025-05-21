@@ -10,14 +10,10 @@ export async function verifyOtp(values: OtpSchema) {
 
   const supabase = await createClient();
 
-  console.log(data);
-
   const { error } = await supabase.auth.verifyOtp({
     type: "magiclink",
     ...data,
   });
-
-  console.log(error);
 
   if (error) return { error: true, message: "Codice non valido" };
 }

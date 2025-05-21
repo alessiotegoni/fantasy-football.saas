@@ -10,16 +10,18 @@ import {
   insertLeagueOptions,
   updateLeague,
 } from "../db/league";
-import { getUserId } from "@/services/supabase/utils/supabase";
+import { getUser } from "@/services/supabase/utils/supabase";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { canCreateLeague } from "../permissions/league";
+import { createAdminClient } from "@/services/supabase/server/supabase";
+import { User } from "@supabase/supabase-js";
 
 export async function createLeague(values: CreateLeagueSchema) {
-  const userId = await getUserId();
+  const user = await getUser();
 
-  if (!userId || !(await canCreateLeague(userId))) {
+  if (!user || !(await canCreateLeague(user.id))) {
     return getError("Per creare 2 o piu leghe devi avere il premium");
   }
 
@@ -31,15 +33,28 @@ export async function createLeague(values: CreateLeagueSchema) {
   }
 
   const leagueId = await db.transaction(async (tx) => {
-    const leagueId = await insertLeague({ ownerId: userId, ...league }, tx);
+    const leagueId = await insertLeague({ ownerId: user.id, ...league }, tx);
     await insertLeagueOptions({ leagueId }, tx);
 
     return leagueId;
   });
 
-  if (league.image) after(updateLeagueImage.bind(null, leagueId, league.image));
+  after(async () => {
+    await addUserLeaguesMetadata(user, leagueId);
+    if (league.image) await updateLeagueImage(leagueId, league.image);
+  });
 
   redirect(`/leagues/${leagueId}/options`);
+}
+
+async function addUserLeaguesMetadata(user: User, leagueId: string) {
+  const currentLeagues = (user.user_metadata?.league_ids as string[]) ?? [];
+  const updatedLeagues = [...new Set([...currentLeagues, leagueId])];
+
+  const supabase = createAdminClient();
+  await supabase.auth.admin.updateUserById(user.id, {
+    user_metadata: { league_ids: updatedLeagues },
+  });
 }
 
 async function updateLeagueImage(leagueId: string, file: File) {

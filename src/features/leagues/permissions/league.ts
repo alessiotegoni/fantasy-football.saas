@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
-import { leagues } from "@/drizzle/schema";
+import { leagueMembers, leagues } from "@/drizzle/schema";
 import { userHasPremium } from "@/features/subscriptions/permissions/subscription";
-import { count, eq } from "drizzle-orm";
+import { count, and, eq } from "drizzle-orm";
 
 export async function canCreateLeague(userId: string) {
   const [hasPremium, hasLeague] = await Promise.all([
@@ -10,6 +10,35 @@ export async function canCreateLeague(userId: string) {
   ]);
 
   return hasPremium ? true : !hasLeague;
+}
+
+export async function isLeagueAdmin(userId: string, leagueId: string) {
+  const res = await db
+    .select({ count: count() })
+    .from(leagueMembers)
+    .where(
+      and(
+        eq(leagueMembers.leagueId, leagueId),
+        eq(leagueMembers.userId, userId),
+        eq(leagueMembers.role, "admin")
+      )
+    );
+
+  return res[0].count === 1;
+}
+
+export async function isLeagueMember(userId: string, leagueId: string) {
+  const res = await db
+    .select({ count: count() })
+    .from(leagueMembers)
+    .where(
+      and(
+        eq(leagueMembers.leagueId, leagueId),
+        eq(leagueMembers.userId, userId)
+      )
+    );
+
+  return res[0].count === 1;
 }
 
 async function ownsLeague(userId: string) {
