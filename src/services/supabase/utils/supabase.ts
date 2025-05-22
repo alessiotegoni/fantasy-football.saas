@@ -1,7 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
-import { SupabaseClient } from "@supabase/supabase-js";
 import { NextResponse, type NextRequest } from "next/server";
-import { createClient } from "../server/supabase";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -36,27 +34,4 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   return { user, supabase, supabaseResponse };
-}
-
-export async function isAdmin(
-  supabase: SupabaseClient<any, "public", any>,
-  userId: string
-) {
-  const { data, error } = await supabase
-    .from("admins")
-    .select("*")
-    .eq("id", userId);
-
-  return !!data?.[0] && !error;
-}
-
-export function getUserId() {
-  return getUser().then((user) => user?.id);
-}
-
-export async function getUser() {
-  const supabase = await createClient();
-  const { data } = await supabase.auth.getUser();
-
-  return data.user;
 }

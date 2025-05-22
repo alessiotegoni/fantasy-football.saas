@@ -2,6 +2,7 @@ import { revalidateTag } from "next/cache";
 import { getLeagueTag } from "@/cache/helpers";
 import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
+import { getUserLeaguesTag } from "@/features/users/db/cache/user";
 
 export type LEAGUE_TAG =
   | "league-options"
@@ -54,4 +55,15 @@ export const revalidateLeagueCache = ({
   if (visibility === "public") revalidateTag(getLeagueGlobalTag());
   revalidateTag(getLeagueLeagueTag(leagueId));
   revalidateTag(getLeagueOptionsTag(leagueId));
+};
+
+export const revalidateLeagueMembersCache = ({
+  leagueId,
+  userId,
+}: {
+  leagueId: string;
+  userId: string;
+}) => {
+  revalidateTag(getLeagueMatchesTag(leagueId));
+  revalidateTag(getUserLeaguesTag(userId));
 };

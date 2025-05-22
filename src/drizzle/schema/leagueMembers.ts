@@ -11,8 +11,9 @@ import { leagues } from "./leagues";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { authUsers } from "drizzle-orm/supabase";
 
-const leagueMemberRoles = ["admin", "member"] as const;
-const leagueMemberRoleEnum = pgEnum("league_member_role", leagueMemberRoles);
+export const leagueMemberRoles = ["admin", "member"] as const;
+export type LeagueMemberRoleType = (typeof leagueMemberRoles)[number];
+export const leagueMemberRoleEnum = pgEnum("league_member_role", leagueMemberRoles);
 
 export const leagueMembers = pgTable(
   "league_members",

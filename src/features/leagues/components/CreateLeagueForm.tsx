@@ -248,12 +248,12 @@ export default function CreateLeagueForm() {
           <FormField
             control={form.control}
             name="joinCode"
-            render={({ field }) => (
+            render={({ field: { value } }) => (
               <FormItem>
                 <FormLabel>Codice di Invito</FormLabel>
                 <div className="flex gap-2">
                   <FormControl>
-                    <Input {...field} />
+                    <Input value={value} readOnly />
                   </FormControl>
                   <div className="flex gap-1">
                     <Button
@@ -271,7 +271,7 @@ export default function CreateLeagueForm() {
                       type="button"
                       variant="outline"
                       size="icon"
-                      onClick={handleCopyCode.bind(null, field.value)}
+                      onClick={handleCopyCode.bind(null, value)}
                       title="Copia codice"
                     >
                       <Copy />

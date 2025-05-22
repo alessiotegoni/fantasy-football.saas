@@ -1,14 +1,20 @@
 import Link from "next/link";
-import { Group, Trophy } from "iconoir-react";
+import { ArrowLeft, Group, Trophy } from "iconoir-react";
 import Logo from "@/components/ui/logo";
 import { default as LeagueHeader } from "@/features/leagues/components/Header";
+import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
+import { getUser, getUserMetadata } from "@/features/users/utils/user";
 
 export default function HomePage() {
   return (
     <>
-      <LeagueHeader>
+      <LeagueHeader className="relative">
+        <Suspense fallback={null}>
+          <BackToLeagueButton />
+        </Suspense>
         <div className="flex flex-col items-center pt-5 pb-7">
-          <Logo withText={false} />
+          <Logo withText={false} className="mt-5" />
           <h1
             className="text-3xl font-heading text-center text-primary-foreground
              leading-11 sm:hidden"
@@ -62,5 +68,26 @@ export default function HomePage() {
         </div>
       </main>
     </>
+  );
+}
+
+async function BackToLeagueButton() {
+  const user = await getUser();
+  if (!user) return null;
+
+  const lastUserLeagueId = getUserMetadata(user, "last_league_id");
+  if (!lastUserLeagueId) return null;
+
+  return (
+    <Button
+      variant="link"
+      className="w-fit absolute left-2 top-2 text-white"
+      asChild
+    >
+      <Link href={`/leagues/${lastUserLeagueId}`}>
+        <ArrowLeft className="size-4" />
+        <p>Torna alla lega</p>
+      </Link>
+    </Button>
   );
 }

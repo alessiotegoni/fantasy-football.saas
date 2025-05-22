@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagues } from "@/drizzle/schema";
-import { userHasPremium } from "@/features/subscriptions/permissions/subscription";
+import { userHasPremium } from "@/features/users/permissions/user";
 import { count, and, eq } from "drizzle-orm";
 
 export async function canCreateLeague(userId: string) {

@@ -6,8 +6,8 @@ import CreateLeagueForm from "@/features/leagues/components/CreateLeagueForm";
 export default function CreateLeaguePage() {
   return (
     <main className="flex flex-col">
-      <LeagueHeader className="mb-5">
-        <BackButton backTo="/" />
+      <LeagueHeader className="relative mb-5 mx-auto max-w-[800px]">
+        <BackButton />
 
         <div className="flex flex-col items-center py-8">
           <div className="w-20 h-20 bg-primary-foreground/20 rounded-full flex items-center justify-center mb-6">
