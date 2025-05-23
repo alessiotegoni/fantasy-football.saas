@@ -55,7 +55,7 @@ export function routeRedirect(request: Request, defaultRedirect = "/") {
   return response;
 }
 
-export async function getRedirectUrl(request: NextRequest, url: string = "/") {
+export function getRedirectUrl(request: NextRequest, url: string = "/") {
   const referer = request.headers.get("referer");
 
   if (referer && referer !== request.url) return referer;
@@ -77,3 +77,6 @@ export function getUrl(pathname = "/") {
 
   return new URL(pathname, url).toString();
 }
+
+export const getItemHref = (href: string, leagueId: string) =>
+  href.replace(":leagueId", leagueId);

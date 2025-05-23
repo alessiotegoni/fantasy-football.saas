@@ -8,7 +8,7 @@ import {
 import { getErrorObject } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import {
-  revalidateLeagueCache,
+  revalidateLeagueInfoCache,
   revalidateLeagueMembersCache,
 } from "./cache/league";
 
@@ -25,7 +25,7 @@ export async function insertLeague(
 
   if (!res.leagueId) throw new Error(getError().message);
 
-  revalidateLeagueCache({
+  revalidateLeagueInfoCache({
     leagueId: res.leagueId,
     visibility: res.visibility,
   });
@@ -79,5 +79,5 @@ export async function updateLeague(
     throw new Error(getError("Erorre nell'aggiornamento della lega").message);
   }
 
-  revalidateLeagueCache({ leagueId, visibility: res.visibility });
+  revalidateLeagueInfoCache({ leagueId, visibility: res.visibility });
 }

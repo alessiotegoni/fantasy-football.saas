@@ -5,6 +5,7 @@ import { getLeagueGlobalTag } from "@/cache/global";
 import { getUserLeaguesTag } from "@/features/users/db/cache/user";
 
 export type LEAGUE_TAG =
+  | "league-info"
   | "league-options"
   | "league-members"
   | "league-members-teams"
@@ -17,6 +18,9 @@ export type LEAGUE_TAG =
 
 export const getLeagueLeagueTag = (leagueId: string) =>
   getLeagueTag("leagues", leagueId);
+
+export const getLeagueInfoTag = (leagueId: string) =>
+  getLeagueTag("league-info", leagueId);
 
 export const getLeagueOptionsTag = (leagueId: string) =>
   getLeagueTag("league-options", leagueId);
@@ -45,15 +49,24 @@ export const getLeagueStandingTag = (leagueId: string) =>
 export const getLeagueBansTag = (leagueId: string) =>
   getLeagueTag("league-bans", leagueId);
 
-export const revalidateLeagueCache = ({
-  leagueId,
-  visibility,
-}: {
+type RevalidateLeagueArgs = {
   leagueId: string;
   visibility: LeagueVisibilityStatusType;
-}) => {
+};
+
+export const revalidateLeagueInfoCache = ({
+  leagueId,
+  visibility,
+}: RevalidateLeagueArgs) => {
   if (visibility === "public") revalidateTag(getLeagueGlobalTag());
-  revalidateTag(getLeagueLeagueTag(leagueId));
+  revalidateTag(getLeagueInfoTag(leagueId));
+};
+
+export const revalidateLeagueOptionsCache = ({
+  leagueId,
+  visibility,
+}: RevalidateLeagueArgs) => {
+  if (visibility === "public") revalidateTag(getLeagueGlobalTag());
   revalidateTag(getLeagueOptionsTag(leagueId));
 };
 

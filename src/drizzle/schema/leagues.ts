@@ -13,6 +13,7 @@ import { leagueMatches } from "./leagueMatches";
 import { leagueMatchdayCalculations } from "./leagueMatchdayCalculations";
 import { authUsers } from "drizzle-orm/supabase";
 import { auctions } from "./auctions";
+import { leagueMembers } from "./leagueMembers";
 
 export const leagueVisibilityStatuses = ["public", "private"] as const;
 export type LeagueVisibilityStatusType =
@@ -50,6 +51,7 @@ export const leagues = pgTable(
 );
 
 export const leaguesRelations = relations(leagues, ({ many }) => ({
+  members: many(leagueMembers),
   options: many(leagueOptions),
   usersBans: many(leagueUserBans),
   matches: many(leagueMatches),

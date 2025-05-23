@@ -3,6 +3,7 @@ import {
   createClient,
 } from "@/services/supabase/server/supabase";
 import { SupabaseClient, User } from "@supabase/supabase-js";
+import { NextRequest, NextResponse } from "next/server";
 
 type UserMetadata = {
   league_ids?: string[];
@@ -53,6 +54,17 @@ export async function isAdmin(
     .eq("id", userId);
 
   return !!data?.[0] && !error;
+}
+
+export function getCanRedirectUserToLeague(request: NextRequest, user: User) {
+  const isInHomePage = request.nextUrl.pathname === "/";
+  const preventRedirect = request.nextUrl.searchParams.get("preventRedirect");
+  const userLastLeagueId = getUserMetadata(user, "last_league_id");
+
+  return {
+    isRedirectable: isInHomePage && userLastLeagueId && !preventRedirect,
+    redirectUrl: new URL(`/leagues/${userLastLeagueId}`, request.nextUrl),
+  };
 }
 
 export function getUserId() {

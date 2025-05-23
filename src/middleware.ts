@@ -4,6 +4,7 @@ import { createRouteMatcher, getRedirectUrl } from "./lib/utils";
 import { User } from "@supabase/supabase-js";
 import {
   addUserLastLeagueMetadata,
+  getCanRedirectUserToLeague,
   getUserMetadata,
   isAdmin,
 } from "./features/users/utils/user";
@@ -23,12 +24,19 @@ export async function middleware(request: NextRequest) {
   console.log(user?.email);
 
   if (isAuthRoute(request) && user) {
-    const url = await getRedirectUrl(request);
+    const url = getRedirectUrl(request);
     return NextResponse.redirect(url);
   }
 
-  if (isPrivateRoute(request) && !user) {
-    return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+  if (isPrivateRoute(request)) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+    }
+    const { isRedirectable, redirectUrl } = getCanRedirectUserToLeague(
+      request,
+      user
+    );
+    if (isRedirectable) return NextResponse.redirect(redirectUrl);
   }
 
   if (isLeagueRoute(request) && !isPrivateRoute(request)) {
@@ -37,12 +45,12 @@ export async function middleware(request: NextRequest) {
     if (!user || !canAccessLeague(user, leagueId)) {
       return NextResponse.redirect(new URL("/", request.nextUrl));
     }
-    
+
     addUserLastLeagueMetadata(user, leagueId);
   }
 
   if (isAdminRoute(request) && user && !(await isAdmin(supabase, user.id))) {
-    const url = await getRedirectUrl(request);
+    const url = getRedirectUrl(request);
     return NextResponse.redirect(url);
   }
 
