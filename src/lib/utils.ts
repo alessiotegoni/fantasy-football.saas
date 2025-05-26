@@ -37,7 +37,7 @@ export function createRouteMatcher<T extends string>(patterns: T[]) {
 export function routeRedirect(request: Request, defaultRedirect = "/") {
   const { origin, searchParams } = new URL(request.url);
 
-  const next = searchParams.get("next") ?? defaultRedirect;
+  const next = searchParams.get("next") || defaultRedirect;
 
   const forwardedHost = request.headers.get("x-forwarded-host");
   const isLocalEnv = process.env.NODE_ENV === "development";

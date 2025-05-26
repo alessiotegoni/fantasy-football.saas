@@ -18,7 +18,7 @@ import {
   OauthProviderType,
 } from "../schema/login";
 import { login } from "../actions/login";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useEmailLogin } from "@/hooks/useLoginEmail";
@@ -29,6 +29,7 @@ export default function LoginForm() {
   const { getEmail, saveEmail } = useEmailLogin();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(loginSchema),
@@ -47,19 +48,16 @@ export default function LoginForm() {
   }
 
   async function emailLogin(data: LoginSchemaType) {
-    const res = await login(data);
+    const res = await login(data, { redirectUrl: searchParams.get("next") });
 
     if (res.error) {
       toast.error(res.message);
       return;
     }
 
-    const isEmailType = data.type === "email";
+    if (data.type === "email") saveEmail(data.email);
 
-    const url = isEmailType ? "/auth/verify-otp" : res.url;
-    if (isEmailType) saveEmail(data.email);
-
-    if (url) router.push(url);
+    router.push(res.url);
   }
 
   return (
@@ -103,7 +101,10 @@ export default function LoginForm() {
 
       <div className="space-y-3">
         {oauthProviders.map((provider) => (
-          <form action={socialLogin.bind(null, router)} key={provider}>
+          <form
+            action={socialLogin.bind(null, router, searchParams.get("next"))}
+            key={provider}
+          >
             <input type="hidden" name="provider" value={provider} />
             <SubmitButton
               loadingText={`Accedo con ${provider}`}
@@ -130,10 +131,14 @@ export default function LoginForm() {
   );
 }
 
-async function socialLogin(router: AppRouterInstance, formData: FormData) {
+async function socialLogin(
+  router: AppRouterInstance,
+  redirectUrl: string | null,
+  formData: FormData
+) {
   const type = formData.get("provider") as OauthProviderType;
 
-  const res = await login({ type });
+  const res = await login({ type }, { redirectUrl });
 
   if (res.error) {
     toast.error(res.message);

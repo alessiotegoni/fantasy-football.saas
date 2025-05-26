@@ -12,6 +12,7 @@ import {
   ArrowSeparateVertical,
   NavArrowRight,
   Trophy,
+  Copy,
 } from "iconoir-react";
 import { Star } from "iconoir-react/solid";
 
@@ -41,14 +42,20 @@ import { Suspense } from "react";
 import { getUserId } from "@/features/users/utils/user";
 import { getUserLeagues } from "@/features/users/queries/user";
 import { cn } from "@/lib/utils";
+import { InviteButton } from "./InviteButton";
 
-type Props = { leagueId: string; leagueName: string };
+type Props = {
+  leagueId: string;
+  name: string;
+  joinCode: string;
+  password: string | null;
+};
 
-export default function LeagueSidebar({ leagueId, leagueName }: Props) {
+export default function LeagueSidebar(league: Props) {
   return (
     <Sidebar>
       <SidebarHeader className="p-0">
-        <LeagueDropdown leagueName={leagueName} leagueId={leagueId} />
+        <LeagueDropdown {...league} />
         <div className="p-3">
           <Button asChild>
             <Link href="/user/premium">
@@ -66,7 +73,11 @@ export default function LeagueSidebar({ leagueId, leagueName }: Props) {
           <SidebarGroupContent>
             <SidebarMenu>
               {section.items.map((item) => (
-                <SidebarItem key={item.name} item={item} leagueId={leagueId} />
+                <SidebarItem
+                  key={item.name}
+                  item={item}
+                  leagueId={league.leagueId}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -77,7 +88,7 @@ export default function LeagueSidebar({ leagueId, leagueName }: Props) {
   );
 }
 
-function LeagueDropdown({ leagueName, leagueId }: Props) {
+function LeagueDropdown(league: Props) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -85,20 +96,22 @@ function LeagueDropdown({ leagueName, leagueId }: Props) {
           <DropdownMenuTrigger
             asChild
             className="min-w-52 bg-gradient-to-r from-primary to-secondary text-primary-foreground p-4
-          rounded-none rounded-br-xl rounded-bl-xl hover:text-white flex justify-between items-centerl"
+              rounded-none rounded-br-xl rounded-bl-xl hover:text-white flex justify-between items-center"
           >
             <SidebarMenuButton>
-              <h2 className="font-heading text-lg">{leagueName}</h2>
+              <h2 className="font-heading text-lg">{league.name}</h2>
               <ArrowSeparateVertical className="!size-5" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="min-w-[18rem] rounded-xl border border-primary/20">
             <DropdownMenuLabel>Le mie leghe</DropdownMenuLabel>
             <Suspense>
-              <UserLeagues leagueId={leagueId} />
+              <UserLeagues leagueId={league.leagueId} />
             </Suspense>
+
             <DropdownMenuSeparator />
-            <DropdownMenuLabel>Altro</DropdownMenuLabel>
+
+            <DropdownMenuLabel>Gestione leghe</DropdownMenuLabel>
             <DropdownMenuItem asChild className="justify-between group">
               <Link href="/leagues/create">
                 Crea una lega
@@ -110,6 +123,12 @@ function LeagueDropdown({ leagueName, leagueId }: Props) {
                 Entra in una lega
                 <NavArrowRight className="group-hover:text-white" />
               </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem asChild>
+              <InviteButton {...league} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

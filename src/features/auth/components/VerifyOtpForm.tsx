@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   InputOTP,
   InputOTPGroup,
@@ -24,6 +24,7 @@ export default function VerifyOtpForm() {
   const { getEmail, clearEmail, resendCode } = useEmailLogin();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const form = useForm<OtpSchema>({
     resolver: zodResolver(otpSchema),
@@ -47,7 +48,8 @@ export default function VerifyOtpForm() {
     }
 
     clearEmail();
-    router.push("/");
+    const redirectUrl = searchParams.get("next");
+    router.push(redirectUrl || "/");
   }
 
   return (

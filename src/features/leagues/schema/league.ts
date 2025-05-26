@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const MAX_IMAGE_SIZE = 1 * 1024 * 1024;
 
-export const JOIN_CODE_LENGTH = 10;
+export const JOIN_CODE_LENGTH = 20;
 
 export const joinPrivateLeagueSchema = z.object({
   joinCode: z

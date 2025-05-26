@@ -22,13 +22,13 @@ export function PasswordInput({
   label = "Password",
   placeholder = "Es. Aurajacket89",
 }: PasswordInputProps) {
-  const [showPassword, setShowPassword] = useState(false);
+  const form = useFormContext<{ password: string }>();
 
-  const { control } = useFormContext<{ password: string }>();
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <FormField
-      control={control}
+      control={form.control}
       name="password"
       render={({ field }) => (
         <FormItem>
@@ -43,19 +43,21 @@ export function PasswordInput({
                 className="pr-17"
               />
             </FormControl>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="w-fit hover:bg-transparent absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              tabIndex={-1}
-            >
-              {showPassword ? (
-                <EyeClosed className="size-6" />
-              ) : (
-                <Eye className="size-6" />
-              )}
-            </Button>
+            {!!form.watch("password") && (
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="w-fit hover:bg-transparent absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                tabIndex={-1}
+              >
+                {showPassword ? (
+                  <EyeClosed className="size-6" />
+                ) : (
+                  <Eye className="size-6" />
+                )}
+              </Button>
+            )}
           </div>
           <FormMessage />
         </FormItem>

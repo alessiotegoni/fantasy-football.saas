@@ -48,6 +48,7 @@ export default function CreateLeagueForm() {
       password: "",
       image: null,
       visibility: "private",
+      joinCode: generateJoinCode()
     },
   });
 
@@ -69,18 +70,6 @@ export default function CreateLeagueForm() {
 
     if (res.error) toast.error(res.message);
   }
-
-  const leagueType = form.watch("visibility");
-
-  useEffect(() => {
-    if (leagueType === "public") {
-      form.setValue("joinCode", "");
-      return;
-    }
-
-    const code = generateJoinCode();
-    form.setValue("joinCode", code);
-  }, [leagueType]);
 
   return (
     <Form {...form}>
@@ -245,7 +234,7 @@ export default function CreateLeagueForm() {
           )}
         />
 
-        {leagueType === "private" && <PasswordInput />}
+        {form.watch("visibility") === "private" && <PasswordInput />}
 
         <FormField
           control={form.control}
@@ -283,13 +272,15 @@ function handleSetImage(
   if (file) setImage(file);
 }
 
-function generateJoinCode() {
-  const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  let result = "";
-  for (let i = 0; i < JOIN_CODE_LENGTH; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
+function generateJoinCode(length = JOIN_CODE_LENGTH) {
+
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let code = "";
+  for (let i = 0; i < length; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
   }
-  return result;
+  return code;
 }
 
 async function handleCopyCode(code: string) {

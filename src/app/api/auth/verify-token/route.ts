@@ -1,4 +1,4 @@
-import { verifyOtp } from "@/features/auth/actions/verify-otp";
+import { verifyOtp } from "@/features/auth/actions/login";
 import { routeRedirect } from "@/lib/utils";
 import { NextResponse } from "next/server";
 
@@ -7,7 +7,7 @@ export async function GET(request: Request) {
 
   const token_hash = searchParams.get("token_hash");
 
-  if (token_hash?.startsWith("pkce_")) {
+  if (token_hash) {
     const res = await verifyOtp({ token_hash });
 
     if (!res?.error) return routeRedirect(request);

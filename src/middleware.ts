@@ -14,7 +14,7 @@ const isAdminRoute = createRouteMatcher(["/admin"]);
 const isPrivateRoute = createRouteMatcher([
   "/",
   "/leagues/create",
-  "/leagues/join",
+  "/leagues/join/*rest",
 ]);
 const isLeagueRoute = createRouteMatcher(["/leagues/*rest"]);
 
@@ -30,7 +30,12 @@ export async function middleware(request: NextRequest) {
 
   if (isPrivateRoute(request)) {
     if (!user) {
-      return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+      const { pathname, search } = request.nextUrl;
+      const redirectTo = `${pathname}${search}`
+
+      return NextResponse.redirect(
+        new URL(`/auth/login?next=${redirectTo}`, request.nextUrl)
+      );
     }
     const { isRedirectable, redirectUrl } = getCanRedirectUserToLeague(
       request,

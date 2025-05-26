@@ -11,56 +11,68 @@ import { SignInWithOAuthCredentials } from "@supabase/supabase-js";
 import { getErrorObject, getUrl } from "@/lib/utils";
 import { authUsers } from "drizzle-orm/supabase";
 import { db } from "@/drizzle/db";
-import { count, eq, isNotNull } from "drizzle-orm";
+import { eq, isNotNull } from "drizzle-orm";
 
 const getError = (message: string) => getErrorObject(message);
 
-export async function login(values: LoginSchemaType) {
+export async function login(
+  values: LoginSchemaType,
+  options?: { redirectUrl?: string | null }
+) {
   const { success, data } = loginSchema.safeParse(values);
 
   if (!success) return getError("Errore nel login, riprovare");
 
-  let res;
+  const redirectUrl = options?.redirectUrl ? `next=${options.redirectUrl}` : "";
 
   if (data.type === "email") {
-    res = await emailLogin(data.email);
+    return await emailLogin(data.email, redirectUrl);
   } else {
-    res = await oauthLogin(data.type);
+    return await oauthLogin(data.type, redirectUrl);
   }
+}
 
-  if (res.error) return getError("Errore nel login, riprovare");
+async function emailLogin(email: string, redirectTo: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: getUrl(`/api/auth/verify-token?${redirectTo}`),
+    },
+  });
+
+  if (error) return getError("Errore nel login, riprovare");
+
+  console.log(`/auth/verify-otp?${redirectTo}`);
 
   return {
     error: false,
-    url: res.url,
-    message: "Login effettuato con successo",
+    url: `/auth/verify-otp?${redirectTo}`,
+    message: "",
   };
 }
 
-async function emailLogin(email: string) {
+async function oauthLogin(
+  provider: SignInWithOAuthCredentials["provider"],
+  redirectTo: string
+) {
   const supabase = await createClient();
 
-  const res = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      emailRedirectTo: getUrl("/api/auth/verify-token"),
-    },
-  });
-
-  return { error: res.error, url: "" };
-}
-
-async function oauthLogin(provider: SignInWithOAuthCredentials["provider"]) {
-  const supabase = await createClient();
-
-  const res = await supabase.auth.signInWithOAuth({
+  const { error, data } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: getUrl("/api/auth/callback"),
+      redirectTo: getUrl(`/api/auth/callback?${redirectTo}`),
     },
   });
 
-  return { error: res.error, url: res.data.url ?? "" };
+  if (error) return getError("Errore nel login, riprovare");
+
+  return {
+    error: false,
+    url: data.url,
+    message: "",
+  };
 }
 
 export async function verifyOtp(values: OtpSchema) {
@@ -78,8 +90,6 @@ export async function verifyOtp(values: OtpSchema) {
     ...data,
   });
 
-  console.log(error);
-
   if (error) return getError("Codice non valido");
 }
 
@@ -88,8 +98,6 @@ async function hasConfirmedEmail(email: string) {
     .select({ emailConfirmed: isNotNull(authUsers.emailConfirmedAt) })
     .from(authUsers)
     .where(eq(authUsers.email, email));
-
-  console.log(res);
 
   return res.emailConfirmed;
 }

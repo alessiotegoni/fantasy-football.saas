@@ -14,37 +14,38 @@ export default async function LeagueLayout({
   children: React.ReactNode;
   params: Promise<{ leagueId: string }>;
 }) {
-  const { leagueId } = await params;
-  const { exist, leagueName } = await getLeagueExist(leagueId);
-  if (!exist) redirect("/");
+  const league = await getLeagueExist((await params).leagueId);
+  if (!league.exist) redirect("/");
 
   return (
     <SidebarProvider>
-      <LeagueSidebar leagueId={leagueId} leagueName={leagueName} />
-      <Topbar leagueName={leagueName} />
+      <LeagueSidebar {...league} />
+      <Topbar {...league} />
       <main>{children}</main>
-      <Bottombar leagueId={leagueId} />
+      <Bottombar {...league} />
     </SidebarProvider>
   );
 }
 
-async function getLeagueExist(
-  leagueId: string
-): Promise<
-  { exist: false; leagueName: undefined } | { exist: true; leagueName: string }
-> {
+async function getLeagueExist(leagueId: string) {
   "use cache";
 
   const league = await db.query.leagues.findFirst({
     columns: {
       name: true,
+      joinCode: true,
+      password: true,
     },
     where: ({ id }, { eq }) => eq(id, leagueId),
   });
 
-  if (!league) return { exist: false, leagueName: undefined };
+  if (!league) return { exist: false } as const;
 
   cacheTag(getLeagueLeagueTag(leagueId));
 
-  return { exist: true, leagueName: league.name };
+  return {
+    exist: true,
+    leagueId,
+    ...league,
+  } as const;
 }

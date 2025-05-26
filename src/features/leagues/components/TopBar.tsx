@@ -1,6 +1,6 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export function Topbar({ leagueName }: { leagueName: string }) {
+export function Topbar({ name }: { name: string }) {
   return (
     <header
       className="bg-gradient-to-r from-primary to-secondary w-full
@@ -9,7 +9,7 @@ export function Topbar({ leagueName }: { leagueName: string }) {
     >
       <div className="flex items-center gap-3">
         <SidebarTrigger />
-        <h1 className="font-heading text-lg">{leagueName}</h1>
+        <h1 className="font-heading text-lg">{name}</h1>
       </div>
       <div className="flex items-center space-x-4">
         <button className="focus:outline-none" aria-label="Notifications">

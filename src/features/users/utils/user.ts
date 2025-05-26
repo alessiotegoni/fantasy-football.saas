@@ -62,7 +62,7 @@ export function getCanRedirectUserToLeague(request: NextRequest, user: User) {
   const userLastLeagueId = getUserMetadata(user, "last_league_id");
 
   return {
-    isRedirectable: isInHomePage && userLastLeagueId && !preventRedirect,
+    isRedirectable: isInHomePage && !!userLastLeagueId && !preventRedirect,
     redirectUrl: new URL(`/leagues/${userLastLeagueId}`, request.nextUrl),
   };
 }
