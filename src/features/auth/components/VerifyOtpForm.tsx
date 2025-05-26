@@ -7,10 +7,8 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useForm } from "react-hook-form";
-import { otpSchema, OtpSchema } from "../schema/otp";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
-import { verifyOtp } from "../actions/verify-otp";
 import { useEmailLogin } from "@/hooks/useLoginEmail";
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -19,6 +17,8 @@ import SubmitButton from "@/components/SubmitButton";
 import Link from "next/link";
 import { Edit } from "iconoir-react";
 import { Button } from "@/components/ui/button";
+import { otpSchema, OtpSchema } from "../schema/login";
+import { verifyOtp } from "../actions/login";
 
 export default function VerifyOtpForm() {
   const { getEmail, clearEmail, resendCode } = useEmailLogin();

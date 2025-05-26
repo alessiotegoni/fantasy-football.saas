@@ -20,7 +20,7 @@ export function actionToast(
 export function getErrorObject(
   message = "Errore nell'esecuzione dell'operazione"
 ) {
-  return { error: true, message };
+  return { error: true, message } as const;
 }
 
 export function createRouteMatcher<T extends string>(patterns: T[]) {

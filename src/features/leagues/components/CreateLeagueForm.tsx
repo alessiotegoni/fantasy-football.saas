@@ -35,6 +35,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { createLeague } from "../actions/league";
+import { PasswordInput } from "./PasswordInput";
 
 export default function CreateLeagueForm() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -43,10 +44,10 @@ export default function CreateLeagueForm() {
     resolver: zodResolver(createLeagueSchema),
     defaultValues: {
       name: "",
+      description: null,
+      password: "",
       image: null,
       visibility: "private",
-      description: null,
-      joinCode: "",
     },
   });
 
@@ -244,49 +245,7 @@ export default function CreateLeagueForm() {
           )}
         />
 
-        {leagueType === "private" && (
-          <FormField
-            control={form.control}
-            name="joinCode"
-            render={({ field: { value } }) => (
-              <FormItem>
-                <FormLabel>Codice di Invito</FormLabel>
-                <div className="flex gap-2">
-                  <FormControl>
-                    <Input value={value} readOnly />
-                  </FormControl>
-                  <div className="flex gap-1">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={() =>
-                        form.setValue("joinCode", generateJoinCode())
-                      }
-                      title="Rigenera codice"
-                    >
-                      <Refresh />
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      onClick={handleCopyCode.bind(null, value)}
-                      title="Copia codice"
-                    >
-                      <Copy />
-                    </Button>
-                  </div>
-                </div>
-                <FormDescription>
-                  Questo codice verrà generato automaticamente e sarà necessario
-                  per invitare altri giocatori
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        {leagueType === "private" && <PasswordInput />}
 
         <FormField
           control={form.control}

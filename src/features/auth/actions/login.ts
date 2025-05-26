@@ -1,19 +1,24 @@
 "use server";
 
 import { createClient } from "@/services/supabase/server/supabase";
-import { loginSchema, LoginSchemaType } from "../schema/login";
+import {
+  loginSchema,
+  LoginSchemaType,
+  otpSchema,
+  OtpSchema,
+} from "../schema/login";
 import { SignInWithOAuthCredentials } from "@supabase/supabase-js";
-import { getUrl } from "@/lib/utils";
+import { getErrorObject, getUrl } from "@/lib/utils";
+import { authUsers } from "drizzle-orm/supabase";
+import { db } from "@/drizzle/db";
+import { count, eq, isNotNull } from "drizzle-orm";
 
-export async function login(
-  values: LoginSchemaType
-): Promise<
-  | { error: true; message: string }
-  | { error: false; url: string; message: string }
-> {
+const getError = (message: string) => getErrorObject(message);
+
+export async function login(values: LoginSchemaType) {
   const { success, data } = loginSchema.safeParse(values);
 
-  if (!success) return { error: true, message: "Errore nel login, riprovare" };
+  if (!success) return getError("Errore nel login, riprovare");
 
   let res;
 
@@ -23,7 +28,7 @@ export async function login(
     res = await oauthLogin(data.type);
   }
 
-  if (res.error) return { error: true, message: "Errore nel login, riprovare" };
+  if (res.error) return getError("Errore nel login, riprovare");
 
   return {
     error: false,
@@ -56,4 +61,35 @@ async function oauthLogin(provider: SignInWithOAuthCredentials["provider"]) {
   });
 
   return { error: res.error, url: res.data.url ?? "" };
+}
+
+export async function verifyOtp(values: OtpSchema) {
+  const { success, data } = otpSchema.safeParse(values);
+
+  if (!success || !("email" in data)) return getError("Codice non valido");
+
+  const [supabase, isEmailConfirmed] = await Promise.all([
+    createClient(),
+    hasConfirmedEmail(data.email),
+  ]);
+
+  const { error } = await supabase.auth.verifyOtp({
+    type: isEmailConfirmed ? "magiclink" : "signup",
+    ...data,
+  });
+
+  console.log(error);
+
+  if (error) return getError("Codice non valido");
+}
+
+async function hasConfirmedEmail(email: string) {
+  const [res] = await db
+    .select({ emailConfirmed: isNotNull(authUsers.emailConfirmedAt) })
+    .from(authUsers)
+    .where(eq(authUsers.email, email));
+
+  console.log(res);
+
+  return res.emailConfirmed;
 }

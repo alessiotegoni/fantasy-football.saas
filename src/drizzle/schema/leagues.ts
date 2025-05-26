@@ -37,6 +37,7 @@ export const leagues = pgTable(
       .notNull()
       .default("public"),
     description: text("description"),
+    password: text("password"),
     joinCode: text("join_code").unique("leagues_join_code_key"),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()

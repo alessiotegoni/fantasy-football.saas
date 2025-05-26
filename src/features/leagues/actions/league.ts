@@ -27,6 +27,9 @@ export async function createLeague(values: CreateLeagueSchema) {
   const { success, data: league } = createLeagueSchema.safeParse(values);
   if (!success) return getError();
 
+  console.log(league);
+
+
   if (!(await isUniqueName(league.name))) {
     return getError("Il nome della lega esiste gia, utilizzane un'altro");
   }

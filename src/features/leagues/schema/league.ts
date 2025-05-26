@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-export const JOIN_CODE_LENGTH = 10;
 export const MAX_IMAGE_SIZE = 1 * 1024 * 1024;
+
+export const JOIN_CODE_LENGTH = 10;
 
 export const joinPrivateLeagueSchema = z.object({
   joinCode: z
@@ -9,8 +10,16 @@ export const joinPrivateLeagueSchema = z.object({
     .length(
       JOIN_CODE_LENGTH,
       `Il codice di invito deve contenere esattamente ${JOIN_CODE_LENGTH} caratteri`
-    )
-    .trim(),
+    ),
+  password: z
+    .string()
+    .min(6, "La password deve contenere almeno 6 caratteri")
+    .max(32, "La password non deve superare i 32 caratteri")
+    .refine(
+      (password) =>
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/.test(password),
+      "La password deve contenere almeno una lettera maiuscola, una minuscola e un numero. Non sono ammessi caratteri speciali."
+    ),
 });
 
 const leagueSchema = z.object({

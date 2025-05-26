@@ -123,10 +123,12 @@ async function UserLeagues({ leagueId }: Pick<Props, "leagueId">) {
   if (!userId) return;
   const userLeagues = await getUserLeagues(userId);
 
-  const isCurrentLeague = (league: typeof userLeagues[number]) => leagueId === league.id
+  const isCurrentLeague = (league: (typeof userLeagues)[number]) =>
+    leagueId === league.id;
 
   return userLeagues.map((league) => (
     <DropdownMenuItem
+      key={league.id}
       className="flex justify-between items-center gap-2 group"
       asChild
     >
