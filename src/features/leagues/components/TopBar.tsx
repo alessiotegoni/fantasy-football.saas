@@ -11,14 +11,9 @@ export function Topbar({ name }: { name: string }) {
         <SidebarTrigger />
         <h1 className="font-heading text-lg">{name}</h1>
       </div>
-      <div className="flex items-center space-x-4">
-        <button className="focus:outline-none" aria-label="Notifications">
-          {/* <Bell className="w-6 h-6" /> */}
-        </button>
-        <button className="focus:outline-none" aria-label="Messages">
-          {/* <MessageCircle className="w-6 h-6" /> */}
-        </button>
-      </div>
+      {/* <Suspense>
+        <UserDropdown variant="topbar" userPromise={getUser()} />
+      </Suspense> */}
     </header>
   );
 }

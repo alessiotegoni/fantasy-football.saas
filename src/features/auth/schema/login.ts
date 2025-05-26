@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const oauthProviders = ["google", "twitch"] as const;
-export type OauthProviderType = (typeof oauthProviders)[number]
+export type OauthProviderType = (typeof oauthProviders)[number];
 
 export const loginSchema = z.discriminatedUnion("type", [
   z.object({
@@ -11,15 +11,10 @@ export const loginSchema = z.discriminatedUnion("type", [
   ...oauthProviders.map((provider) => z.object({ type: z.literal(provider) })),
 ]);
 
-export const otpSchema = z.union([
-  z.object({
-    email: z.string().email("Email non valida"),
-    token: z.string().length(6, "Codice invalido"),
-  }),
-  z.object({
-    token_hash: z.string().startsWith("pkce_", "Token non valido"),
-  }),
-]);
+export const otpSchema = z.object({
+  email: z.string().email("Email non valida"),
+  token: z.string().length(6, "Codice invalido"),
+});
 
 export type LoginSchemaType = z.infer<typeof loginSchema>;
 export type OtpSchema = z.infer<typeof otpSchema>;

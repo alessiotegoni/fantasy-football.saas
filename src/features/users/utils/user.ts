@@ -3,11 +3,13 @@ import {
   createClient,
 } from "@/services/supabase/server/supabase";
 import { SupabaseClient, User } from "@supabase/supabase-js";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 type UserMetadata = {
   league_ids?: string[];
   last_league_id?: string;
+  avatar_url?: string
+  name?: string
 };
 
 export const getMetadata = (user: User): UserMetadata => user.user_metadata;

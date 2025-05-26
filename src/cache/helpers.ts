@@ -3,8 +3,15 @@ import { MATCH_TAG } from "@/features/matches/db/cache/match";
 import { TEAM_TAG } from "@/features/teams/db/cache/team";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
+import { AUCTION_TAG } from "@/features/auctions/db/cache/auction";
 
-export type CACHE_TAG = GLOBAL_TAG | USER_TAG | LEAGUE_TAG | TEAM_TAG | MATCH_TAG;
+export type CACHE_TAG =
+  | GLOBAL_TAG
+  | USER_TAG
+  | LEAGUE_TAG
+  | AUCTION_TAG
+  | TEAM_TAG
+  | MATCH_TAG;
 
 export const getGlobalTag = (tag: CACHE_TAG) => `global:${tag}` as const;
 

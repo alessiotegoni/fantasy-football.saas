@@ -21,7 +21,7 @@ export default async function LeagueLayout({
     <SidebarProvider>
       <LeagueSidebar {...league} />
       <Topbar {...league} />
-      <main>{children}</main>
+      <main className="p-4 pt-[calc(60px+16px)] pb-[calc(73px+16px)]">{children}</main>
       <Bottombar {...league} />
     </SidebarProvider>
   );

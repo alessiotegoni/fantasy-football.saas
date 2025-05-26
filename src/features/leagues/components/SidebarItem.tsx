@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
-import { sidebarSections } from "./Sidebar";
 import NavLink from "@/components/NavLink";
 import { getItemHref } from "@/lib/utils";
 import Link from "next/link";
+import { publicSections } from "./Sidebar";
 
 export default function SidebarItem({
   item,
   leagueId,
 }: {
-  item: (typeof sidebarSections)[number]["items"][number];
+  item: (typeof publicSections)[number]["items"][number];
   leagueId: string;
 }) {
   return (

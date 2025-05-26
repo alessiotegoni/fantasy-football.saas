@@ -78,7 +78,7 @@ async function oauthLogin(
 export async function verifyOtp(values: OtpSchema) {
   const { success, data } = otpSchema.safeParse(values);
 
-  if (!success || !("email" in data)) return getError("Codice non valido");
+  if (!success) return getError("Codice non valido");
 
   const [supabase, isEmailConfirmed] = await Promise.all([
     createClient(),
@@ -91,6 +91,15 @@ export async function verifyOtp(values: OtpSchema) {
   });
 
   if (error) return getError("Codice non valido");
+}
+
+export async function logout() {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) return getError("Errore nel logout, riprovare");
+
+  return { error: false, message: "Logout effettuato con successo" }
 }
 
 async function hasConfirmedEmail(email: string) {

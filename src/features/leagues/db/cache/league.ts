@@ -5,7 +5,6 @@ import { getLeagueGlobalTag } from "@/cache/global";
 import { getUserLeaguesTag } from "@/features/users/db/cache/user";
 
 export type LEAGUE_TAG =
-  | "league-join-code"
   | "league-info"
   | "league-options"
   | "league-members"
@@ -19,9 +18,6 @@ export type LEAGUE_TAG =
 
 export const getLeagueLeagueTag = (leagueId: string) =>
   getLeagueTag("leagues", leagueId);
-
-export const getLeagueJoinCodeTag = (leagueId: string) =>
-  getLeagueTag("league-join-code", leagueId);
 
 export const getLeagueInfoTag = (leagueId: string) =>
   getLeagueTag("league-info", leagueId);
