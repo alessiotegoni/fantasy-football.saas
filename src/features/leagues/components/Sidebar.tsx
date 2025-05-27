@@ -28,8 +28,8 @@ import { Suspense } from "react";
 import { isAuctionUnlocked } from "@/features/auctions/permissions/auction";
 import LeagueDropdown from "./LeagueDropdown";
 import UserDropdown from "@/features/users/components/userDropdown";
-import { getUser, getUserId } from "@/features/users/utils/user";
 import { isLeagueAdmin } from "../permissions/league";
+import { getUser, getUserId } from "@/features/users/utils/user";
 
 type Props = {
   leagueId: string;
@@ -53,12 +53,24 @@ export default function LeagueSidebar(league: Props) {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <PublicSections {...league} />
+        <SidebarSections
+          sections={publicSections}
+          sectionType="public"
+          {...league}
+        />
         <Suspense>
-          <PrivateSections {...league} />
+          <SidebarSections
+            sections={privateSections}
+            sectionType="private"
+            {...league}
+          />
         </Suspense>
         <Suspense>
-          <PremiumSections {...league} />
+          <SidebarSections
+            sections={premiumSections}
+            sectionType="premium"
+            {...league}
+          />
         </Suspense>
       </SidebarContent>
       <SidebarFooter className="hidden lg:block">
@@ -70,49 +82,28 @@ export default function LeagueSidebar(league: Props) {
   );
 }
 
-async function PublicSections({ leagueId }: Pick<Props, "leagueId">) {
-  return publicSections.map((section) => (
-    <SidebarGroup key={section.title} className="p-3">
-      <SidebarGroupLabel className="font-heading text-lg mb-1">
-        {section.title}
-      </SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {section.items.map((item) => (
-            <SidebarItem key={item.name} item={item} leagueId={leagueId} />
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
-  ));
-}
+async function SidebarSections({
+  sections,
+  sectionType,
+  leagueId,
+}: {
+  sections: (typeof publicSections)[number][];
+  sectionType?: "public" | "private" | "premium";
+  leagueId: string;
+}) {
+  switch (sectionType) {
+    case "private":
+      const userId = await getUserId();
+      if (!userId) return;
 
-async function PrivateSections({ leagueId }: Pick<Props, "leagueId">) {
-  const userId = await getUserId();
-  if (!userId) return;
+      if (!(await isLeagueAdmin(userId, leagueId))) return null;
+      break;
+    case "premium":
+      if (!(await isAuctionUnlocked(leagueId))) return null;
+      break;
+  }
 
-  if (!(await isLeagueAdmin(userId, leagueId))) return null;
-
-  return publicSections.map((section) => (
-    <SidebarGroup key={section.title} className="p-3">
-      <SidebarGroupLabel className="font-heading text-lg mb-1">
-        {section.title}
-      </SidebarGroupLabel>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {section.items.map((item) => (
-            <SidebarItem key={item.name} item={item} leagueId={leagueId} />
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
-  ));
-}
-
-async function PremiumSections({ leagueId }: Pick<Props, "leagueId">) {
-  if (!(await isAuctionUnlocked(leagueId))) return null;
-
-  return premiumSections.map((section) => (
+  return sections.map((section) => (
     <SidebarGroup key={section.title} className="p-3">
       <SidebarGroupLabel className="font-heading text-lg mb-1">
         {section.title}
@@ -139,7 +130,7 @@ export const publicSections = [
       },
       {
         name: "Impostazioni lega",
-        href: "/leagues/:leagueId/options",
+        href: "/leagues/:leagueId/options/general",
         icon: Settings,
       },
       {

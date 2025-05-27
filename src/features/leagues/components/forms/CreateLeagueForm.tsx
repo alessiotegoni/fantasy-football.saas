@@ -23,19 +23,19 @@ import { Input } from "@/components/ui/input";
 import SubmitButton from "@/components/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
+  isValidImage,
   createLeagueSchema,
   type CreateLeagueSchema,
-  isValidImage,
   JOIN_CODE_LENGTH,
   MAX_IMAGE_SIZE,
-} from "../schema/league";
+} from "../../schema/league";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { createLeague } from "../actions/league";
-import { PasswordInput } from "./PasswordInput";
+import { createLeague } from "../../actions/league";
+import { PasswordInput } from "../PasswordInput";
 
 export default function CreateLeagueForm() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);

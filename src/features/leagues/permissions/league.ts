@@ -11,6 +11,7 @@ export async function canCreateLeague(userId: string) {
 
   return hasPremium ? true : !hasLeague;
 }
+export const canJoinLeague = canCreateLeague;
 
 export async function isLeagueAdmin(userId: string, leagueId: string) {
   const res = await db

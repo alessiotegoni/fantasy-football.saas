@@ -4,9 +4,15 @@ import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
 import { getUserLeaguesTag } from "@/features/users/db/cache/user";
 
+type LEAGUE_OPTIONS_TAG =
+  | "league-options"
+  | "league-general-options"
+  | "league-roster-options"
+  | "league-bonus-malus-options";
+
 export type LEAGUE_TAG =
   | "league-info"
-  | "league-options"
+  | LEAGUE_OPTIONS_TAG
   | "league-members"
   | "league-members-teams"
   | "league-matches"
@@ -23,6 +29,15 @@ export const getLeagueInfoTag = (leagueId: string) =>
   getLeagueTag("league-info", leagueId);
 
 export const getLeagueOptionsTag = (leagueId: string) =>
+  getLeagueTag("league-options", leagueId);
+
+export const getLeagueGeneralOptionsTag = (leagueId: string) =>
+  getLeagueTag("league-options", leagueId);
+
+export const getLeagueRosterOptionsTag = (leagueId: string) =>
+  getLeagueTag("league-options", leagueId);
+
+export const getLeagueBonusMalusOptionsTag = (leagueId: string) =>
   getLeagueTag("league-options", leagueId);
 
 export const getLeagueMembersTag = (leagueId: string) =>

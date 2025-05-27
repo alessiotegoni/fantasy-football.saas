@@ -4,14 +4,14 @@ import Logo from "@/components/ui/logo";
 import { default as LeagueHeader } from "@/features/leagues/components/Header";
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
-import { getUser, getUserMetadata } from "@/features/users/utils/user";
+// import { getUser, getUserMetadata } from "@/features/users/utils/user";
 
 export default function HomePage() {
   return (
     <>
       <LeagueHeader className="relative">
         <Suspense fallback={null}>
-          <BackToLeagueButton />
+          {/* <BackToLeagueButton /> */}
         </Suspense>
         <div className="flex flex-col items-center pt-5 pb-7">
           <Logo withText={false} className="mt-5" />
@@ -71,23 +71,23 @@ export default function HomePage() {
   );
 }
 
-async function BackToLeagueButton() {
-  const user = await getUser();
-  if (!user) return null;
+// async function BackToLeagueButton() {
+//   const user = await getUser();
+//   if (!user) return null;
 
-  const lastUserLeagueId = getUserMetadata(user, "last_league_id");
-  if (!lastUserLeagueId) return null;
+//   const lastUserLeagueId = getUserMetadata(user, "last_league_id");
+//   if (!lastUserLeagueId) return null;
 
-  return (
-    <Button
-      variant="link"
-      className="w-fit absolute left-2 top-2 text-white"
-      asChild
-    >
-      <Link href={`/leagues/${lastUserLeagueId}`}>
-        <ArrowLeft className="size-4" />
-        <p>Torna alla lega</p>
-      </Link>
-    </Button>
-  );
-}
+//   return (
+//     <Button
+//       variant="link"
+//       className="w-fit absolute left-2 top-2 text-white"
+//       asChild
+//     >
+//       <Link href={`/leagues/${lastUserLeagueId}`}>
+//         <ArrowLeft className="size-4" />
+//         <p>Torna alla lega</p>
+//       </Link>
+//     </Button>
+//   );
+// }

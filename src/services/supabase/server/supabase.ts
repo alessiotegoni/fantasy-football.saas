@@ -1,3 +1,5 @@
+"use server"
+
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
@@ -31,7 +33,7 @@ export async function createClient() {
   );
 }
 
-export function createAdminClient() {
+export async function createAdminClient() {
   return createSupabaseClient(
     supabaseUrl,
     process.env.SUPABASE_SERVICE_ROLE_KEY!

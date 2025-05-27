@@ -6,22 +6,40 @@ import { Topbar } from "@/features/leagues/components/TopBar";
 import { getLeagueLeagueTag } from "@/features/leagues/db/cache/league";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
-export default async function LeagueLayout({
-  children,
-  params,
-}: {
+type Props = {
   children: React.ReactNode;
   params: Promise<{ leagueId: string }>;
+};
+
+export default function LeagueLayout({ children, params }: Props) {
+  return (
+    <Suspense>
+      <SuspenseBoundary leagueIdPromise={params.then((p) => p.leagueId)}>
+        {children}
+      </SuspenseBoundary>
+    </Suspense>
+  );
+}
+
+async function SuspenseBoundary({
+  leagueIdPromise,
+  children,
+}: {
+  children: React.ReactNode;
+  leagueIdPromise: Promise<string>;
 }) {
-  const league = await getLeagueExist((await params).leagueId);
+  const league = await getLeagueExist(await leagueIdPromise);
   if (!league.exist) redirect("/");
 
   return (
     <SidebarProvider>
       <LeagueSidebar {...league} />
       <Topbar {...league} />
-      <main className="p-4 pt-[calc(60px+16px)] pb-[calc(73px+16px)]">{children}</main>
+      <main className="w-full p-4 pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:py-4">
+        {children}
+      </main>
       <Bottombar {...league} />
     </SidebarProvider>
   );

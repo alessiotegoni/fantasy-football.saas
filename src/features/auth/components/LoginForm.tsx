@@ -116,8 +116,8 @@ export default function LoginForm() {
             >
               <img
                 src={oauthProvidersStyles[provider].imageUrl}
-                width={20}
-                height={20}
+                width={25}
+                height={25}
                 alt={provider}
               />
               <p>
@@ -154,10 +154,12 @@ const oauthProvidersStyles: Record<
   google: {
     className: `bg-black hover:bg-black/90
         dark:bg-white dark:hover:bg-white/90 dark:text-black py-3 px-4`,
-    imageUrl: "",
+    imageUrl:
+      "https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/google-logo.png",
   },
   twitch: {
     className: `bg-[#6034b2] hover:bg-[#6441a5] py-3 px-4`,
-    imageUrl: "",
+    imageUrl:
+      "https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/twitch-logo.png",
   },
 };

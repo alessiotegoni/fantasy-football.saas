@@ -22,8 +22,8 @@ export function getUserMetadata<T extends keyof UserMetadata>(
   return userMetadata[metadata];
 }
 
-export function addUserMetadata(user: User, metadata: UserMetadata) {
-  const supabase = createAdminClient();
+export async function addUserMetadata(user: User, metadata: UserMetadata) {
+  const supabase = await createAdminClient();
   return supabase.auth.admin.updateUserById(user.id, {
     user_metadata: { ...user.user_metadata, ...metadata },
   });

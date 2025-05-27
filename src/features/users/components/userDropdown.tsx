@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   DropdownMenu,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import { logout } from "@/features/auth/actions/login";
 import { getUserMetadata } from "../utils/user";
 import {
   ArrowSeparateVertical,
@@ -20,8 +19,12 @@ import {
   User as UserIcon,
 } from "iconoir-react";
 import { User } from "@supabase/supabase-js";
-import { use, useState } from "react";
+import { FormEvent, use, useState } from "react";
 import ActionButton from "@/components/ActionButton";
+import { logout } from "@/features/auth/actions/login";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import SubmitButton from "@/components/SubmitButton";
 
 export default function UserDropdown({
   userPromise,
@@ -30,6 +33,8 @@ export default function UserDropdown({
   userPromise: Promise<User | null>;
   variant?: "sidebar" | "topbar";
 }) {
+  const router = useRouter();
+
   const [isSigninOut, setIsSigninOut] = useState(false);
 
   const user = use(userPromise);
@@ -40,10 +45,10 @@ export default function UserDropdown({
 
   async function handleLogout() {
     setIsSigninOut(true);
-    const res = await logout();
-    setIsSigninOut(false);
+    await logout();
 
-    return res;
+    router.push("/auth/login");
+    setIsSigninOut(false);
   }
 
   const triggerClass =
@@ -97,14 +102,16 @@ export default function UserDropdown({
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <ActionButton
-            action={handleLogout}
+          <SubmitButton
+            onClick={handleLogout}
+            loaderCircleClassName="!size-4 text-white"
+            isLoading={isSigninOut}
             variant="destructive"
             size="sm"
             className="justify-start"
           >
             <LogOut className="size-4 text-white" /> Esci
-          </ActionButton>
+          </SubmitButton>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

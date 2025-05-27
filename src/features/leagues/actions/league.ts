@@ -49,7 +49,7 @@ export async function createLeague(values: CreateLeagueSchema) {
     if (league.image) await updateLeagueImage(leagueId, league.image);
   });
 
-  redirect(`/leagues/${leagueId}/options`);
+  redirect(`/leagues/${leagueId}/options/general`);
 }
 
 async function updateLeagueImage(leagueId: string, file: File) {

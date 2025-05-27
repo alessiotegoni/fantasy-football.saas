@@ -17,10 +17,12 @@ const buttonVariants = cva(
           "border bg-background shadow-xs hover:bg-accent dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
-        ghost:
-          "hover:bg-primary hover:text-white p-2 rounded-xl",
+        ghost: "hover:bg-primary hover:text-white p-2 rounded-xl",
         link: "text-primary underline-offset-4 hover:underline",
         gradient: `bg-gradient-to-r from-primary to-secondary text-primary-foreground font-medium w-full text-md`,
+        active: `data-[active=true]:bg-primary data-[active=true]:hover:bg-primary/90 data-[active=true]:text-primary-foreground
+          data-[active=true]:font-semibold data-[active=true]:font-heading transition-colors
+          hover:bg-primary hover:text-primary-foreground rounded-lg`,
       },
       size: {
         default: "px-4 has-[>svg]:px-3",

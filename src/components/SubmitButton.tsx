@@ -9,10 +9,14 @@ import { useFormStatus } from "react-dom";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   loadingText?: string;
+  isLoading?: boolean;
+  loaderCircleClassName?: string;
 };
 
 export default function SubmitButton({
+  isLoading,
   loadingText = "Caricamento",
+  loaderCircleClassName,
   className,
   disabled,
   children,
@@ -22,6 +26,7 @@ export default function SubmitButton({
   const { pending } = useFormStatus();
 
   const isPending =
+    isLoading ||
     form?.formState?.isSubmitSuccessful ||
     form?.formState?.isSubmitting ||
     pending;
@@ -35,7 +40,9 @@ export default function SubmitButton({
     >
       {isPending ? (
         <>
-          <LoaderCircle className="animate-spin !size-5" />
+          <LoaderCircle
+            className={cn("animate-spin !size-5", loaderCircleClassName)}
+          />
           {loadingText && `${loadingText}...`}
         </>
       ) : (

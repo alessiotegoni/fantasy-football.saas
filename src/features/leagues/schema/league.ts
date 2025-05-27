@@ -1,16 +1,17 @@
 import { z } from "zod";
 
 export const MAX_IMAGE_SIZE = 1 * 1024 * 1024;
-
 export const JOIN_CODE_LENGTH = 20;
 
+const joinCode = z
+  .string()
+  .length(
+    JOIN_CODE_LENGTH,
+    `Il codice di invito deve contenere esattamente ${JOIN_CODE_LENGTH} caratteri`
+  );
+
 export const joinPrivateLeagueSchema = z.object({
-  joinCode: z
-    .string()
-    .length(
-      JOIN_CODE_LENGTH,
-      `Il codice di invito deve contenere esattamente ${JOIN_CODE_LENGTH} caratteri`
-    ),
+  joinCode,
   password: z
     .string()
     .min(6, "La password deve contenere almeno 6 caratteri")
@@ -41,7 +42,7 @@ const leagueSchema = z.object({
 });
 
 export const createLeagueSchema = z.discriminatedUnion("visibility", [
-  z.object({ visibility: z.literal("public") }).merge(leagueSchema),
+  z.object({ visibility: z.literal("public"), joinCode }).merge(leagueSchema),
   z
     .object({ visibility: z.literal("private") })
     .merge(leagueSchema.merge(joinPrivateLeagueSchema)),

@@ -1,4 +1,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import UserDropdown from "@/features/users/components/userDropdown";
+import { getUser } from "@/features/users/utils/user";
+import { Suspense } from "react";
 
 export function Topbar({ name }: { name: string }) {
   return (
@@ -11,9 +14,9 @@ export function Topbar({ name }: { name: string }) {
         <SidebarTrigger />
         <h1 className="font-heading text-lg">{name}</h1>
       </div>
-      {/* <Suspense>
+      <Suspense>
         <UserDropdown variant="topbar" userPromise={getUser()} />
-      </Suspense> */}
+      </Suspense>
     </header>
   );
 }

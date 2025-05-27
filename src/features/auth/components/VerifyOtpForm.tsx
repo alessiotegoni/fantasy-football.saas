@@ -47,9 +47,10 @@ export default function VerifyOtpForm() {
       return;
     }
 
-    clearEmail();
     const redirectUrl = searchParams.get("next");
     router.push(redirectUrl || "/");
+
+    clearEmail();
   }
 
   return (
