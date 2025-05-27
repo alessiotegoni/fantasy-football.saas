@@ -42,9 +42,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
-          <p className="text-xs text-center text-muted-foreground my-8">
-            App ispirata alla Kings League ma <strong>non ufficiale</strong>
-          </p>
           <Toaster richColors position="top-center" />
         </ThemeProvider>
       </body>

@@ -1,17 +1,24 @@
+import { leagueVisibilityStatuses } from "@/drizzle/schema";
+import { baseLeagueFields } from "@/features/leagues/schema/leagueBase";
+import { password } from "@/features/leagues/schema/privateLeague";
 import { z } from "zod";
 
 // Schema per le opzioni generali
-export const generalOptionsSchema = z.object({
-  initialCredits: z
-    .number()
-    .min(200, "I crediti iniziali devono essere almeno 200")
-    .max(5000, "I crediti iniziali non possono superare 5000"),
-  maxMembers: z
-    .number()
-    .min(4, "Il numero minimo di membri è 4")
-    .max(20, "Il numero massimo di membri è 20"),
-  isTradingMarketOpen: z.boolean(),
-});
+export const generalOptionsSchema = z
+  .object({
+    initialCredits: z
+      .number()
+      .min(200, "I crediti iniziali devono essere almeno 200")
+      .max(5000, "I crediti iniziali non possono superare 5000"),
+    maxMembers: z
+      .number()
+      .min(4, "Il numero minimo di membri è 4")
+      .max(20, "Il numero massimo di membri è 20"),
+    isTradingMarketOpen: z.boolean(),
+    password: password.nullable(),
+    visibility: z.enum(leagueVisibilityStatuses)
+  })
+  .merge(baseLeagueFields.pick({ description: true }));
 
 // Schema per i ruoli dei giocatori
 export const playerRoleSchema = z.object({

@@ -1,14 +1,13 @@
 "use server";
 
 import { db } from "@/drizzle/db";
-import { createLeagueSchema, CreateLeagueSchema } from "../schema/league";
+import { createLeagueSchema, CreateLeagueSchema } from "../schema/createLeague";
 import { count, ilike } from "drizzle-orm";
 import { leagues } from "@/drizzle/schema";
 import {
   getError,
   insertLeague,
   insertLeagueMember,
-  insertLeagueOptions,
   updateLeague,
 } from "../db/league";
 import { redirect } from "next/navigation";
@@ -16,6 +15,7 @@ import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
+import { insertLeagueOptions } from "@/features/leagueOptions/db/leagueOptions";
 
 export async function createLeague(values: CreateLeagueSchema) {
   const user = await getUser();
@@ -28,7 +28,6 @@ export async function createLeague(values: CreateLeagueSchema) {
   if (!success) return getError();
 
   console.log(league);
-
 
   if (!(await isUniqueName(league.name))) {
     return getError("Il nome della lega esiste gia, utilizzane un'altro");

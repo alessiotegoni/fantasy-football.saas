@@ -1,10 +1,5 @@
 import { db } from "@/drizzle/db";
-import {
-  LeagueMemberRoleType,
-  leagueMembers,
-  leagueOptions,
-  leagues,
-} from "@/drizzle/schema";
+import { LeagueMemberRoleType, leagueMembers, leagues } from "@/drizzle/schema";
 import { getErrorObject } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import {
@@ -31,18 +26,6 @@ export async function insertLeague(
   });
 
   return res.leagueId;
-}
-
-export async function insertLeagueOptions(
-  { leagueId }: typeof leagueOptions.$inferInsert,
-  tx: Omit<typeof db, "$client"> = db
-) {
-  const [res] = await tx
-    .insert(leagueOptions)
-    .values({ leagueId })
-    .returning({ leagueId: leagueOptions.leagueId });
-
-  if (!res.leagueId) throw new Error(getError().message);
 }
 
 export async function insertLeagueMember(
@@ -80,4 +63,6 @@ export async function updateLeague(
   }
 
   revalidateLeagueInfoCache({ leagueId, visibility: res.visibility });
+
+  return res.leagueId;
 }

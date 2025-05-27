@@ -4,11 +4,13 @@ import { TEAM_TAG } from "@/features/teams/db/cache/team";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
 import { AUCTION_TAG } from "@/features/auctions/db/cache/auction";
+import { LEAGUE_OPTIONS_TAG } from "@/features/leagueOptions/db/cache/option";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
   | USER_TAG
   | LEAGUE_TAG
+  | LEAGUE_OPTIONS_TAG
   | AUCTION_TAG
   | TEAM_TAG
   | MATCH_TAG;

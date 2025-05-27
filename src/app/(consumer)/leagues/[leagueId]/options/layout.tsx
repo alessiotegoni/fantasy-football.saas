@@ -8,6 +8,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import Disclaimer from "@/components/Disclaimer";
 
 export default async function LeagueOptionsLayout({
   children,
@@ -45,8 +46,11 @@ export default async function LeagueOptionsLayout({
           </CarouselContent>
         </Carousel>
 
-        <div className="flex-1 overflow-y-auto py-4">
-          <TooltipProvider>{children}</TooltipProvider>
+        <div className="flex-1 overflow-y-auto py-4 relative">
+          <TooltipProvider>
+            {children}
+            <Disclaimer className="mb-0" />
+          </TooltipProvider>
         </div>
       </div>
 
@@ -54,10 +58,14 @@ export default async function LeagueOptionsLayout({
       <div className="hidden md:grid grid-cols-[1fr_auto] h-full overflow-hidden">
         {/* Sidebar */}
 
-        <div className="p-4 w-full">
-          <TooltipProvider>{children}</TooltipProvider>
+        <div className="p-4 w-full max-w-[700px] mx-auto">
+          <TooltipProvider>
+            {children}
+            <Disclaimer />
+          </TooltipProvider>
         </div>
-        <aside className="sticky top-0 w-64 border-r border-border bg-muted/30 rounded-2xl">
+        <aside className="sticky top-0 w-64 border-r border-border
+        rounded-2xl bg-(--sidebar)">
           <div className="p-4">
             <h2 className="text-lg font-heading mb-4">Impostazioni Lega</h2>
             <nav className="space-y-2">

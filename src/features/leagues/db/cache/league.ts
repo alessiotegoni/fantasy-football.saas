@@ -4,15 +4,8 @@ import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
 import { getUserLeaguesTag } from "@/features/users/db/cache/user";
 
-type LEAGUE_OPTIONS_TAG =
-  | "league-options"
-  | "league-general-options"
-  | "league-roster-options"
-  | "league-bonus-malus-options";
-
 export type LEAGUE_TAG =
   | "league-info"
-  | LEAGUE_OPTIONS_TAG
   | "league-members"
   | "league-members-teams"
   | "league-matches"
@@ -27,18 +20,6 @@ export const getLeagueLeagueTag = (leagueId: string) =>
 
 export const getLeagueInfoTag = (leagueId: string) =>
   getLeagueTag("league-info", leagueId);
-
-export const getLeagueOptionsTag = (leagueId: string) =>
-  getLeagueTag("league-options", leagueId);
-
-export const getLeagueGeneralOptionsTag = (leagueId: string) =>
-  getLeagueTag("league-options", leagueId);
-
-export const getLeagueRosterOptionsTag = (leagueId: string) =>
-  getLeagueTag("league-options", leagueId);
-
-export const getLeagueBonusMalusOptionsTag = (leagueId: string) =>
-  getLeagueTag("league-options", leagueId);
 
 export const getLeagueMembersTag = (leagueId: string) =>
   getLeagueTag("league-members", leagueId);
@@ -64,25 +45,15 @@ export const getLeagueStandingTag = (leagueId: string) =>
 export const getLeagueBansTag = (leagueId: string) =>
   getLeagueTag("league-bans", leagueId);
 
-type RevalidateLeagueArgs = {
-  leagueId: string;
-  visibility: LeagueVisibilityStatusType;
-};
-
 export const revalidateLeagueInfoCache = ({
   leagueId,
   visibility,
-}: RevalidateLeagueArgs) => {
+}: {
+  leagueId: string;
+  visibility: LeagueVisibilityStatusType;
+}) => {
   if (visibility === "public") revalidateTag(getLeagueGlobalTag());
   revalidateTag(getLeagueInfoTag(leagueId));
-};
-
-export const revalidateLeagueOptionsCache = ({
-  leagueId,
-  visibility,
-}: RevalidateLeagueArgs) => {
-  if (visibility === "public") revalidateTag(getLeagueGlobalTag());
-  revalidateTag(getLeagueOptionsTag(leagueId));
 };
 
 export const revalidateLeagueMembersCache = ({

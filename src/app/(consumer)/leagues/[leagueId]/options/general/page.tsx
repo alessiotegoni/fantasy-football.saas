@@ -1,9 +1,9 @@
 import { db } from "@/drizzle/db";
-import { GeneralOptionsForm } from "@/features/leagues/components/forms/GeneralOptionsForm";
+import { GeneralOptionsForm } from "@/features/leagueOptions/components/forms/GeneralOptionsForm";
 import {
   getLeagueGeneralOptionsTag,
   getLeagueOptionsTag,
-} from "@/features/leagues/db/cache/league";
+} from "@/features/leagueOptions/db/cache/option";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueGeneralOptionsPage({
@@ -14,19 +14,39 @@ export default async function LeagueGeneralOptionsPage({
   const { leagueId } = await params;
   const generalOptions = await getGeneralOptions(leagueId);
 
-  return <GeneralOptionsForm initialData={generalOptions} />;
+  return (
+    <>
+      <h2 className="hidden md:block text-3xl font-heading mb-8">Generali</h2>
+      <GeneralOptionsForm leagueId={leagueId} initialData={generalOptions} />
+    </>
+  );
 }
 
 async function getGeneralOptions(leagueId: string) {
   "use cache";
   cacheTag(getLeagueOptionsTag(leagueId), getLeagueGeneralOptionsTag(leagueId));
 
-  return db.query.leagueOptions.findFirst({
+  const generalOptions = await db.query.leagues.findFirst({
     columns: {
-      initialCredits: true,
-      maxMembers: true,
-      isTradingMarketOpen: true,
+      visibility: true,
+      password: true,
+      description: true,
     },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
+    with: {
+      options: {
+        columns: {
+          initialCredits: true,
+          maxMembers: true,
+          isTradingMarketOpen: true,
+        },
+      },
+    },
+    where: (league, { eq }) => eq(league.id, leagueId),
   });
+
+  if (!generalOptions) return;
+
+  const { options, ...restOptions } = generalOptions;
+
+  return { ...options[0], ...restOptions };
 }
