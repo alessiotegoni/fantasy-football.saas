@@ -58,7 +58,7 @@ export default async function LeagueOptionsLayout({
       <div className="hidden md:grid grid-cols-[1fr_auto] h-full overflow-hidden">
         {/* Sidebar */}
 
-        <div className="p-4 w-full max-w-[700px] mx-auto">
+        <div className="p-4 w-full">
           <TooltipProvider>
             {children}
             <Disclaimer />

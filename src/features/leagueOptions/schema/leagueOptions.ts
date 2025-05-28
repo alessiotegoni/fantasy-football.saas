@@ -46,7 +46,7 @@ export const rosterModulesSchema = z.object({
 
 // Schema per bonus e malus
 export const bonusMalusSchema = z.object({
-  customBonusMalusalus: z.record(
+  customBonusMalus: z.record(
     z.string(),
     z
       .number()
@@ -55,14 +55,6 @@ export const bonusMalusSchema = z.object({
   ),
 });
 
-// Schema completo per le opzioni della lega
-export const leagueOptionsSchema = z.object({
-  general: generalOptionsSchema,
-  rosterModules: rosterModulesSchema,
-  bonusMalus: bonusMalusSchema,
-});
-
 export type GeneralOptionsSchema = z.infer<typeof generalOptionsSchema>;
 export type RosterModulesSchema = z.infer<typeof rosterModulesSchema>;
 export type BonusMalusSchema = z.infer<typeof bonusMalusSchema>;
-export type LeagueOptionsSchema = z.infer<typeof leagueOptionsSchema>;

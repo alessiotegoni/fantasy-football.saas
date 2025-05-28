@@ -15,6 +15,8 @@ import {
 } from "../schema/leagueOptions";
 import { db } from "@/drizzle/db";
 import { updateLeague as updateLeagueInfo } from "@/features/leagues/db/league";
+import { isLeagueAdmin } from "@/features/leagues/permissions/league";
+import { getUserId } from "@/features/users/utils/user";
 
 export async function updateGeneralOptions(
   values: GeneralOptionsSchema,
@@ -24,10 +26,12 @@ export async function updateGeneralOptions(
   if (!success) return getError();
 
   return await db.transaction(async (tx) => {
-    const [res] = await Promise.all([
-      updateOptions({ ...data, leagueId }, { tx, visibility: data.visibility }),
-      updateLeagueInfo(leagueId, data),
-    ]);
+    const res = await updateOptions(
+      { ...data, leagueId },
+      { tx, visibility: data.visibility }
+    );
+
+    if (!res.error) await updateLeagueInfo(leagueId, data);
 
     return res;
   });
@@ -60,15 +64,20 @@ async function updateOptions(
     visibility?: LeagueVisibilityStatusType;
   }
 ) {
+  const userId = await getUserId();
+  if (!userId) return getError();
+
+  if (!(await isLeagueAdmin(userId, options.leagueId)))
+    return getError("Devi essere admin della lega per modificare le opzioni");
+
   const visibility =
     args?.visibility || (await getLeagueVisibility(options.leagueId));
   if (!visibility) return getError();
 
   const leagueId = await updateLeagueOptionsDb(options, visibility, args?.tx);
-
   if (!leagueId) return getError();
 
-  return { error: false, message: "Optioni aggiornate con successo" };
+  return { error: false, message: "Opzioni aggiornate con successo" };
 }
 
 function getLeagueVisibility(leagueId: string) {

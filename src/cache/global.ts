@@ -11,8 +11,7 @@ export type GLOBAL_TAG =
   | "teams"
   | "presidents"
   | "tactical-modules"
-  | "bonuses"
-  | "maluses";
+  | "bonus-malus";
 
 export const getLeagueGlobalTag = () => getGlobalTag("leagues");
 export const getSeasonsTag = () => getGlobalTag("seasons");
@@ -24,5 +23,4 @@ export const getPlayerVotesTag = () => getGlobalTag("player-votes");
 export const getTeamsTag = () => getGlobalTag("teams");
 export const getPresidentsTag = () => getGlobalTag("presidents");
 export const getTacticalModulesTag = () => getGlobalTag("tactical-modules");
-export const getBonusesTag = () => getGlobalTag("bonuses");
-export const getMalusesTag = () => getGlobalTag("maluses");
+export const getBonusMalusTag = () => getGlobalTag("bonus-malus");
