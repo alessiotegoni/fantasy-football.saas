@@ -33,7 +33,7 @@ export function useLeagueOptions(leagueId: string) {
     return wrapAction(updateGeneralOptions, data);
   };
 
-  const saveRosterModuleSchema = async (data: RosterModulesSchema) => {
+  const saveRosterModuleOptions = async (data: RosterModulesSchema) => {
     return wrapAction(updateRosterModuleOptions, data);
   };
 
@@ -43,7 +43,7 @@ export function useLeagueOptions(leagueId: string) {
 
   return {
     saveGeneralOptions,
-    saveRosterModuleSchema,
+    saveRosterModuleOptions,
     saveBonusMalusOptions,
     loading,
   };

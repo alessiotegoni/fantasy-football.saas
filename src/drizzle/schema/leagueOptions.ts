@@ -17,7 +17,7 @@ export const leagueOptions = pgTable(
       .notNull()
       .default('{"1": 2, "2": 3, "3": 4, "4": 3, "5": 1}')
       .$type<PlayersPerRole>(),
-    availableTacticalModules: jsonb("available_tactical_modules")
+    tacticalModules: jsonb("tactical_modules")
       .notNull()
       .default("[1, 2, 3, 4]")
       .$type<AvailableTacticalModules>(),

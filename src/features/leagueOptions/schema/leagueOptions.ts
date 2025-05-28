@@ -16,7 +16,7 @@ export const generalOptionsSchema = z
       .max(20, "Il numero massimo di membri è 20"),
     isTradingMarketOpen: z.boolean(),
     password: password.nullable(),
-    visibility: z.enum(leagueVisibilityStatuses)
+    visibility: z.enum(leagueVisibilityStatuses),
   })
   .merge(baseLeagueFields.pick({ description: true }));
 
@@ -32,18 +32,21 @@ export const playerRoleSchema = z.object({
 
 // Schema per le rose e moduli
 export const rosterModulesSchema = z.object({
-  player_per_role: z
-    .array(playerRoleSchema)
-    .min(1, "Deve essere presente almeno un ruolo"),
-  available_tactical_modules: z
-    .array(z.string())
+  playersPerRole: z.record(
+    z.string(),
+    z
+      .number()
+      .positive("Tutti i ruoli devono avere almeno 1 giocatore asegnato")
+  ),
+  tacticalModules: z
+    .array(z.number().positive())
     .min(1, "Deve essere selezionato almeno un modulo tattico")
     .max(5, "Massimo 5 moduli tattici"),
 });
 
 // Schema per bonus e malus
 export const bonusMalusSchema = z.object({
-  custom_bonus_malus: z.record(
+  customBonusMalusalus: z.record(
     z.string(),
     z
       .number()
@@ -55,8 +58,8 @@ export const bonusMalusSchema = z.object({
 // Schema completo per le opzioni della lega
 export const leagueOptionsSchema = z.object({
   general: generalOptionsSchema,
-  roster_modules: rosterModulesSchema,
-  bonus_malus: bonusMalusSchema,
+  rosterModules: rosterModulesSchema,
+  bonusMalus: bonusMalusSchema,
 });
 
 export type GeneralOptionsSchema = z.infer<typeof generalOptionsSchema>;
