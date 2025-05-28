@@ -132,6 +132,7 @@ export const publicSections = [
         name: "Impostazioni lega",
         href: "/leagues/:leagueId/options/general",
         icon: Settings,
+        basePath: "/leagues/:leagueId/options"
       },
       {
         name: "Partecipanti",

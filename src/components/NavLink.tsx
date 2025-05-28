@@ -14,11 +14,20 @@ type Props = {
     isActive: boolean;
     href: string;
   }) => React.ReactNode;
+  activeBasePath?: string;
 } & ComponentPropsWithoutRef<typeof Link>;
 
-export default function NavLink({ href, children, className, render }: Props) {
+export default function NavLink({
+  href,
+  activeBasePath,
+  children,
+  className,
+  render,
+}: Props) {
   const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+
+  const basePath = activeBasePath || href;
+  const isActive = pathname === basePath || pathname.startsWith(`${basePath}/`);
 
   if (render) return render({ isActive, href: href.toString() });
 

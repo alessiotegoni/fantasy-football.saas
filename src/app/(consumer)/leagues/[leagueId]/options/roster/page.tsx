@@ -4,7 +4,10 @@ import {
   getLeagueOptionsTag,
   getLeagueRosterOptionsTag,
 } from "@/features/leagueOptions/db/cache/option";
-import { getPlayersRoles, getTacticalModules } from "@/features/leagueOptions/queries/leagueOptions";
+import {
+  getPlayersRoles,
+  getTacticalModules,
+} from "@/features/leagueOptions/queries/leagueOptions";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueRosterOptionsPage({
@@ -18,7 +21,7 @@ export default async function LeagueRosterOptionsPage({
   if (!rosterOptions) return;
 
   return (
-    <>
+    <div className="max-w-[700px] mx-auto">
       <h2 className="hidden md:block text-3xl font-heading mb-8">
         Rose e moduli
       </h2>
@@ -28,7 +31,7 @@ export default async function LeagueRosterOptionsPage({
         tacticalModulesPromise={getTacticalModules()}
         playersRolesPromise={getPlayersRoles()}
       />
-    </>
+    </div>
   );
 }
 

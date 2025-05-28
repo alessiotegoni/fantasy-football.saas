@@ -15,10 +15,10 @@ export default async function LeagueGeneralOptionsPage({
   const generalOptions = await getGeneralOptions(leagueId);
 
   return (
-    <>
+    <div className="max-w-[700px] mx-auto">
       <h2 className="hidden md:block text-3xl font-heading mb-8">Generali</h2>
       <GeneralOptionsForm leagueId={leagueId} initialData={generalOptions} />
-    </>
+    </div>
   );
 }
 

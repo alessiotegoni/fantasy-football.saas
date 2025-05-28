@@ -17,6 +17,9 @@ export default function SidebarItem({
     <SidebarMenuItem>
       <NavLink
         href={getItemHref(item.href, leagueId)}
+        activeBasePath={
+          item.basePath ? getItemHref(item.basePath, leagueId) : undefined
+        }
         render={({ isActive, href }) => (
           <SidebarMenuButton variant="active" asChild isActive={isActive}>
             <Link href={href}>
