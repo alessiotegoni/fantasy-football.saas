@@ -1,11 +1,8 @@
 import { db } from "@/drizzle/db";
-import { LeagueMemberRoleType, leagueMembers, leagues } from "@/drizzle/schema";
+import { leagues } from "@/drizzle/schema";
 import { getErrorObject } from "@/lib/utils";
 import { eq } from "drizzle-orm";
-import {
-  revalidateLeagueInfoCache,
-  revalidateLeagueMembersCache,
-} from "./cache/league";
+import { revalidateLeagueInfoCache } from "./cache/league";
 
 const leagueInfo = { leagueId: leagues.id, visibility: leagues.visibility };
 
@@ -26,26 +23,6 @@ export async function insertLeague(
   });
 
   return res.leagueId;
-}
-
-export async function insertLeagueMember(
-  userId: string,
-  leagueId: string,
-  role: LeagueMemberRoleType = "member"
-) {
-  const [res] = await db
-    .insert(leagueMembers)
-    .values({ userId, leagueId, role })
-    .returning({ memberId: leagueMembers.id });
-
-  if (!res.memberId)
-    throw new Error(
-      getError("Errore nella creazione del membro delal lega").message
-    );
-
-  revalidateLeagueMembersCache({ leagueId, userId });
-
-  return res.memberId;
 }
 
 export async function updateLeague(

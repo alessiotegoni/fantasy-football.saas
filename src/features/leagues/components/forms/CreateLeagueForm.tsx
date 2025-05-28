@@ -19,15 +19,15 @@ import { ChangeEvent, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { createLeague } from "../actions/league";
-import { PasswordInput } from "./PasswordInput";
-import LeagueTypeField from "./LeagueTypeField";
-import { createLeagueSchema, CreateLeagueSchema } from "../schema/createLeague";
+import { createLeague } from "../../actions/league";
+import { PasswordInput } from "../PasswordInput";
+import LeagueTypeField from "../LeagueTypeField";
+import { createLeagueSchema, CreateLeagueSchema } from "../../schema/createLeague";
 import {
   isValidImage,
   JOIN_CODE_LENGTH,
   MAX_IMAGE_SIZE,
-} from "../schema/leagueBase";
+} from "../../schema/leagueBase";
 
 export default function CreateLeagueForm() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);

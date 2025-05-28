@@ -4,18 +4,14 @@ import { db } from "@/drizzle/db";
 import { createLeagueSchema, CreateLeagueSchema } from "../schema/createLeague";
 import { count, ilike } from "drizzle-orm";
 import { leagues } from "@/drizzle/schema";
-import {
-  getError,
-  insertLeague,
-  insertLeagueMember,
-  updateLeague,
-} from "../db/league";
+import { getError, insertLeague, updateLeague } from "../db/league";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
 import { insertLeagueOptions } from "@/features/leagueOptions/db/leagueOptions";
+import { insertLeagueMember } from "@/features/leagueMembers/db/leagueMember";
 
 export async function createLeague(values: CreateLeagueSchema) {
   const user = await getUser();

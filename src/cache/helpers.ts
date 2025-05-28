@@ -5,11 +5,13 @@ import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
 import { AUCTION_TAG } from "@/features/auctions/db/cache/auction";
 import { LEAGUE_OPTIONS_TAG } from "@/features/leagueOptions/db/cache/option";
+import { LEAGUE_MEMBERS_TAG } from "@/features/leagueMembers/db/cache/leagueMember";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
   | USER_TAG
   | LEAGUE_TAG
+  | LEAGUE_MEMBERS_TAG
   | LEAGUE_OPTIONS_TAG
   | AUCTION_TAG
   | TEAM_TAG
@@ -20,7 +22,7 @@ export const getGlobalTag = (tag: CACHE_TAG) => `global:${tag}` as const;
 export const getIdTag = (tag: CACHE_TAG, id: string) =>
   `id:${id}-${tag}` as const;
 
-export const getuserTag = (tag: CACHE_TAG, userId: string) =>
+export const getUserTag = (tag: CACHE_TAG, userId: string) =>
   `user:${userId}-${tag}` as const;
 
 export const getLeagueTag = (tag: CACHE_TAG, leagueId: string) =>

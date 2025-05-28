@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const JOIN_CODE_LENGTH = 20;
+export const JOIN_CODE_LENGTH = 10;
 export const MAX_IMAGE_SIZE = 1 * 1024 * 1024;
 
 export const baseLeagueFields = z.object({
@@ -9,8 +9,18 @@ export const baseLeagueFields = z.object({
     .instanceof(File)
     .refine(isValidImage, "Immagine troppo pesante o non supportata")
     .nullable(),
-  description: z.string().min(10).max(500).trim().nullable(),
-  joinCode: z.string().length(JOIN_CODE_LENGTH),
+  description: z
+    .string()
+    .min(10, "Deve avere minimo 10 caratteri")
+    .max(500, "Deve avere massimo 10 caratteri")
+    .trim()
+    .nullable(),
+  joinCode: z
+    .string()
+    .length(
+      JOIN_CODE_LENGTH,
+      `Deve avere esattamente ${JOIN_CODE_LENGTH} caratteri`
+    ),
 });
 
 export function isValidImage(file: File) {

@@ -10,9 +10,13 @@ export const password = z
     "La password deve contenere almeno una maiuscola, una minuscola e un numero"
   );
 
-export const joinPrivateLeagueSchema = z.object({
-  password,
-}).merge(baseLeagueFields.pick({ joinCode: true }));
+export const joinPrivateLeagueSchema = z
+  .object({
+    password,
+  })
+  .merge(baseLeagueFields.pick({ joinCode: true }));
+
+export type JoinPrivateLeagueSchema = z.infer<typeof joinPrivateLeagueSchema>;
 
 export const privateLeagueSchema = z
   .object({ visibility: z.literal("private") })
