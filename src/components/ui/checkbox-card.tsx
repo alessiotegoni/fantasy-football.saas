@@ -9,6 +9,7 @@ export interface CheckboxCardProps
   label: string;
   description?: string;
   icon?: React.ReactNode;
+  showCheckbox?: boolean;
 }
 
 export default function CheckboxCard({
@@ -16,6 +17,7 @@ export default function CheckboxCard({
   label,
   description,
   icon,
+  showCheckbox = true,
   checked,
   onChange,
   ...props
@@ -23,8 +25,9 @@ export default function CheckboxCard({
   return (
     <label
       className={cn(
-        "flex items-center p-3 border rounded-xl cursor-pointer transition-colors",
+        "flex items-center p-3 border rounded-xl transition-colors",
         checked ? "border-primary bg-primary/5" : "border-border bg-muted/30",
+        showCheckbox && "cursor-pointer",
         className
       )}
     >
@@ -44,14 +47,16 @@ export default function CheckboxCard({
           <p className="text-xs text-muted-foreground">{description}</p>
         )}
       </div>
-      <div
-        className={cn(
-          "w-5 h-5 rounded-md border flex items-center justify-center",
-          checked ? "bg-primary border-primary" : "border-muted-foreground"
-        )}
-      >
-        {checked && <Check className="size-3 text-primary-foreground" />}
-      </div>
+      {showCheckbox && (
+        <div
+          className={cn(
+            "w-5 h-5 rounded-md border flex items-center justify-center",
+            checked ? "bg-primary border-primary" : "border-muted-foreground"
+          )}
+        >
+          {checked && <Check className="size-3 text-primary-foreground" />}
+        </div>
+      )}
     </label>
   );
 }

@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { leagueOptions, LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getErrorObject } from "@/lib/utils";
 import { eq } from "drizzle-orm";
-import { revalidateLeagueOptionsCache } from "./cache/option";
+import { revalidateLeagueOptionsCache } from "./cache/leagueOption";
 
 export const getError = (message = "Errore nell'aggiornamento delle opzioni") =>
   getErrorObject(message);

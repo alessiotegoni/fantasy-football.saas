@@ -1,5 +1,5 @@
 import { revalidateTag } from "next/cache";
-import { getLeagueTag } from "@/cache/helpers";
+import { getIdTag, getLeagueTag } from "@/cache/helpers";
 import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
 
@@ -11,6 +11,9 @@ export type LEAGUE_TAG =
   | "league-players-list"
   | "league-standing"
   | "league-bans";
+
+export const getLeagueIdTag = (leagueId: string) =>
+  getIdTag("leagues", leagueId);
 
 export const getLeagueLeagueTag = (leagueId: string) =>
   getLeagueTag("leagues", leagueId);
@@ -44,5 +47,6 @@ export const revalidateLeagueInfoCache = ({
   visibility: LeagueVisibilityStatusType;
 }) => {
   if (visibility === "public") revalidateTag(getLeagueGlobalTag());
+  revalidateTag(getLeagueIdTag(leagueId));
   revalidateTag(getLeagueInfoTag(leagueId));
 };

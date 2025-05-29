@@ -3,7 +3,7 @@ import { RosterOptionsForm } from "@/features/leagueOptions/components/forms/Ros
 import {
   getLeagueOptionsTag,
   getLeagueRosterOptionsTag,
-} from "@/features/leagueOptions/db/cache/option";
+} from "@/features/leagueOptions/db/cache/leagueOption";
 import {
   getPlayersRoles,
   getTacticalModules,

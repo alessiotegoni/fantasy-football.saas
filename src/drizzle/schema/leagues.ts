@@ -51,7 +51,11 @@ export const leagues = pgTable(
   })
 );
 
-export const leaguesRelations = relations(leagues, ({ many }) => ({
+export const leaguesRelations = relations(leagues, ({ many, one }) => ({
+  owner: one(authUsers, {
+    fields: [leagues.ownerId],
+    references: [authUsers.id]
+  }),
   members: many(leagueMembers),
   options: many(leagueOptions),
   usersBans: many(leagueUserBans),

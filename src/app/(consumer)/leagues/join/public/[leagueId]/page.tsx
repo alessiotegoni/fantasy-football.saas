@@ -1,23 +1,34 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, User, Calendar, Trophy } from "iconoir-react";
-import Image from "next/image";
 import { default as LeagueHeader } from "@/features/leagues/components/Header";
 import Logo from "@/components/ui/logo";
 import BackButton from "@/components/BackButton";
+import Disclaimer from "@/components/Disclaimer";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getLeagueIdTag } from "@/features/leagues/db/cache/league";
+import { getLeagueMembersTag } from "@/features/leagueMembers/db/cache/leagueMember";
+import { db } from "@/drizzle/db";
+import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
+import { and, count, eq } from "drizzle-orm";
+import ActionButton from "@/components/ActionButton";
+import { joinPublicLeague } from "@/features/leagueMembers/actions/leagueMember";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { authUsers } from "drizzle-orm/supabase";
+import { Suspense } from "react";
+import LeagueModules from "@/features/leagues/components/LeagueModules";
+import { getLeagueOptionsTag } from "@/features/leagueOptions/db/cache/leagueOption";
+import LeaguePlayersPerRole from "@/features/leagues/components/LeaguePlayersPerRole";
 
 export default async function LeagueDetailPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
-  //   const league = mockPublicLeagues.find((l) => l.id === params.leagueId)
+  const { leagueId } = await params;
+  const league = await getPublicLeague(leagueId);
+  if (!league) notFound();
 
-  //   if (!league) {
-  //     notFound()
-  //   }
-
-  //   const occupancyPercentage = (league.currentMembers / league.maxMembers) * 100
+  const occupancyPercentage =
+    (league.currentMembers / (league.maxMembers ?? 20)) * 100;
 
   return (
     <>
@@ -31,46 +42,52 @@ export default async function LeagueDetailPage({
         </div>
       </LeagueHeader>
 
-      <main className="px-6 py-8">
-        <div className="max-w-2xl mx-auto space-y-6">
-          {/* Informazioni principali */}
-          <div className="bg-background rounded-2xl border border-border p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Trophy className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-heading">{league.name}</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Creata il{" "}
+      <main className="px-4 md:px-6 pb-8">
+        <div className="max-w-5xl mx-auto space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="bg-background rounded-2xl border border-border p-4 md:p-6">
+                <h3 className="font-heading text-lg mb-3">Dettagli lega</h3>
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Creatore:
+                    </span>{" "}
+                    {league.creatorName ?? "Sconosciuto"}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Data creazione:
+                    </span>{" "}
                     {new Date(league.createdAt).toLocaleDateString("it-IT")}
+                  </p>
+                  <p>
+                    <span className="font-medium text-foreground">
+                      Crediti iniziali:
+                    </span>{" "}
+                    {league.initialCredits}
                   </p>
                 </div>
               </div>
-            </div>
 
-            <p className="text-muted-foreground mb-6">{league.description}</p>
-
-            <div className="grid grid-cols-2 gap-4 mb-6">
-              <div className="text-center p-4 bg-muted/50 rounded-xl">
-                <div className="flex items-center justify-center mb-2">
-                  <Users className="w-5 h-5 text-primary mr-1" />
-                </div>
-                <p className="text-2xl font-heading">{league.currentMembers}</p>
-                <p className="text-sm text-muted-foreground">Membri attuali</p>
-              </div>
-              <div className="text-center p-4 bg-muted/50 rounded-xl">
-                <div className="flex items-center justify-center mb-2">
-                  <Calendar className="w-5 h-5 text-primary mr-1" />
-                </div>
-                <p className="text-2xl font-heading">{league.maxMembers}</p>
-                <p className="text-sm text-muted-foreground">Posti totali</p>
+              <div className="bg-background rounded-2xl border border-border p-4 md:p-6">
+                <h3 className="font-heading text-lg mb-3">Moduli tattici</h3>
+                <Suspense>
+                  <LeagueModules leagueId={leagueId} />
+                </Suspense>
               </div>
             </div>
 
-            {/* Barra di progresso */}
-            <div className="mb-6">
+            <div className="bg-background rounded-2xl border border-border p-4 md:p-6">
+              <h3 className="font-heading text-lg mb-3">Giocatori per ruolo</h3>
+              <Suspense>
+                <LeaguePlayersPerRole leagueId={leagueId} />
+              </Suspense>
+            </div>
+          </div>
+
+          <div className="bg-background rounded-2xl border border-border p-4 md:p-6">
+            <div className="mb-4">
               <div className="flex justify-between text-sm mb-2">
                 <span>Posti occupati</span>
                 <span>{Math.round(occupancyPercentage)}%</span>
@@ -83,38 +100,13 @@ export default async function LeagueDetailPage({
               </div>
             </div>
 
-            <JoinLeagueButton leagueId={league.id} leagueName={league.name} />
-          </div>
-
-          {/* Lista membri */}
-          <div className="bg-background rounded-2xl border border-border p-6">
-            <h3 className="text-lg font-heading mb-4">
-              Membri ({league.currentMembers})
-            </h3>
-
-            <div className="space-y-3">
-              {league.members.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center space-x-3 p-3 bg-muted/30 rounded-xl"
-                >
-                  <Image
-                    src={member.avatar || "/placeholder.svg?height=40&width=40"}
-                    alt={member.name}
-                    width={40}
-                    height={40}
-                    className="rounded-full"
-                  />
-                  <div className="flex-1">
-                    <p className="font-medium">{member.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Iscritto il{" "}
-                      {new Date(member.joinedAt).toLocaleDateString("it-IT")}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ActionButton
+              loadingText="Entrando nella lega"
+              disabled={occupancyPercentage === 100}
+              action={joinPublicLeague.bind(null, league.id)}
+            >
+              Unisciti a {league.name}
+            </ActionButton>
           </div>
         </div>
       </main>
@@ -124,4 +116,43 @@ export default async function LeagueDetailPage({
       </footer>
     </>
   );
+}
+
+// TODO: add league description and image
+// FIXME: leagueHeader on mobile
+
+
+async function getPublicLeague(leagueId: string) {
+  "use cache";
+  cacheTag(
+    getLeagueIdTag(leagueId),
+    getLeagueMembersTag(leagueId),
+    getLeagueOptionsTag(leagueId)
+  );
+
+  const [league] = await db
+    .select({
+      id: leagues.id,
+      name: leagues.name,
+      description: leagues.description,
+      imageUrl: leagues.imageUrl,
+      maxMembers: leagueOptions.maxMembers,
+      currentMembers: count(leagueMembers),
+      createdAt: leagues.createdAt,
+      initialCredits: leagueOptions.initialCredits,
+      creatorName: authUsers.email,
+    })
+    .from(leagues)
+    .leftJoin(leagueOptions, eq(leagueOptions.leagueId, leagues.id))
+    .leftJoin(leagueMembers, eq(leagueMembers.leagueId, leagues.id))
+    .leftJoin(authUsers, eq(authUsers.id, leagueMembers.userId))
+    .where(and(eq(leagues.id, leagueId), eq(leagues.visibility, "public")))
+    .groupBy(
+      leagues.id,
+      leagueOptions.maxMembers,
+      leagueOptions.initialCredits,
+      authUsers.email
+    );
+
+  return league;
 }

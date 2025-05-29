@@ -3,7 +3,7 @@ import { BonusMalusOptionsForm } from "@/features/leagueOptions/components/forms
 import {
   getLeagueBonusMalusOptionsTag,
   getLeagueOptionsTag,
-} from "@/features/leagueOptions/db/cache/option";
+} from "@/features/leagueOptions/db/cache/leagueOption";
 import { getBonusMaluses } from "@/features/leagueOptions/queries/leagueOptions";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 

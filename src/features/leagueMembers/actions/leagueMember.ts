@@ -20,6 +20,12 @@ export async function joinPrivateLeague(values: JoinPrivateLeagueSchema) {
   return await joinMemberToLeague(league.id);
 }
 
+export async function joinPublicLeague(leagueId: string) {
+  if (typeof leagueId !== "string") return getError();
+
+  return await joinMemberToLeague(leagueId);
+}
+
 async function joinMemberToLeague(leagueId: string) {
   const user = await getUser();
   if (!user) return getError();

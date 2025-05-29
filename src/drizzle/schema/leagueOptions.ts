@@ -1,4 +1,11 @@
-import { pgTable, uuid, smallint, jsonb, check, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  smallint,
+  jsonb,
+  check,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { leagues } from "./leagues";
 
@@ -28,7 +35,9 @@ export const leagueOptions = pgTable(
       )
       .$type<CustomBonusMalus>(),
     maxMembers: smallint("max_members").notNull().default(20),
-    isTradingMarketOpen: boolean("trading_market_open").notNull().default(false)
+    isTradingMarketOpen: boolean("trading_market_open")
+      .notNull()
+      .default(false),
   },
   () => ({
     leaguesInitialCreditsCheck: check(

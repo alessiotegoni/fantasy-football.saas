@@ -17,6 +17,7 @@ import { db } from "@/drizzle/db";
 import { updateLeague as updateLeagueInfo } from "@/features/leagues/db/league";
 import { isLeagueAdmin } from "@/features/leagues/permissions/league";
 import { getUserId } from "@/features/users/utils/user";
+import { revalidateLeagueRosterOptionsCache } from "../db/cache/leagueOption";
 
 export async function updateGeneralOptions(
   values: GeneralOptionsSchema,
@@ -44,7 +45,10 @@ export async function updateRosterModuleOptions(
   const { success, data } = rosterModulesSchema.safeParse(values);
   if (!success) return getError();
 
-  return await updateOptions({ ...data, leagueId });
+  const res = await updateOptions({ ...data, leagueId });
+  revalidateLeagueRosterOptionsCache(leagueId);
+
+  return res;
 }
 
 export async function updateBonusMalusOptions(

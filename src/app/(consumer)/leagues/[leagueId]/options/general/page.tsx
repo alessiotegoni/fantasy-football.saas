@@ -3,7 +3,7 @@ import { GeneralOptionsForm } from "@/features/leagueOptions/components/forms/Ge
 import {
   getLeagueGeneralOptionsTag,
   getLeagueOptionsTag,
-} from "@/features/leagueOptions/db/cache/option";
+} from "@/features/leagueOptions/db/cache/leagueOption";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueGeneralOptionsPage({

@@ -49,6 +49,7 @@ export function VirtualizedList<T>({
               const item = items[virtualRow.index];
               return (
                 <div
+                  key={virtualRow.key}
                   data-index={virtualRow.index}
                   ref={virtualizer.measureElement}
                 >
