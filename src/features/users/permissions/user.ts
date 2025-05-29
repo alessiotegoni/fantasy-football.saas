@@ -23,3 +23,15 @@ export async function userHasPremium(userId: string) {
 
   return res[0].count > 0;
 }
+
+export async function isUserBanned(userId: string, leagueId: string) {
+  const res = await db.query.leagueUserBans.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (ban, { and, eq }) =>
+      and(eq(ban.userId, userId), eq(ban.leagueId, leagueId)),
+  });
+
+  return !!res?.id;
+}

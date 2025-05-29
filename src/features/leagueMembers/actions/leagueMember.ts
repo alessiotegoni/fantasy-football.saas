@@ -6,34 +6,26 @@ import {
 } from "@/features/leagues/schema/privateLeague";
 import { getError, insertLeagueMember } from "../db/leagueMember";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
-import { canJoinLeague } from "../permissions/leagueMember";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
+import { canJoinLeague } from "@/features/leagues/permissions/league";
 
 export async function joinPrivateLeague(values: JoinPrivateLeagueSchema) {
   const { success, data } = joinPrivateLeagueSchema.safeParse(values);
   if (!success) return getError();
 
-  const league = await db.query.leagues.findFirst({
-    columns: {
-      id: true,
-    },
-    where: ({ joinCode, password }, { and, eq }) =>
-      and(eq(joinCode, data.joinCode), eq(password, data.password)),
-  });
-
+  const league = await getLeagueFromCode(data);
   if (!league) return getError("Codice o password della lega errati");
 
   return await joinMemberToLeague(league.id);
 }
 
-// FIXME: check if user is already in league and if is banned, and if is
-
 async function joinMemberToLeague(leagueId: string) {
   const user = await getUser();
+  if (!user) return getError();
 
-  if (!user || !(await canJoinLeague(user.id)))
-    return getError("Per entrare in piu di una lega devi avere il premium");
+  const { canJoin, message } = await canJoinLeague(user.id, leagueId);
+  if (!canJoin) return getError(message);
 
   await Promise.all([
     insertLeagueMember(user.id, leagueId),
@@ -41,4 +33,14 @@ async function joinMemberToLeague(leagueId: string) {
   ]);
 
   redirect(`/leagues/${leagueId}`);
+}
+
+async function getLeagueFromCode(data: JoinPrivateLeagueSchema) {
+  return await db.query.leagues.findFirst({
+    columns: {
+      id: true,
+    },
+    where: ({ joinCode, password }, { and, eq }) =>
+      and(eq(joinCode, data.joinCode), eq(password, data.password)),
+  });
 }

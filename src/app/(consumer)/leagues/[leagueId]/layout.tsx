@@ -6,7 +6,7 @@ import { Topbar } from "@/features/leagues/components/TopBar";
 import { getLeagueLeagueTag } from "@/features/leagues/db/cache/league";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { redirect } from "next/navigation";
-import { Suspense, useId } from "react";
+import { Suspense } from "react";
 
 type Props = {
   children: React.ReactNode;

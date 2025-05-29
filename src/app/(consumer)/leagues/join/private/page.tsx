@@ -6,7 +6,7 @@ import JoinPrivateLeagueForm from "@/features/leagues/components/forms/JoinPriva
 import BackButton from "@/components/BackButton";
 import { JOIN_CODE_LENGTH } from "@/features/leagues/schema/leagueBase";
 
-export default function PrivateJoinPage() {
+export default function JoinPrivateLeaguePage() {
   return (
     <>
       <LeagueHeader className="relative">
