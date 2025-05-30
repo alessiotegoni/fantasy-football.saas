@@ -31,18 +31,20 @@ import UserDropdown from "@/features/users/components/userDropdown";
 import { isLeagueAdmin } from "../permissions/league";
 import { getUser, getUserId } from "@/features/users/utils/user";
 
-type Props = {
+export default function LeagueSidebar({
+  leagueId,
+  leagueNamePromise,
+}: {
   leagueId: string;
-  name: string;
-  joinCode: string;
-  password: string | null;
-};
-
-export default function LeagueSidebar(league: Props) {
+  leagueNamePromise: Promise<string>;
+}) {
   return (
     <Sidebar>
       <SidebarHeader className="p-0">
-        <LeagueDropdown {...league} />
+          <LeagueDropdown
+            leagueId={leagueId}
+            leagueNamePromise={leagueNamePromise}
+          />
         <div className="p-3">
           <Button asChild>
             <Link href="/user/premium">
@@ -56,20 +58,20 @@ export default function LeagueSidebar(league: Props) {
         <SidebarSections
           sections={publicSections}
           sectionType="public"
-          {...league}
+          leagueId={leagueId}
         />
         <Suspense>
           <SidebarSections
             sections={privateSections}
             sectionType="private"
-            {...league}
+            leagueId={leagueId}
           />
         </Suspense>
         <Suspense>
           <SidebarSections
             sections={premiumSections}
             sectionType="premium"
-            {...league}
+            leagueId={leagueId}
           />
         </Suspense>
       </SidebarContent>
@@ -132,7 +134,7 @@ export const publicSections = [
         name: "Impostazioni lega",
         href: "/leagues/:leagueId/options/general",
         icon: Settings,
-        basePath: "/leagues/:leagueId/options"
+        basePath: "/leagues/:leagueId/options",
       },
       {
         name: "Partecipanti",

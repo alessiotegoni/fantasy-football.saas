@@ -1,21 +1,24 @@
 "use client";
 
-import { Copy, ShareAndroid } from "iconoir-react";
+import { ShareAndroid } from "iconoir-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { use, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  joinCode: string;
-  name: string;
-  password: string | null;
+  leagueCredentialsPromise: Promise<
+    { joinCode: string; password: string | null } | undefined
+  >;
 };
 
-export function InviteButton({ joinCode, name, password }: Props) {
-  const [copied, setCopied] = useState(false);
+export function InviteButton({ leagueCredentialsPromise }: Props) {
+  const credentials = use(leagueCredentialsPromise);
+  if (!credentials) return null;
 
-  const inviteUrl = `${window.location.origin}/leagues/join/private?code=${joinCode}`;
-  
+  const [, setCopied] = useState(false);
+
+  const inviteUrl = `${window.location.origin}/leagues/join/private?code=${credentials.joinCode}`;
+
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(inviteUrl);
@@ -30,9 +33,9 @@ export function InviteButton({ joinCode, name, password }: Props) {
   async function handleShare() {
     try {
       const message =
-        `Unisciti alla mia lega "${name}".\n\n` +
+        `Unisciti alla mia lega.\n\n` +
         `👉 Link diretto: ${inviteUrl}` +
-        (password ? `\n🔒 Password: ${password}` : "");
+        (credentials?.password ? `\n🔒 Password: ${credentials.password}` : "");
 
       if (navigator.share) {
         await navigator.share({

@@ -18,15 +18,19 @@ import { getUserId } from "@/features/users/utils/user";
 import { getUserLeagues } from "@/features/users/queries/user";
 import { cn } from "@/lib/utils";
 import { InviteButton } from "./InviteButton";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getLeagueInviteCredentialsTag } from "../db/cache/league";
+import { getLeagueGeneralOptionsTag } from "@/features/leagueOptions/db/cache/leagueOption";
+import { db } from "@/drizzle/db";
+import LeagueName from "./LeagueName";
 
-type Props = {
+export default function LeagueDropdown({
+  leagueId,
+  leagueNamePromise,
+}: {
   leagueId: string;
-  name: string;
-  joinCode: string;
-  password: string | null;
-};
-
-export default function LeagueDropdown(league: Props) {
+  leagueNamePromise: Promise<string>;
+}) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -37,14 +41,16 @@ export default function LeagueDropdown(league: Props) {
               rounded-none rounded-br-xl rounded-bl-xl hover:text-white flex justify-between items-center"
           >
             <SidebarMenuButton>
-              <h2 className="font-heading text-lg">{league.name}</h2>
+              <Suspense>
+                <LeagueName leagueNamePromise={leagueNamePromise} />
+              </Suspense>
               <ArrowSeparateVertical className="!size-5" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="min-w-[18rem] rounded-xl border border-primary/20">
             <DropdownMenuLabel>Le mie leghe</DropdownMenuLabel>
             <Suspense>
-              <UserLeagues leagueId={league.leagueId} />
+              <UserLeagues leagueId={leagueId} />
             </Suspense>
 
             <DropdownMenuSeparator />
@@ -66,7 +72,13 @@ export default function LeagueDropdown(league: Props) {
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild>
-              <InviteButton {...league} />
+              <Suspense>
+                <InviteButton
+                  leagueCredentialsPromise={getLeagueInviteCredentials(
+                    leagueId
+                  )}
+                />
+              </Suspense>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -75,7 +87,7 @@ export default function LeagueDropdown(league: Props) {
   );
 }
 
-async function UserLeagues({ leagueId }: Pick<Props, "leagueId">) {
+async function UserLeagues({ leagueId }: { leagueId: string }) {
   const userId = await getUserId();
   if (!userId) return;
   const userLeagues = await getUserLeagues(userId);
@@ -122,4 +134,20 @@ async function UserLeagues({ leagueId }: Pick<Props, "leagueId">) {
       </Link>
     </DropdownMenuItem>
   ));
+}
+
+async function getLeagueInviteCredentials(leagueId: string) {
+  "use cache";
+  cacheTag(
+    getLeagueInviteCredentialsTag(leagueId),
+    getLeagueGeneralOptionsTag(leagueId)
+  );
+
+  return db.query.leagues.findFirst({
+    columns: {
+      joinCode: true,
+      password: true,
+    },
+    where: (league, { eq }) => eq(league.id, leagueId),
+  });
 }

@@ -4,6 +4,8 @@ import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
 
 export type LEAGUE_TAG =
+  | "league-invite-credentials"
+  | "league-name"
   | "league-info"
   | "league-matches"
   | "league-matchdays-calculations"
@@ -15,8 +17,11 @@ export type LEAGUE_TAG =
 export const getLeagueIdTag = (leagueId: string) =>
   getIdTag("leagues", leagueId);
 
-export const getLeagueLeagueTag = (leagueId: string) =>
-  getLeagueTag("leagues", leagueId);
+export const getLeagueNameTag = (leagueId: string) =>
+  getIdTag("league-name", leagueId);
+
+export const getLeagueInviteCredentialsTag = (leagueId: string) =>
+  getIdTag("league-invite-credentials", leagueId);
 
 export const getLeagueInfoTag = (leagueId: string) =>
   getLeagueTag("league-info", leagueId);

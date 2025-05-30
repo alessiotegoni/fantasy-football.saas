@@ -6,8 +6,11 @@ const nextConfig: NextConfig = {
     viewTransition: true,
     authInterrupts: true,
     serverActions: {
-      bodySizeLimit: "3mb"
-    }
+      bodySizeLimit: "3mb",
+    },
+  },
+  images: {
+    remotePatterns: [{ hostname: "tpeehtrlgmfimvwrswif.supabase.co" }],
   },
 };
 

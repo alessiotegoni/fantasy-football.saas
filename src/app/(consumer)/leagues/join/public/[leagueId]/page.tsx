@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { default as LeagueHeader } from "@/features/leagues/components/Header";
-import Logo from "@/components/ui/logo";
 import BackButton from "@/components/BackButton";
 import Disclaimer from "@/components/Disclaimer";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
@@ -17,13 +16,26 @@ import { Suspense } from "react";
 import LeagueModules from "@/features/leagues/components/LeagueModules";
 import { getLeagueOptionsTag } from "@/features/leagueOptions/db/cache/leagueOption";
 import LeaguePlayersPerRole from "@/features/leagues/components/LeaguePlayersPerRole";
+import { Trophy } from "iconoir-react";
 
 export default async function LeagueDetailPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
-  const { leagueId } = await params;
+  return (
+    <Suspense>
+      <SuspenseBoundary leagueIdPromise={params.then((p) => p.leagueId)} />
+    </Suspense>
+  );
+}
+
+async function SuspenseBoundary({
+  leagueIdPromise,
+}: {
+  leagueIdPromise: Promise<string>;
+}) {
+  const leagueId = await leagueIdPromise;
   const league = await getPublicLeague(leagueId);
   if (!league) notFound();
 
@@ -34,11 +46,23 @@ export default async function LeagueDetailPage({
     <>
       <LeagueHeader className="relative">
         <BackButton />
-        <div className="flex flex-col items-center pt-5 pb-7">
-          <Logo withText={false} className="mt-5" />
-          <h1 className="text-2xl font-heading text-center text-primary-foreground my-2">
-            {league.name}
-          </h1>
+        <div className="flex items-start md:flex-col md:items-center md:text-center pt-16 pb-6">
+          <Avatar className="size-20 border border-primary/20 bg-primary/10">
+            <AvatarImage src={league.imageUrl ?? ""} alt={league.name} />
+            <AvatarFallback>
+              <Trophy className="size-10 text-primary" />
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <h1 className="text-2xl font-heading text-primary-foreground md:mt-2 mb-2 px-4">
+              {league.name}
+            </h1>
+            {league.description && (
+              <p className="text-sm md:text-base text-primary-foreground opacity-90 max-w-xl px-4">
+                {league.description}
+              </p>
+            )}
+          </div>
         </div>
       </LeagueHeader>
 
@@ -120,7 +144,6 @@ export default async function LeagueDetailPage({
 
 // TODO: add league description and image
 // FIXME: leagueHeader on mobile
-
 
 async function getPublicLeague(leagueId: string) {
   "use cache";

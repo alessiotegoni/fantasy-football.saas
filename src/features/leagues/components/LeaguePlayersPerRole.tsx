@@ -3,17 +3,11 @@ import { db } from "@/drizzle/db";
 import { getPlayersRoles } from "@/features/leagueOptions/queries/leagueOptions";
 import { getLeaguePlayersPerRoleTag } from "@/features/leagueOptions/db/cache/leagueOption";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { formatPlural } from "@/lib/formatters";
 
 type Props = {
   leagueId: string;
   className?: string;
-};
-
-const roleColors: Record<string, string> = {
-  Portiere: "bg-blue-500 text-white",
-  Difensore: "bg-green-500 text-white",
-  Centrocampista: "bg-yellow-500 text-white",
-  Attaccante: "bg-red-500 text-white",
 };
 
 export default async function LeaguePlayersPerRole({
@@ -49,9 +43,15 @@ export default async function LeaguePlayersPerRole({
             >
               {role.shortName}
             </div>
-            <span className="text-sm font-medium">
-              {count}
-              <span className="ml-2">{role.name}</span>
+            <span className="capitalize text-sm font-medium">
+              {formatPlural(
+                count,
+                roleNames[role.name] ?? {
+                  singular: role.name,
+                  plural: role.name + "i",
+                },
+                { includeCount: true }
+              )}
             </span>
           </div>
         );
@@ -73,3 +73,17 @@ async function getLeaguePlayersPerRole(leagueId: string) {
     })
     .then((res) => res!.playersPerRole);
 }
+
+const roleNames: Record<string, { singular: string; plural: string }> = {
+  Portiere: { singular: "portiere", plural: "portieri" },
+  Difensore: { singular: "difensore", plural: "difensori" },
+  Centrocampista: { singular: "centrocampista", plural: "centrocampisti" },
+  Attaccante: { singular: "attaccante", plural: "attaccanti" },
+};
+
+const roleColors: Record<string, string> = {
+  Portiere: "bg-blue-500 text-white",
+  Difensore: "bg-green-500 text-white",
+  Centrocampista: "bg-yellow-500 text-white",
+  Attaccante: "bg-red-500 text-white",
+};

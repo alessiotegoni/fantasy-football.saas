@@ -17,9 +17,10 @@ export default function Logo({
       {withImage && (
         <Image
           alt="kik league"
-          src="/kikleague-logo.png"
+          src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/kikleague-logo.png"
           width={150}
           height={150}
+          priority
         />
       )}
       {withText && (

@@ -2,8 +2,13 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import UserDropdown from "@/features/users/components/userDropdown";
 import { getUser } from "@/features/users/utils/user";
 import { Suspense } from "react";
+import LeagueName from "./LeagueName";
 
-export function Topbar({ name }: { name: string }) {
+export function Topbar({
+  leagueNamePromise,
+}: {
+  leagueNamePromise: Promise<string>;
+}) {
   return (
     <header
       className="bg-gradient-to-r from-primary to-secondary w-full
@@ -12,7 +17,9 @@ export function Topbar({ name }: { name: string }) {
     >
       <div className="flex items-center gap-3">
         <SidebarTrigger />
-        <h1 className="font-heading text-lg">{name}</h1>
+        <Suspense>
+          <LeagueName leagueNamePromise={leagueNamePromise} />
+        </Suspense>
       </div>
       <Suspense>
         <UserDropdown variant="topbar" userPromise={getUser()} />
