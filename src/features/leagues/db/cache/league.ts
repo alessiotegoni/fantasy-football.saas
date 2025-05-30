@@ -5,6 +5,7 @@ import { getLeagueGlobalTag } from "@/cache/global";
 
 export type LEAGUE_TAG =
   | "league-invite-credentials"
+  | "league-premium"
   | "league-name"
   | "league-info"
   | "league-matches"
@@ -16,6 +17,9 @@ export type LEAGUE_TAG =
 
 export const getLeagueIdTag = (leagueId: string) =>
   getIdTag("leagues", leagueId);
+
+export const getLeaguePremiumTag = (leagueId: string) =>
+  getIdTag("league-premium", leagueId);
 
 export const getLeagueNameTag = (leagueId: string) =>
   getIdTag("league-name", leagueId);
@@ -55,3 +59,6 @@ export const revalidateLeagueInfoCache = ({
   revalidateTag(getLeagueIdTag(leagueId));
   revalidateTag(getLeagueInfoTag(leagueId));
 };
+
+export const revalidateLeaguePremiumCache = (leagueId: string) =>
+  revalidateTag(getLeaguePremiumTag(leagueId));

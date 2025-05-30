@@ -1,10 +1,8 @@
 import { db } from "@/drizzle/db";
-import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
-import {
-  isUserBanned,
-  userHasPremium,
-} from "@/features/users/permissions/user";
-import { count, and, eq } from "drizzle-orm";
+import { leagueMembers, leagueOptions, leagues, userSubscriptions } from "@/drizzle/schema";
+import { isLeagueMember } from "@/features/leagueMembers/permissions/leagueMember";
+import { isUserBanned, isValidSubscription, userHasPremium } from "@/features/users/permissions/user";
+import { and, count, eq } from "drizzle-orm";
 
 export async function canCreateLeague(userId: string) {
   const [hasPremium, hasLeague] = await Promise.all([
@@ -56,33 +54,18 @@ export async function canJoinLeague(userId: string, leagueId: string) {
   };
 }
 
-export async function isLeagueAdmin(userId: string, leagueId: string) {
-  const res = await db
+export async function isPremiumUnlocked(leagueId: string) {
+  const [res] = await db
     .select({ count: count() })
-    .from(leagueMembers)
-    .where(
-      and(
-        eq(leagueMembers.leagueId, leagueId),
-        eq(leagueMembers.userId, userId),
-        eq(leagueMembers.role, "admin")
-      )
-    );
+    .from(userSubscriptions)
+    .innerJoin(
+      leagueMembers,
+      eq(leagueMembers.userId, userSubscriptions.userId)
+    )
+    .innerJoin(leagues, eq(leagues.id, leagueMembers.leagueId))
+    .where(and(eq(leagues.id, leagueId), isValidSubscription));
 
-  return res[0].count === 1;
-}
-
-export async function isLeagueMember(userId: string, leagueId: string) {
-  const res = await db
-    .select({ count: count() })
-    .from(leagueMembers)
-    .where(
-      and(
-        eq(leagueMembers.leagueId, leagueId),
-        eq(leagueMembers.userId, userId)
-      )
-    );
-
-  return res[0].count === 1;
+  return res.count > 0;
 }
 
 async function isLeagueFull(leagueId: string) {

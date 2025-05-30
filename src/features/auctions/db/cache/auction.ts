@@ -1,10 +1,10 @@
 import { getLeagueTag } from "@/cache/helpers";
 import { revalidateTag } from "next/cache";
 
-export type AUCTION_TAG = "auctions" | "auction-unlocked";
+export type AUCTION_TAG = "auctions"
 
 export const getLeagueAuctionTag = (leagueId: string) =>
-  getLeagueTag("auction-unlocked", leagueId);
+  getLeagueTag("auctions", leagueId);
 
 export const revalidateLeagueAuctionTag = (leagueId: string) => {
   revalidateTag(getLeagueAuctionTag(leagueId));
