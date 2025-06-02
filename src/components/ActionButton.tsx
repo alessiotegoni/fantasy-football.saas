@@ -14,10 +14,11 @@ import {
 import { Button } from "./ui/button";
 import { LoaderCircle } from "lucide-react";
 import { actionToast, cn } from "@/lib/utils";
-import { ComponentPropsWithoutRef, useTransition } from "react";
+import { ComponentPropsWithoutRef, useEffect, useTransition } from "react";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   action: () => Promise<{ error: boolean; message: string }>;
+  onPendingChange?: (pending: boolean) => void;
   loadingText?: string;
   requireAreYouSure?: boolean;
   displayToast?: boolean;
@@ -25,6 +26,7 @@ type Props = ComponentPropsWithoutRef<typeof Button> & {
 
 export default function ActionButton({
   action,
+  onPendingChange,
   loadingText = "Caricamento",
   requireAreYouSure = false,
   displayToast = true,
@@ -41,6 +43,10 @@ export default function ActionButton({
       if (displayToast) actionToast(res);
     });
   }
+
+  useEffect(() => {
+    onPendingChange?.(isPending);
+  }, [isPending]);
 
   const content = isPending ? (
     <>

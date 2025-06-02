@@ -12,7 +12,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { useFormContext } from "react-hook-form";
 import { useState } from "react";
-import { isValidImage, MAX_IMAGE_SIZE } from "@/features/leagues/schema/leagueBase";
+import {
+  isValidImage,
+  MAX_IMAGE_SIZE,
+} from "@/features/leagues/schema/leagueBase";
 import Image from "next/image";
 import { Trophy, Upload, Xmark } from "iconoir-react";
 import { Button } from "@/components/ui/button";
@@ -53,7 +56,7 @@ export default function LeagueImageField({
           render={({ field }) => (
             <FormItem>
               <div className="flex items-center space-x-4">
-                <div className="relative w-16 h-16 bg-muted rounded-full flex items-center justify-center overflow-hidden">
+                <div className="relative size-16 bg-muted rounded-full flex items-center justify-center overflow-hidden">
                   {previewImage ? (
                     <Image
                       src={previewImage || "/placeholder.svg"}

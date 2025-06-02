@@ -1,4 +1,5 @@
 import { getIdTag, getLeagueTag } from "@/cache/helpers";
+import { getLeagueBansTag } from "@/features/leagues/db/cache/league";
 import { getUserLeaguesTag } from "@/features/users/db/cache/user";
 import { revalidateTag } from "next/cache";
 
@@ -23,4 +24,5 @@ export const revalidateLeagueMembersCache = ({
   revalidateTag(getMemberIdTag(leagueId));
   revalidateTag(getLeagueMembersTag(leagueId));
   revalidateTag(getUserLeaguesTag(userId));
+  revalidateTag(getLeagueBansTag(leagueId));
 };

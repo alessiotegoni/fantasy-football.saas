@@ -18,11 +18,8 @@ import { getUserId } from "@/features/users/utils/user";
 import { getUserLeagues } from "@/features/users/queries/user";
 import { cn } from "@/lib/utils";
 import { InviteButton } from "./InviteButton";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getLeagueInviteCredentialsTag } from "../db/cache/league";
-import { getLeagueGeneralOptionsTag } from "@/features/leagueOptions/db/cache/leagueOption";
-import { db } from "@/drizzle/db";
 import LeagueName from "./LeagueName";
+import { getLeagueInviteCredentials } from "../queries/league";
 
 export default function LeagueDropdown({
   leagueId,
@@ -109,7 +106,7 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
               alt={league.name}
               width={40}
               height={40}
-              className="rounded-full object-cover"
+              className="rounded-full object-cover size-10 shrink-0"
             />
           ) : (
             <div
@@ -134,20 +131,4 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
       </Link>
     </DropdownMenuItem>
   ));
-}
-
-async function getLeagueInviteCredentials(leagueId: string) {
-  "use cache";
-  cacheTag(
-    getLeagueInviteCredentialsTag(leagueId),
-    getLeagueGeneralOptionsTag(leagueId)
-  );
-
-  return db.query.leagues.findFirst({
-    columns: {
-      joinCode: true,
-      password: true,
-    },
-    where: (league, { eq }) => eq(league.id, leagueId),
-  });
 }

@@ -8,12 +8,12 @@ export type LEAGUE_TAG =
   | "league-premium"
   | "league-name"
   | "league-profile"
+  | "league-bans"
   | "league-matches"
   | "league-matchdays-calculations"
   | "league-free-agents-players"
   | "league-players-list"
   | "league-standing"
-  | "league-bans";
 
 export const getLeagueIdTag = (leagueId: string) =>
   getIdTag("leagues", leagueId);

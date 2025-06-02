@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagueOptions, leagues, userSubscriptions } from "@/drizzle/schema";
-import { isLeagueMember } from "@/features/leagueMembers/permissions/leagueMember";
+import { isLeagueMember, isMemberOfALeague } from "@/features/leagueMembers/permissions/leagueMember";
 import { isUserBanned, isValidSubscription, userHasPremium } from "@/features/users/permissions/user";
 import { and, count, eq } from "drizzle-orm";
 
@@ -81,13 +81,4 @@ async function isLeagueFull(leagueId: string) {
     .groupBy(leagueOptions.maxMembers);
 
   return res.leagueMembersCount === res.maxMembers;
-}
-
-async function isMemberOfALeague(userId: string) {
-  const res = await db
-    .select({ count: count() })
-    .from(leagueMembers)
-    .where(eq(leagueMembers.userId, userId));
-
-  return res[0].count >= 1;
 }

@@ -30,3 +30,12 @@ export async function isLeagueMember(userId: string, leagueId: string) {
 
   return res[0].count === 1;
 }
+
+export async function isMemberOfALeague(userId: string) {
+  const res = await db
+    .select({ count: count() })
+    .from(leagueMembers)
+    .where(eq(leagueMembers.userId, userId));
+
+  return res[0].count >= 1;
+}

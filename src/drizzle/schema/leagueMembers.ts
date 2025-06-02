@@ -50,6 +50,6 @@ export const leagueMembersRelations = relations(
       fields: [leagueMembers.userId],
       references: [authUsers.id],
     }),
-    teams: many(leagueMemberTeams),
+    team: many(leagueMemberTeams),
   })
 );

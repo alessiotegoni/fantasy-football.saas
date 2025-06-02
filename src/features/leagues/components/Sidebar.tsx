@@ -160,7 +160,7 @@ export const publicSections = [
       },
       {
         name: "Partecipanti",
-        href: "/leagues/:leagueId/participants",
+        href: "/leagues/:leagueId/members",
         icon: User,
       },
     ],
