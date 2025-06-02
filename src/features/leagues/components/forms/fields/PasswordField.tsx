@@ -13,15 +13,13 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 
-interface PasswordInputProps {
-  label?: string;
-  placeholder?: string;
-}
-
-export function PasswordInput({
+export default function PasswordField({
   label = "Password",
   placeholder = "Es. Aurajacket89",
-}: PasswordInputProps) {
+}: {
+  label?: string;
+  placeholder?: string;
+}) {
   const form = useFormContext<{ password: string }>();
 
   const [showPassword, setShowPassword] = useState(false);

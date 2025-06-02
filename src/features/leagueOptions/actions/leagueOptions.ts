@@ -10,6 +10,8 @@ import {
   BonusMalusSchema,
   generalOptionsSchema,
   GeneralOptionsSchema,
+  marketOptionsSchema,
+  MarketOptionsSchema,
   rosterModulesSchema,
   RosterModulesSchema,
 } from "../schema/leagueOptions";
@@ -61,12 +63,22 @@ export async function updateBonusMalusOptions(
   return await updateOptions({ ...data, leagueId });
 }
 
+export async function updateMarketOptions(
+  values: MarketOptionsSchema,
+  leagueId: string
+) {
+  const { success, data } = marketOptionsSchema.safeParse(values);
+  if (!success) return getError();
+
+  return await updateOptions({ ...data, leagueId });
+}
+
 async function updateOptions(
   options: typeof leagueOptions.$inferInsert,
-  args?: {
-    tx?: Omit<typeof db, "$client">;
-    visibility?: LeagueVisibilityStatusType;
-  }
+  args?: Partial<{
+    tx: Omit<typeof db, "$client">;
+    visibility: LeagueVisibilityStatusType;
+  }>
 ) {
   const userId = await getUserId();
   if (!userId) return getError();

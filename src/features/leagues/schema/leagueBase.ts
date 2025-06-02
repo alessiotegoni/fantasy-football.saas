@@ -6,7 +6,7 @@ export const MAX_IMAGE_SIZE = 1 * 1024 * 1024;
 export const baseLeagueFields = z.object({
   name: z.string().min(3).max(30).trim(),
   image: z
-    .instanceof(File)
+    .instanceof(File, { message: "L'immagine deve essere un file valido" })
     .refine(isValidImage, "Immagine troppo pesante o non supportata")
     .nullable(),
   description: z

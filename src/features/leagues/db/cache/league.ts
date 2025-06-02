@@ -7,7 +7,7 @@ export type LEAGUE_TAG =
   | "league-invite-credentials"
   | "league-premium"
   | "league-name"
-  | "league-info"
+  | "league-profile"
   | "league-matches"
   | "league-matchdays-calculations"
   | "league-free-agents-players"
@@ -27,8 +27,8 @@ export const getLeagueNameTag = (leagueId: string) =>
 export const getLeagueInviteCredentialsTag = (leagueId: string) =>
   getIdTag("league-invite-credentials", leagueId);
 
-export const getLeagueInfoTag = (leagueId: string) =>
-  getLeagueTag("league-info", leagueId);
+export const getLeagueProfileTag = (leagueId: string) =>
+  getLeagueTag("league-profile", leagueId);
 
 export const getLeagueMatchesTag = (leagueId: string) =>
   getLeagueTag("league-matches", leagueId);
@@ -48,7 +48,7 @@ export const getLeagueStandingTag = (leagueId: string) =>
 export const getLeagueBansTag = (leagueId: string) =>
   getLeagueTag("league-bans", leagueId);
 
-export const revalidateLeagueInfoCache = ({
+export const revalidateLeagueProfileCache = ({
   leagueId,
   visibility,
 }: {
@@ -57,7 +57,7 @@ export const revalidateLeagueInfoCache = ({
 }) => {
   if (visibility === "public") revalidateTag(getLeagueGlobalTag());
   revalidateTag(getLeagueIdTag(leagueId));
-  revalidateTag(getLeagueInfoTag(leagueId));
+  revalidateTag(getLeagueProfileTag(leagueId));
 };
 
 export const revalidateLeaguePremiumCache = (leagueId: string) =>

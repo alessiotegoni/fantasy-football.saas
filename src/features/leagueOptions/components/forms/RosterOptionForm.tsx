@@ -18,7 +18,7 @@ import {
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";
 import NumberInput from "@/components/ui/number-input";
 import SubmitButton from "@/components/SubmitButton";
-import OptionTooltip from "../OptionTooltip";
+import OptionTooltip from "../../../../components/FormFieldTooltip";
 import {
   getPlayersRoles,
   getTacticalModules,

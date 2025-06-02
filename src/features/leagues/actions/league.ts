@@ -12,12 +12,17 @@ import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
 import { insertLeagueOptions } from "@/features/leagueOptions/db/leagueOptions";
 import { insertLeagueMember } from "@/features/leagueMembers/db/leagueMember";
+import { isLeagueAdmin } from "@/features/leagueMembers/permissions/leagueMember";
+import {
+  leagueProfileSchema,
+  LeagueProfileSchema,
+} from "../schema/leagueProfile";
 
 export async function createLeague(values: CreateLeagueSchema) {
   const user = await getUser();
 
   if (!user || !(await canCreateLeague(user.id))) {
-    return getError("Per creare 2 o piu leghe devi avere il premium");
+    return getError("Per essere membro di 2 o piu leghe devi avere il premium");
   }
 
   const { success, data: league } = createLeagueSchema.safeParse(values);
@@ -45,6 +50,26 @@ export async function createLeague(values: CreateLeagueSchema) {
   });
 
   redirect(`/leagues/${leagueId}/options/general`);
+}
+
+export async function updateLeagueProfile(
+  values: LeagueProfileSchema,
+  leagueId: string
+) {
+  const user = await getUser();
+
+  if (!user || !(await isLeagueAdmin(user.id, leagueId))) {
+    return getError("Per aggiornare il profilo della lega devi essere admin");
+  }
+
+  const { success, data } = leagueProfileSchema.safeParse(values);
+  if (!success) return getError();
+
+  if (data.image) after(updateLeagueImage.bind(null, leagueId, data.image));
+
+  await updateLeague(leagueId, data);
+
+  return { error: false, message: "Profilo aggiornato con successo" };
 }
 
 async function updateLeagueImage(leagueId: string, file: File) {

@@ -1,19 +1,24 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { actionToast } from "@/lib/utils";
 import {
   BonusMalusSchema,
   GeneralOptionsSchema,
+  MarketOptionsSchema,
   RosterModulesSchema,
 } from "@/features/leagueOptions/schema/leagueOptions";
 import {
   updateBonusMalusOptions,
   updateGeneralOptions,
+  updateMarketOptions,
   updateRosterModuleOptions,
 } from "@/features/leagueOptions/actions/leagueOptions";
+import { useIsMobile } from "./useMobile";
 
 export function useLeagueOptions(leagueId: string) {
+  const isMobile = useIsMobile();
+
   const [loading, startTransition] = useTransition();
 
   function wrapAction<T>(
@@ -25,7 +30,7 @@ export function useLeagueOptions(leagueId: string) {
   ) {
     startTransition(async () => {
       const res = await fn(data, leagueId);
-      actionToast(res);
+      actionToast(res, { position: isMobile ? "top-center" : "top-right" });
     });
   }
 
@@ -41,10 +46,15 @@ export function useLeagueOptions(leagueId: string) {
     return wrapAction(updateBonusMalusOptions, data);
   };
 
+  const saveMarketOptions = async (data: MarketOptionsSchema) => {
+    return wrapAction(updateMarketOptions, data);
+  };
+
   return {
     saveGeneralOptions,
     saveRosterModuleOptions,
     saveBonusMalusOptions,
+    saveMarketOptions,
     loading,
   };
 }

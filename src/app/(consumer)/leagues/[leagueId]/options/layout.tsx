@@ -1,6 +1,5 @@
 import type React from "react";
-import { Settings, User, Trophy, ArrowLeft } from "iconoir-react";
-import LeagueOptionLink from "@/features/leagues/components/LeagueOptionLink";
+import { Settings, User, Trophy, ArrowLeft, Suitcase } from "iconoir-react";
 import Link from "next/link";
 import {
   Carousel,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Disclaimer from "@/components/Disclaimer";
+import LeagueOptionLink from "@/features/leagueOptions/components/LeagueOptionLink";
 
 export default async function LeagueOptionsLayout({
   children,
@@ -89,6 +89,7 @@ const leagueOptions = [
   { id: "general", label: "Generali", icon: Settings },
   { id: "roster", label: "Rose e Moduli", icon: User },
   { id: "bonus", label: "Bonus e Malus", icon: Trophy },
+  { id: "market", label: "Mercato", icon: Suitcase },
 ];
 
 //  activeOption === option.id

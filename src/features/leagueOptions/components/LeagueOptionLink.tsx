@@ -2,6 +2,7 @@
 
 import NavLink from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/useMobile";
 import { cn, getItemHref } from "@/lib/utils";
 import Link from "next/link";
 
@@ -20,12 +21,14 @@ export default function LeagueOptionLink({
   leagueId,
   className,
 }: Props) {
+  const isMobile = useIsMobile();
+
   return (
     <NavLink
       href={getItemHref(`/leagues/:leagueId/options/${option.id}`, leagueId)}
       render={({ isActive, href }) => (
         <Button
-          variant="outline"
+          variant={isMobile ? "outline" : "ghost"}
           asChild
           className={cn(
             "flex items-center p-3 text-xs sm:text-sm font-medium whitespace-nowrap border-b-2 transition-colors",
@@ -37,7 +40,7 @@ export default function LeagueOptionLink({
           )}
         >
           <Link href={href}>
-            <option.icon className="size-4" />
+            <option.icon className="size-5" />
             {option.label}
           </Link>
         </Button>

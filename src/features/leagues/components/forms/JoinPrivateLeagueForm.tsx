@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
-import { PasswordInput } from "../PasswordInput";
+import PasswordField from "./fields/PasswordField";
 import {
   joinPrivateLeagueSchema,
   JoinPrivateLeagueSchema,
@@ -62,7 +62,7 @@ export default function JoinPrivateLeagueForm() {
           )}
         />
 
-        <PasswordInput placeholder="Es. Aurapiquet" />
+        <PasswordField placeholder="Es. Aurapiquet" />
 
         <SubmitButton loadingText="Entrando nella lega">
           Unisciti alla lega

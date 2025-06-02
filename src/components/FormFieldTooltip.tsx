@@ -19,14 +19,14 @@ type Props = {
   };
 };
 
-export default function OptionTooltip({
+export default function FormFieldTooltip({
   label,
   tip,
   children,
   classNames,
 }: Props) {
   return (
-    <>
+    <div>
       <div className="relative w-fit">
         <FormLabel className={cn("mb-3", classNames?.label)}>{label}</FormLabel>
         <Tooltip>
@@ -47,9 +47,9 @@ export default function OptionTooltip({
         </Tooltip>
       </div>
       {children}
-      <FormDescription className={cn("md:hidden", classNames?.description)}>
+      <FormDescription className={cn("md:hidden mt-3", classNames?.description)}>
         {tip}
       </FormDescription>
-    </>
+    </div>
   );
 }

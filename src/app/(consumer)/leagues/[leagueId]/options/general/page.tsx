@@ -26,27 +26,11 @@ async function getGeneralOptions(leagueId: string) {
   "use cache";
   cacheTag(getLeagueOptionsTag(leagueId), getLeagueGeneralOptionsTag(leagueId));
 
-  const generalOptions = await db.query.leagues.findFirst({
+  return db.query.leagueOptions.findFirst({
     columns: {
-      visibility: true,
-      password: true,
-      description: true,
+      initialCredits: true,
+      maxMembers: true,
     },
-    with: {
-      options: {
-        columns: {
-          initialCredits: true,
-          maxMembers: true,
-          isTradingMarketOpen: true,
-        },
-      },
-    },
-    where: (league, { eq }) => eq(league.id, leagueId),
+    where: (options, { eq }) => eq(options.leagueId, leagueId),
   });
-
-  if (!generalOptions) return;
-
-  const { options, ...restOptions } = generalOptions;
-
-  return { ...options[0], ...restOptions };
 }

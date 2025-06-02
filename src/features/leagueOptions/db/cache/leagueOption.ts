@@ -10,7 +10,8 @@ export type LEAGUE_OPTIONS_TAG =
   | "league-options"
   | "league-general-options"
   | "league-roster-options"
-  | "league-bonus-malus-options";
+  | "league-bonus-malus-options"
+  | "league-market-options";
 
 export const getLeagueModulesTag = (leagueId: string) =>
   getLeagueTag("league-modules", leagueId);
@@ -29,6 +30,9 @@ export const getLeagueRosterOptionsTag = (leagueId: string) =>
 
 export const getLeagueBonusMalusOptionsTag = (leagueId: string) =>
   getLeagueTag("league-bonus-malus-options", leagueId);
+
+export const getLeagueMarketOptionsTag = (leagueId: string) =>
+  getLeagueTag("league-market-options", leagueId);
 
 export const revalidateLeagueRosterOptionsCache = (leagueId: string) => {
   revalidateTag(getLeagueModulesTag(leagueId));

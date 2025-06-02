@@ -5,12 +5,12 @@ import { isUserBanned, isValidSubscription, userHasPremium } from "@/features/us
 import { and, count, eq } from "drizzle-orm";
 
 export async function canCreateLeague(userId: string) {
-  const [hasPremium, hasLeague] = await Promise.all([
+  const [hasPremium, isLeagueMember] = await Promise.all([
     userHasPremium(userId),
-    ownsLeague(userId),
+    isMemberOfALeague(userId),
   ]);
 
-  return hasPremium ? true : !hasLeague;
+  return hasPremium ? true : !isLeagueMember;
 }
 
 export async function canJoinLeague(userId: string, leagueId: string) {
@@ -83,11 +83,11 @@ async function isLeagueFull(leagueId: string) {
   return res.leagueMembersCount === res.maxMembers;
 }
 
-async function ownsLeague(userId: string) {
+async function isMemberOfALeague(userId: string) {
   const res = await db
     .select({ count: count() })
-    .from(leagues)
-    .where(eq(leagues.ownerId, userId));
+    .from(leagueMembers)
+    .where(eq(leagueMembers.userId, userId));
 
   return res[0].count >= 1;
 }
