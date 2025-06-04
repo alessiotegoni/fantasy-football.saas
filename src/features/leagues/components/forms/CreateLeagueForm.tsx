@@ -13,9 +13,9 @@ import {
   CreateLeagueSchema,
 } from "../../schema/createLeague";
 import { JOIN_CODE_LENGTH } from "../../schema/leagueBase";
-import LeagueNameField from "./fields/LeagueNameField";
+import LeagueNameField from "../../../../components/NameField";
 import LeagueDescriptionField from "./fields/LeagueDescriptionField";
-import LeagueImageField from "./fields/LeagueImageField";
+import LeagueImageField from "../../../../components/ImageField";
 
 export default function CreateLeagueForm() {
   const form = useForm<CreateLeagueSchema>({
@@ -39,9 +39,16 @@ export default function CreateLeagueForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <LeagueNameField />
+        <LeagueNameField
+          label="Nome della Lega"
+          tip="Il nome della lega e' visualizzabile da tutti gli utenti e non sara' piu modificabile"
+          placeholder="Es. Champions League"
+        />
 
-        <LeagueImageField />
+        <LeagueImageField
+          label="Logo della Lega"
+          tip="Il logo della lega e' visualizzabile da tutti gli utenti"
+        />
 
         <LeagueTypeField />
 

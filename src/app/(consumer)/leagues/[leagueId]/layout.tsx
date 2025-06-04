@@ -1,10 +1,10 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { db } from "@/drizzle/db";
-import { Bottombar } from "@/features/leagues/components/BottomBatr";
 import LeagueSidebar from "@/features/leagues/components/Sidebar";
 import { Topbar } from "@/features/leagues/components/TopBar";
 import { getLeagueNameTag } from "@/features/leagues/db/cache/league";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { LeagueNav } from "../../../../features/leagues/components/LeagueNav";
 
 type Props = {
   children: React.ReactNode;
@@ -22,10 +22,10 @@ export default async function LeagueLayout({ children, params }: Props) {
         leagueNamePromise={leagueNamePromise}
       />
       <Topbar leagueNamePromise={leagueNamePromise} />
-      <main className="w-full p-4 pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:py-4">
-        {children}
-      </main>
-      <Bottombar leagueId={leagueId} />
+      <div className="relative w-full pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:pt-0">
+        <LeagueNav leagueId={leagueId} />
+        <main className="p-4 pt-0 lg:pt-[calc(60px+16px)]">{children}</main>
+      </div>
     </SidebarProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { LEAGUE_TAG } from "@/features/leagues/db/cache/league";
 import { MATCH_TAG } from "@/features/matches/db/cache/match";
-import { TEAM_TAG } from "@/features/teams/db/cache/team";
+import { TEAM_TAG } from "@/features/leagueTeams/db/cache/leagueTeam";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
 import { AUCTION_TAG } from "@/features/auctions/db/cache/auction";

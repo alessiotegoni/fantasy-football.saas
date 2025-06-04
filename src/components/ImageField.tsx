@@ -12,21 +12,18 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { useFormContext } from "react-hook-form";
 import { useState } from "react";
-import {
-  isValidImage,
-  MAX_IMAGE_SIZE,
-} from "@/features/leagues/schema/leagueBase";
 import Image from "next/image";
 import { Trophy, Upload, Xmark } from "iconoir-react";
 import { Button } from "@/components/ui/button";
+import { isValidImage, MAX_IMAGE_SIZE } from "@/schema/image";
 
-export default function LeagueImageField({
-  leagueImageUrl,
-}: {
-  leagueImageUrl?: string | null;
-}) {
+type Props = {
+  image?: string | null;
+} & Omit<React.ComponentPropsWithoutRef<typeof FormFieldTooltip>, "children">;
+
+export default function ImageField({ image, label, tip }: Props) {
   const [previewImage, setPreviewImage] = useState<string | null>(
-    () => leagueImageUrl ?? null
+    () => image ?? null
   );
 
   const form = useFormContext<{ image: File | null }>();
@@ -46,10 +43,7 @@ export default function LeagueImageField({
 
   return (
     <TooltipProvider>
-      <FormFieldTooltip
-        label="Logo della Lega"
-        tip="Il logo della lega e' visualizzabile da tutti gli utenti"
-      >
+      <FormFieldTooltip label={label} tip={tip}>
         <FormField
           control={form.control}
           name="image"
@@ -96,7 +90,7 @@ export default function LeagueImageField({
                         variant="destructive"
                         onClick={() => {
                           field.onChange(null);
-                          setPreviewImage(leagueImageUrl ?? null);
+                          setPreviewImage(image ?? null);
                         }}
                         className="rounded-lg h-[38px]"
                       >

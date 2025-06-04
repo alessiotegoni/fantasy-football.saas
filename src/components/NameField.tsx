@@ -8,23 +8,34 @@ import { Input } from "@/components/ui/input";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { useFormContext } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
-export default function LeagueNameField({
-  leagueName,
-}: {
-  leagueName?: string;
-}) {
+type Props = {
+  name?: string;
+  placeholder?: string;
+} & Omit<React.ComponentPropsWithoutRef<typeof FormFieldTooltip>, "children">;
+
+export default function NameField({
+  name,
+  placeholder = "Inserisci nome",
+  label,
+  tip,
+  classNames,
+}: Props) {
   const form = useFormContext<{ name: string }>();
 
   return (
     <TooltipProvider>
       <FormFieldTooltip
-        label="Nome della Lega"
-        tip="Il nome della lega e' visualizzabile da tutti gli utenti e non sara' piu modificabile"
-        classNames={{ label: leagueName && "opacity-70" }}
+        label={label}
+        tip={tip}
+        classNames={{
+          ...classNames,
+          label: cn(classNames?.label, name && "opacity-70"),
+        }}
       >
-        {leagueName ? (
-          <Input value={leagueName} readOnly className="cursor-default select-none" />
+        {name ? (
+          <Input value={name} readOnly className="cursor-default select-none" />
         ) : (
           <FormField
             control={form.control}
@@ -32,7 +43,7 @@ export default function LeagueNameField({
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Es. Champions League" {...field} />
+                  <Input placeholder={placeholder} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

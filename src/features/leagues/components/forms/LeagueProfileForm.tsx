@@ -8,11 +8,14 @@ import PasswordField from "./fields/PasswordField";
 import SubmitButton from "@/components/SubmitButton";
 import { updateLeagueProfile } from "../../actions/league";
 import { actionToast } from "@/lib/utils";
-import LeagueNameField from "./fields/LeagueNameField";
+import LeagueNameField from "../../../../components/NameField";
 import LeagueDescriptionField from "./fields/LeagueDescriptionField";
-import LeagueImageField from "./fields/LeagueImageField";
+import LeagueImageField from "../../../../components/ImageField";
 import { useIsMobile } from "@/hooks/useMobile";
-import { leagueProfileSchema, LeagueProfileSchema } from "../../schema/leagueProfile";
+import {
+  leagueProfileSchema,
+  LeagueProfileSchema,
+} from "../../schema/leagueProfile";
 
 export function LeagueProfileForm({
   leagueId,
@@ -44,9 +47,17 @@ export function LeagueProfileForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
-        <LeagueImageField leagueImageUrl={initialData?.imageUrl} />
+        <LeagueImageField
+          image={initialData?.imageUrl}
+          label="Logo della Lega"
+          tip="Il logo della lega e' visualizzabile da tutti gli utenti"
+        />
 
-        <LeagueNameField leagueName={initialData?.name} />
+        <LeagueNameField
+          name={initialData?.name}
+          label="Nome della Lega"
+          tip="Il nome della lega e' visualizzabile da tutti gli utenti e non sara' piu modificabile"
+        />
 
         <LeagueDescriptionField />
 

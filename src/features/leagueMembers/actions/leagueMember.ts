@@ -38,7 +38,7 @@ async function joinMemberToLeague(leagueId: string) {
     addUserLeaguesMetadata(user, leagueId),
   ]);
 
-  redirect(`/leagues/${leagueId}`);
+  redirect(`/leagues/${leagueId}/teams/create`);
 }
 
 async function getLeagueFromCode(data: JoinPrivateLeagueSchema) {
