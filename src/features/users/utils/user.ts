@@ -1,3 +1,4 @@
+import { MemberActionArgs } from "@/features/leagueMembers/permissions/leagueMember";
 import {
   createAdminClient,
   createClient,
@@ -7,41 +8,70 @@ import { NextRequest } from "next/server";
 
 type UserMetadata = {
   league_ids?: string[];
-  last_league_id?: string;
-  avatar_url?: string
-  name?: string
+  last_league_id?: string | null;
+  avatar_url?: string;
+  name?: string;
 };
 
-export const getMetadata = (user: User): UserMetadata => user.user_metadata;
-
-export function getUserMetadata<T extends keyof UserMetadata>(
-  user: User,
-  metadata: T
-) {
-  const userMetadata = getMetadata(user);
-  return userMetadata[metadata];
+export function getMetadataFromUser(user: User): UserMetadata {
+  return user.user_metadata;
 }
 
-export async function addUserMetadata(user: User, metadata: UserMetadata) {
+export async function getMetadataFromUserId(
+  userId: string
+): Promise<UserMetadata> {
   const supabase = await createAdminClient();
-  return supabase.auth.admin.updateUserById(user.id, {
-    user_metadata: { ...user.user_metadata, ...metadata },
+  const { data, error } = await supabase.auth.admin.getUserById(userId);
+  if (error || !data.user) throw new Error(`User with id: ${userId} not found`);
+  return data.user.user_metadata;
+}
+
+export async function setUserMetadata(
+  userId: string,
+  user_metadata: UserMetadata
+) {
+  const supabase = await createAdminClient();
+  return supabase.auth.admin.updateUserById(userId, {
+    user_metadata,
   });
 }
 
 export async function addUserLeaguesMetadata(user: User, leagueId: string) {
-  const currentLeagues = getUserMetadata(user, "league_ids");
-  const updatedLeagues = [...new Set([...(currentLeagues ?? []), leagueId])];
-  await addUserMetadata(user, {
+  const userMetadata = getMetadataFromUser(user);
+  const updatedLeagues = [
+    ...new Set([...(userMetadata.league_ids ?? []), leagueId]),
+  ];
+
+  return await setUserMetadata(user.id, {
+    ...userMetadata,
     league_ids: updatedLeagues,
   });
 }
 
-export async function addUserLastLeagueMetadata(user: User, leagueId: string) {
-  const lastLeagueId = getUserMetadata(user, "last_league_id");
-  if (lastLeagueId === leagueId) return;
+export async function removeUserLeagueMetadata({
+  userId,
+  leagueId,
+}: Pick<MemberActionArgs, "leagueId" | "userId">) {
+  const userMetadata = await getMetadataFromUserId(userId);
 
-  await addUserMetadata(user, {
+  const league_ids = userMetadata.league_ids?.filter((id) => id !== leagueId);
+  const last_league_id = league_ids?.find(() => true) || null;
+
+  const updatedMetadata: UserMetadata = {
+    ...userMetadata,
+    league_ids,
+    last_league_id,
+  };
+
+  return await setUserMetadata(userId, updatedMetadata);
+}
+
+export async function addUserLastLeagueMetadata(user: User, leagueId: string) {
+  const userMetadata = getMetadataFromUser(user);
+  if (userMetadata.last_league_id === leagueId) return;
+
+  return await setUserMetadata(user.id, {
+    ...userMetadata,
     last_league_id: leagueId,
   });
 }
@@ -61,11 +91,11 @@ export async function isAdmin(
 export function getCanRedirectUserToLeague(request: NextRequest, user: User) {
   const isInHomePage = request.nextUrl.pathname === "/";
   const preventRedirect = request.nextUrl.searchParams.get("preventRedirect");
-  const userLastLeagueId = getUserMetadata(user, "last_league_id");
+  const { last_league_id } = getMetadataFromUser(user);
 
   return {
-    isRedirectable: isInHomePage && !!userLastLeagueId && !preventRedirect,
-    redirectUrl: new URL(`/leagues/${userLastLeagueId}`, request.nextUrl),
+    isRedirectable: isInHomePage && !!last_league_id && !preventRedirect,
+    redirectUrl: new URL(`/leagues/${last_league_id}`, request.nextUrl),
   };
 }
 

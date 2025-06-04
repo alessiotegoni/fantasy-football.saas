@@ -6,6 +6,8 @@ import { db } from "@/drizzle/db";
 import { leagueUserBans } from "@/drizzle/schema";
 import { authUsers } from "drizzle-orm/supabase";
 import { eq } from "drizzle-orm";
+import ActionButton from "@/components/ActionButton";
+import { unBanMember } from "../actions/memberActions";
 
 export default async function BannedUsersSection({
   leagueId,
@@ -16,11 +18,12 @@ export default async function BannedUsersSection({
   if (!bannedUsers.length) return null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-2">
-        <UserXmark className="w-5 h-5 text-red-600" />
+    <div className="space-y-2.5">
+      <div className="flex items-center gap-2">
+        <UserXmark className="size-5 text-red-600" />
         <h2 className="text-lg font-heading text-foreground">
-          Utenti Bannati ({bannedUsers.length})
+          Utenti Bannati
+          <span className="ml-2">({bannedUsers.length})</span>
         </h2>
       </div>
 
@@ -30,7 +33,7 @@ export default async function BannedUsersSection({
             key={bannedUser.banId}
             className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-950/20 rounded-xl border border-red-200 dark:border-red-800"
           >
-            <div className="flex-1 min-w-0">
+            <div className="flex-1">
               <p className="font-medium text-foreground truncate">
                 {bannedUser.user?.email}
               </p>
@@ -49,13 +52,17 @@ export default async function BannedUsersSection({
               )}
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              className="ml-4 border-green-200 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950/20"
+            <ActionButton
+              className="w-fit border-green-200 text-green-700 hover:bg-green-50 dark:border-green-800 dark:text-green-400 dark:hover:bg-green-950/20 bg-transparent"
+              action={unBanMember.bind(null, {
+                userId: bannedUser.user!.id,
+                leagueId,
+                banId: bannedUser.banId,
+              })}
+              loadingText="Sbanno utente"
             >
               Sbanna
-            </Button>
+            </ActionButton>
           </div>
         ))}
       </div>

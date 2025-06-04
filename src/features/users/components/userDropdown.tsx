@@ -8,9 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
-import { getUserMetadata } from "../utils/user";
+import { getMetadataFromUser } from "../utils/user";
 import {
   ArrowSeparateVertical,
   LogOut,
@@ -19,12 +18,11 @@ import {
   User as UserIcon,
 } from "iconoir-react";
 import { User } from "@supabase/supabase-js";
-import { FormEvent, use, useState } from "react";
-import ActionButton from "@/components/ActionButton";
+import { use, useState } from "react";
 import { logout } from "@/features/auth/actions/login";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import SubmitButton from "@/components/SubmitButton";
+import Avatar from "@/components/Avatar";
 
 export default function UserDropdown({
   userPromise,
@@ -40,8 +38,7 @@ export default function UserDropdown({
   const user = use(userPromise);
   if (!user) return;
 
-  const username = getUserMetadata(user, "name");
-  const avatarUrl = getUserMetadata(user, "avatar_url");
+  const { name, avatar_url } = getMetadataFromUser(user);
 
   async function handleLogout() {
     setIsSigninOut(true);
@@ -60,15 +57,18 @@ export default function UserDropdown({
         className={`relative group flex justify-between rounded-xl items-center gap-3 ${triggerClass}`}
       >
         <div className="flex items-center gap-3">
-          <Avatar className="size-8">
-            <AvatarImage src={avatarUrl ?? ""} />
-            <AvatarFallback className="uppercase">
-              {username?.charAt(0) ?? user.email?.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+          <Avatar
+            imageUrl={avatar_url}
+            name={name || "user avatar"}
+            size={8}
+            renderFallback={() =>
+              (name?.charAt(0) ?? user.email?.charAt(0))?.toUpperCase()
+            }
+          />
+
           {variant === "sidebar" && (
             <div className="text-left">
-              {username && <p className="text-sm font-medium">{username}</p>}
+              {name && <p className="text-sm font-medium">{name}</p>}
               <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
           )}

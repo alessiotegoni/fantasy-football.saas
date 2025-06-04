@@ -5,7 +5,7 @@ import { User } from "@supabase/supabase-js";
 import {
   addUserLastLeagueMetadata,
   getCanRedirectUserToLeague,
-  getUserMetadata,
+  getMetadataFromUser,
   isAdmin,
 } from "./features/users/utils/user";
 
@@ -71,6 +71,6 @@ export const config = {
 };
 
 function canAccessLeague(user: User, leagueId: string) {
-  const userLeagueIds = getUserMetadata(user, "league_ids");
-  return userLeagueIds?.includes(leagueId);
+  const { league_ids } = getMetadataFromUser(user)
+  return league_ids?.includes(leagueId);
 }

@@ -15,13 +15,16 @@ import { Button } from "./ui/button";
 import { LoaderCircle } from "lucide-react";
 import { actionToast, cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, useEffect, useTransition } from "react";
+import { ExternalToast } from "sonner";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   action: () => Promise<{ error: boolean; message: string }>;
   onPendingChange?: (pending: boolean) => void;
   loadingText?: string;
   requireAreYouSure?: boolean;
+  areYouSureDescription?: string;
   displayToast?: boolean;
+  toastData?: ExternalToast
 };
 
 export default function ActionButton({
@@ -29,7 +32,9 @@ export default function ActionButton({
   onPendingChange,
   loadingText = "Caricamento",
   requireAreYouSure = false,
+  areYouSureDescription = "Questa azione non può essere annullata",
   displayToast = true,
+  toastData,
   className,
   disabled,
   children,
@@ -40,7 +45,7 @@ export default function ActionButton({
   function performAction() {
     startTransition(async () => {
       const res = await action();
-      if (displayToast) actionToast(res);
+      if (displayToast) actionToast(res, toastData);
     });
   }
 
@@ -61,13 +66,15 @@ export default function ActionButton({
     return (
       <AlertDialog open={isPending ? true : undefined}>
         <AlertDialogTrigger asChild>
-          <Button {...props} className={cn("w-full", className)} />
+          <Button {...props} className={cn("w-full", className)}>
+            {content}
+          </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Sei sicuro?</AlertDialogTitle>
             <AlertDialogDescription>
-              Questa azione non può essere annullata.
+              {areYouSureDescription}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

@@ -10,13 +10,13 @@ import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import ActionButton from "@/components/ActionButton";
 import { joinPublicLeague } from "@/features/leagueMembers/actions/leagueMember";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authUsers } from "drizzle-orm/supabase";
 import { Suspense } from "react";
 import LeagueModules from "@/features/leagues/components/LeagueModules";
 import { getLeagueOptionsTag } from "@/features/leagueOptions/db/cache/leagueOption";
 import LeaguePlayersPerRole from "@/features/leagues/components/LeaguePlayersPerRole";
 import { Trophy } from "iconoir-react";
+import Avatar from "@/components/Avatar";
 
 export default async function LeagueDetailPage({
   params,
@@ -47,12 +47,14 @@ async function SuspenseBoundary({
       <LeagueHeader className="relative">
         <BackButton />
         <div className="flex items-start md:flex-col md:items-center md:text-center pt-16 pb-6">
-          <Avatar className="size-20 border border-primary/20 bg-primary/10">
-            <AvatarImage src={league.imageUrl ?? ""} alt={league.name} />
-            <AvatarFallback>
-              <Trophy className="size-10 text-primary" />
-            </AvatarFallback>
-          </Avatar>
+          <Avatar
+            imageUrl={league.imageUrl}
+            name={league.name}
+            renderFallback={() => (
+              <Trophy className="size-10 text-primary border border-primary/20 bg-primary/10" />
+            )}
+          />
+
           <div>
             <h1 className="text-2xl font-heading text-primary-foreground md:mt-2 mb-2 px-4">
               {league.name}
@@ -141,9 +143,6 @@ async function SuspenseBoundary({
     </>
   );
 }
-
-// TODO: add league description and image
-// FIXME: leagueHeader on mobile
 
 async function getPublicLeague(leagueId: string) {
   "use cache";

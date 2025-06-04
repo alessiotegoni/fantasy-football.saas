@@ -9,13 +9,13 @@ export const getError = (
 ) => getErrorObject(message);
 
 export async function insertLeagueMember(
-  userId: string,
+  memberId: string,
   leagueId: string,
   role: LeagueMemberRoleType = "member"
 ) {
   const [res] = await db
     .insert(leagueMembers)
-    .values({ userId, leagueId, role })
+    .values({ userId: memberId, leagueId, role })
     .returning({ memberId: leagueMembers.id });
 
   if (!res.memberId)
@@ -23,25 +23,52 @@ export async function insertLeagueMember(
       getError("Errore nell'inserimento del membro nella lega").message
     );
 
-  revalidateLeagueMembersCache({ leagueId, userId });
+  revalidateLeagueMembersCache({ leagueId, userId: memberId });
 
   return res.memberId;
 }
 
-export async function deleteLeagueMember(memberId: string, leagueId: string) {
+export async function updateLeagueMember(
+  memberId: string,
+  member: Omit<typeof leagueMembers.$inferInsert, "leagueId" | "userId">
+) {
   const [res] = await db
+    .update(leagueMembers)
+    .set(member)
+    .where(eq(leagueMembers.id, memberId))
+    .returning({
+      userId: leagueMembers.userId,
+      leagueId: leagueMembers.leagueId,
+    });
+
+  if (!res.userId)
+    throw new Error(
+      getError("Errore nell'aggiornamento del membro nella lega").message
+    );
+
+  revalidateLeagueMembersCache(res);
+
+  return res.userId;
+}
+
+export async function deleteLeagueMember(
+  memberId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [res] = await tx
     .delete(leagueMembers)
-    .where(
-      and(eq(leagueMembers.id, memberId), eq(leagueMembers.leagueId, leagueId))
-    )
-    .returning({ userId: leagueMembers.userId });
+    .where(eq(leagueMembers.id, memberId))
+    .returning({
+      userId: leagueMembers.userId,
+      leagueId: leagueMembers.leagueId,
+    });
 
   if (!res.userId)
     throw new Error(
       getError("Errore nell'eliminazione del membro nella lega").message
     );
 
-  revalidateLeagueMembersCache({ leagueId, userId: res.userId });
+  revalidateLeagueMembersCache(res);
 
   return res.userId;
 }

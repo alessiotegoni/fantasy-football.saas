@@ -5,7 +5,7 @@ import { default as LeagueHeader } from "@/features/leagues/components/Header";
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 import Disclaimer from "@/components/Disclaimer";
-import { getUser, getUserMetadata } from "@/features/users/utils/user";
+import { getMetadataFromUser, getUser } from "@/features/users/utils/user";
 
 export default function HomePage() {
   return (
@@ -79,8 +79,8 @@ async function BackToLeagueButton() {
   const user = await getUser();
   if (!user) return null;
 
-  const lastUserLeagueId = getUserMetadata(user, "last_league_id");
-  if (!lastUserLeagueId) return null;
+  const { last_league_id } = getMetadataFromUser(user);
+  if (!last_league_id) return null;
 
   return (
     <Button
@@ -88,7 +88,7 @@ async function BackToLeagueButton() {
       className="w-fit absolute left-2 top-2 text-white"
       asChild
     >
-      <Link href={`/leagues/${lastUserLeagueId}`}>
+      <Link href={`/leagues/${last_league_id}`}>
         <ArrowLeft className="size-4" />
         <p>Torna alla lega</p>
       </Link>

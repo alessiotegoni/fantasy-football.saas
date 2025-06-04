@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { InviteButton } from "./InviteButton";
 import LeagueName from "./LeagueName";
 import { getLeagueInviteCredentials } from "../queries/league";
+import Avatar from "@/components/Avatar";
 
 export default function LeagueDropdown({
   leagueId,
@@ -92,23 +93,14 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
   const isCurrentLeague = (league: (typeof userLeagues)[number]) =>
     leagueId === league.id;
 
-  return userLeagues.map((league) => (
-    <DropdownMenuItem
-      key={league.id}
-      className="flex justify-between items-center gap-2 group"
-      asChild
-    >
-      <Link key={league.id} href={`/leagues/${league.id}`}>
-        <div className="flex items-center gap-2">
-          {league.imageUrl ? (
-            <img
-              src={league.imageUrl}
-              alt={league.name}
-              width={40}
-              height={40}
-              className="rounded-full object-cover size-10 shrink-0"
-            />
-          ) : (
+  return userLeagues.map((league) => {
+    const content = (
+      <div className="flex items-center gap-2">
+        <Avatar
+          imageUrl={league.imageUrl}
+          name={league.name}
+          size={12}
+          renderFallback={() => (
             <div
               className={cn(
                 "flex justify-center items-center rounded-full size-10",
@@ -123,12 +115,30 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
               />
             </div>
           )}
-          <p>{league.name}</p>
-        </div>
-        {!isCurrentLeague(league) && (
-          <NavArrowRight className="text-muted-foreground group-hover:text-white" />
+        />
+        <p className={cn(isCurrentLeague(league) && "font-semibold")}>{league.name}</p>
+      </div>
+    );
+    {
+      !isCurrentLeague(league) && (
+        <NavArrowRight className="text-muted-foreground group-hover:text-white" />
+      );
+    }
+
+    return (
+      <DropdownMenuItem
+        key={league.id}
+        className="flex justify-between items-center gap-2 group"
+        asChild
+      >
+        {isCurrentLeague(league) ? (
+          <div>{content}</div>
+        ) : (
+          <Link key={league.id} href={`/leagues/${league.id}`}>
+            {content}
+          </Link>
         )}
-      </Link>
-    </DropdownMenuItem>
-  ));
+      </DropdownMenuItem>
+    );
+  });
 }

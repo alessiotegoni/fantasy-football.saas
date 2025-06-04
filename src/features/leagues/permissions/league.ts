@@ -1,7 +1,19 @@
 import { db } from "@/drizzle/db";
-import { leagueMembers, leagueOptions, leagues, userSubscriptions } from "@/drizzle/schema";
-import { isLeagueMember, isMemberOfALeague } from "@/features/leagueMembers/permissions/leagueMember";
-import { isUserBanned, isValidSubscription, userHasPremium } from "@/features/users/permissions/user";
+import {
+  leagueMembers,
+  leagueOptions,
+  leagues,
+  userSubscriptions,
+} from "@/drizzle/schema";
+import {
+  isLeagueMember,
+  isMemberOfALeague,
+} from "@/features/leagueMembers/permissions/leagueMember";
+import {
+  isUserBanned,
+  isValidSubscription,
+  userHasPremium,
+} from "@/features/users/permissions/user";
 import { and, count, eq } from "drizzle-orm";
 
 export async function canCreateLeague(userId: string) {
@@ -45,7 +57,8 @@ export async function canJoinLeague(userId: string, leagueId: string) {
   if (isBanned) {
     return {
       canJoin: false,
-      message: "Sei stato bannato da questa lega.",
+      message:
+        "Sei stato bannato da questa lega, contatta il creatore per sapere la motivazione.",
     };
   }
 
