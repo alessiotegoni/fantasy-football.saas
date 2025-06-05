@@ -27,8 +27,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "../../../components/ui/alert-dialog";
-import { banMember, kickMember, setMemberRole } from "../actions/memberActions";
-import { MemberActionArgs } from "../permissions/leagueMember";
+import { banMember, kickMember, MemberActionArgs, setMemberRole } from "../actions/memberActions";
 import { LeagueMemberRoleType } from "@/drizzle/schema";
 import Avatar from "@/components/Avatar";
 
@@ -83,9 +82,11 @@ export function MemberCard({ member, leagueId, isAdmin, userId }: Props) {
             </p>
           )}
 
-          <p className="text-sm text-muted-foreground truncate">
-            {member.user?.email}
-          </p>
+          {!member.team && (
+            <p className="text-sm text-muted-foreground truncate">
+              {member.user?.email}
+            </p>
+          )}
 
           <p className="text-xs text-muted-foreground mt-1">
             Iscritto il {member.joinedAt.toLocaleDateString("it-IT")}

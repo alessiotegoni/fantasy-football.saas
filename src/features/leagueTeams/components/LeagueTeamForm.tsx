@@ -19,7 +19,9 @@ import NameField from "@/components/NameField";
 import SubmitButton from "@/components/SubmitButton";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { createLeagueTeam, updateLeagueTeam } from "../actions/leagueTeam";
-import { actionToast } from "@/lib/utils";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useIsMobile } from "@/hooks/useMobile";
+import useActionToast from "@/hooks/useActionToast";
 
 type Props = {
   leagueId: string;
@@ -28,10 +30,16 @@ type Props = {
     name: string;
     imageUrl: string | null;
     managerName: string;
+    image: null;
   };
 };
 
 export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const actionToast = useActionToast();
+
   const form = useForm<LeagueTeamSchema>({
     resolver: zodResolver(leagueTeamSchema),
     defaultValues: initialData ?? {
@@ -47,7 +55,12 @@ export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
       : createLeagueTeam;
 
     const res = await action(leagueId, data);
-    actionToast(res, { position: "bottom-right" });
+    actionToast(res);
+
+    if (!res.error) {
+      const redirectUrl = searchParams.get("redirectUrl");
+      router.push(redirectUrl || `/leagues/${leagueId}`);
+    }
   }
 
   return (
@@ -83,7 +96,7 @@ export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
           />
         </FormFieldTooltip>
 
-        <SubmitButton loadingText="Creo squadra">
+        <SubmitButton loadingText={(teamId ? "Modifico" : "Creo") + " squadra"}>
           {teamId ? "Modifica" : "Crea"} squadra
         </SubmitButton>
       </form>

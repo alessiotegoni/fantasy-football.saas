@@ -29,7 +29,7 @@ async function getLeagueMemberTeam(teamId: string) {
   "use cache";
   cacheTag(getLeagueMemberTeamTag(teamId));
 
-  return db.query.leagueMemberTeams.findFirst({
+  const memberTeam = await db.query.leagueMemberTeams.findFirst({
     columns: {
       name: true,
       imageUrl: true,
@@ -37,4 +37,8 @@ async function getLeagueMemberTeam(teamId: string) {
     },
     where: (team, { eq }) => eq(team.id, teamId),
   });
+
+  if (!memberTeam) return undefined;
+
+  return { ...memberTeam, image: null };
 }
