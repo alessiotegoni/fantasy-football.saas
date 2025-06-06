@@ -5,20 +5,27 @@ import { Search } from "iconoir-react";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 
-type SearchBarProps = {
+type Props = {
   placeholder?: string;
   onSearch: (value: string) => void;
+  onResetSearch?: () => void;
   delay?: number;
-  className?: string
+  className?: string;
+  value?: string;
 };
 
 function SearchBar({
   placeholder = "Cerca...",
   onSearch,
   delay = 300,
-  className
-}: SearchBarProps) {
-  const [value, setValue] = useState("");
+  className,
+  value: externalValue,
+}: Props) {
+  const [value, setValue] = useState(externalValue ?? "");
+
+  useEffect(() => {
+    if (externalValue !== undefined) setValue(externalValue);
+  }, [externalValue]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -42,4 +49,4 @@ function SearchBar({
   );
 }
 
-export default memo(SearchBar)
+export default memo(SearchBar);

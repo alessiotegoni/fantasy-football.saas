@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
-import { LeagueTeamForm } from "@/features/leagueTeams/components/LeagueTeamForm";
-import { getLeagueMemberTeamTag } from "@/features/leagueTeams/db/cache/leagueTeam";
+import { LeagueTeamForm } from "@/features/(league)/leagueTeams/components/LeagueTeamForm";
+import { getLeagueMemberTeamTag } from "@/features/(league)/leagueTeams/db/cache/leagueTeam";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function EditLeagueTeamPage({

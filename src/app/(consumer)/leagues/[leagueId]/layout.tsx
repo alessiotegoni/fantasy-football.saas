@@ -1,10 +1,10 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { db } from "@/drizzle/db";
-import LeagueSidebar from "@/features/leagues/components/Sidebar";
-import { Topbar } from "@/features/leagues/components/TopBar";
-import { getLeagueNameTag } from "@/features/leagues/db/cache/league";
+import LeagueSidebar from "@/features/(league)/leagues/components/Sidebar";
+import { Topbar } from "@/features/(league)/leagues/components/TopBar";
+import { getLeagueNameTag } from "@/features/(league)/leagues/db/cache/league";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { LeagueNav } from "../../../../features/leagues/components/LeagueNav";
+import { LeagueNav } from "../../../../features/(league)/leagues/components/LeagueNav";
 
 type Props = {
   children: React.ReactNode;

@@ -1,10 +1,10 @@
 
-import { default as LeagueHeader } from "@/features/leagues/components/Header";
+import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
 import Logo from "@/components/ui/logo";
 import Disclaimer from "@/components/Disclaimer";
-import JoinPrivateLeagueForm from "@/features/leagues/components/forms/JoinPrivateLeagueForm";
+import JoinPrivateLeagueForm from "@/features/(league)/leagues/components/forms/JoinPrivateLeagueForm";
 import BackButton from "@/components/BackButton";
-import { JOIN_CODE_LENGTH } from "@/features/leagues/schema/leagueBase";
+import { JOIN_CODE_LENGTH } from "@/features/(league)/leagues/schema/leagueBase";
 
 export default function JoinPrivateLeaguePage() {
   return (

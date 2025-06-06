@@ -1,22 +1,22 @@
 import { notFound } from "next/navigation";
-import { default as LeagueHeader } from "@/features/leagues/components/Header";
+import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
 import BackButton from "@/components/BackButton";
 import Disclaimer from "@/components/Disclaimer";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getLeagueIdTag } from "@/features/leagues/db/cache/league";
-import { getLeagueMembersTag } from "@/features/leagueMembers/db/cache/leagueMember";
+import { getLeagueIdTag } from "@/features/(league)/leagues/db/cache/league";
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import ActionButton from "@/components/ActionButton";
-import { joinPublicLeague } from "@/features/leagueMembers/actions/leagueMember";
 import { authUsers } from "drizzle-orm/supabase";
 import { Suspense } from "react";
-import LeagueModules from "@/features/leagues/components/LeagueModules";
-import { getLeagueOptionsTag } from "@/features/leagueOptions/db/cache/leagueOption";
-import LeaguePlayersPerRole from "@/features/leagues/components/LeaguePlayersPerRole";
+import LeagueModules from "@/features/(league)/leagues/components/LeagueModules";
+import { getLeagueOptionsTag } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
+import LeaguePlayersPerRole from "@/features/(league)/leagues/components/LeaguePlayersPerRole";
 import { Trophy } from "iconoir-react";
 import Avatar from "@/components/Avatar";
+import { getLeagueMembersTag } from "@/features/(league)/leagueMembers/db/cache/leagueMember";
+import { joinPublicLeague } from "@/features/(league)/leagueMembers/actions/leagueMember";
 
 export default async function LeagueDetailPage({
   params,

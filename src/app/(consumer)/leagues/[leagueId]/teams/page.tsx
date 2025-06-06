@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import TeamsList from "@/features/leagueTeams/components/TeamsList";
-import { getLeagueTeams } from "@/features/leagueTeams/queries/leagueTeam";
+import TeamsList from "@/features/(league)/leagueTeams/components/TeamsList";
+import { getLeagueTeams } from "@/features/(league)/leagueTeams/queries/leagueTeam";
 import { getUserId } from "@/features/users/utils/user";
 import { ArrowLeft, NavArrowRight, Search } from "iconoir-react";
 import Link from "next/link";

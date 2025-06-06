@@ -1,0 +1,108 @@
+"use server";
+
+import { leagueOptions, LeagueVisibilityStatusType } from "@/drizzle/schema";
+import {
+  getError,
+  updateLeagueOptions as updateLeagueOptionsDb,
+} from "../db/leagueOptions";
+import {
+  bonusMalusSchema,
+  BonusMalusSchema,
+  generalOptionsSchema,
+  GeneralOptionsSchema,
+  marketOptionsSchema,
+  MarketOptionsSchema,
+  rosterModulesSchema,
+  RosterModulesSchema,
+} from "../schema/leagueOptions";
+import { db } from "@/drizzle/db";
+import { updateLeague as updateLeagueInfo } from "@/features/(league)/leagues/db/league";
+import { getUserId } from "@/features/users/utils/user";
+import { revalidateLeagueRosterOptionsCache } from "../db/cache/leagueOption";
+import { isLeagueAdmin } from "@/features/leagueMembers/permissions/leagueMember";
+
+export async function updateGeneralOptions(
+  values: GeneralOptionsSchema,
+  leagueId: string
+) {
+  const { success, data } = generalOptionsSchema.safeParse(values);
+  if (!success) return getError();
+
+  return await db.transaction(async (tx) => {
+    const res = await updateOptions(
+      { ...data, leagueId },
+      { tx, visibility: data.visibility }
+    );
+
+    if (!res.error) await updateLeagueInfo(leagueId, data);
+
+    return res;
+  });
+}
+
+export async function updateRosterModuleOptions(
+  values: RosterModulesSchema,
+  leagueId: string
+) {
+  const { success, data } = rosterModulesSchema.safeParse(values);
+  if (!success) return getError();
+
+  const res = await updateOptions({ ...data, leagueId });
+  revalidateLeagueRosterOptionsCache(leagueId);
+
+  return res;
+}
+
+export async function updateBonusMalusOptions(
+  values: BonusMalusSchema,
+  leagueId: string
+) {
+  const { success, data } = bonusMalusSchema.safeParse(values);
+  if (!success) return getError();
+
+  return await updateOptions({ ...data, leagueId });
+}
+
+export async function updateMarketOptions(
+  values: MarketOptionsSchema,
+  leagueId: string
+) {
+  const { success, data } = marketOptionsSchema.safeParse(values);
+  if (!success) return getError();
+
+  return await updateOptions({ ...data, leagueId });
+}
+
+async function updateOptions(
+  options: typeof leagueOptions.$inferInsert,
+  args?: Partial<{
+    tx: Omit<typeof db, "$client">;
+    visibility: LeagueVisibilityStatusType;
+  }>
+) {
+  const userId = await getUserId();
+  if (!userId) return getError();
+
+  if (!(await isLeagueAdmin(userId, options.leagueId)))
+    return getError("Devi essere admin della lega per modificare le opzioni");
+
+  const visibility =
+    args?.visibility || (await getLeagueVisibility(options.leagueId));
+  if (!visibility) return getError();
+
+  const leagueId = await updateLeagueOptionsDb(options, visibility, args?.tx);
+  if (!leagueId) return getError();
+
+  return { error: false, message: "Opzioni aggiornate con successo" };
+}
+
+function getLeagueVisibility(leagueId: string) {
+  return db.query.leagues
+    .findFirst({
+      columns: {
+        visibility: true,
+      },
+      where: (league, { eq }) => eq(league.id, leagueId),
+    })
+    .then((league) => league?.visibility);
+}

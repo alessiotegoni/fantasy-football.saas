@@ -1,10 +1,10 @@
-import { LEAGUE_TAG } from "@/features/leagues/db/cache/league";
-import { MATCH_TAG } from "@/features/matches/db/cache/match";
-import { TEAM_TAG } from "@/features/leagueTeams/db/cache/leagueTeam";
+import { LEAGUE_TAG } from "@/features/(league)/leagues/db/cache/league";
+import { MATCH_TAG } from "@/features/(league)/matches/db/cache/match";
+import { TEAM_TAG } from "@/features/(league)/leagueTeams/db/cache/leagueTeam";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
-import { AUCTION_TAG } from "@/features/auctions/db/cache/auction";
-import { LEAGUE_OPTIONS_TAG } from "@/features/leagueOptions/db/cache/leagueOption";
+import { AUCTION_TAG } from "@/features/(league)/auctions/db/cache/auction";
+import { LEAGUE_OPTIONS_TAG } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
 import { LEAGUE_MEMBERS_TAG } from "@/features/leagueMembers/db/cache/leagueMember";
 
 export type CACHE_TAG =

@@ -7,13 +7,13 @@ import {
   GeneralOptionsSchema,
   MarketOptionsSchema,
   RosterModulesSchema,
-} from "@/features/leagueOptions/schema/leagueOptions";
+} from "@/features/(league)/leagueOptions/schema/leagueOptions";
 import {
   updateBonusMalusOptions,
   updateGeneralOptions,
   updateMarketOptions,
   updateRosterModuleOptions,
-} from "@/features/leagueOptions/actions/leagueOptions";
+} from "@/features/(league)/leagueOptions/actions/leagueOptions";
 import { useIsMobile } from "./useMobile";
 
 export function useLeagueOptions(leagueId: string) {

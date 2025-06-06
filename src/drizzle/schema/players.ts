@@ -3,6 +3,7 @@ import { relations } from "drizzle-orm";
 import { teams } from "./teams";
 import { playerRoles } from "./playerRoles";
 import { matchdayVotes } from "./matchdayVotes";
+import { leagueMemberTeamPlayers } from "./leagueMemberTeamPlayers";
 
 export const players = pgTable(
   "players",
@@ -32,4 +33,5 @@ export const playersRelations = relations(players, ({ one, many }) => ({
     references: [teams.id],
   }),
   votes: many(matchdayVotes),
+  leagueTeams: many(leagueMemberTeamPlayers)
 }));

@@ -21,7 +21,7 @@ export default function Avatar({
   className,
 }: Props) {
   return (
-    <RadixAvatar className={`size-${size}`}>
+    <RadixAvatar className={cn(size && `size-${size}`)}>
       <AvatarImage
         src={imageUrl ?? ""}
         alt={name}
