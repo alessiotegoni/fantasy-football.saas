@@ -11,12 +11,12 @@ import { uploadImage } from "@/services/supabase/storage/supabase";
 import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
 import { insertLeagueOptions } from "@/features/(league)/leagueOptions/db/leagueOptions";
-import { insertLeagueMember } from "@/features/leagueMembers/db/leagueMember";
-import { isLeagueAdmin } from "@/features/leagueMembers/permissions/leagueMember";
 import {
   leagueProfileSchema,
   LeagueProfileSchema,
 } from "../schema/leagueProfile";
+import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
+import { insertLeagueMember } from "../../leagueMembers/db/leagueMember";
 
 export async function createLeague(values: CreateLeagueSchema) {
   const user = await getUser();

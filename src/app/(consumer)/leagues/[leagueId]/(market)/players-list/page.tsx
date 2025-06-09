@@ -17,6 +17,9 @@ import { ArrowLeft } from "iconoir-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 import { Suspense } from "react";
+import PlayersEmptyState from "@/features/players/components/PlayersEmptyState";
+import MultiplePlayerSelection from "@/features/players/components/MultiPlayerSelection";
+import { MultiPlayerSelectionProvider } from "@/contexts/MultiPlayerSelectionProvider";
 
 export default async function LeaguePlayersListPage({
   params,
@@ -41,7 +44,18 @@ export default async function LeaguePlayersListPage({
           <TeamsFilters teamsPromise={getTeams()} />
           <PlayersRolesFilters playersRolesPromise={getPlayersRoles()} />
         </Suspense>
-        <VirtualizedPlayersList leagueId={leagueId} />
+        <MultiPlayerSelectionProvider>
+          <div className="flex items-center mb-3.5">
+            <h2 className="text-xl grow">Giocatori</h2>
+            <Suspense>
+              <MultiplePlayerSelection leagueId={leagueId} />
+            </Suspense>
+          </div>
+          <VirtualizedPlayersList
+            leagueId={leagueId}
+            emptyState={<PlayersEmptyState label="giocatore" />}
+          />
+        </MultiPlayerSelectionProvider>
       </PlayersListProvider>
     </div>
   );
@@ -110,307 +124,6 @@ const mockPlayers = [
     roleId: 4,
     teamId: 10,
     avatarUrl: "/avatars/stefano_marrone.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
-  },
-  {
-    id: "02b9f702-b6b6-4e62-ae54-88f186bd45a6",
-    displayName: "Riccardo Grigio",
-    roleId: 5,
-    teamId: 14,
-    avatarUrl: "/avatars/riccardo_grigio.png",
   },
 ];
 

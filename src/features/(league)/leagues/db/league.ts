@@ -4,7 +4,7 @@ import { getErrorObject } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import { leagueUserBans } from "@/drizzle/schema";
 import { revalidateLeagueProfileCache } from "./cache/league";
-import { revalidateLeagueMembersCache } from "@/features/leagueMembers/db/cache/leagueMember";
+import { revalidateLeagueMembersCache } from "../../leagueMembers/db/cache/leagueMember";
 
 const leagueInfo = { leagueId: leagues.id, visibility: leagues.visibility };
 

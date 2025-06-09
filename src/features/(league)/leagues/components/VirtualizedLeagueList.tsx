@@ -5,7 +5,7 @@ import { Group, NavArrowRight, Search } from "iconoir-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import SearchBar from "@/components/SearchBar";
-import { useDebouncedFilter } from "@/hooks/useDebounceFilter";
+import { useFilter } from "@/hooks/useFilter";
 import { Button } from "@/components/ui/button";
 import { VirtualizedList } from "@/components/VirtualizedList";
 
@@ -22,14 +22,12 @@ export function VirtualizedLeaguesList({
 }: {
   leagues: PublicLeague[];
 }) {
-  const { filteredItems: filteredLeagues, handleFilter } = useDebouncedFilter(
-    leagues,
-    {
-      filterFn: (league, term) =>
-        league.name.toLowerCase().includes(term.toLowerCase()) ||
-        !!league.description?.toLowerCase().includes(term.toLowerCase()),
-    }
-  );
+  const { filteredItems: filteredLeagues, handleFilter } = useFilter(leagues, {
+    defaultFilters: "",
+    filterFn: (league, term) =>
+      league.name.toLowerCase().includes(term.toLowerCase()) ||
+      !!league.description?.toLowerCase().includes(term.toLowerCase()),
+  });
 
   return (
     <div className="w-full max-w-4xl mx-auto">

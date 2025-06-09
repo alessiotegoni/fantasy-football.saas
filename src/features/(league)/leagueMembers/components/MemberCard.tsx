@@ -26,7 +26,7 @@ import {
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogCancel,
-} from "../../../components/ui/alert-dialog";
+} from "../../../../components/ui/alert-dialog";
 import { banMember, kickMember, MemberActionArgs, setMemberRole } from "../actions/memberActions";
 import { LeagueMemberRoleType } from "@/drizzle/schema";
 import Avatar from "@/components/Avatar";

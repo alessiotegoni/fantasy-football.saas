@@ -1,8 +1,4 @@
 import { db } from "@/drizzle/db";
-import {
-  getLeagueMembersTag,
-  getLeagueMembersTeamsTag,
-} from "@/features/leagueMembers/db/cache/leagueMember";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { ArrowLeft, Community, Shield } from "iconoir-react";
 import Link from "next/link";
@@ -11,14 +7,18 @@ import {
   getLeagueAdmin,
   getLeagueInviteCredentials,
 } from "@/features/(league)/leagues/queries/league";
-import { MemberCard } from "@/features/leagueMembers/components/MemberCard";
 import { leagueMembers, leagueMemberTeams } from "@/drizzle/schema";
 import { authUsers } from "drizzle-orm/supabase";
 import { eq } from "drizzle-orm";
 import { Suspense } from "react";
-import BannedUsersSection from "@/features/leagueMembers/components/BannedUsersSection";
 import { getUserId } from "@/features/users/utils/user";
 import Disclaimer from "@/components/Disclaimer";
+import BannedUsersSection from "@/features/(league)/leagueMembers/components/BannedUsersSection";
+import { MemberCard } from "@/features/(league)/leagueMembers/components/MemberCard";
+import {
+  getLeagueMembersTag,
+  getLeagueMembersTeamsTag,
+} from "@/features/(league)/leagueMembers/db/cache/leagueMember";
 
 export default async function LeagueMembersPage({
   params,

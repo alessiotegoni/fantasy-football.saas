@@ -3,8 +3,8 @@ import {
   PlayerListContext,
   playersListContext,
 } from "@/contexts/PlayersListProvider";
-import { useContext, useMemo } from "react";
-import { useDebouncedFilter } from "./useDebounceFilter";
+import { useContext } from "react";
+import { useFilter } from "./useFilter";
 
 export default function usePlayersList() {
   const context = useContext(playersListContext);
@@ -12,20 +12,10 @@ export default function usePlayersList() {
     throw new Error("usePlayersList must be used within its provider");
   }
 
-  const { filteredItems: searchFilteredPlayers } = useDebouncedFilter(
-    context.players,
-    {
-      defaultValue: context.filters.search,
-    }
-  );
-
-  const filteredPlayers = useMemo(
-    () =>
-      searchFilteredPlayers.filter(
-        filterByRolesAndTeams.bind(null, context.filters)
-      ),
-    [context.filters]
-  );
+  const { filteredItems: filteredPlayers } = useFilter(context.players, {
+    defaultFilters: context.filters,
+    filterFn,
+  });
 
   return {
     ...context,
@@ -33,14 +23,14 @@ export default function usePlayersList() {
   };
 }
 
-function filterByRolesAndTeams(
-  filters: PlayerListContext["filters"],
-  player: EnrichPlayer
-) {
+function filterFn(player: EnrichPlayer, filters: PlayerListContext["filters"]) {
+  const matchesSearch = player.displayName
+    .toLowerCase()
+    .includes(filters.search.toLowerCase());
   const matchesTeam =
     filters.teams.length === 0 || filters.teams.includes(player.team?.id ?? -1);
   const matchesRole =
     filters.roles.length === 0 || filters.roles.includes(player.role?.id ?? -1);
 
-  return matchesTeam && matchesRole;
+  return matchesSearch && matchesTeam && matchesRole;
 }

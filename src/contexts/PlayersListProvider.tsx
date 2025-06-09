@@ -15,8 +15,7 @@ type Player = {
 export type Role = Awaited<ReturnType<typeof getPlayersRoles>>[number];
 export type Team = Awaited<ReturnType<typeof getTeams>>[number];
 
-export type EnrichPlayer = Omit<Player, "roleId" | "teamId" | "displayName"> & {
-  name: string;
+export type EnrichPlayer = Omit<Player, "roleId" | "teamId"> & {
   role: Role | null;
   team: Team | null;
 };
@@ -63,15 +62,12 @@ export function PlayersListProvider({
     []
   );
 
-  console.log(filters);
-
   const enrichedPlayers = useMemo(() => {
     const rolesMap = new Map(roles.map((r) => [r.id, r]));
     const teamsMap = new Map(teams.map((t) => [t.id, t]));
 
-    return players.map(({ roleId, teamId, displayName, ...player }) => ({
+    return players.map(({ roleId, teamId, ...player }) => ({
       ...player,
-      name: displayName,
       role: rolesMap.get(roleId) ?? null,
       team: teamsMap.get(teamId) ?? null,
     }));

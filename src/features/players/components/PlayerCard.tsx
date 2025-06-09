@@ -1,36 +1,41 @@
-"use client"
+"use client";
 
 import Avatar from "@/components/Avatar";
-import { User } from "iconoir-react";
+import { Plus, User } from "iconoir-react";
 import { getPlayersRoles } from "../queries/player";
 import { getTeams } from "@/features/teams/queries/team";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
+import useMultiPlayerSelection from "@/hooks/useMultiPlayerSelection";
+import { DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   id: string;
   avatarUrl: string;
-  name: string;
+  displayName: string;
   //   fm: number;
   //   fvmp: number;
   team: Awaited<ReturnType<typeof getTeams>>[number] | null;
-  role: Awaited<ReturnType<typeof getPlayersRoles>>[number] | null;
+  role?: Awaited<ReturnType<typeof getPlayersRoles>>[number] | null;
 };
 
 export default memo(function PlayerCard({
   id,
   avatarUrl,
-  name,
+  displayName,
   team,
   role,
 }: Props) {
+  const { isSelectionMode, toggleSelectPlayer } = useMultiPlayerSelection();
+
   return (
     <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-border">
       <div className="flex items-center gap-3">
         <div className="relative size-12">
           <Avatar
             imageUrl={avatarUrl}
-            name={name}
+            name={displayName}
             size={12}
             renderFallback={() => <User />}
           />
@@ -40,7 +45,7 @@ export default memo(function PlayerCard({
         </div>
 
         <div className="flex flex-col">
-          <span className="text-sm font-semibol">{name}</span>
+          <span className="text-sm font-semibol">{displayName}</span>
           {team && (
             <span className="text-xs text-muted-foreground">
               {team.displayName}
@@ -48,6 +53,17 @@ export default memo(function PlayerCard({
           )}
         </div>
       </div>
+
+      {isSelectionMode && team && (
+        <DialogTrigger asChild>
+          <Button
+            className="w-fit rounded-full size-8"
+            onClick={toggleSelectPlayer.bind(null, id)}
+          >
+            <Plus className="size-5" />
+          </Button>
+        </DialogTrigger>
+      )}
 
       {/* RIGHT - Stats
       <div className="flex flex-col text-sm items-end">
