@@ -1,14 +1,14 @@
 import { Search } from "iconoir-react";
 
 type Props = {
-  icon?: React.ReactNode;
+  icon?: React.ElementType;
   title: string;
   description: string;
   renderButton?: () => React.ReactNode;
 };
 
 export default function EmptyState({
-  icon: Icon = <Search />,
+  icon: Icon = Search,
   title,
   description,
   renderButton,

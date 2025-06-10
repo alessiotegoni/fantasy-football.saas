@@ -30,9 +30,10 @@ export async function updateLeagueTeam(
       typeof leagueMemberTeams.$inferInsert,
       "id" | "leagueMemberId" | "leagueId"
     >
-  >
+  >,
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await db
+  const [res] = await tx
     .update(leagueMemberTeams)
     .set(team)
     .where(eq(leagueMemberTeams.id, teamId))

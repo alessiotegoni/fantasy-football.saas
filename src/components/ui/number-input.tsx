@@ -4,7 +4,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Minus, Plus } from "iconoir-react";
 
-interface NumberInputProps
+export interface NumberInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
   value: number;
   min?: number;

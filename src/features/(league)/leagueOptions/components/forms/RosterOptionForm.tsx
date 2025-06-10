@@ -20,10 +20,10 @@ import NumberInput from "@/components/ui/number-input";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
 import {
-  getPlayersRoles,
   getTacticalModules,
 } from "../../queries/leagueOptions";
 import { Suspense, use } from "react";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
 
 type Props = {
   initialData: RosterModulesSchema;

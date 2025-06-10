@@ -1,10 +1,8 @@
 import { cn } from "@/lib/utils";
-import { db } from "@/drizzle/db";
-import { getLeaguePlayersPerRoleTag } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { formatPlural } from "@/lib/formatters";
-import { getPlayersRoles } from "@/features/players/queries/player";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
 import PlayerRoleBadge, { roleNames } from "@/components/PlayerRoleBadge";
+import { getLeaguePlayersPerRole } from "../queries/league";
 
 type Props = {
   leagueId: string;
@@ -47,18 +45,4 @@ export default async function LeaguePlayersPerRole({
       ))}
     </div>
   );
-}
-
-async function getLeaguePlayersPerRole(leagueId: string) {
-  "use cache";
-  cacheTag(getLeaguePlayersPerRoleTag(leagueId));
-
-  return db.query.leagueOptions
-    .findFirst({
-      columns: {
-        playersPerRole: true,
-      },
-      where: (options, { eq }) => eq(options.leagueId, leagueId),
-    })
-    .then((res) => res!.playersPerRole);
 }

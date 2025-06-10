@@ -16,10 +16,9 @@ import {
   RosterModulesSchema,
 } from "../schema/leagueOptions";
 import { db } from "@/drizzle/db";
-import { updateLeague as updateLeagueInfo } from "@/features/(league)/leagues/db/league";
 import { getUserId } from "@/features/users/utils/user";
 import { revalidateLeagueRosterOptionsCache } from "../db/cache/leagueOption";
-import { isLeagueAdmin } from "@/features/leagueMembers/permissions/leagueMember";
+import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
 
 export async function updateGeneralOptions(
   values: GeneralOptionsSchema,
@@ -28,16 +27,7 @@ export async function updateGeneralOptions(
   const { success, data } = generalOptionsSchema.safeParse(values);
   if (!success) return getError();
 
-  return await db.transaction(async (tx) => {
-    const res = await updateOptions(
-      { ...data, leagueId },
-      { tx, visibility: data.visibility }
-    );
-
-    if (!res.error) await updateLeagueInfo(leagueId, data);
-
-    return res;
-  });
+  return await updateOptions({ ...data, leagueId });
 }
 
 export async function updateRosterModuleOptions(
@@ -73,24 +63,17 @@ export async function updateMarketOptions(
   return await updateOptions({ ...data, leagueId });
 }
 
-async function updateOptions(
-  options: typeof leagueOptions.$inferInsert,
-  args?: Partial<{
-    tx: Omit<typeof db, "$client">;
-    visibility: LeagueVisibilityStatusType;
-  }>
-) {
+async function updateOptions(options: typeof leagueOptions.$inferInsert) {
   const userId = await getUserId();
   if (!userId) return getError();
 
   if (!(await isLeagueAdmin(userId, options.leagueId)))
     return getError("Devi essere admin della lega per modificare le opzioni");
 
-  const visibility =
-    args?.visibility || (await getLeagueVisibility(options.leagueId));
+  const visibility = await getLeagueVisibility(options.leagueId);
   if (!visibility) return getError();
 
-  const leagueId = await updateLeagueOptionsDb(options, visibility, args?.tx);
+  const leagueId = await updateLeagueOptionsDb(options, visibility);
   if (!leagueId) return getError();
 
   return { error: false, message: "Opzioni aggiornate con successo" };

@@ -1,8 +1,8 @@
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getUserId } from "@/features/users/utils/user";
-import MultiPlayerSelectionButton from "./MultiPlayerSelectionButton";
+import PlayerSelectionButton from "./PlayerSelectionButton";
 
-export default async function MultiPlayerSelection({
+export default async function PlayerSelection({
   leagueId,
 }: {
   leagueId: string;
@@ -13,5 +13,5 @@ export default async function MultiPlayerSelection({
   const isLeagueAdmin = await getLeagueAdmin(userId, leagueId);
   if (!isLeagueAdmin) return null;
 
-  return <MultiPlayerSelectionButton />;
+  return <PlayerSelectionButton />;
 }

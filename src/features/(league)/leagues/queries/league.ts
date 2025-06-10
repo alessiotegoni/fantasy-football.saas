@@ -4,7 +4,7 @@ import {
   getLeaguePremiumTag,
 } from "../db/cache/league";
 import { isPremiumUnlocked } from "../permissions/league";
-import { getLeagueGeneralOptionsTag } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
+import { getLeagueGeneralOptionsTag, getLeaguePlayersPerRoleTag } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
 import { db } from "@/drizzle/db";
 import { getMemberIdTag } from "../../leagueMembers/db/cache/leagueMember";
 import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
@@ -37,4 +37,18 @@ export async function getLeagueInviteCredentials(leagueId: string) {
     },
     where: (league, { eq }) => eq(league.id, leagueId),
   });
+}
+
+export async function getLeaguePlayersPerRole(leagueId: string) {
+  "use cache";
+  cacheTag(getLeaguePlayersPerRoleTag(leagueId));
+
+  return db.query.leagueOptions
+    .findFirst({
+      columns: {
+        playersPerRole: true,
+      },
+      where: (options, { eq }) => eq(options.leagueId, leagueId),
+    })
+    .then((res) => res!.playersPerRole);
 }

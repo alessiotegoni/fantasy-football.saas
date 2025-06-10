@@ -3,16 +3,15 @@
 import { VirtualizedList } from "@/components/VirtualizedList";
 import usePlayersList from "@/hooks/usePlayersList";
 import PlayerCard from "./PlayerCard";
-import React from "react";
+import React, { Suspense } from "react";
 import { Dialog } from "@/components/ui/dialog";
-import PlayersActionsDialog from "./PlayersActionsDialog";
 
 export default function VirtualizedPlayersList({
   emptyState,
-  leagueId,
+  actionsDialog,
 }: {
-  leagueId: string;
   emptyState: React.ReactNode;
+  actionsDialog: React.ReactNode;
 }) {
   const { filteredPlayers } = usePlayersList();
 
@@ -23,7 +22,7 @@ export default function VirtualizedPlayersList({
         estimateSize={80}
         renderItem={(player) => <PlayerCard key={player.id} {...player} />}
       />
-      <PlayersActionsDialog leagueId={leagueId} />
+      <Suspense>{actionsDialog}</Suspense>
     </Dialog>
   ) : (
     emptyState

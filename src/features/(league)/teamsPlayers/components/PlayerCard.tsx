@@ -6,13 +6,13 @@ import { getPlayersRoles } from "../queries/player";
 import { getTeams } from "@/features/teams/queries/team";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
-import useMultiPlayerSelection from "@/hooks/useMultiPlayerSelection";
+import usePlayerSelection from "@/hooks/usePlayerSelection";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 type Props = {
   id: string;
-  avatarUrl: string;
+  avatarUrl: string | null;
   displayName: string;
   //   fm: number;
   //   fvmp: number;
@@ -27,7 +27,7 @@ export default memo(function PlayerCard({
   team,
   role,
 }: Props) {
-  const { isSelectionMode, toggleSelectPlayer } = useMultiPlayerSelection();
+  const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection();
 
   return (
     <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-border">

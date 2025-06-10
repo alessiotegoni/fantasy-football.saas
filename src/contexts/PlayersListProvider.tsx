@@ -1,6 +1,6 @@
 "use client";
 
-import { getPlayersRoles } from "@/features/players/queries/player";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
 import { getTeams } from "@/features/teams/queries/team";
 import { createContext, useCallback, useMemo, useState } from "react";
 
@@ -9,7 +9,7 @@ type Player = {
   displayName: string;
   roleId: number;
   teamId: number;
-  avatarUrl: string;
+  avatarUrl: string | null;
 };
 
 export type Role = Awaited<ReturnType<typeof getPlayersRoles>>[number];
@@ -66,11 +66,13 @@ export function PlayersListProvider({
     const rolesMap = new Map(roles.map((r) => [r.id, r]));
     const teamsMap = new Map(teams.map((t) => [t.id, t]));
 
-    return players.map(({ roleId, teamId, ...player }) => ({
-      ...player,
-      role: rolesMap.get(roleId) ?? null,
-      team: teamsMap.get(teamId) ?? null,
-    }));
+    return players
+      .map((player) => ({
+        ...player,
+        role: rolesMap.get(player.roleId) ?? null,
+        team: teamsMap.get(player.teamId) ?? null,
+      }))
+      .sort((a, b) => a.roleId - b.roleId);
   }, [players, teams, roles]);
 
   return (

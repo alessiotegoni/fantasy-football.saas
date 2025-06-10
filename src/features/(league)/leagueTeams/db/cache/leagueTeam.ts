@@ -1,7 +1,7 @@
 import { getIdTag, getLeagueTag, getTeamTag } from "@/cache/helpers";
 import { revalidateTag } from "next/cache";
 
-export type TEAM_TAG = "league-teams" | "team-players";
+export type TEAM_TAG = "league-teams";
 
 export const getLeagueTeamsTag = (leagueId: string) =>
   getLeagueTag("league-teams", leagueId);
@@ -12,9 +12,6 @@ export const getTeamIdTag = (teamId: string) =>
 export const getLeagueMemberTeamTag = (teamId: string) =>
   getTeamTag("league-teams", teamId);
 
-export const getTeamPlayersTag = (teamId: string) =>
-  getTeamTag("team-players", teamId);
-
 export const revalidateLeagueTeamsCache = ({
   teamId,
   leagueId,
@@ -24,8 +21,4 @@ export const revalidateLeagueTeamsCache = ({
 }) => {
   revalidateTag(getLeagueTeamsTag(leagueId));
   revalidateTag(getTeamIdTag(teamId));
-};
-
-export const revalidateTeamPlayersCache = (teamId: string) => {
-  revalidateTag(getTeamPlayersTag(teamId));
 };

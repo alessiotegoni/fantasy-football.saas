@@ -1,22 +1,15 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Slider } from "@/components/ui/slider";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   type GeneralOptionsSchema,
   generalOptionsSchema,
 } from "../../schema/leagueOptions";
 import SubmitButton from "@/components/SubmitButton";
-import OptionTooltip from "../../../../../components/FormFieldTooltip";
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";
+import FormSliderField from "@/components/FormFieldSlider";
 
 export function GeneralOptionsForm({
   leagueId,
@@ -41,74 +34,26 @@ export function GeneralOptionsForm({
         onSubmit={form.handleSubmit(saveGeneralOptions)}
         className="space-y-6"
       >
-        <FormField
-          control={form.control}
+        <FormSliderField<GeneralOptionsSchema>
           name="initialCredits"
-          render={({ field }) => (
-            <FormItem>
-              <OptionTooltip
-                label="Crediti iniziali per squadra"
-                tip="Crediti disponibili per ogni squadra all'inizio della
+          label="Crediti iniziali per squadra"
+          tip="Crediti disponibili per ogni squadra all'inizio della
                         stagione"
-              >
-                <FormControl>
-                  <div className="space-y-3">
-                    <Slider
-                      min={200}
-                      max={5000}
-                      step={50}
-                      value={[field.value]}
-                      onValueChange={(value) => field.onChange(value[0])}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>200</span>
-                      <span className="font-medium text-white">
-                        {field.value} crediti
-                      </span>
-                      <span>5000</span>
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </OptionTooltip>
-            </FormItem>
-          )}
+          min={200}
+          max={5000}
+          step={50}
+          unit="crediti"
         />
 
-        <FormField
-          control={form.control}
+        <FormSliderField<GeneralOptionsSchema>
           name="maxMembers"
-          render={({ field }) => (
-            <FormItem>
-              <OptionTooltip
-                label="Numero massimo membri"
-                tip="Numero massimo di partecipanti che possono unirsi alla
+          label="Numero massimo membri"
+          tip="Numero massimo di partecipanti che possono unirsi alla
                         lega"
-              >
-                <FormControl>
-                  <div className="space-y-3">
-                    <Slider
-                      min={4}
-                      max={20}
-                      step={1}
-                      value={[field.value]}
-                      onValueChange={(value) => field.onChange(value[0])}
-                      className="w-full"
-                    />
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>4</span>
-                      <span className="font-medium text-white">
-                        {field.value} membri
-                      </span>
-                      <span>20</span>
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </OptionTooltip>
-            </FormItem>
-          )}
+          min={4}
+          max={20}
+          step={1}
+          unit="membri"
         />
 
         <SubmitButton loadingText="Salvando impostazioni" isLoading={loading}>

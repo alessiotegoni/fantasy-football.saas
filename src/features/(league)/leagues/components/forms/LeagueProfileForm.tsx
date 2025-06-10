@@ -7,15 +7,14 @@ import LeagueTypeField from "./fields/LeagueTypeField";
 import PasswordField from "./fields/PasswordField";
 import SubmitButton from "@/components/SubmitButton";
 import { updateLeagueProfile } from "../../actions/league";
-import { actionToast } from "@/lib/utils";
 import LeagueNameField from "../../../../../components/NameField";
 import LeagueDescriptionField from "./fields/LeagueDescriptionField";
 import LeagueImageField from "../../../../../components/ImageField";
-import { useIsMobile } from "@/hooks/useMobile";
 import {
   leagueProfileSchema,
   LeagueProfileSchema,
 } from "../../schema/leagueProfile";
+import useActionToast from "@/hooks/useActionToast";
 
 export function LeagueProfileForm({
   leagueId,
@@ -27,7 +26,7 @@ export function LeagueProfileForm({
     imageUrl: string | null;
   };
 }) {
-  const isMobile = useIsMobile();
+  const toast = useActionToast();
 
   const form = useForm<LeagueProfileSchema>({
     resolver: zodResolver(leagueProfileSchema),
@@ -41,7 +40,7 @@ export function LeagueProfileForm({
 
   async function onSubmit(data: LeagueProfileSchema) {
     const res = await updateLeagueProfile(data, leagueId);
-    actionToast(res, { position: isMobile ? "top-center" : "top-right" });
+    toast(res);
   }
 
   return (

@@ -1,11 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import useMultiPlayerSelection from "@/hooks/useMultiPlayerSelection";
+import usePlayerSelection from "@/hooks/usePlayerSelection";
 
-export default function MultiPlayerSelectionButton() {
+export default function PlayerSelectionButton() {
   const { isSelectionMode, startSelectionMode, stopSelectionMode } =
-    useMultiPlayerSelection();
+    usePlayerSelection();
 
   const toggleSelectionMode = () =>
     !isSelectionMode ? startSelectionMode() : stopSelectionMode();

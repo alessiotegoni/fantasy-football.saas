@@ -1,28 +1,31 @@
 "use client";
 import { createContext, useCallback, useState } from "react";
 
-type MultiplayerSelectionContextType = {
+type PlayerSelectionContextType = {
+  leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
   isSelectionMode: boolean;
   selectedPlayerId: string | null;
-  selectedTeamId: number | null;
+  selectedTeamId: string | null;
   startSelectionMode: () => void;
   stopSelectionMode: () => void;
   toggleSelectPlayer: (playerId: string | null) => void;
-  toggleSelectTeam: (teamId: number | null) => void;
+  toggleSelectTeam: (teamId: string | null) => void;
 };
 
-export const MultiplayerSelectionContext =
-  createContext<MultiplayerSelectionContextType | null>(null);
+export const PlayerSelectionContext =
+  createContext<PlayerSelectionContextType | null>(null);
 
-export function MultiPlayerSelectionProvider({
+export function PlayerSelectionProvider({
+  leagueTeamsPromise,
   children,
 }: {
+  leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
   children: React.ReactNode;
 }) {
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
-  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
 
   const startSelectionMode = useCallback(() => setIsSelectionMode(true), []);
   const stopSelectionMode = useCallback(() => {
@@ -34,8 +37,9 @@ export function MultiPlayerSelectionProvider({
   const toggleSelectTeam = useCallback(setSelectedTeamId, []);
 
   return (
-    <MultiplayerSelectionContext.Provider
+    <PlayerSelectionContext.Provider
       value={{
+        leagueTeamsPromise,
         isSelectionMode,
         selectedPlayerId,
         toggleSelectPlayer,
@@ -45,7 +49,7 @@ export function MultiPlayerSelectionProvider({
         stopSelectionMode,
       }}
     >
-      <div className="mt-4">{children}</div>
-    </MultiplayerSelectionContext.Provider>
+      <div className="mb-36 mt-4 lg:mb-8">{children}</div>
+    </PlayerSelectionContext.Provider>
   );
 }

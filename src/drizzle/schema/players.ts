@@ -18,7 +18,7 @@ export const players = pgTable(
     teamId: smallint("team_id")
       .notNull()
       .references(() => teams.id, { onDelete: "set null" }),
-    avatarUrl: text("avatar_url").notNull(),
+    avatarUrl: text("avatar_url"),
   },
   (t) => ({ playerTeamIdIndex: index("idx_players_team_id").on(t.teamId) })
 );
