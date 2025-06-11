@@ -1,6 +1,6 @@
 "use client";
 
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getTeams } from "@/features/teams/queries/team";
 import { createContext, useCallback, useMemo, useState } from "react";
 
@@ -15,7 +15,7 @@ type Player = {
 export type Role = Awaited<ReturnType<typeof getPlayersRoles>>[number];
 export type Team = Awaited<ReturnType<typeof getTeams>>[number];
 
-export type EnrichPlayer = Omit<Player, "roleId" | "teamId"> & {
+export type EnrichedPlayer = Omit<Player, "roleId" | "teamId"> & {
   role: Role | null;
   team: Team | null;
 };
@@ -23,7 +23,7 @@ export type EnrichPlayer = Omit<Player, "roleId" | "teamId"> & {
 type Filters = { search: string; teams: number[]; roles: number[] };
 
 export interface PlayerListContext {
-  players: EnrichPlayer[];
+  players: EnrichedPlayer[];
   filters: Filters;
   handleSetFilters: (filter: Partial<Filters>) => void;
   handleResetFilters: () => void;

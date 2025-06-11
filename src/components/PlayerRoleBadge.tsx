@@ -1,4 +1,4 @@
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { cn } from "@/lib/utils";
 
 type Props = {

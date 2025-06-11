@@ -6,7 +6,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { use, useCallback, useEffect } from "react";
-import { getPlayersRoles } from "../queries/player";
+import { getPlayersRoles } from "../queries/teamsPlayer";
 import usePlayersList from "@/hooks/usePlayersList";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -42,7 +42,7 @@ export default function PlayersRolesFilters({
         <h2>Ruoli:</h2>
         <CarouselContent className="my-1">
           {roles.map((role) => (
-            <CarouselItem key={role.id} className="">
+            <CarouselItem key={role.id} className="basis-auto first:pl-4 pl-2">
               <Button
                 variant="outline"
                 className={cn(

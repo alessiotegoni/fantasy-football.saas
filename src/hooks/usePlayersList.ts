@@ -1,5 +1,5 @@
 import {
-  EnrichPlayer,
+  EnrichedPlayer,
   PlayerListContext,
   playersListContext,
 } from "@/contexts/PlayersListProvider";
@@ -23,7 +23,7 @@ export default function usePlayersList() {
   };
 }
 
-function filterFn(player: EnrichPlayer, filters: PlayerListContext["filters"]) {
+function filterFn(player: EnrichedPlayer, filters: PlayerListContext["filters"]) {
   const matchesSearch = player.displayName
     .toLowerCase()
     .includes(filters.search.toLowerCase());

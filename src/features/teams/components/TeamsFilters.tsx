@@ -43,7 +43,7 @@ export default function TeamsFilters({
         <h2>Squadre:</h2>
         <CarouselContent className="my-1">
           {teams.map((team) => (
-            <CarouselItem key={team.id}>
+            <CarouselItem key={team.id} className="basis-auto first:pl-4 pl-2">
               <Button
                 variant="outline"
                 className={cn(

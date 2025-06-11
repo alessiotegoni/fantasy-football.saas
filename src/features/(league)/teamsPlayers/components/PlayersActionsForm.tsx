@@ -3,7 +3,6 @@
 import { Form } from "@/components/ui/form";
 import useActionToast from "@/hooks/useActionToast";
 import usePlayerSelection from "@/hooks/usePlayerSelection";
-import usePlayersList from "@/hooks/usePlayersList";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultValues, FieldValues, useForm } from "react-hook-form";
 import { ZodSchema } from "zod";
@@ -22,9 +21,7 @@ export default function PlayersActionsForm<T extends FieldValues>({
   children,
 }: Props<T>) {
   const toast = useActionToast();
-
-  const { handleResetFilters } = usePlayersList();
-  const { stopSelectionMode } = usePlayerSelection();
+  const { toggleSelectDialog } = usePlayerSelection();
 
   const form = useForm<T>({ resolver: zodResolver(schema), defaultValues });
 
@@ -32,8 +29,7 @@ export default function PlayersActionsForm<T extends FieldValues>({
     const res = await submitFn(values);
     toast(res);
 
-    stopSelectionMode();
-    handleResetFilters();
+    toggleSelectDialog(false);
   }
 
   return (

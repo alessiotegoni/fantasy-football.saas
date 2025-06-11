@@ -1,15 +1,18 @@
 "use client";
 import { createContext, useCallback, useState } from "react";
+import { EnrichedPlayer } from "./PlayersListProvider";
 
 type PlayerSelectionContextType = {
   leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
+  isDialogOpen: boolean;
   isSelectionMode: boolean;
-  selectedPlayerId: string | null;
+  selectedPlayer: EnrichedPlayer | null;
   selectedTeamId: string | null;
   startSelectionMode: () => void;
   stopSelectionMode: () => void;
-  toggleSelectPlayer: (playerId: string | null) => void;
+  toggleSelectPlayer: (player: EnrichedPlayer | null) => void;
   toggleSelectTeam: (teamId: string | null) => void;
+  toggleSelectDialog: (open: boolean) => void;
 };
 
 export const PlayerSelectionContext =
@@ -22,31 +25,39 @@ export function PlayerSelectionProvider({
   leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
   children: React.ReactNode;
 }) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
-  const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<EnrichedPlayer | null>(
+    null
+  );
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
 
   const startSelectionMode = useCallback(() => setIsSelectionMode(true), []);
   const stopSelectionMode = useCallback(() => {
     setIsSelectionMode(false);
-    setSelectedPlayerId(null);
+    setSelectedPlayer(null);
+    setSelectedTeamId(null);
   }, []);
 
-  const toggleSelectPlayer = useCallback(setSelectedPlayerId, []);
+  const toggleSelectPlayer = useCallback(setSelectedPlayer, []);
   const toggleSelectTeam = useCallback(setSelectedTeamId, []);
+
+  const toggleSelectDialog = useCallback(setIsDialogOpen, []);
 
   return (
     <PlayerSelectionContext.Provider
       value={{
         leagueTeamsPromise,
+        isDialogOpen,
         isSelectionMode,
-        selectedPlayerId,
+        selectedPlayer,
         toggleSelectPlayer,
         selectedTeamId,
         toggleSelectTeam,
         startSelectionMode,
         stopSelectionMode,
+        toggleSelectDialog,
       }}
     >
       <div className="mb-36 mt-4 lg:mb-8">{children}</div>

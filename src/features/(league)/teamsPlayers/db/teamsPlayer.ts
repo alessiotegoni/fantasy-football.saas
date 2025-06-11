@@ -2,26 +2,22 @@ import { db } from "@/drizzle/db";
 import { leagueMemberTeamPlayers } from "@/drizzle/schema";
 import { getErrorObject } from "@/lib/utils";
 import { revalidateLeaguePlayersCache } from "../../leagues/db/cache/league";
-import { revalidateTeamPlayersCache } from "./cache/teamPlayer";
+import { revalidateTeamPlayersCache } from "./cache/teamsPlayer";
 import { and, eq } from "drizzle-orm";
+import { InsertTeamPlayerSchema } from "../schema/teamsPlayer";
 
 export const getError = (
   message = "Errore nell'inserimento del giocatore nel team"
 ) => getErrorObject(message);
 
 export async function insertTeamPlayer(
-  leagueId: string,
-  {
-    memberTeamId,
-    playerId,
-    purchaseCost,
-  }: typeof leagueMemberTeamPlayers.$inferInsert,
+  { leagueId, memberTeamId, player, purchaseCost }: InsertTeamPlayerSchema,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
     .insert(leagueMemberTeamPlayers)
 
-    .values({ memberTeamId, playerId, purchaseCost })
+    .values({ memberTeamId, playerId: player.id, purchaseCost })
     .returning({ playerId: leagueMemberTeamPlayers.playerId });
 
   if (!res.playerId) throw new Error(getError().message);
@@ -34,11 +30,11 @@ export async function insertTeamPlayer(
 
 export async function deleteTeamPlayer(
   {
-    teamId,
+    memberTeamId,
     playerId,
     leagueId,
   }: {
-    teamId: string;
+    memberTeamId: string;
     playerId: string;
     leagueId: string;
   },
@@ -48,7 +44,7 @@ export async function deleteTeamPlayer(
     .delete(leagueMemberTeamPlayers)
     .where(
       and(
-        eq(leagueMemberTeamPlayers.memberTeamId, teamId),
+        eq(leagueMemberTeamPlayers.memberTeamId, memberTeamId),
         eq(leagueMemberTeamPlayers.playerId, playerId)
       )
     )
@@ -57,5 +53,5 @@ export async function deleteTeamPlayer(
   if (!res.playerId) throw new Error(getError().message);
 
   revalidateLeaguePlayersCache(leagueId);
-  revalidateTeamPlayersCache(teamId);
+  revalidateTeamPlayersCache(memberTeamId);
 }

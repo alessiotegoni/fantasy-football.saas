@@ -1,9 +1,9 @@
 "use server";
 
 import { getUserId } from "@/features/users/utils/user";
-import { getError } from "../db/teamPlayer";
-import { canInsertPlayer } from "../permissions/teamPlayer";
-import { insertTeamPlayer } from "../db/teamPlayer";
+import { deleteTeamPlayer, getError } from "../db/teamsPlayer";
+import { canInsertPlayer } from "../permissions/teamsPlayer";
+import { insertTeamPlayer } from "../db/teamsPlayer";
 import { db } from "@/drizzle/db";
 import { updateLeagueTeam } from "../../leagueTeams/db/leagueTeam";
 import { eq } from "drizzle-orm";
@@ -24,7 +24,7 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
   if (!userId) return getError();
 
   const { canCreate, message } = await canInsertPlayer({ ...data, userId });
-  if (!canCreate) return getError(message)
+  if (!canCreate) return getError(message);
 
   const teamCredits = await getTeamCredits(data.memberTeamId);
   const credits = teamCredits - data.purchaseCost;
@@ -36,7 +36,7 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
 
   await db.transaction(async (tx) => {
     await Promise.all([
-      insertTeamPlayer(data.leagueId, data, tx),
+      insertTeamPlayer(data, tx),
       updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
     ]);
   });
@@ -58,7 +58,7 @@ export async function removeTeamPlayer(values: RemoveTeamPlayerSchema) {
 
   await db.transaction(async (tx) => {
     await Promise.all([
-      insertTeamPlayer(data.leagueId, data, tx),
+      deleteTeamPlayer(data),
       updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
     ]);
   });

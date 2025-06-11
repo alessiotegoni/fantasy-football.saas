@@ -23,7 +23,7 @@ import {
   getTacticalModules,
 } from "../../queries/leagueOptions";
 import { Suspense, use } from "react";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 
 type Props = {
   initialData: RosterModulesSchema;

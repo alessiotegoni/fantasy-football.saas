@@ -14,10 +14,10 @@ import {
   updateMarketOptions,
   updateRosterModuleOptions,
 } from "@/features/(league)/leagueOptions/actions/leagueOptions";
-import { useIsMobile } from "./useMobile";
+import useActionToast from "./useActionToast";
 
 export function useLeagueOptions(leagueId: string) {
-  const isMobile = useIsMobile();
+  const toast = useActionToast();
 
   const [loading, startTransition] = useTransition();
 
@@ -30,7 +30,7 @@ export function useLeagueOptions(leagueId: string) {
   ) {
     startTransition(async () => {
       const res = await fn(data, leagueId);
-      actionToast(res, { position: isMobile ? "top-center" : "top-right" });
+      toast(res);
     });
   }
 

@@ -5,6 +5,7 @@ import usePlayersList from "@/hooks/usePlayersList";
 import PlayerCard from "./PlayerCard";
 import React, { Suspense } from "react";
 import { Dialog } from "@/components/ui/dialog";
+import usePlayerSelection from "@/hooks/usePlayerSelection";
 
 export default function VirtualizedPlayersList({
   emptyState,
@@ -14,9 +15,10 @@ export default function VirtualizedPlayersList({
   actionsDialog: React.ReactNode;
 }) {
   const { filteredPlayers } = usePlayersList();
+  const { isDialogOpen, toggleSelectDialog } = usePlayerSelection();
 
   return filteredPlayers.length ? (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={toggleSelectDialog}>
       <VirtualizedList
         items={filteredPlayers}
         estimateSize={80}

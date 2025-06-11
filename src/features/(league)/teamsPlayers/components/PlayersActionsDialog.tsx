@@ -13,6 +13,7 @@ import usePlayerSelection from "@/hooks/usePlayerSelection";
 import PlayersActionsForm from "./PlayersActionsForm";
 import { ZodSchema } from "zod";
 import { DefaultValues, FieldValues } from "react-hook-form";
+import PlayerCard from "./PlayerCard";
 
 type Props<T> = {
   title: string;
@@ -38,14 +39,16 @@ export default function PlayersActionsDialog<T extends FieldValues>({
   onFormSubmit,
 }: Props<T>) {
   const pl = usePlayerSelection();
-  if (!pl.selectedPlayerId) return null;
 
   return (
-    <DialogContent>
+    <DialogContent onCloseAutoFocus={(e) => e.preventDefault()}>
       <DialogHeader>
         <DialogTitle>{title}</DialogTitle>
         <DialogDescription>{description}</DialogDescription>
       </DialogHeader>
+      {pl.selectedPlayer && (
+        <PlayerCard {...pl.selectedPlayer} showSelectButton={false} />
+      )}
       <PlayersActionsForm
         schema={formSchema}
         defaultValues={formDefaultValues}

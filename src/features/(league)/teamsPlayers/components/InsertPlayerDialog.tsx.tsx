@@ -16,7 +16,7 @@ import { addTeamPlayer } from "../actions/teamsPlayer";
 
 export default function InsertPlayerDialog() {
   const { leagueId } = useParams<{ leagueId: string }>();
-  const { selectedPlayerId, selectedTeamId } = usePlayerSelection();
+  const { selectedPlayer, selectedTeamId } = usePlayerSelection();
 
   return (
     <PlayersActionsDialog
@@ -26,7 +26,12 @@ export default function InsertPlayerDialog() {
       formDefaultValues={{
         leagueId,
         memberTeamId: selectedTeamId ?? undefined,
-        playerId: selectedPlayerId ?? undefined,
+        player: selectedPlayer
+          ? {
+              id: selectedPlayer.id,
+              roleId: selectedPlayer.role?.id,
+            }
+          : undefined,
         purchaseCost: 200,
       }}
       onFormSubmit={addTeamPlayer}

@@ -4,10 +4,8 @@ import {
   getLeagueOptionsTag,
   getLeagueRosterOptionsTag,
 } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
-import {
-  getPlayersRoles,
-  getTacticalModules,
-} from "@/features/(league)/leagueOptions/queries/leagueOptions";
+import { getTacticalModules } from "@/features/(league)/leagueOptions/queries/leagueOptions";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueRosterOptionsPage({

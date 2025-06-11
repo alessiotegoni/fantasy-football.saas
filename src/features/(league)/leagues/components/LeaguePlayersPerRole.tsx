@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { formatPlural } from "@/lib/formatters";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/player";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import PlayerRoleBadge, { roleNames } from "@/components/PlayerRoleBadge";
 import { getLeaguePlayersPerRole } from "../queries/league";
 

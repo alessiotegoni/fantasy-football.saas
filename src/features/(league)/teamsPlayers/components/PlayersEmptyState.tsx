@@ -7,7 +7,14 @@ import { NavArrowRight } from "iconoir-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-export default function PlayersEmptyState({ label }: { label: string }) {
+export default function PlayersEmptyState({
+  title = "Nessun giocatore trovato",
+  description = `Se non trovi il giocatore che stai cercando probabilmente e' gia stato
+        acquistato da qualcuno`,
+}: {
+  title?: string;
+  description?: string;
+}) {
   const { leagueId } = useParams();
 
   const { handleResetFilters, filters } = usePlayersList();
@@ -18,9 +25,8 @@ export default function PlayersEmptyState({ label }: { label: string }) {
 
   return (
     <EmptyState
-      title={`Nessun ${label} trovato`}
-      description={`Se non trovi il ${label} che stai cercando probabilmente e' gia stato
-        acquistato da qualcuno`}
+      title={title}
+      description={description}
       renderButton={() =>
         hasFilters ? (
           <Button
