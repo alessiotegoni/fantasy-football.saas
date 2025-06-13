@@ -10,6 +10,7 @@ export type BasePlayer = {
   roleId: number;
   teamId: number;
   avatarUrl: string | null;
+  purchaseCost?: number
 };
 
 export type EnrichedPlayer = BasePlayer & {

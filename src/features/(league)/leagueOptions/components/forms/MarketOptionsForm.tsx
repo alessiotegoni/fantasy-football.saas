@@ -11,6 +11,7 @@ import {
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";
+import FormSliderField from "@/components/FormFieldSlider";
 
 export function MarketOptionsForm({
   leagueId,
@@ -32,6 +33,16 @@ export function MarketOptionsForm({
         onSubmit={form.handleSubmit(saveMarketOptions)}
         className="space-y-6"
       >
+        <FormSliderField<MarketOptionsSchema>
+          name="releasePercentage"
+          label="Percentuale di svincolo"
+          tip="La percentuale di svincolo e' la percentuale con cui verranno calcolati i crediti da restituire alla squadra in caso di svincolo di un giocatore"
+          min={0}
+          max={100}
+          step={5}
+          unit="percentuale"
+        />
+
         <FormField
           control={form.control}
           name="isTradingMarketOpen"

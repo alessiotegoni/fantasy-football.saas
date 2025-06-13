@@ -49,6 +49,10 @@ export const bonusMalusSchema = z.object({
 
 export const marketOptionsSchema = z.object({
   isTradingMarketOpen: z.boolean(),
+  releasePercentage: z
+    .number({ message: "Deve essere un numero valido" })
+    .min(0, "La percentuale di svincolo devono essere un valore tra 0 e 100")
+    .max(100, "La percentuale di svincolo devono essere un valore tra 0 e 100"),
 });
 
 export type GeneralOptionsSchema = z.infer<typeof generalOptionsSchema>;

@@ -9,29 +9,40 @@ import FormSliderField from "@/components/FormFieldSlider";
 import SubmitButton from "@/components/SubmitButton";
 import NumberInput from "@/components/ui/number-input";
 import { useParams } from "next/navigation";
-import { addTeamPlayer } from "../actions/teamsPlayer";
+import { releaseTeamPlayer } from "../actions/teamsPlayer";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
+import { use, useMemo } from "react";
 
-export default function ReleasePlayerDialog() {
-  const { leagueId } = useParams<{ leagueId: string }>();
-  const { selectedPlayer, selectedTeamId } = usePlayerSelection();
+export default function ReleasePlayerDialog({
+  releasePercentagePromise,
+}: {
+  releasePercentagePromise: Promise<number>;
+}) {
+  const { leagueId, teamId: memberTeamId } = useParams<{
+    leagueId: string;
+    teamId: string;
+  }>();
+  const { selectedPlayer } = usePlayerSelection();
+
+  const releasePercentage = use(releasePercentagePromise);
+  const releaseCost = useMemo(
+    () =>
+      Math.floor(((selectedPlayer?.purchaseCost ?? 0) * releasePercentage) / 100),
+    [selectedPlayer]
+  );
 
   return (
-    <PlayersActionsDialog
+    <PlayersActionsDialog<ReleaseTeamPlayerSchema>
       title="Svincola giocatore"
       description="Svincola il giocatore dal team"
       formSchema={releaseTeamPlayerSchema}
       formDefaultValues={{
         leagueId,
-        memberTeamId: selectedTeamId ?? undefined,
-        player: selectedPlayer
-          ? {
-              id: selectedPlayer.id,
-              roleId: selectedPlayer.roleId,
-            }
-          : undefined,
+        memberTeamId,
+        playerId: selectedPlayer?.id ?? undefined,
+        releaseCost
       }}
-      onFormSubmit={addTeamPlayer}
+      onFormSubmit={releaseTeamPlayer}
       renderFormFields={() => (
         <div className="my-5">
           <FormSliderField<ReleaseTeamPlayerSchema>

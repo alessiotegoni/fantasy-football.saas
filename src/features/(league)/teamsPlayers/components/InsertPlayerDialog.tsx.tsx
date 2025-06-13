@@ -19,7 +19,7 @@ export default function InsertPlayerDialog() {
   const { selectedPlayer, selectedTeamId } = usePlayerSelection();
 
   return (
-    <PlayersActionsDialog
+    <PlayersActionsDialog<InsertTeamPlayerSchema>
       title="Aggiungi giocatore"
       description="Aggiungi il giocatore alla rosa di un membro della lega a tua scelta"
       formSchema={insertTeamPlayerSchema}

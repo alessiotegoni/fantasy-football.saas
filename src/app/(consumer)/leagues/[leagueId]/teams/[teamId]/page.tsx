@@ -1,5 +1,9 @@
 import { db } from "@/drizzle/db";
-import { leagueMemberTeamPlayers, players } from "@/drizzle/schema";
+import {
+  leagueMemberTeamPlayers,
+  leagueOptions,
+  players,
+} from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getTeamIdTag } from "@/features/(league)/leagueTeams/db/cache/leagueTeam";
@@ -51,7 +55,9 @@ export default async function LeagueTeamPage({
           </Suspense>
         )}
       />
-      <SuspendedComponent leagueId={leagueId} teamId={teamId} />
+      <Suspense>
+        <SuspendedPlayersList leagueId={leagueId} teamId={teamId} />
+      </Suspense>
     </div>
   );
 }
@@ -94,19 +100,21 @@ async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
   );
 }
 
-async function SuspendedComponent({ leagueId, teamId }: Props) {
+async function SuspendedPlayersList({ leagueId, teamId }: Props) {
   const teamPlayers = await getTeamPlayers(teamId);
 
   return (
-    <Suspense>
-      <PlayersList
-        players={teamPlayers}
-        emptyState={<TeamPlayersEmptyState leagueId={leagueId} />}
-        actionsDialog={<ReleasePlayerDialog />}
-        leagueId={leagueId}
-        enabledFilters={[]}
-      />
-    </Suspense>
+    <PlayersList
+      players={teamPlayers}
+      emptyState={<TeamPlayersEmptyState leagueId={leagueId} />}
+      actionsDialog={
+        <ReleasePlayerDialog
+          releasePercentagePromise={getLeagueReleasePercentage(leagueId)}
+        />
+      }
+      leagueId={leagueId}
+      enabledFilters={[]}
+    />
   );
 }
 
@@ -127,23 +135,6 @@ function TeamPlayersEmptyState({ leagueId }: Pick<Props, "leagueId">) {
   );
 }
 
-async function getTeamPlayers(teamId: string) {
-  "use cache";
-  cacheTag(getTeamPlayersTag(teamId));
-
-  return db
-    .select({
-      id: players.id,
-      displayName: players.displayName,
-      roleId: players.roleId,
-      teamId: players.teamId,
-      avatarUrl: players.avatarUrl,
-    })
-    .from(leagueMemberTeamPlayers)
-    .innerJoin(players, eq(players.id, leagueMemberTeamPlayers.playerId))
-    .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId));
-}
-
 async function getLeagueTeam({ leagueId, teamId }: Props) {
   "use cache";
   cacheTag(getTeamIdTag(teamId));
@@ -156,4 +147,30 @@ async function getLeagueTeam({ leagueId, teamId }: Props) {
     where: (team, { and, eq }) =>
       and(eq(team.leagueId, leagueId), eq(team.id, teamId)),
   });
+}
+
+async function getTeamPlayers(teamId: string) {
+  "use cache";
+  cacheTag(getTeamPlayersTag(teamId));
+
+  return db
+    .select({
+      id: players.id,
+      displayName: players.displayName,
+      roleId: players.roleId,
+      teamId: players.teamId,
+      avatarUrl: players.avatarUrl,
+      purchaseCost: leagueMemberTeamPlayers.purchaseCost,
+    })
+    .from(leagueMemberTeamPlayers)
+    .innerJoin(players, eq(players.id, leagueMemberTeamPlayers.playerId))
+    .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId));
+}
+
+async function getLeagueReleasePercentage(leagueId: string) {
+  const [res] = await db
+    .select({ releasePercentage: leagueOptions.releasePercentage })
+    .from(leagueOptions);
+
+  return res.releasePercentage;
 }

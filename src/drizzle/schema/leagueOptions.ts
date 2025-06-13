@@ -38,6 +38,7 @@ export const leagueOptions = pgTable(
     isTradingMarketOpen: boolean("trading_market_open")
       .notNull()
       .default(false),
+    releasePercentage: smallint("release_percentage").notNull().default(50),
   },
   () => ({
     leaguesInitialCreditsCheck: check(

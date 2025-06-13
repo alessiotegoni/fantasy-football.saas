@@ -25,9 +25,8 @@ export const releaseTeamPlayerSchema = z
     playerId: z.string(),
     releaseCost: z
       .number({ message: "Deve essere un numero" })
-      .nonnegative(
-        "Il numero dei crediti di svincolo deve essere maggiore o pari a zero"
-      ),
+      .nonnegative("I crediti di svincolo devono essere un valore tra 0 e 5000")
+      .max(5000),
   })
   .merge(teamPlayerSchema);
 

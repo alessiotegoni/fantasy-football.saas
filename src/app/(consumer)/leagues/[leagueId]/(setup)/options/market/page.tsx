@@ -30,6 +30,7 @@ async function getMarketOptions(leagueId: string) {
 
   const marketOptions = await db.query.leagueOptions.findFirst({
     columns: {
+      releasePercentage: true,
       isTradingMarketOpen: true,
     },
     where: (options, { eq }) => eq(options.leagueId, leagueId),

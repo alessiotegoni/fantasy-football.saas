@@ -62,6 +62,8 @@ export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
       updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
     ]);
   });
+
+  return { error: false, message: "Giocatore svincolato con successo!" };
 }
 
 function getTeamCredits(teamId: string) {
