@@ -2,27 +2,25 @@
 
 import PlayersActionsDialog from "./PlayersActionsDialog";
 import {
-  insertTeamPlayerSchema,
-  InsertTeamPlayerSchema,
+  releaseTeamPlayerSchema,
+  type ReleaseTeamPlayerSchema,
 } from "@/features/(league)/teamsPlayers/schema/teamsPlayer";
-import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
 import FormSliderField from "@/components/FormFieldSlider";
 import SubmitButton from "@/components/SubmitButton";
-import { use } from "react";
 import NumberInput from "@/components/ui/number-input";
 import { useParams } from "next/navigation";
 import { addTeamPlayer } from "../actions/teamsPlayer";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
 
-export default function InsertPlayerDialog() {
+export default function ReleasePlayerDialog() {
   const { leagueId } = useParams<{ leagueId: string }>();
   const { selectedPlayer, selectedTeamId } = usePlayerSelection();
 
   return (
     <PlayersActionsDialog
-      title="Aggiungi giocatore"
-      description="Aggiungi il giocatore alla rosa di un membro della lega a tua scelta"
-      formSchema={insertTeamPlayerSchema}
+      title="Svincola giocatore"
+      description="Svincola il giocatore dal team"
+      formSchema={releaseTeamPlayerSchema}
       formDefaultValues={{
         leagueId,
         memberTeamId: selectedTeamId ?? undefined,
@@ -32,21 +30,14 @@ export default function InsertPlayerDialog() {
               roleId: selectedPlayer.roleId,
             }
           : undefined,
-        purchaseCost: 200,
       }}
       onFormSubmit={addTeamPlayer}
-      renderFormFields={({ toggleSelectTeam, leagueTeamsPromise }) => (
-        <div className="my-5 space-y-7">
-          <div className="flex justify-center">
-            <TeamsSelectField
-              teams={use(leagueTeamsPromise)}
-              onSelect={toggleSelectTeam}
-            />
-          </div>
-          <FormSliderField<InsertTeamPlayerSchema>
-            name="purchaseCost"
-            label="Crediti spesi"
-            tip="I crediti spesi dalla squadra verranno automaticamente sottratti dai suoi crediti totali"
+      renderFormFields={() => (
+        <div className="my-5">
+          <FormSliderField<ReleaseTeamPlayerSchema>
+            name="releaseCost"
+            label="Crediti di svincolo"
+            tip="I crediti di svincolo verranno automaticamente aggiunti ai crediti totali della squadra"
             min={0}
             max={5000}
             step={1}
@@ -55,13 +46,12 @@ export default function InsertPlayerDialog() {
           />
         </div>
       )}
-      renderSubmitButton={({ selectedTeamId }) => (
+      renderSubmitButton={() => (
         <SubmitButton
-          loadingText="Aggiungo giocatore"
+          loadingText="Svincola giocatore"
           className="w-full sm:w-fit"
-          disabled={!selectedTeamId}
         >
-          Aggiungi giocatore
+          Svincola giocatore
         </SubmitButton>
       )}
     />

@@ -1,11 +1,11 @@
 "use client";
 
 import SearchBar from "@/components/SearchBar";
-import usePlayersList from "@/hooks/usePlayersList";
+import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
 import { useCallback } from "react";
 
 export default function PlayersListSearchBar() {
-  const { filters, handleSetFilters } = usePlayersList();
+  const { filters, handleSetFilters } = usePlayersFilters();
 
   const handleSearchFilter = useCallback(
     (search: string) => handleSetFilters({ search }),

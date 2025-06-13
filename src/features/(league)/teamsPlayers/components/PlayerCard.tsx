@@ -4,25 +4,25 @@ import Avatar from "@/components/Avatar";
 import { Minus, Plus, User } from "iconoir-react";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
-import usePlayerSelection from "@/hooks/usePlayerSelection";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { EnrichedPlayer } from "@/contexts/PlayersListProvider";
 import { useParams } from "next/navigation";
+import { EnrichedPlayer } from "@/contexts/PlayersProvider";
+import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
 
-type Props = EnrichedPlayer & { showSelectButton?: boolean };
+type Props = EnrichedPlayer & {
+  showSelectButton?: boolean;
+  // onSelect?: (player: EnrichedPlayer) => void;
+};
 
-export default memo(function PlayerCard(player: Props) {
+export default memo(function PlayerCard({
+  showSelectButton = true,
+  // onSelect,
+  ...player
+}: Props) {
   const { teamId } = useParams();
+  const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection()
 
-  const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection();
-
-  const showSelectButton = [
-    player.showSelectButton ?? true,
-    isSelectionMode,
-    player.team,
-    player.role,
-  ].every(Boolean);
 
   return (
     <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-border">
@@ -43,7 +43,7 @@ export default memo(function PlayerCard(player: Props) {
         </div>
 
         <div className="flex flex-col">
-          <span className="text-sm font-semibol">{player.displayName}</span>
+          <span className="text-sm font-semibold">{player.displayName}</span>
           {player.team && (
             <span className="text-xs text-muted-foreground">
               {player.team.displayName}
@@ -52,7 +52,7 @@ export default memo(function PlayerCard(player: Props) {
         </div>
       </div>
 
-      {showSelectButton && (
+      {isSelectionMode && showSelectButton && (
         <DialogTrigger asChild>
           <Button
             className="w-fit rounded-full size-8"
@@ -66,12 +66,6 @@ export default memo(function PlayerCard(player: Props) {
           </Button>
         </DialogTrigger>
       )}
-
-      {/* RIGHT - Stats
-      <div className="flex flex-col text-sm items-end">
-        <span className="text-gray-900 font-medium">{fm.toFixed(2)}</span>
-        <span className="text-gray-500">{fvmp}</span>
-      </div> */}
     </div>
   );
 });

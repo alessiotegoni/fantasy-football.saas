@@ -9,11 +9,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import usePlayerSelection from "@/hooks/usePlayerSelection";
 import PlayersActionsForm from "./PlayersActionsForm";
 import { ZodSchema } from "zod";
 import { DefaultValues, FieldValues } from "react-hook-form";
 import PlayerCard from "./PlayerCard";
+import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
 
 type Props<T> = {
   title: string;

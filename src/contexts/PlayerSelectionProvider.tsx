@@ -1,6 +1,6 @@
 "use client";
-import { createContext, useCallback, useState } from "react";
-import { EnrichedPlayer } from "./PlayersListProvider";
+import { createContext, useCallback, useContext, useState } from "react";
+import { EnrichedPlayer } from "./PlayersProvider";
 
 type PlayerSelectionContextType = {
   leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
@@ -63,4 +63,14 @@ export function PlayerSelectionProvider({
       <div className="mb-36 mt-4 lg:mb-8">{children}</div>
     </PlayerSelectionContext.Provider>
   );
+}
+
+export function usePlayerSelection() {
+  const context = useContext(PlayerSelectionContext);
+  if (!context) {
+    throw new Error(
+      "usePlayerSelection must be used within PlayerSelectionContext"
+    );
+  }
+  return context;
 }

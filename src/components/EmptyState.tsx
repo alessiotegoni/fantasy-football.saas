@@ -1,4 +1,5 @@
 import { Search } from "iconoir-react";
+import { Button } from "./ui/button";
 
 type Props = {
   icon?: React.ElementType;
@@ -23,7 +24,11 @@ export default function EmptyState({
       </div>
       <h3 className="text-xl font-heading mb-2">{title}</h3>
       <p className="text-muted-foreground">{description}</p>
-      {renderButton?.()}
+      {renderButton && (
+        <Button asChild className="w-fit mt-7">
+          {renderButton()}
+        </Button>
+      )}
     </div>
   );
 }

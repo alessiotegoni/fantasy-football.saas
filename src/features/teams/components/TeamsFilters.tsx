@@ -6,11 +6,12 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { use, useCallback, useEffect } from "react";
-import { getTeams } from "../queries/team";
-import usePlayersList from "@/hooks/usePlayersList";
+import { getTeams } from "@/features/teams/queries/team";
+import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
+import { usePlayersEnrichment } from "@/contexts/PlayersEnrichmentProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Team } from "@/contexts/PlayersListProvider";
+import { Team } from "@/contexts/PlayersProvider";
 
 export default function TeamsFilters({
   teamsPromise,
@@ -18,24 +19,25 @@ export default function TeamsFilters({
   teamsPromise: ReturnType<typeof getTeams>;
 }) {
   const teams = use(teamsPromise);
+  const { setTeams } = usePlayersEnrichment();
+  const { filters, handleSetFilters, isFilterEnabled } = usePlayersFilters();
 
   useEffect(() => {
     setTeams(teams);
-  }, [teams]);
+  }, [teams, setTeams]);
 
-  const { filters, handleSetFilters, setTeams } = usePlayersList();
+  if (!isFilterEnabled("teams")) return null
 
   const handleTeamsFilter = useCallback(
     ({ id }: Team) => {
-      const teams = filters.teams;
-      const updatedTeams = teams.includes(id)
-        ? teams.filter((teamId) => teamId !== id)
-        : [...teams, id];
+      const currentTeams = filters.teams;
+      const updatedTeams = currentTeams.includes(id)
+        ? currentTeams.filter((teamId) => teamId !== id)
+        : [...currentTeams, id];
       handleSetFilters({ teams: updatedTeams });
     },
-    [filters.teams]
+    [filters.teams, handleSetFilters]
   );
-
 
   return (
     <Carousel>
@@ -52,7 +54,7 @@ export default function TeamsFilters({
                     "bg-gradient-to-r from-primary to-secondary text-primary-foreground"
                 )}
                 size="sm"
-                onClick={handleTeamsFilter.bind(null, team)}
+                onClick={() => handleTeamsFilter(team)}
               >
                 {team.displayName}
               </Button>

@@ -1,8 +1,8 @@
 "use client";
 
 import { Form } from "@/components/ui/form";
+import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
 import useActionToast from "@/hooks/useActionToast";
-import usePlayerSelection from "@/hooks/usePlayerSelection";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultValues, FieldValues, useForm } from "react-hook-form";
 import { ZodSchema } from "zod";
@@ -25,7 +25,7 @@ export default function PlayersActionsForm<T extends FieldValues>({
 
   const form = useForm<T>({ resolver: zodResolver(schema), defaultValues });
 
-  async function onSubmit(values: T) {
+  async function handleSubmit(values: T) {
     const res = await submitFn(values);
     toast(res);
 
@@ -34,7 +34,7 @@ export default function PlayersActionsForm<T extends FieldValues>({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>{children}</form>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>{children}</form>
     </Form>
   );
 }

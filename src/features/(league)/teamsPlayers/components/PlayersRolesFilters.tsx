@@ -6,11 +6,12 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { use, useCallback, useEffect } from "react";
-import { getPlayersRoles } from "../queries/teamsPlayer";
-import usePlayersList from "@/hooks/usePlayersList";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Role } from "@/contexts/PlayersListProvider";
+import { usePlayersEnrichment } from "@/contexts/PlayersEnrichmentProvider";
+import { Role } from "@/contexts/PlayersProvider";
 
 export default function PlayersRolesFilters({
   playersRolesPromise,
@@ -18,22 +19,24 @@ export default function PlayersRolesFilters({
   playersRolesPromise: ReturnType<typeof getPlayersRoles>;
 }) {
   const roles = use(playersRolesPromise);
+  const { setRoles } = usePlayersEnrichment();
+  const { filters, handleSetFilters, isFilterEnabled } = usePlayersFilters();
 
   useEffect(() => {
     setRoles(roles);
-  }, [roles]);
+  }, [roles, setRoles]);
 
-  const { filters, handleSetFilters, setRoles } = usePlayersList();
+  if (!isFilterEnabled("roles")) return null;
 
   const handleRolesFilter = useCallback(
     ({ id }: Role) => {
-      const roles = filters.roles;
-      const updatedRoles = roles.includes(id)
-        ? roles.filter((roleId) => roleId !== id)
-        : [...roles, id];
+      const currentRoles = filters.roles;
+      const updatedRoles = currentRoles.includes(id)
+        ? currentRoles.filter((roleId) => roleId !== id)
+        : [...currentRoles, id];
       handleSetFilters({ roles: updatedRoles });
     },
-    [filters.roles]
+    [filters.roles, handleSetFilters]
   );
 
   return (
@@ -51,7 +54,7 @@ export default function PlayersRolesFilters({
                     "bg-gradient-to-r from-primary to-secondary text-primary-foreground"
                 )}
                 size="sm"
-                onClick={handleRolesFilter.bind(null, role)}
+                onClick={() => handleRolesFilter(role)}
               >
                 {role.name}
               </Button>

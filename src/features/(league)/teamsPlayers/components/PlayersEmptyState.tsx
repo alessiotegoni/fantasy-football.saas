@@ -2,7 +2,7 @@
 
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
-import usePlayersList from "@/hooks/usePlayersList";
+import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
 import { NavArrowRight } from "iconoir-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -17,11 +17,8 @@ export default function PlayersEmptyState({
 }) {
   const { leagueId } = useParams();
 
-  const { handleResetFilters, filters } = usePlayersList();
-
-  const hasFilters = Boolean(
-    filters.search || filters.roles.length || filters.teams.length
-  );
+  const { filters, handleResetFilters } = usePlayersFilters();
+  const hasFilters = Object.values(filters).some(Boolean);
 
   return (
     <EmptyState
@@ -31,7 +28,7 @@ export default function PlayersEmptyState({
         hasFilters ? (
           <Button
             variant="gradient"
-            className="w-fit mt-7 gap-4 !px-7"
+            className="gap-4 !px-7"
             onClick={handleResetFilters}
           >
             Resetta filtri
@@ -39,7 +36,7 @@ export default function PlayersEmptyState({
         ) : (
           <Button
             variant="gradient"
-            className="w-fit mt-7 gap-2 !px-5"
+            className="gap-2 !px-5"
             onClick={handleResetFilters}
             asChild
           >

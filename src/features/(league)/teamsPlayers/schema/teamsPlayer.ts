@@ -20,16 +20,16 @@ export const insertTeamPlayerSchema = z
       ),
   })
   .merge(teamPlayerSchema);
-export const removeTeamPlayerSchema = z
+export const releaseTeamPlayerSchema = z
   .object({
     playerId: z.string(),
     releaseCost: z
       .number({ message: "Deve essere un numero" })
-      .positive(
-        "Il numero dei crediti di svincolo deve essere maggiore a zero"
+      .nonnegative(
+        "Il numero dei crediti di svincolo deve essere maggiore o pari a zero"
       ),
   })
   .merge(teamPlayerSchema);
 
 export type InsertTeamPlayerSchema = z.infer<typeof insertTeamPlayerSchema>;
-export type RemoveTeamPlayerSchema = z.infer<typeof removeTeamPlayerSchema>;
+export type ReleaseTeamPlayerSchema = z.infer<typeof releaseTeamPlayerSchema>;

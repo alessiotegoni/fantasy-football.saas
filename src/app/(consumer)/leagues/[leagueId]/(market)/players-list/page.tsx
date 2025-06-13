@@ -5,13 +5,13 @@ import {
   players,
 } from "@/drizzle/schema";
 import { getLeagueAvailablePlayersTag } from "@/features/(league)/leagues/db/cache/league";
+import InsertPlayerDialog from "@/features/(league)/teamsPlayers/components/InsertPlayerDialog.tsx";
+import PlayersEmptyState from "@/features/(league)/teamsPlayers/components/PlayersEmptyState";
+import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
 import { eq, notInArray } from "drizzle-orm";
 import { ArrowLeft } from "iconoir-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
-import PlayersEmptyState from "@/features/(league)/teamsPlayers/components/PlayersEmptyState";
-import InsertPlayerDialog from "@/features/(league)/teamsPlayers/components/InsertPlayerDialog.tsx";
-import PlayerListWrapper from "@/features/(league)/teamsPlayers/components/PlayerListWrapper";
 
 export default async function LeaguePlayersListPage({
   params,
@@ -32,11 +32,12 @@ export default async function LeaguePlayersListPage({
       <h2 className="hidden md:block text-3xl font-heading mb-8">
         Listone giocatori
       </h2>
-      <PlayerListWrapper
-        players={players}
+      <PlayersList
         leagueId={leagueId}
+        players={players}
         actionsDialog={<InsertPlayerDialog />}
         emptyState={<PlayersEmptyState />}
+        virtualized
       />
     </div>
   );

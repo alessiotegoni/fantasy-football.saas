@@ -12,8 +12,8 @@ import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
 import {
   insertTeamPlayerSchema,
   InsertTeamPlayerSchema,
-  removeTeamPlayerSchema,
-  RemoveTeamPlayerSchema,
+  releaseTeamPlayerSchema,
+  ReleaseTeamPlayerSchema,
 } from "../schema/teamsPlayer";
 
 export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
@@ -44,8 +44,8 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
   return { error: false, message: "Giocatore aggiunto con successo!" };
 }
 
-export async function removeTeamPlayer(values: RemoveTeamPlayerSchema) {
-  const { success, data } = removeTeamPlayerSchema.safeParse(values);
+export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
+  const { success, data } = releaseTeamPlayerSchema.safeParse(values);
   if (!success) return getError();
 
   const userId = await getUserId();
