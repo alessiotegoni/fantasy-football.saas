@@ -19,6 +19,7 @@ type Props = {
   showIsUserTeam?: boolean;
   renderTeamPpr?: () => React.ReactNode;
 };
+
 export default function LeagueTeamCard({
   team,
   teamUserId,
@@ -37,7 +38,6 @@ export default function LeagueTeamCard({
         className
       )}
     >
-      {/* Left side: Info */}
       <Link
         href={`/leagues/${leagueId}/teams/${team.id}`}
         className="flex items-center gap-4 grow"

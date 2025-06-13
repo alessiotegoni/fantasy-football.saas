@@ -1,9 +1,7 @@
-import Avatar from "@/components/Avatar";
 import Link from "next/link";
 import { getLeagueTeams } from "../queries/leagueTeam";
 import { NavArrowRight, Search } from "iconoir-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import LeagueTeamCard from "./LeagueTeamCard";
 
 export default function TeamsList({

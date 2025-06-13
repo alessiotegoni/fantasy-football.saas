@@ -28,7 +28,7 @@ export default async function LeagueTeamPage({
 }) {
   const { leagueId, teamId } = await params;
 
-  const team = await getLeagueTeam(leagueId, teamId);
+  const team = await getLeagueTeam({ leagueId, teamId });
   if (!team) notFound();
 
   return (
@@ -144,7 +144,7 @@ async function getTeamPlayers(teamId: string) {
     .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId));
 }
 
-async function getLeagueTeam(leagueId: string, teamId: string) {
+async function getLeagueTeam({ leagueId, teamId }: Props) {
   "use cache";
   cacheTag(getTeamIdTag(teamId));
 
@@ -154,6 +154,6 @@ async function getLeagueTeam(leagueId: string, teamId: string) {
       leagueMemberId: false,
     },
     where: (team, { and, eq }) =>
-      and(eq(team.leagueId, leagueId), eq(team.leagueId, leagueId)),
+      and(eq(team.leagueId, leagueId), eq(team.id, teamId)),
   });
 }
