@@ -1,9 +1,7 @@
 import { db } from "@/drizzle/db";
-import { getLeagueTradeTag } from "@/features/(league)/trades/db/cache/trade";
-import { getUserTeamId } from "@/features/users/queries/user";
-import { getUserId } from "@/features/users/utils/user";
+import TradesList from "@/features/(league)/trades/components/TradesList";
+import { getLeagueTradesTag } from "@/features/(league)/trades/db/cache/trade";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export default async function LeagueTradesPage({
@@ -13,31 +11,17 @@ export default async function LeagueTradesPage({
 }) {
   return (
     <Suspense>
-      <SuspenseBoundary leagueIdPromise={params.then((p) => p.leagueId)} />
+      <TradesList
+        leagueIdPromise={params.then((p) => p.leagueId)}
+        getTrades={getLeagueTrades}
+      />
     </Suspense>
   );
 }
 
-async function SuspenseBoundary({
-  leagueIdPromise,
-}: {
-  leagueIdPromise: Promise<string>;
-}) {
-  const [leagueId, userId] = await Promise.all([leagueIdPromise, getUserId()]);
-
-  if (!userId) return;
-
-  const userTeamId = await getUserTeamId({ leagueId, userId });
-  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
-
-  const trades = await getLeagueTrades(leagueId, userTeamId);
-
-  return <></>;
-}
-
 async function getLeagueTrades(leagueId: string, userTeamId: string) {
   "use cache";
-  cacheTag(getLeagueTradeTag(leagueId));
+  cacheTag(getLeagueTradesTag(leagueId));
 
   const trades = await db.query.leagueTradeProposals.findMany({
     columns: {
@@ -84,8 +68,9 @@ async function getLeagueTrades(leagueId: string, userTeamId: string) {
 
   cacheTag(
     ...trades.flatMap((trade) => [trade.proposerTeamId, trade.receiverTeamId]),
-    ...trades
-      .flatMap((trade) => trade.proposalPlayers.map((player) => player.playerId))
+    ...trades.flatMap((trade) =>
+      trade.proposalPlayers.map((player) => player.playerId)
+    )
   );
 
   return trades;
