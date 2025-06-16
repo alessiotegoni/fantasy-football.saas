@@ -4,17 +4,15 @@ import { NavArrowRight, Search } from "iconoir-react";
 import { Button } from "@/components/ui/button";
 import LeagueTeamCard from "./LeagueTeamCard";
 
-export default function TeamsList({
-  teams,
-  leagueId,
-  teamUserId,
-}: {
+type Props = {
   teams: Awaited<ReturnType<typeof getLeagueTeams>>;
   leagueId: string;
   teamUserId?: string;
-}) {
+};
+
+export default function TeamsList({ teams, leagueId, teamUserId }: Props) {
   const hasTeam = teams.some((team) => team.userId === teamUserId);
-  const sortedTeams = sortTeams(teams, teamUserId);
+  const sortedTeams = sortTeams({ teams, teamUserId });
 
   return (
     <>
@@ -65,10 +63,7 @@ function CreateTeamBanner({ leagueId }: { leagueId: string }) {
   );
 }
 
-function sortTeams(
-  teams: Awaited<ReturnType<typeof getLeagueTeams>>,
-  teamUserId?: string
-) {
+function sortTeams({ teams, teamUserId }: Omit<Props, "leagueId">) {
   return teamUserId
     ? teams.toSorted((a, b) => {
         if (a.userId === teamUserId) return -1;

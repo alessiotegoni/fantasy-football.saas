@@ -24,6 +24,7 @@ export default function PlayerRoleBadge({ role, className }: Props) {
 }
 
 export const roleNames: Record<string, { singular: string; plural: string }> = {
+  Presidente: { singular: "presidente", plural: "presidenti" },
   Portiere: { singular: "portiere", plural: "portieri" },
   Difensore: { singular: "difensore", plural: "difensori" },
   Centrocampista: { singular: "centrocampista", plural: "centrocampisti" },
