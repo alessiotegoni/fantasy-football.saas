@@ -1,9 +1,9 @@
 import {
   pgTable,
-  uuid,
   smallint,
   uniqueIndex,
   index,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { players } from "./players";
@@ -13,7 +13,7 @@ import { bonusMalusTypes } from "./bonusMalusTypes";
 export const matchdayBonusMalus = pgTable(
   "matchday_bonus_malus",
   {
-    playerId: uuid("player_id")
+    playerId: integer("player_id")
       .notNull()
       .references(() => players.id, { onDelete: "cascade" }),
     matchdayId: smallint("matchday_id")

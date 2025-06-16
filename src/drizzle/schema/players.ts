@@ -1,4 +1,4 @@
-import { pgTable, text, smallint, uuid, index } from "drizzle-orm/pg-core";
+import { pgTable, text, smallint, uuid, index, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { teams } from "./teams";
 import { playerRoles } from "./playerRoles";
@@ -8,7 +8,7 @@ import { leagueMemberTeamPlayers } from "./leagueMemberTeamPlayers";
 export const players = pgTable(
   "players",
   {
-    id: uuid("id").primaryKey().defaultRandom(),
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     firstName: text("first_name").notNull(),
     lastName: text("last_name").notNull(),
     displayName: text("display_name").notNull(),

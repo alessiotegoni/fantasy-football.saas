@@ -3,8 +3,8 @@ import {
   uuid,
   smallint,
   timestamp,
-  primaryKey,
   pgEnum,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { auctions } from "./auctions";
@@ -26,7 +26,7 @@ export const auctionNominations = pgTable("auction_nominations", {
   nominatedBy: uuid("nominated_by")
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
-  playerId: uuid("player_id")
+  playerId: integer("player_id")
     .notNull()
     .references(() => players.id, { onDelete: "cascade" }),
   initialPrice: smallint("initial_price").notNull().default(1),

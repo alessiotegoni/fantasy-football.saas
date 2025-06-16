@@ -5,7 +5,7 @@ import { getTeams } from "@/features/teams/queries/team";
 import { createContext, useContext } from "react";
 
 export type BasePlayer = {
-  id: string;
+  id: number;
   displayName: string;
   roleId: number;
   teamId: number;

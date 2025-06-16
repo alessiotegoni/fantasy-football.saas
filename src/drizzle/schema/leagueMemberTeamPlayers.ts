@@ -1,4 +1,4 @@
-import { pgTable, uuid, smallint, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, uuid, smallint, uniqueIndex, integer } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { players } from "./players";
@@ -9,7 +9,7 @@ export const leagueMemberTeamPlayers = pgTable(
     memberTeamId: uuid("member_team_id")
       .primaryKey()
       .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
-    playerId: uuid("player_id")
+    playerId: integer("player_id")
       .notNull()
       .references(() => players.id, { onDelete: "cascade" }),
     purchaseCost: smallint("purchase_cost").notNull().default(1),
