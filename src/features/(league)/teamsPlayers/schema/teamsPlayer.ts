@@ -10,7 +10,7 @@ export type TeamPlayerSchema = z.infer<typeof teamPlayerSchema>;
 export const insertTeamPlayerSchema = z
   .object({
     player: z.object({
-      id: z.string(),
+      id: z.number(),
       roleId: z.number().positive(),
     }),
     purchaseCost: z
@@ -22,7 +22,7 @@ export const insertTeamPlayerSchema = z
   .merge(teamPlayerSchema);
 export const releaseTeamPlayerSchema = z
   .object({
-    playerId: z.string(),
+    playerId: z.number(),
     releaseCost: z
       .number({ message: "Deve essere un numero" })
       .nonnegative("I crediti di svincolo devono essere un valore tra 0 e 5000")
