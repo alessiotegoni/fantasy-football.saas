@@ -10,6 +10,7 @@ import {
   List,
   LotOfCash,
   Community,
+  CoinsSwap,
 } from "iconoir-react";
 import { Star } from "iconoir-react/solid";
 import {
@@ -175,7 +176,12 @@ export const publicSections = [
         icon: Community,
       },
       {
-        name: "Scambi",
+        name: "I miei scambi",
+        href: "/leagues/:leagueId/my-trades",
+        icon: CoinsSwap,
+      },
+      {
+        name: "Scambi della lega",
         href: "/leagues/:leagueId/trades",
         icon: Refresh,
       },

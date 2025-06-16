@@ -7,7 +7,7 @@ import { LEAGUE_OPTIONS_TAG } from "@/features/(league)/options/db/cache/leagueO
 import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueMember";
 import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
-import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trades";
+import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trade";
 
 export type CACHE_TAG =
   | GLOBAL_TAG

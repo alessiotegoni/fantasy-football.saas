@@ -27,7 +27,9 @@ export default function ReleasePlayerDialog({
   const releasePercentage = use(releasePercentagePromise);
   const releaseCost = useMemo(
     () =>
-      Math.floor(((selectedPlayer?.purchaseCost ?? 0) * releasePercentage) / 100),
+      Math.floor(
+        ((selectedPlayer?.purchaseCost ?? 0) * releasePercentage) / 100
+      ),
     [selectedPlayer]
   );
 
@@ -40,14 +42,14 @@ export default function ReleasePlayerDialog({
         leagueId,
         memberTeamId,
         playerId: selectedPlayer?.id ?? undefined,
-        releaseCost
+        releaseCost,
       }}
       onFormSubmit={releaseTeamPlayer}
       renderFormFields={() => (
         <div className="my-5">
           <FormSliderField<ReleaseTeamPlayerSchema>
             name="releaseCost"
-            label="Crediti di svincolo"
+            label={`Crediti di svincolo (${releasePercentage}%)`}
             tip="I crediti di svincolo verranno automaticamente aggiunti ai crediti totali della squadra"
             min={0}
             max={5000}

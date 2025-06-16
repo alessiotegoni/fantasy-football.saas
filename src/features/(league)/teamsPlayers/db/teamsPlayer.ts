@@ -35,7 +35,7 @@ export async function deleteTeamPlayer(
     leagueId,
   }: {
     memberTeamId: string;
-    playerId: string;
+    playerId: number;
     leagueId: string;
   },
   tx: Omit<typeof db, "$client"> = db
