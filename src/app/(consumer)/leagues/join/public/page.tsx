@@ -8,7 +8,7 @@ import { db } from "@/drizzle/db";
 import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
 import { count, eq, sql } from "drizzle-orm";
 import { VirtualizedLeaguesList } from "@/features/(league)/leagues/components/VirtualizedLeagueList";
-import { getLeagueMembersTag } from "@/features/(league)/leagueMembers/db/cache/leagueMember";
+import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
 
 export default async function PublicLeaguesPage() {
   const publicLeagues = await getPublicLeagues();

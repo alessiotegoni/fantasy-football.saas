@@ -1,9 +1,9 @@
 import { db } from "@/drizzle/db";
-import { GeneralOptionsForm } from "@/features/(league)/leagueOptions/components/forms/GeneralOptionsForm";
+import { GeneralOptionsForm } from "@/features/(league)/options/components/forms/GeneralOptionsForm";
 import {
   getLeagueGeneralOptionsTag,
   getLeagueOptionsTag,
-} from "@/features/(league)/leagueOptions/db/cache/leagueOption";
+} from "@/features/(league)/options/db/cache/leagueOption";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueGeneralOptionsPage({

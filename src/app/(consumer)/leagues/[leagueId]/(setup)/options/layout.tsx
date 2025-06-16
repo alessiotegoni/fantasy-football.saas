@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Disclaimer from "@/components/Disclaimer";
-import LeagueOptionLink from "@/features/(league)/leagueOptions/components/LeagueOptionLink";
+import LeagueOptionLink from "@/features/(league)/options/components/LeagueOptionLink";
 
 export default async function LeagueOptionsLayout({
   children,

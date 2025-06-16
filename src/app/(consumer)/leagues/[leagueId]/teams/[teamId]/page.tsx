@@ -6,7 +6,6 @@ import {
 } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getTeamIdTag } from "@/features/(league)/leagueTeams/db/cache/leagueTeam";
 import { notFound } from "next/navigation";
 import { getTeamPlayersTag } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { Suspense } from "react";
@@ -21,9 +20,10 @@ import {
   getTeamPlayerPerRoles,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
-import LeagueTeamCard from "@/features/(league)/leagueTeams/components/LeagueTeamCard";
 import { cn } from "@/lib/utils";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
+import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
+import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 
 export default async function LeagueTeamPage({
   params,

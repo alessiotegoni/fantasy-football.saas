@@ -1,10 +1,10 @@
 import { db } from "@/drizzle/db";
-import { BonusMalusOptionsForm } from "@/features/(league)/leagueOptions/components/forms/BonusMalusOptionsForm";
+import { BonusMalusOptionsForm } from "@/features/(league)/options/components/forms/BonusMalusOptionsForm";
 import {
   getLeagueBonusMalusOptionsTag,
   getLeagueOptionsTag,
-} from "@/features/(league)/leagueOptions/db/cache/leagueOption";
-import { getBonusMaluses } from "@/features/(league)/leagueOptions/queries/leagueOptions";
+} from "@/features/(league)/options/db/cache/leagueOption";
+import { getBonusMaluses } from "@/features/(league)/options/queries/leagueOptions";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueBonusMalusOptionsPage({

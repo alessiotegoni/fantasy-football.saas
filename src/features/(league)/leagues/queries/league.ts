@@ -4,10 +4,10 @@ import {
   getLeaguePremiumTag,
 } from "../db/cache/league";
 import { isPremiumUnlocked } from "../permissions/league";
-import { getLeagueGeneralOptionsTag, getLeaguePlayersPerRoleTag } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
+import { getLeagueGeneralOptionsTag, getLeaguePlayersPerRoleTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { db } from "@/drizzle/db";
-import { getMemberIdTag } from "../../leagueMembers/db/cache/leagueMember";
-import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
+import { getMemberIdTag } from "../../members/db/cache/leagueMember";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 export async function getLeaguePremium(leagueId: string) {
   "use cache";

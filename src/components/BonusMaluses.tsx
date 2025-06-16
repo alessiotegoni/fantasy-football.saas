@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/form";
 import NumberInput from "@/components/ui/number-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { BonusMalusSchema } from "@/features/(league)/leagueOptions/schema/leagueOptions";
-import { getBonusMaluses } from "@/features/(league)/leagueOptions/queries/leagueOptions";
+import { BonusMalusSchema } from "@/features/(league)/options/schema/leagueOptions";
+import { getBonusMaluses } from "@/features/(league)/options/queries/leagueOptions";
 
 export function BonusMaluses({
   items,

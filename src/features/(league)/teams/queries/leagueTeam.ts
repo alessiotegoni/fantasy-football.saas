@@ -1,8 +1,8 @@
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagueMemberTeams } from "@/drizzle/schema";
-import { getLeagueTeamsTag } from "@/features/(league)/leagueTeams/db/cache/leagueTeam";
 import { eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getLeagueTeamsTag } from "../db/cache/leagueTeam";
 
 export async function getLeagueTeams(leagueId: string) {
   "use cache";

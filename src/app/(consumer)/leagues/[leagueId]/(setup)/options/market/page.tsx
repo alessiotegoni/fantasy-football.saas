@@ -1,9 +1,9 @@
 import { db } from "@/drizzle/db";
-import { MarketOptionsForm } from "@/features/(league)/leagueOptions/components/forms/MarketOptionsForm";
+import { MarketOptionsForm } from "@/features/(league)/options/components/forms/MarketOptionsForm";
 import {
   getLeagueMarketOptionsTag,
   getLeagueOptionsTag,
-} from "@/features/(league)/leagueOptions/db/cache/leagueOption";
+} from "@/features/(league)/options/db/cache/leagueOption";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueMarketOptionsPage({

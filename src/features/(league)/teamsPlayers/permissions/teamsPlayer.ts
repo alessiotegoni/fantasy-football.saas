@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { InsertTeamPlayerSchema } from "../schema/teamsPlayer";
 import { leagueMemberTeamPlayers } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
-import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { getTeamPlayerPerRoles } from "../queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "../../leagues/queries/league";
 

@@ -18,7 +18,7 @@ import {
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
 import { revalidateLeagueRosterOptionsCache } from "../db/cache/leagueOption";
-import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 export async function updateGeneralOptions(
   values: GeneralOptionsSchema,

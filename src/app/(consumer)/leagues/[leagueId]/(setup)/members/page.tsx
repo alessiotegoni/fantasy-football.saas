@@ -13,12 +13,12 @@ import { eq } from "drizzle-orm";
 import { Suspense } from "react";
 import { getUserId } from "@/features/users/utils/user";
 import Disclaimer from "@/components/Disclaimer";
-import BannedUsersSection from "@/features/(league)/leagueMembers/components/BannedUsersSection";
-import { MemberCard } from "@/features/(league)/leagueMembers/components/MemberCard";
+import BannedUsersSection from "@/features/(league)/members/components/BannedUsersSection";
+import { MemberCard } from "@/features/(league)/members/components/MemberCard";
 import {
   getLeagueMembersTag,
   getLeagueMembersTeamsTag,
-} from "@/features/(league)/leagueMembers/db/cache/leagueMember";
+} from "@/features/(league)/members/db/cache/leagueMember";
 
 export default async function LeagueMembersPage({
   params,

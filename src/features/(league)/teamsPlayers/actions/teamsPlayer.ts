@@ -5,16 +5,16 @@ import { deleteTeamPlayer, getError } from "../db/teamsPlayer";
 import { canInsertPlayer } from "../permissions/teamsPlayer";
 import { insertTeamPlayer } from "../db/teamsPlayer";
 import { db } from "@/drizzle/db";
-import { updateLeagueTeam } from "../../leagueTeams/db/leagueTeam";
 import { eq } from "drizzle-orm";
 import { leagueMemberTeams } from "@/drizzle/schema";
-import { isLeagueAdmin } from "../../leagueMembers/permissions/leagueMember";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import {
   insertTeamPlayerSchema,
   InsertTeamPlayerSchema,
   releaseTeamPlayerSchema,
   ReleaseTeamPlayerSchema,
 } from "../schema/teamsPlayer";
+import { updateLeagueTeam } from "../../teams/db/leagueTeam";
 
 export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
   const { success, data } = insertTeamPlayerSchema.safeParse(values);

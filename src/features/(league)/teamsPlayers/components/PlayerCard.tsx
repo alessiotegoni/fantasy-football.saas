@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { EnrichedPlayer } from "@/contexts/PlayersProvider";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
-import TeamCreditsBadge from "../../leagueTeams/components/TeamCreditsBadge";
+import TeamCreditsBadge from "../../teams/components/TeamCreditsBadge";
 
 type Props = EnrichedPlayer & {
   showSelectButton?: boolean;

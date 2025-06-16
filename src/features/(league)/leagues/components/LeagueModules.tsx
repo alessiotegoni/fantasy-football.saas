@@ -1,7 +1,7 @@
 import CheckboxCard from "@/components/ui/checkbox-card";
 import { db } from "@/drizzle/db";
-import { getLeagueModulesTag } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
-import { getTacticalModules } from "@/features/(league)/leagueOptions/queries/leagueOptions";
+import { getLeagueModulesTag } from "@/features/(league)/options/db/cache/leagueOption";
+import { getTacticalModules } from "@/features/(league)/options/queries/leagueOptions";
 import { cn } from "@/lib/utils";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 

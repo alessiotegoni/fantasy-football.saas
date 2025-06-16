@@ -1,10 +1,10 @@
 import { db } from "@/drizzle/db";
-import { RosterOptionsForm } from "@/features/(league)/leagueOptions/components/forms/RosterOptionForm";
+import { RosterOptionsForm } from "@/features/(league)/options/components/forms/RosterOptionForm";
 import {
   getLeagueOptionsTag,
   getLeagueRosterOptionsTag,
-} from "@/features/(league)/leagueOptions/db/cache/leagueOption";
-import { getTacticalModules } from "@/features/(league)/leagueOptions/queries/leagueOptions";
+} from "@/features/(league)/options/db/cache/leagueOption";
+import { getTacticalModules } from "@/features/(league)/options/queries/leagueOptions";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 

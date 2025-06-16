@@ -4,10 +4,10 @@ import { PlayerSelectionProvider } from "@/contexts/PlayerSelectionProvider";
 import { getTeams } from "@/features/teams/queries/team";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { PlayersEnrichmentProvider } from "@/contexts/PlayersEnrichmentProvider";
-import { getLeagueTeams } from "../../leagueTeams/queries/leagueTeam";
 import PlayersListContent from "./PlayerListContent";
 import { Suspense } from "react";
 import { default as PlayerSelectionButton } from "./PlayerSelection";
+import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 
 type FilterType = "search" | "teams" | "roles";
 

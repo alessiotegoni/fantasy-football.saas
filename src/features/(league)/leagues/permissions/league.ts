@@ -14,7 +14,7 @@ import { and, count, eq } from "drizzle-orm";
 import {
   isLeagueMember,
   isMemberOfALeague,
-} from "../../leagueMembers/permissions/leagueMember";
+} from "../../members/permissions/leagueMember";
 
 export async function canCreateLeague(userId: string) {
   const [hasPremium, isLeagueMember] = await Promise.all([

@@ -1,23 +1,25 @@
 import { LEAGUE_TAG } from "@/features/(league)/leagues/db/cache/league";
 import { MATCH_TAG } from "@/features/(league)/matches/db/cache/match";
-import { TEAM_TAG } from "@/features/(league)/leagueTeams/db/cache/leagueTeam";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
 import { AUCTION_TAG } from "@/features/(league)/auctions/db/cache/auction";
-import { LEAGUE_OPTIONS_TAG } from "@/features/(league)/leagueOptions/db/cache/leagueOption";
-import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/leagueMembers/db/cache/leagueMember";
+import { LEAGUE_OPTIONS_TAG } from "@/features/(league)/options/db/cache/leagueOption";
+import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueMember";
 import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
+import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
+import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trades";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
   | USER_TAG
   | LEAGUE_TAG
-  | LEAGUE_MEMBERS_TAG
   | LEAGUE_OPTIONS_TAG
-  | AUCTION_TAG
+  | LEAGUE_MEMBERS_TAG
+  | TRADES_TAG
   | TEAM_TAG
   | TEAM_PLAYERS_TAG
-  | MATCH_TAG;
+  | MATCH_TAG
+  | AUCTION_TAG
 
 export const getGlobalTag = (tag: CACHE_TAG) => `global:${tag}` as const;
 
