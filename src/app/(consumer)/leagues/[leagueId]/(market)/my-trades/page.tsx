@@ -1,5 +1,6 @@
 import { db } from "@/drizzle/db";
 import TradesList from "@/features/(league)/trades/components/TradesList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   getLeagueTradesTag,
   getMyProposedTradesTag,
@@ -13,13 +14,31 @@ export default async function MyTradesPage({
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
+  const leagueIdPromise = params.then((p) => p.leagueId);
+
   return (
-    <Suspense>
-      <TradesList
-        leagueIdPromise={params.then((p) => p.leagueId)}
-        getTrades={getMyProposedTrades}
-      />
-    </Suspense>
+    <Tabs defaultValue="proposed" className="w-[400px]">
+      <TabsList>
+        <TabsTrigger value="proposed">Inviate</TabsTrigger>
+        <TabsTrigger value="received">Ricevute</TabsTrigger>
+      </TabsList>
+      <TabsContent value="proposed">
+        <Suspense>
+          <TradesList
+            leagueIdPromise={leagueIdPromise}
+            getTrades={getMyProposedTrades}
+          />
+        </Suspense>
+      </TabsContent>
+      <TabsContent value="received">
+        <Suspense>
+          <TradesList
+            leagueIdPromise={leagueIdPromise}
+            getTrades={getMyReceivedProposedTrades}
+          />
+        </Suspense>
+      </TabsContent>
+    </Tabs>
   );
 }
 
