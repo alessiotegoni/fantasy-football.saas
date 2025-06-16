@@ -31,11 +31,14 @@ export async function createLeagueTeam(
   if (await memberHasTeam(leagueMemberId))
     return getError("Hai gia creato una squadra in questa lega");
 
-  const teamId = await insertLeagueTeam({
-    ...data,
-    leagueId,
-    leagueMemberId,
-  });
+  const teamId = await insertLeagueTeam(
+    {
+      ...data,
+      leagueId,
+      leagueMemberId,
+    },
+    userId
+  );
 
   if (data.image) {
     after(updateTeamImage.bind(null, teamId, leagueId, data.image));

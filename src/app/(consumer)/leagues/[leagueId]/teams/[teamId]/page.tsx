@@ -1,13 +1,8 @@
 import { db } from "@/drizzle/db";
-import {
-  leagueMemberTeamPlayers,
-  leagueOptions,
-  players,
-} from "@/drizzle/schema";
+import { leagueOptions } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound } from "next/navigation";
-import { getTeamPlayersTag } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { Suspense } from "react";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
 import EmptyState from "@/components/EmptyState";
@@ -18,12 +13,13 @@ import ReleasePlayerDialog from "@/features/(league)/teamsPlayers/components/Rel
 import {
   getPlayersRoles,
   getTeamPlayerPerRoles,
+  getTeamPlayers,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
 import { cn } from "@/lib/utils";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
-import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
+import { getLeagueTeam } from "@/features/(league)/teams/queries/leagueTeam";
 
 export default async function LeagueTeamPage({
   params,
@@ -32,7 +28,7 @@ export default async function LeagueTeamPage({
 }) {
   const { leagueId, teamId } = await params;
 
-  const team = await getLeagueTeam({ leagueId, teamId });
+  const team = await getLeagueTeam({ leagueId, teamIds: [teamId] });
   if (!team) notFound();
 
   return (
@@ -135,42 +131,11 @@ function TeamPlayersEmptyState({ leagueId }: Pick<Props, "leagueId">) {
   );
 }
 
-async function getLeagueTeam({ leagueId, teamId }: Props) {
-  "use cache";
-  cacheTag(getTeamIdTag(teamId));
-
-  return db.query.leagueMemberTeams.findFirst({
-    columns: {
-      leagueId: false,
-      leagueMemberId: false,
-    },
-    where: (team, { and, eq }) =>
-      and(eq(team.leagueId, leagueId), eq(team.id, teamId)),
-  });
-}
-
-async function getTeamPlayers(teamId: string) {
-  "use cache";
-  cacheTag(getTeamPlayersTag(teamId));
-
-  return db
-    .select({
-      id: players.id,
-      displayName: players.displayName,
-      roleId: players.roleId,
-      teamId: players.teamId,
-      avatarUrl: players.avatarUrl,
-      purchaseCost: leagueMemberTeamPlayers.purchaseCost,
-    })
-    .from(leagueMemberTeamPlayers)
-    .innerJoin(players, eq(players.id, leagueMemberTeamPlayers.playerId))
-    .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId));
-}
-
 async function getLeagueReleasePercentage(leagueId: string) {
   const [res] = await db
     .select({ releasePercentage: leagueOptions.releasePercentage })
-    .from(leagueOptions);
+    .from(leagueOptions)
+    .where(eq(leagueOptions.leagueId, leagueId));
 
   return res.releasePercentage;
 }

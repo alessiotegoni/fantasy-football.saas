@@ -1,10 +1,10 @@
 import {
   pgTable,
   uuid,
-  serial,
   boolean,
   unique,
   index,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueTradeProposals } from "./leagueTradeProposals";
@@ -13,7 +13,6 @@ import { players } from "./players";
 export const leagueTradeProposalPlayers = pgTable(
   "league_trade_proposal_players",
   {
-    id: serial("id").primaryKey(),
     tradeProposalId: uuid("trade_proposal_id")
       .notNull()
       .references(() => leagueTradeProposals.id, { onDelete: "cascade" }),
@@ -26,10 +25,10 @@ export const leagueTradeProposalPlayers = pgTable(
     tradeProposalIdIndex: index("idx_trade_proposal_id").on(
       table.tradeProposalId
     ),
-    uniqueTradePlayer: unique("unique_trade_player").on(
-      table.tradeProposalId,
-      table.playerId
-    ),
+    uniqueTradePlayerPkey: primaryKey({
+      name: "league_trade_proposal_players_pkey",
+      columns: [table.tradeProposalId, table.playerId],
+    }),
   })
 );
 

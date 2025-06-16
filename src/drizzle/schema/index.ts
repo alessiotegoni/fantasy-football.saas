@@ -13,6 +13,8 @@ export * from "./leagueOptions";
 export * from "./leagueMembers";
 export * from "./leagueMemberTeams";
 export * from "./leagueMemberTeamPlayers";
+export * from "./leagueTradeProposals";
+export * from "./leagueTradeProposalPlayers";
 export * from "./leagueUserBans";
 export * from "./leagueMatches";
 export * from "./leagueMatchdayCalculations";

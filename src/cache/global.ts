@@ -7,8 +7,8 @@ export type GLOBAL_TAG =
   | "split-matchdays"
   | "player-roles"
   | "player-votes"
+  | "players"
   | "teams"
-  | "presidents"
   | "tactical-modules"
   | "bonus-malus";
 
@@ -18,7 +18,7 @@ export const getSplitsTag = () => getGlobalTag("splits");
 export const getSplitsMatchdaysTag = () => getGlobalTag("split-matchdays");
 export const getPlayerRolesTag = () => getGlobalTag("player-roles");
 export const getPlayerVotesTag = () => getGlobalTag("player-votes");
+export const getPlayersTag = () => getGlobalTag("players");
 export const getTeamsTag = () => getGlobalTag("teams");
-export const getPresidentsTag = () => getGlobalTag("presidents");
 export const getTacticalModulesTag = () => getGlobalTag("tactical-modules");
 export const getBonusMalusTag = () => getGlobalTag("bonus-malus");

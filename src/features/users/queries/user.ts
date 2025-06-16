@@ -1,8 +1,9 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getUserLeaguesTag } from "../db/cache/user";
+import { getUserLeaguesTag, getUserTeamTag } from "../db/cache/user";
 import { db } from "@/drizzle/db";
-import { eq } from "drizzle-orm";
-import { leagueMembers, leagues } from "@/drizzle/schema";
+import { and, eq } from "drizzle-orm";
+import { leagueMembers, leagueMemberTeams, leagues } from "@/drizzle/schema";
+import { authUsers } from "drizzle-orm/supabase";
 
 export async function getUserLeagues(userId: string) {
   "use cache";
@@ -13,4 +14,29 @@ export async function getUserLeagues(userId: string) {
     .from(leagues)
     .innerJoin(leagueMembers, eq(leagueMembers.leagueId, leagues.id))
     .where(eq(leagueMembers.userId, userId));
+}
+
+export async function getUserTeamId({
+  leagueId,
+  userId,
+}: {
+  leagueId: string;
+  userId: string;
+}) {
+  "use cache";
+  cacheTag(getUserTeamTag(userId));
+
+  const [res] = await db
+    .select({ teamId: leagueMemberTeams.id })
+    .from(leagueMemberTeams)
+    .innerJoin(
+      leagueMembers,
+      eq(leagueMembers.id, leagueMemberTeams.leagueMemberId)
+    )
+    .innerJoin(authUsers, eq(authUsers.id, leagueMembers.userId))
+    .where(
+      and(eq(leagueMemberTeams.leagueId, leagueId), eq(authUsers.id, userId))
+    );
+
+  return res.teamId;
 }
