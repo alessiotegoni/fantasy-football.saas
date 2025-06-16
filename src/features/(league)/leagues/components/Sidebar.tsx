@@ -175,11 +175,6 @@ export const publicSections = [
         icon: Community,
       },
       {
-        name: "Listone presidenti",
-        href: "/leagues/:leagueId/presidents-list",
-        icon: List,
-      },
-      {
         name: "Scambi",
         href: "/leagues/:leagueId/trades",
         icon: Refresh,

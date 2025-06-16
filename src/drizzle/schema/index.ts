@@ -1,5 +1,4 @@
 export * from "./teams";
-export * from "./presidents";
 export * from "./tacticalModules";
 export * from "./seasons";
 export * from "./splits";

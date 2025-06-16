@@ -18,7 +18,10 @@ export default function PlayersEmptyState({
   const { leagueId } = useParams();
 
   const { filters, handleResetFilters } = usePlayersFilters();
-  const hasFilters = Object.values(filters).some(Boolean);
+
+  const hasFilters = Object.values(filters).some((filter) =>
+    Boolean(filter.length)
+  );
 
   return (
     <EmptyState

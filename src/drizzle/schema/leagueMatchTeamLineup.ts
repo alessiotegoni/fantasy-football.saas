@@ -3,7 +3,6 @@ import { relations } from "drizzle-orm";
 import { leagueMatches } from "./leagueMatches";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { tacticalModules } from "./tacticalModules";
-import { teamPresidents } from "./presidents";
 
 export const leagueMatchTeamLineup = pgTable("league_match_team_lineup", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -16,9 +15,6 @@ export const leagueMatchTeamLineup = pgTable("league_match_team_lineup", {
   tacticalModuleId: smallint("tactical_module_id")
     .notNull()
     .references(() => tacticalModules.id, { onDelete: "restrict" }),
-  presidentId: smallint("president_id")
-    .notNull()
-    .references(() => teamPresidents.id, { onDelete: "set null" }),
 });
 
 export const leagueMatchTeamLineupRelations = relations(
@@ -35,10 +31,6 @@ export const leagueMatchTeamLineupRelations = relations(
     tacticalModule: one(tacticalModules, {
       fields: [leagueMatchTeamLineup.tacticalModuleId],
       references: [tacticalModules.id],
-    }),
-    president: one(teamPresidents, {
-      fields: [leagueMatchTeamLineup.presidentId],
-      references: [teamPresidents.id],
     }),
   })
 );
