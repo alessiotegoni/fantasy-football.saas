@@ -1,13 +1,14 @@
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { cn } from "@/lib/utils";
+import { Crown } from "iconoir-react";
 
 type Props = {
   role: Awaited<ReturnType<typeof getPlayersRoles>>[number];
-  className?: string
-}
+  className?: string;
+};
 
 export default function PlayerRoleBadge({ role, className }: Props) {
-  const badgeStyle = roleColors[role.name] ?? "bg-muted text-foreground";
+  const badgeStyle = roleClasses[role.name] ?? "bg-muted text-foreground";
 
   return (
     <div
@@ -17,7 +18,7 @@ export default function PlayerRoleBadge({ role, className }: Props) {
         badgeStyle
       )}
     >
-      {role.shortName}
+      {role.id === 1 ? <Crown className="text-primary size-4" /> : role.shortName}
     </div>
   );
 }
@@ -29,7 +30,7 @@ export const roleNames: Record<string, { singular: string; plural: string }> = {
   Attaccante: { singular: "attaccante", plural: "attaccanti" },
 };
 
-export const roleColors: Record<string, string> = {
+export const roleClasses: Record<string, string> = {
   Portiere: "bg-blue-500 text-white",
   Difensore: "bg-green-500 text-white",
   Centrocampista: "bg-yellow-500 text-white",
