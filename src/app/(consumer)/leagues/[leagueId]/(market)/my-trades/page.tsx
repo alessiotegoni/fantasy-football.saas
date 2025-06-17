@@ -8,8 +8,7 @@ import {
 } from "@/features/(league)/trades/db/cache/trade";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Suspense } from "react";
-import Link from "next/link";
-import { ArrowLeft } from "iconoir-react";
+import Container from "@/components/Container";
 
 export default async function MyTradesPage({
   params,
@@ -19,17 +18,7 @@ export default async function MyTradesPage({
   const { leagueId } = await params;
 
   return (
-    <div className="max-w-[700px] mx-auto md:p-4">
-      <div className="flex items-center mb-4 md:mb-8 md:hidden">
-        <Link href={`/leagues/${leagueId}`} className="mr-3">
-          <ArrowLeft className="size-5" />
-        </Link>
-        <h2 className="text-2xl font-heading">I miei scambi</h2>
-      </div>
-      <h2 className="hidden md:block text-3xl font-heading mb-8">
-        I miei scambi
-      </h2>
-
+    <Container headerLabel="I miei scambi">
       <Tabs defaultValue="proposed" className="max-w-[700px] mx-auto">
         <TabsList>
           <TabsTrigger value="proposed">Proposte inviate</TabsTrigger>
@@ -60,7 +49,7 @@ export default async function MyTradesPage({
           </Suspense>
         </TabsContent>
       </Tabs>
-    </div>
+    </Container>
   );
 }
 

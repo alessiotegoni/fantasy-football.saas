@@ -1,3 +1,4 @@
+import Container from "@/components/Container";
 import { db } from "@/drizzle/db";
 import TradesList from "@/features/(league)/trades/components/TradesList";
 import { getLeagueTradesTag } from "@/features/(league)/trades/db/cache/trade";
@@ -12,9 +13,11 @@ export default async function LeagueTradesPage({
   const { leagueId } = await params;
 
   return (
-    <Suspense>
-      <TradesList leagueId={leagueId} getTrades={getLeagueTrades} />
-    </Suspense>
+    <Container headerLabel=" Scambi della lega">
+      <Suspense>
+        <TradesList leagueId={leagueId} getTrades={getLeagueTrades} />
+      </Suspense>
+    </Container>
   );
 }
 
