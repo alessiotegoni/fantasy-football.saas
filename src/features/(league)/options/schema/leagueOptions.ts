@@ -12,16 +12,6 @@ export const generalOptionsSchema = z.object({
     .max(20, "Il numero massimo di membri è 20"),
 });
 
-// Schema per i ruoli dei giocatori
-export const playerRoleSchema = z.object({
-  role: z.string(),
-  label: z.string(),
-  count: z
-    .number()
-    .nonnegative("Il numero non può essere negativo")
-    .max(10, "Massimo 10 giocatori per ruolo"),
-});
-
 // Schema per le rose e moduli
 export const rosterModulesSchema = z.object({
   playersPerRole: z.record(
