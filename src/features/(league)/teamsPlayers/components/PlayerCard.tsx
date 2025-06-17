@@ -10,14 +10,17 @@ import { useParams } from "next/navigation";
 import { EnrichedPlayer } from "@/contexts/PlayersProvider";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
 import TeamCreditsBadge from "../../teams/components/TeamCreditsBadge";
+import { cn } from "@/lib/utils";
 
 type Props = EnrichedPlayer & {
   showSelectButton?: boolean;
+  className?: string;
   // onSelect?: (player: EnrichedPlayer) => void;
 };
 
 export default memo(function PlayerCard({
   showSelectButton = true,
+  className,
   // onSelect,
   ...player
 }: Props) {
@@ -25,7 +28,12 @@ export default memo(function PlayerCard({
   const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection();
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 rounded-xl border border-border">
+    <div
+      className={cn(
+        "flex items-center justify-between px-4 py-3 rounded-xl border border-border",
+        className
+      )}
+    >
       <div className="flex items-center gap-3">
         <div className="relative size-12">
           <Avatar

@@ -6,28 +6,27 @@ import { TradeProposalSchema, tradeProposalSchema } from "../schema/trade";
 import { Form } from "@/components/ui/form";
 import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
-import { useEffect, useMemo } from "react";
+import { Suspense, use, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { UserPlus } from "iconoir-react";
 import FormSliderField from "@/components/FormFieldSlider";
 import TradeProposalCard from "./TradeProposalCard";
+import TradePlayersMultiSelect from "./TradePlayersMultiSelect";
+import { getTeamPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 
 type Props = {
   leagueId: string;
   leagueTeams: Awaited<ReturnType<typeof getLeagueTeams>>;
-  teamsPlayers:
-    | {
-        id: number;
-        displayName: string;
-        roleId: number;
-        teamId: number;
-        avatarUrl: string | null;
-        purchaseCost: number;
-      }[]
-    | undefined;
+  proposerTeamPlayersPromise: ReturnType<typeof getTeamPlayers> | undefined;
+  receiverTeamPlayersPromise: ReturnType<typeof getTeamPlayers> | undefined;
 };
 
-export default function TradeProposalForm({ leagueId, leagueTeams, teamsPlayers }: Props) {
+export default function TradeProposalForm({
+  leagueId,
+  leagueTeams,
+  proposerTeamPlayersPromise,
+  receiverTeamPlayersPromise,
+}: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -41,9 +40,10 @@ export default function TradeProposalForm({ leagueId, leagueTeams, teamsPlayers 
       creditRequestedByProposer: null,
       proposerTeamId,
       receiverTeamId: searchParams.get("receiverTeamId") ?? "",
+      players: []
     },
   });
-  
+
   const {
     fields: tradePlayers,
     append: appendPlayer,
@@ -106,6 +106,16 @@ export default function TradeProposalForm({ leagueId, leagueTeams, teamsPlayers 
                   unit="Crediti offerti"
                 />
               )}
+              renderSelectPlayers={() =>
+                proposerTeamPlayersPromise && (
+                  <Suspense>
+                    <TradePlayersMultiSelect
+                      triggerText="Offri giocatori"
+                      players={use(proposerTeamPlayersPromise)}
+                    />
+                  </Suspense>
+                )
+              }
             />
           ) : null}
 
@@ -124,6 +134,16 @@ export default function TradeProposalForm({ leagueId, leagueTeams, teamsPlayers 
                   unit="Crediti richiesti"
                 />
               )}
+              renderSelectPlayers={() =>
+                receiverTeamPlayersPromise && (
+                  <Suspense>
+                    <TradePlayersMultiSelect
+                      triggerText="Richiedi giocatori"
+                      players={use(receiverTeamPlayersPromise)}
+                    />
+                  </Suspense>
+                )
+              }
             />
           ) : (
             <div className="bg-sidebar/80 p-4 rounded-3xl">

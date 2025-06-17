@@ -97,7 +97,7 @@ async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
 }
 
 async function SuspendedPlayersList({ leagueId, teamId }: Props) {
-  const teamPlayers = await getTeamPlayers([teamId]);
+  const teamPlayers = await getTeamPlayers(teamId);
 
   return (
     <PlayersList

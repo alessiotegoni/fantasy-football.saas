@@ -26,8 +26,11 @@ async function SuspenseBoundary({ params, searchParams }: Props) {
   if (!searchP?.proposerTeamId) notFound();
 
   const leagueTeams = await getLeagueTeams(leagueId);
-  const teamsPlayers = searchP.receiverTeamId
-    ? await getTeamPlayers(Object.values(searchP))
+  const teamsPlayersPromises = searchP.receiverTeamId
+    ? Promise.all([
+        getTeamPlayers(searchP.proposerTeamId),
+        getTeamPlayers(searchP.receiverTeamId),
+      ])
     : undefined;
 
   return (
@@ -35,7 +38,16 @@ async function SuspenseBoundary({ params, searchParams }: Props) {
       <TradeProposalForm
         leagueId={leagueId}
         leagueTeams={leagueTeams}
-        teamsPlayers={teamsPlayers}
+        proposerTeamPlayersPromise={
+          teamsPlayersPromises
+            ? teamsPlayersPromises.then((promise) => promise[0])
+            : undefined
+        }
+        receiverTeamPlayersPromise={
+          teamsPlayersPromises
+            ? teamsPlayersPromises.then((promise) => promise[1])
+            : undefined
+        }
       />
       <Disclaimer />
     </>
