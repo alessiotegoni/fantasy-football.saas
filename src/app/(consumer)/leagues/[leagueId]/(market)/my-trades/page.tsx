@@ -8,6 +8,7 @@ import {
 } from "@/features/(league)/trades/db/cache/trade";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Suspense } from "react";
+import { Button } from "@/components/ui/button";
 
 export default async function MyTradesPage({
   params,
@@ -17,16 +18,20 @@ export default async function MyTradesPage({
   const leagueIdPromise = params.then((p) => p.leagueId);
 
   return (
-    <Tabs defaultValue="proposed" className="w-[400px]">
+    <Tabs defaultValue="proposed" className="max-w-[700px] mx-auto">
       <TabsList>
-        <TabsTrigger value="proposed">Inviate</TabsTrigger>
-        <TabsTrigger value="received">Ricevute</TabsTrigger>
+        <TabsTrigger value="proposed">Proposte inviate</TabsTrigger>
+        <TabsTrigger value="received">Proposte ricevute</TabsTrigger>
       </TabsList>
       <TabsContent value="proposed">
         <Suspense>
           <TradesList
             leagueIdPromise={leagueIdPromise}
             getTrades={getMyProposedTrades}
+            emptyState={{
+              description:
+                "Non hai ancora fatto proposte di scambio ad altre squadre",
+            }}
           />
         </Suspense>
       </TabsContent>
@@ -35,6 +40,10 @@ export default async function MyTradesPage({
           <TradesList
             leagueIdPromise={leagueIdPromise}
             getTrades={getMyReceivedProposedTrades}
+            emptyState={{
+              description:
+                "Non hai ancora ricevuto proposte di scambio da altre squadre",
+            }}
           />
         </Suspense>
       </TabsContent>

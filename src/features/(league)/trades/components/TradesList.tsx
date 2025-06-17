@@ -2,8 +2,7 @@ import EmptyState from "@/components/EmptyState";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
-import TradeProposalButton from "./TradeProposalButton";
+import TradesEmptyState from "./TradesEmptyState";
 
 type Team = { name: string; managerName: string; imageUrl: string | null };
 
@@ -31,11 +30,16 @@ type Props = {
       }[];
     }[]
   >;
+  emptyState?: {
+    title?: string;
+    description?: string;
+  };
 };
 
 export default async function TradesList({
   leagueIdPromise,
   getTrades,
+  emptyState,
 }: Props) {
   const [leagueId, userId] = await Promise.all([leagueIdPromise, getUserId()]);
 
@@ -46,17 +50,12 @@ export default async function TradesList({
 
   const trades = await getTrades(leagueId, userTeamId);
 
-  if (!trades.length) {
+  if (!trades.length)
     return (
-      <EmptyState
-        title="Nessuno scambio trovato"
-        description="Nessuna squadra della lega ha ancora scambiato giocatori"
-        renderButton={() => (
-          <Suspense>
-            <TradeProposalButton leagueId={leagueId} userTeamId={userTeamId} />
-          </Suspense>
-        )}
+      <TradesEmptyState
+        {...emptyState}
+        leagueId={leagueId}
+        userTeamId={userTeamId}
       />
     );
-  }
 }
