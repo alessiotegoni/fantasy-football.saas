@@ -1,4 +1,3 @@
-import EmptyState from "@/components/EmptyState";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { redirect } from "next/navigation";
@@ -7,7 +6,7 @@ import TradesEmptyState from "./TradesEmptyState";
 type Team = { name: string; managerName: string; imageUrl: string | null };
 
 type Props = {
-  leagueIdPromise: Promise<string>;
+  leagueId: string;
   getTrades: (
     leagueId: string,
     userId: string
@@ -37,12 +36,11 @@ type Props = {
 };
 
 export default async function TradesList({
-  leagueIdPromise,
+  leagueId,
   getTrades,
   emptyState,
 }: Props) {
-  const [leagueId, userId] = await Promise.all([leagueIdPromise, getUserId()]);
-
+  const userId = await getUserId();
   if (!userId) return;
 
   const userTeamId = await getUserTeamId({ leagueId, userId });

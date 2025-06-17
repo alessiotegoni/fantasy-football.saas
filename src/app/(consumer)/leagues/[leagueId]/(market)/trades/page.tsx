@@ -9,12 +9,11 @@ export default async function LeagueTradesPage({
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
+  const { leagueId } = await params;
+
   return (
     <Suspense>
-      <TradesList
-        leagueIdPromise={params.then((p) => p.leagueId)}
-        getTrades={getLeagueTrades}
-      />
+      <TradesList leagueId={leagueId} getTrades={getLeagueTrades} />
     </Suspense>
   );
 }
