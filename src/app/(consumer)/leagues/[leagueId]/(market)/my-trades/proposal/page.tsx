@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
+import { getTeamPlayers } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import TradeProposalForm from "@/features/(league)/trades/components/TradeProposalForm";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -24,6 +25,7 @@ async function SuspenseBoundary({ params, searchParams }: Props) {
   if (!searchP?.proposerTeamId) notFound();
 
   const leagueTeams = await getLeagueTeams(leagueId);
+  const teamsPlayers = searchP.receiverTeamId ? await getTeamPlayers()
 
   return (
     <TradeProposalForm

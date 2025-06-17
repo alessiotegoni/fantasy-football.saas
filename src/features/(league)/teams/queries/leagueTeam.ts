@@ -27,13 +27,13 @@ export async function getLeagueTeams(leagueId: string) {
 
 export async function getLeagueTeam({
   leagueId,
-  teamIds,
+  teamId,
 }: {
   leagueId: string;
-  teamIds: string[];
+  teamId: string;
 }) {
   "use cache";
-  cacheTag(...teamIds.map((teamId) => getTeamIdTag(teamId)));
+  cacheTag(getTeamIdTag(teamId));
 
   return db.query.leagueMemberTeams.findFirst({
     columns: {
@@ -41,6 +41,6 @@ export async function getLeagueTeam({
       leagueMemberId: false,
     },
     where: (team, { and, eq }) =>
-      and(eq(team.leagueId, leagueId), inArray(team.id, teamIds)),
+      and(eq(team.leagueId, leagueId), eq(team.id, teamId)),
   });
 }

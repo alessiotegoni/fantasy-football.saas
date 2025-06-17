@@ -28,7 +28,7 @@ export default async function LeagueTeamPage({
 }) {
   const { leagueId, teamId } = await params;
 
-  const team = await getLeagueTeam({ leagueId, teamIds: [teamId] });
+  const team = await getLeagueTeam({ leagueId, teamId });
   if (!team) notFound();
 
   return (

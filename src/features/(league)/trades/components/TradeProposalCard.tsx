@@ -1,7 +1,6 @@
 import { UseFieldArrayRemove } from "react-hook-form";
 import LeagueTeamCard from "../../teams/components/LeagueTeamCard";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
-import { Button } from "@/components/ui/button";
 import { TradePlayersCarousel } from "./TradePlayersCarousel";
 
 type Props = {
@@ -14,7 +13,7 @@ type Props = {
   }[];
   removePlayer: UseFieldArrayRemove;
   renderCreditsSlider: () => React.ReactNode;
-  renderActionButton?: () => React.ReactNode;
+  renderSelectPlayers: () => React.ReactNode;
 };
 
 export default function TradeProposalCard({
@@ -23,6 +22,7 @@ export default function TradeProposalCard({
   players,
   removePlayer,
   renderCreditsSlider,
+  renderSelectPlayers,
 }: Props) {
   return (
     <div className="bg-sidebar p-4 rounded-3xl space-y-8">
@@ -46,15 +46,7 @@ export default function TradeProposalCard({
             />
           </>
         )}
-        <Button>Offri calciatori</Button>
-        {/* <MultiSelect
-                    options={getPlayerOptions(currentUserTeam.players)}
-                    selected={getOfferedPlayerIds()}
-                    onChange={(selected) =>
-                      handlePlayerSelection(selected, true)
-                    }
-                    placeholder="Seleziona calciatori"
-                  /> */}
+        {renderSelectPlayers()}
       </div>
     </div>
   );
