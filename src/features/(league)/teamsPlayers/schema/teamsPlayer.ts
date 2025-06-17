@@ -1,8 +1,9 @@
+import { getSerialIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 
 export const teamPlayerSchema = z.object({
-  leagueId: z.string(),
-  memberTeamId: z.string(),
+  leagueId: z.string().uuid("Id della lega invalido"),
+  memberTeamId: z.string().uuid("Id del membro del team invalido"),
 });
 
 export type TeamPlayerSchema = z.infer<typeof teamPlayerSchema>;
@@ -10,8 +11,8 @@ export type TeamPlayerSchema = z.infer<typeof teamPlayerSchema>;
 export const insertTeamPlayerSchema = z
   .object({
     player: z.object({
-      id: z.number(),
-      roleId: z.number().positive(),
+      id: getSerialIdSchema("Id del giocatore non valido"),
+      roleId: getSerialIdSchema("Id del ruolo non valido"),
     }),
     purchaseCost: z
       .number({ message: "Deve essere un numero" })
@@ -22,7 +23,7 @@ export const insertTeamPlayerSchema = z
   .merge(teamPlayerSchema);
 export const releaseTeamPlayerSchema = z
   .object({
-    playerId: z.number(),
+    playerId: getSerialIdSchema("Id del giocatore non valido"),
     releaseCost: z
       .number({ message: "Deve essere un numero" })
       .nonnegative("I crediti di svincolo devono essere un valore tra 0 e 5000")
