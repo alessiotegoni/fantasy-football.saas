@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 type Props = {
@@ -18,6 +19,10 @@ export default async function TradeProposalPage(props: Props) {
 
 async function SuspenseBoundary({ params, searchParams }: Props) {
   const [{ leagueId }, searchP] = await Promise.all([params, searchParams]);
+  
+  if (!searchP?.proposerTeamId) notFound();
 
-  return <></>
+
+
+  return <></>;
 }
