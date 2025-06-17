@@ -1,4 +1,6 @@
 import Container from "@/components/Container";
+import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
+import TradeProposalForm from "@/features/(league)/trades/components/TradeProposalForm";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -9,7 +11,7 @@ type Props = {
 
 export default async function TradeProposalPage(props: Props) {
   return (
-    <Container headerLabel="Proponi scambio">
+    <Container className="max-w-[1000px]" headerLabel="Proponi scambio">
       <Suspense>
         <SuspenseBoundary {...props} />
       </Suspense>
@@ -19,10 +21,14 @@ export default async function TradeProposalPage(props: Props) {
 
 async function SuspenseBoundary({ params, searchParams }: Props) {
   const [{ leagueId }, searchP] = await Promise.all([params, searchParams]);
-  
   if (!searchP?.proposerTeamId) notFound();
 
+  const leagueTeams = await getLeagueTeams(leagueId);
 
-
-  return <></>;
+  return (
+    <TradeProposalForm
+      leagueId={leagueId}
+      leagueTeams={leagueTeams}
+    />
+  );
 }

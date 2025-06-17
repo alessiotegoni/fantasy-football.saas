@@ -14,7 +14,7 @@ import { NumberInputProps } from "./ui/number-input";
 
 type Props<T> = {
   label: string;
-  tip: string;
+  tip?: string;
   name: keyof T & string;
   min: number;
   max: number;
@@ -43,7 +43,7 @@ export default function FormSliderField<T>({
       name={name}
       render={({ field: { value, onChange } }) => (
         <FormItem className={className}>
-          <FormFieldTooltip label={label} tip={tip}>
+          <FormFieldTooltip label={label} tip={tip} classNames={{ label: "mb-4" }}>
             <FormControl>
               <div className="space-y-3">
                 <Slider
@@ -63,7 +63,7 @@ export default function FormSliderField<T>({
                 </div>
               </div>
             </FormControl>
-            <FormMessage />
+            <FormMessage className="mt-2" />
           </FormFieldTooltip>
         </FormItem>
       )}

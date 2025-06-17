@@ -10,7 +10,7 @@ import { InfoCircle } from "iconoir-react";
 
 type Props = {
   children?: React.ReactNode;
-  tip: string;
+  tip?: string;
   label: string;
   classNames?: {
     label?: string;
@@ -29,27 +29,33 @@ export default function FormFieldTooltip({
     <div>
       <div className="relative w-fit">
         <FormLabel className={cn("mb-3", classNames?.label)}>{label}</FormLabel>
-        <Tooltip>
-          <TooltipTrigger
-            asChild
-            className={cn(
-              "hidden w-fit hover:bg-transparent absolute -right-10 -top-4 md:block cursor-help",
-              classNames?.tooltip
-            )}
-          >
-            <Button variant="ghost" type="button">
-              <InfoCircle className="size-4 text-muted-foreground" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{tip}</p>
-          </TooltipContent>
-        </Tooltip>
+        {tip && (
+          <Tooltip>
+            <TooltipTrigger
+              asChild
+              className={cn(
+                "hidden w-fit hover:bg-transparent absolute -right-10 -top-4 md:block cursor-help",
+                classNames?.tooltip
+              )}
+            >
+              <Button variant="ghost" type="button">
+                <InfoCircle className="size-4 text-muted-foreground" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>{tip}</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
       </div>
       {children}
-      <FormDescription className={cn("md:hidden mt-3", classNames?.description)}>
-        {tip}
-      </FormDescription>
+      {tip && (
+        <FormDescription
+          className={cn("md:hidden mt-3", classNames?.description)}
+        >
+          {tip}
+        </FormDescription>
+      )}
     </div>
   );
 }
