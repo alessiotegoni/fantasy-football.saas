@@ -1,13 +1,16 @@
 import { getPlayerRolesTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getTeamPlayersPerRoleTag, getTeamPlayersTag } from "../db/cache/teamsPlayer";
+import {
+  getTeamPlayersPerRoleTag,
+  getTeamPlayersTag,
+} from "../db/cache/teamsPlayer";
 import {
   leagueMemberTeamPlayers,
   playerRoles,
   players,
 } from "@/drizzle/schema";
-import { count, eq } from "drizzle-orm";
+import { count, eq, inArray } from "drizzle-orm";
 
 export async function getPlayersRoles() {
   "use cache";
@@ -16,9 +19,9 @@ export async function getPlayersRoles() {
   return db.query.playerRoles.findMany();
 }
 
-export async function getTeamPlayers(teamId: string) {
+export async function getTeamPlayers(teamIds: string[]) {
   "use cache";
-  cacheTag(getTeamPlayersTag(teamId));
+  cacheTag(...teamIds.map((teamId) => getTeamPlayersTag(teamId)));
 
   return db
     .select({
@@ -31,7 +34,7 @@ export async function getTeamPlayers(teamId: string) {
     })
     .from(leagueMemberTeamPlayers)
     .innerJoin(players, eq(players.id, leagueMemberTeamPlayers.playerId))
-    .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId));
+    .where(inArray(leagueMemberTeamPlayers.memberTeamId, teamIds));
 }
 
 export async function getTeamPlayerPerRoles(teamId: string) {
@@ -47,5 +50,5 @@ export async function getTeamPlayerPerRoles(teamId: string) {
     .innerJoin(players, eq(players.id, leagueMemberTeamPlayers.playerId))
     .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
     .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId))
-    .groupBy(playerRoles.id)
+    .groupBy(playerRoles.id);
 }

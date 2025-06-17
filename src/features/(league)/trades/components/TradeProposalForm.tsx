@@ -15,9 +15,19 @@ import TradeProposalCard from "./TradeProposalCard";
 type Props = {
   leagueId: string;
   leagueTeams: Awaited<ReturnType<typeof getLeagueTeams>>;
+  teamsPlayers:
+    | {
+        id: number;
+        displayName: string;
+        roleId: number;
+        teamId: number;
+        avatarUrl: string | null;
+        purchaseCost: number;
+      }[]
+    | undefined;
 };
 
-export default function TradeProposalForm({ leagueId, leagueTeams }: Props) {
+export default function TradeProposalForm({ leagueId, leagueTeams, teamsPlayers }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -33,9 +43,9 @@ export default function TradeProposalForm({ leagueId, leagueTeams }: Props) {
       receiverTeamId: searchParams.get("receiverTeamId") ?? "",
     },
   });
-
+  
   const {
-    fields: teamsPlayers,
+    fields: tradePlayers,
     append: appendPlayer,
     remove: removePlayer,
   } = useFieldArray({
@@ -44,15 +54,15 @@ export default function TradeProposalForm({ leagueId, leagueTeams }: Props) {
     keyName: undefined,
   });
 
-  const groupedTeamsPlayers = useMemo(() => {
-    const playersWithIndexes = teamsPlayers.map((player, index) => ({
+  const groupedTradePlayers = useMemo(() => {
+    const playersWithIndexes = tradePlayers.map((player, index) => ({
       ...player,
       index,
     }));
     return Object.groupBy(playersWithIndexes, (player) =>
       player.offeredByProposer ? "proposed" : "requested"
     );
-  }, [teamsPlayers]);
+  }, [tradePlayers]);
 
   const proposerTeam = useMemo(
     () => leagueTeams.find((team) => team.id === proposerTeamId),
@@ -85,7 +95,7 @@ export default function TradeProposalForm({ leagueId, leagueTeams }: Props) {
             <TradeProposalCard
               leagueId={leagueId}
               team={proposerTeam}
-              players={groupedTeamsPlayers["proposed"]}
+              players={groupedTradePlayers["proposed"]}
               removePlayer={removePlayer}
               renderCreditsSlider={() => (
                 <FormSliderField<TradeProposalSchema>
@@ -103,7 +113,7 @@ export default function TradeProposalForm({ leagueId, leagueTeams }: Props) {
             <TradeProposalCard
               leagueId={leagueId}
               team={receiverTeam}
-              players={groupedTeamsPlayers["requested"]}
+              players={groupedTradePlayers["requested"]}
               removePlayer={removePlayer}
               renderCreditsSlider={() => (
                 <FormSliderField<TradeProposalSchema>
