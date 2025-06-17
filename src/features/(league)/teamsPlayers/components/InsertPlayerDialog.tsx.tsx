@@ -38,7 +38,8 @@ export default function InsertPlayerDialog() {
       renderFormFields={({ toggleSelectTeam, leagueTeamsPromise }) => (
         <div className="my-5 space-y-7">
           <div className="flex justify-center">
-            <TeamsSelectField
+            <TeamsSelectField<InsertTeamPlayerSchema>
+              name="memberTeamId"
               teams={use(leagueTeamsPromise)}
               onSelect={toggleSelectTeam}
             />

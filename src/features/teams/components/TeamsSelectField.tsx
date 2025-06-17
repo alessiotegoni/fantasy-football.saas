@@ -8,9 +8,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useFormContext } from "react-hook-form";
+import { FieldValues, Path, useFormContext } from "react-hook-form";
 
-type Props = {
+type Props<T> = {
+  name: Path<T>
   teams: {
     id: string | number;
     name: string;
@@ -18,13 +19,13 @@ type Props = {
   onSelect?: (teamId: string) => void;
 };
 
-export default function TeamsSelectField({ teams, onSelect }: Props) {
-  const form = useFormContext<{ memberTeamId: string }>();
+export default function TeamsSelectField<T extends FieldValues>({ name, teams, onSelect }: Props<T>) {
+  const form = useFormContext<T>();
 
   return (
     <FormField
       control={form.control}
-      name="memberTeamId"
+      name={name}
       render={({ field }) => (
         <FormItem>
           <Select

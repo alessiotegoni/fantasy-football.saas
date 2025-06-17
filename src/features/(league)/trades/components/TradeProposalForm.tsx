@@ -1,6 +1,10 @@
+"use client"
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { TradeProposalSchema, tradeProposalSchema } from "../schema/trade";
+import { Form } from "@/components/ui/form";
+import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
 
 type Props = {
   leagueId: string;
@@ -24,7 +28,13 @@ export default function TradeProposalForm({
     },
   });
 
-  
+  async function onSubmit(values: TradeProposalSchema) {}
 
-  return <div>TradeProposalForm</div>;
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <TeamsSelectField<TradeProposalSchema> name="receiverTeamId" />
+      </form>
+    </Form>
+  );
 }
