@@ -8,24 +8,22 @@ import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { EnrichedPlayer } from "@/contexts/PlayersProvider";
-import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
 import TeamCreditsBadge from "../../teams/components/TeamCreditsBadge";
 import { cn } from "@/lib/utils";
 
 type Props = EnrichedPlayer & {
   showSelectButton?: boolean;
   className?: string;
-  // onSelect?: (player: EnrichedPlayer) => void;
+  onSelect?: (player: EnrichedPlayer) => void;
 };
 
 export default memo(function PlayerCard({
   showSelectButton = true,
   className,
-  // onSelect,
+  onSelect,
   ...player
 }: Props) {
   const { teamId } = useParams();
-  const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection();
 
   return (
     <div
@@ -64,11 +62,11 @@ export default memo(function PlayerCard({
         {player.purchaseCost !== undefined && (
           <TeamCreditsBadge credits={player.purchaseCost} />
         )}
-        {isSelectionMode && showSelectButton && (
+        {showSelectButton && (
           <DialogTrigger asChild>
             <Button
               className="w-fit rounded-full size-8"
-              onClick={toggleSelectPlayer.bind(null, player)}
+              onClick={onSelect?.bind(null, player)}
             >
               {teamId ? (
                 <Minus className="size-5" />

@@ -29,30 +29,10 @@ export default function PlayersList({
   title = "Giocatori",
   enabledFilters = ["search", "teams", "roles"],
   virtualized = false,
-  showSelection = true,
   showSelectionButton = true,
   actionsDialog,
   emptyState,
 }: PlayersListProps) {
-  const listContent = (
-    <div>
-      <div className="flex items-center mb-3.5">
-        <h2 className="text-xl grow">{title}</h2>
-        {showSelectionButton && (
-          <Suspense>
-            <PlayerSelectionButton leagueId={leagueId} />
-          </Suspense>
-        )}
-      </div>
-
-      <PlayersListContent
-        virtualized={virtualized}
-        actionsDialog={actionsDialog}
-        emptyState={emptyState}
-      />
-    </div>
-  );
-
   return (
     <PlayersProvider players={players}>
       <PlayersEnrichmentProvider>
@@ -61,17 +41,28 @@ export default function PlayersList({
           teamsPromise={getTeams()}
           rolesPromise={getPlayersRoles()}
         >
-          {showSelection ? (
-            <PlayerSelectionProvider
-              leagueTeamsPromise={getLeagueTeams(leagueId).then((team) =>
-                team.map(({ id, name }) => ({ id, name }))
-              )}
-            >
-              {listContent}
-            </PlayerSelectionProvider>
-          ) : (
-            listContent
-          )}
+          <PlayerSelectionProvider
+            leagueTeamsPromise={getLeagueTeams(leagueId).then((team) =>
+              team.map(({ id, name }) => ({ id, name }))
+            )}
+          >
+            <div>
+              <div className="flex items-center mb-3.5">
+                <h2 className="text-xl grow">{title}</h2>
+                {showSelectionButton && (
+                  <Suspense>
+                    <PlayerSelectionButton leagueId={leagueId} />
+                  </Suspense>
+                )}
+              </div>
+
+              <PlayersListContent
+                virtualized={virtualized}
+                actionsDialog={actionsDialog}
+                emptyState={emptyState}
+              />
+            </div>{" "}
+          </PlayerSelectionProvider>
         </PlayersFiltersProvider>
       </PlayersEnrichmentProvider>
     </PlayersProvider>
