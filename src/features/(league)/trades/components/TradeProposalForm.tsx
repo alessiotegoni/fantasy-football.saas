@@ -112,6 +112,7 @@ export default function TradeProposalForm({
                     <TradePlayersMultiSelect
                       triggerText="Offri giocatori"
                       players={use(proposerTeamPlayersPromise)}
+                      onPlayerSelect={appendPlayer}
                     />
                   </Suspense>
                 )
@@ -140,6 +141,8 @@ export default function TradeProposalForm({
                     <TradePlayersMultiSelect
                       triggerText="Richiedi giocatori"
                       players={use(receiverTeamPlayersPromise)}
+                      onPlayerSelect={appendPlayer}
+                      offeredByProposer={false}
                     />
                   </Suspense>
                 )

@@ -11,27 +11,40 @@ import {
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { UseFieldArrayRemove } from "react-hook-form";
+import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 
 interface PlayerCarouselProps {
   players: {
-    id: number;
     index: number;
+    id: number;
+    displayName: string;
+    roleId: number;
+    teamId: number;
+    avatarUrl: string | null;
     offeredByProposer: boolean;
   }[];
-  onRemovePlayer: UseFieldArrayRemove
+  onRemovePlayer: UseFieldArrayRemove;
 }
 
 export function TradePlayersCarousel({
   players,
   onRemovePlayer,
 }: PlayerCarouselProps) {
+  console.log(players);
+
   return (
     <div className="mt-4">
       <Carousel className="w-full">
         <CarouselContent className="-ml-2 md:-ml-4">
           {players.map((player) => (
             <CarouselItem key={player.id} className="pl-2 md:pl-4 basis-auto">
-              <div className="relative group">
+              <PlayerCard
+                {...player}
+                showSelectButton={false}
+                role={null}
+                team={null}
+              />
+              {/* <div className="relative group">
                 <div className="flex flex-col items-center p-3 bg-muted/50 rounded-xl min-w-[80px]">
                   <div className="relative">
                     <Image
@@ -59,7 +72,7 @@ export function TradePlayersCarousel({
                     {player.position}
                   </span>
                 </div>
-              </div>
+              </div> */}
             </CarouselItem>
           ))}
         </CarouselContent>

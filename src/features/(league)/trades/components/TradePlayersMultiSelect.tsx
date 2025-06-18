@@ -19,27 +19,39 @@ import {
 import { getTeamPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { useFormContext } from "react-hook-form";
 import { TradeProposalSchema } from "../schema/trade";
-import { CheckCircle } from "iconoir-react/solid";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
+import { useCallback } from "react";
+import { BasePlayer } from "@/contexts/PlayersProvider";
 
 interface MultiSelectProps {
+  offeredByProposer?: boolean;
   players: Awaited<ReturnType<typeof getTeamPlayers>>;
+  onPlayerSelect: (player: TradeProposalSchema["players"][number]) => void;
   triggerText: string;
 }
 
 export default function TradePlayersMultiSelect({
+  offeredByProposer = true,
   players,
   triggerText,
+  onPlayerSelect,
 }: MultiSelectProps) {
   const form = useFormContext<TradeProposalSchema>();
-  const selectedPlayersIds = form.watch("players").map((player) => player.id);
 
-  console.log(players);
+  const isPlayerSelected = useCallback(
+    ({ id }: BasePlayer) => {
+      const selectedPlayersIds = form
+        .watch("players")
+        .map((player) => player.id);
+      return selectedPlayersIds.includes(id);
+    },
+    [form]
+  );
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button>
+        <Button className="mt-8">
           {triggerText}
           <ChevronDown className="size-5 shrink-0" />
         </Button>
@@ -57,9 +69,25 @@ export default function TradePlayersMultiSelect({
                     role={null}
                     team={null}
                     showSelectButton={false}
-                    className={cn(
-                      selectedPlayersIds.includes(player.id) && "border-primary"
-                    )}
+                    canSelectCard
+                    onSelect={({
+                      id,
+                      displayName,
+                      roleId,
+                      teamId,
+                      avatarUrl,
+                    }) =>
+                      !isPlayerSelected(player) &&
+                      onPlayerSelect({
+                        id,
+                        displayName,
+                        roleId,
+                        teamId,
+                        avatarUrl,
+                        offeredByProposer,
+                      })
+                    }
+                    className={cn(isPlayerSelected(player) && "border-primary")}
                   />
                 </CommandItem>
               ))}
