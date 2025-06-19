@@ -4,11 +4,16 @@ import Link from "next/link";
 import { NavArrowRight } from "iconoir-react";
 
 type Props = {
+  text?: string;
   leagueId: string;
   userTeamId: string;
 };
 
-export default async function TradeProposalButton({ leagueId, userTeamId }: Props) {
+export default async function TradeProposalButton({
+  text = "Scambia giocatori",
+  leagueId,
+  userTeamId,
+}: Props) {
   const isMarketOpen = await isTradeMarketOpen(leagueId);
   if (!isMarketOpen) return null;
 
@@ -17,7 +22,7 @@ export default async function TradeProposalButton({ leagueId, userTeamId }: Prop
       <Link
         href={`/leagues/${leagueId}/my-trades/proposal?proposerTeamId=${userTeamId}`}
       >
-        Scambia giocatori
+        {text}
         <NavArrowRight />
       </Link>
     </Button>

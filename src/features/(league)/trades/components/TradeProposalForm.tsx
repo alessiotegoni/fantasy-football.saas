@@ -8,11 +8,13 @@ import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 import { Suspense, use, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { UserPlus } from "iconoir-react";
+import { UserPlus, WarningTriangle } from "iconoir-react";
 import FormSliderField from "@/components/FormFieldSlider";
 import TradeProposalCard from "./TradeProposalCard";
 import TradePlayersMultiSelect from "./TradePlayersMultiSelect";
 import { getTeamPlayers } from "../../teamsPlayers/queries/teamsPlayer";
+import TradeProposalButton from "./TradeProposalButton";
+import BackButton from "@/components/BackButton";
 
 type Props = {
   leagueId: string;
@@ -40,7 +42,7 @@ export default function TradeProposalForm({
       creditRequestedByProposer: null,
       proposerTeamId,
       receiverTeamId: searchParams.get("receiverTeamId") ?? "",
-      players: []
+      players: [],
     },
   });
 
@@ -90,7 +92,7 @@ export default function TradeProposalForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="flex flex-wrap items-center gap-6">
           {proposerTeam ? (
             <TradeProposalCard
               leagueId={leagueId}
@@ -118,10 +120,23 @@ export default function TradeProposalForm({
                 )
               }
             />
-          ) : null}
+          ) : (
+            <div className="bg-sidebar/80 p-4 rounded-3xl">
+              <div className="text-center py-8">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+                  <WarningTriangle className="size-8 text-muted-foreground" />
+                </div>
+                <p className="text-sm md:text-base text-muted-foreground mb-4">
+                  Il team che fa la proposta di scambio deve essere il tuo
+                </p>
+                <BackButton />
+              </div>
+            </div>
+          )}
 
           {receiverTeam ? (
             <TradeProposalCard
+              isProposer={false}
               leagueId={leagueId}
               team={receiverTeam}
               players={groupedTradePlayers["requested"]}

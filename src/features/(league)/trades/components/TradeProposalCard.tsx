@@ -6,9 +6,14 @@ import { TradePlayersCarousel } from "./TradePlayersCarousel";
 type Props = {
   leagueId: string;
   team: Awaited<ReturnType<typeof getLeagueTeams>>[number];
+  isProposer?: boolean;
   players?: {
-    id: number;
     index: number;
+    id: number;
+    displayName: string;
+    roleId: number;
+    teamId: number;
+    avatarUrl: string | null;
     offeredByProposer: boolean;
   }[];
   removePlayer: UseFieldArrayRemove;
@@ -17,6 +22,7 @@ type Props = {
 };
 
 export default function TradeProposalCard({
+  isProposer = true,
   leagueId,
   team,
   players,
@@ -25,25 +31,29 @@ export default function TradeProposalCard({
   renderSelectPlayers,
 }: Props) {
   return (
-    <div className="bg-sidebar p-4 rounded-3xl">
+    <div className="bg-sidebar p-4 rounded-3xl grow">
       <div className="mb-8">
         <LeagueTeamCard
           leagueId={leagueId}
           team={team}
-          className="rounded-2xl hover:border-border"
+          className="hover:border-border"
+          showIsUserTeam={isProposer}
+          showTeamCredits={false}
         />
       </div>
 
       {renderCreditsSlider()}
 
       {!!players?.length && (
-        <>
-          <h3 className="font-medium mb-3">Calciatori offerti</h3>
+        <div className="mt-8">
+          <h3 className="font-medium mb-3">
+            {isProposer ? "Calciatori offerti" : "Calciatori richiesti"}
+          </h3>
           <TradePlayersCarousel
             players={players}
             onRemovePlayer={removePlayer}
           />
-        </>
+        </div>
       )}
       {renderSelectPlayers()}
     </div>

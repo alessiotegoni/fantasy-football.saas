@@ -13,9 +13,9 @@ import { cn } from "@/lib/utils";
 
 type Props = EnrichedPlayer & {
   showSelectButton?: boolean;
-  className?: string;
   canSelectCard?: boolean;
   onSelect?: (player: EnrichedPlayer) => void;
+  className?: string;
 };
 
 export default memo(function PlayerCard({

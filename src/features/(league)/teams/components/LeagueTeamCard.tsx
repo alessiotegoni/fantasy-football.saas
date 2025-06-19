@@ -17,6 +17,7 @@ type Props = {
   teamUserId?: string;
   className?: string;
   showIsUserTeam?: boolean;
+  showTeamCredits?: boolean;
   renderTeamPpr?: () => React.ReactNode;
 };
 
@@ -24,6 +25,7 @@ export default function LeagueTeamCard({
   team,
   teamUserId,
   showIsUserTeam = true,
+  showTeamCredits = true,
   leagueId,
   className,
   renderTeamPpr,
@@ -32,7 +34,7 @@ export default function LeagueTeamCard({
     <div
       key={team.id}
       className={cn(
-        "bg-background rounded-xl border border-border hover:border-primary/20 transition-colors",
+        "bg-background rounded-3xl border border-border hover:border-primary/20 transition-colors",
         "flex p-4 gap-4 h-full justify-between",
         showIsUserTeam && team.userId === teamUserId && "border-primary",
         className
@@ -49,7 +51,12 @@ export default function LeagueTeamCard({
           renderFallback={() => team.name.charAt(0).toUpperCase()}
         />
         <div className="grow min-w-0">
-          <h3 className="text-lg font-semibold truncate">{team.name}</h3>
+          <h3 className="text-lg font-semibold truncate">
+            {team.name}{" "}
+            {showIsUserTeam &&
+              (teamUserId ? team.userId === teamUserId : true) &&
+              "(Tu)"}
+          </h3>
           <p className="text-sm text-muted-foreground truncate">
             {team.managerName}
           </p>
@@ -57,9 +64,11 @@ export default function LeagueTeamCard({
       </Link>
 
       <div className="flex flex-col gap-4 justify-between items-center md:items-end">
-        <div className="flex gap-1 items-center">
-          <TeamCreditsBadge credits={team.credits} />
-        </div>
+        {showTeamCredits && (
+          <div className="flex gap-1 items-center">
+            <TeamCreditsBadge credits={team.credits} />
+          </div>
+        )}
         {renderTeamPpr?.()}
         {showIsUserTeam && team.userId === teamUserId && (
           <Button variant="gradient" size="sm" className="mt-2">
