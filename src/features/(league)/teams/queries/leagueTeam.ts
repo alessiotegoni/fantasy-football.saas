@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagueMemberTeams } from "@/drizzle/schema";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueTeamsTag, getTeamIdTag } from "../db/cache/leagueTeam";
 
@@ -24,6 +24,7 @@ export async function getLeagueTeams(leagueId: string) {
     )
     .where(eq(leagueMemberTeams.leagueId, leagueId));
 }
+export type LeagueTeam = Awaited<ReturnType<typeof getLeagueTeams>>[number];
 
 export async function getLeagueTeam({
   leagueId,

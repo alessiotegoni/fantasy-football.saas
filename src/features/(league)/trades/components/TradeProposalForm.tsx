@@ -5,34 +5,30 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { TradeProposalSchema, tradeProposalSchema } from "../schema/trade";
 import { Form } from "@/components/ui/form";
 import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
-import { getLeagueTeams } from "../../teams/queries/leagueTeam";
-import { Suspense, use, useEffect, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { LeagueTeam } from "../../teams/queries/leagueTeam";
+import { useMemo } from "react";
 import { UserPlus, WarningTriangle } from "iconoir-react";
 import FormSliderField from "@/components/FormFieldSlider";
 import TradeProposalCard from "./TradeProposalCard";
 import TradePlayersMultiSelect from "./TradePlayersMultiSelect";
-import { getTeamPlayers } from "../../teamsPlayers/queries/teamsPlayer";
-import TradeProposalButton from "./TradeProposalButton";
 import BackButton from "@/components/BackButton";
+import SubmitButton from "@/components/SubmitButton";
+import { useTradePlayers } from "@/contexts/TradePlayersProvider";
 
 type Props = {
   leagueId: string;
-  leagueTeams: Awaited<ReturnType<typeof getLeagueTeams>>;
-  proposerTeamPlayersPromise: ReturnType<typeof getTeamPlayers> | undefined;
-  receiverTeamPlayersPromise: ReturnType<typeof getTeamPlayers> | undefined;
+  leagueTeams: LeagueTeam[];
+  proposerTeam: LeagueTeam | undefined;
+  receiverTeam: LeagueTeam | undefined;
 };
 
 export default function TradeProposalForm({
   leagueId,
   leagueTeams,
-  proposerTeamPlayersPromise,
-  receiverTeamPlayersPromise,
+  proposerTeam,
+  receiverTeam,
 }: Props) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const proposerTeamId = searchParams.get("proposerTeamId") as string;
+  const { proposerTeamPlayers, receiverTeamPlayers } = useTradePlayers();
 
   const form = useForm<TradeProposalSchema>({
     resolver: zodResolver(tradeProposalSchema),
@@ -40,8 +36,8 @@ export default function TradeProposalForm({
       leagueId,
       creditOfferedByProposer: null,
       creditRequestedByProposer: null,
-      proposerTeamId,
-      receiverTeamId: searchParams.get("receiverTeamId") ?? "",
+      proposerTeamId: proposerTeam?.id,
+      receiverTeamId: receiverTeam?.id,
       players: [],
     },
   });
@@ -57,42 +53,31 @@ export default function TradeProposalForm({
   });
 
   const groupedTradePlayers = useMemo(() => {
-    const playersWithIndexes = tradePlayers.map((player, index) => ({
-      ...player,
-      index,
-    }));
+    const playersWithIndexes = tradePlayers.map(
+      ({ roleId, ...player }, index) => ({
+        ...player,
+        index,
+      })
+    );
     return Object.groupBy(playersWithIndexes, (player) =>
       player.offeredByProposer ? "proposed" : "requested"
     );
   }, [tradePlayers]);
 
-  const proposerTeam = useMemo(
-    () => leagueTeams.find((team) => team.id === proposerTeamId),
-    [proposerTeamId]
-  );
-
-  const receiverTeamId = form.watch("receiverTeamId");
-  const receiverTeam = useMemo(
-    () => leagueTeams.find((team) => team.id === receiverTeamId),
-    [receiverTeamId]
-  );
-
-  useEffect(() => {
-    console.log(searchParams.toString());
-    if (!receiverTeam) return;
-
-    const newSearchParams = new URLSearchParams(searchParams);
-    newSearchParams.set("receiverTeamId", receiverTeam.id);
-
-    router.replace(`?${newSearchParams.toString()}`);
-  }, [receiverTeam]);
-
   async function onSubmit(values: TradeProposalSchema) {}
+
+  console.log(form.formState.errors);
 
   return (
     <Form {...form}>
+      {form.formState.errors.root && (
+        <div className="flex justify-center items-center gap-2 bg-destructive/80 border border-destructive">
+          <WarningTriangle />
+          {form.formState.errors.root.message}
+        </div>
+      )}
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-wrap items-center gap-6">
+        <div className="grid md:grid-cols-2 gap-6">
           {proposerTeam ? (
             <TradeProposalCard
               leagueId={leagueId}
@@ -109,14 +94,12 @@ export default function TradeProposalForm({
                 />
               )}
               renderSelectPlayers={() =>
-                proposerTeamPlayersPromise && (
-                  <Suspense>
-                    <TradePlayersMultiSelect
-                      triggerText="Offri giocatori"
-                      players={use(proposerTeamPlayersPromise)}
-                      onPlayerSelect={appendPlayer}
-                    />
-                  </Suspense>
+                proposerTeamPlayers && (
+                  <TradePlayersMultiSelect
+                    triggerText="Offri giocatori"
+                    players={proposerTeamPlayers}
+                    onPlayerSelect={appendPlayer}
+                  />
                 )
               }
             />
@@ -151,15 +134,13 @@ export default function TradeProposalForm({
                 />
               )}
               renderSelectPlayers={() =>
-                receiverTeamPlayersPromise && (
-                  <Suspense>
-                    <TradePlayersMultiSelect
-                      triggerText="Richiedi giocatori"
-                      players={use(receiverTeamPlayersPromise)}
-                      onPlayerSelect={appendPlayer}
-                      offeredByProposer={false}
-                    />
-                  </Suspense>
+                receiverTeamPlayers && (
+                  <TradePlayersMultiSelect
+                    triggerText="Richiedi giocatori"
+                    players={receiverTeamPlayers}
+                    onPlayerSelect={appendPlayer}
+                    offeredByProposer={false}
+                  />
                 )
               }
             />
@@ -177,7 +158,7 @@ export default function TradeProposalForm({
                   <TeamsSelectField<TradeProposalSchema>
                     name="receiverTeamId"
                     teams={leagueTeams
-                      .filter((team) => team.id !== proposerTeamId)
+                      .filter((team) => team.id !== proposerTeam?.id)
                       .map((team) => ({ id: team.id, name: team.name }))}
                   />
                 </div>
@@ -185,17 +166,15 @@ export default function TradeProposalForm({
             </div>
           )}
         </div>
-        {/* {canSubmit && (
-          <div className="flex justify-center pt-6">
-            <Button
-              type="submit"
-              size="lg"
-              className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 rounded-full"
-            >
-              Invia proposta
-            </Button>
-          </div>
-        )} */}
+        <div className="flex justify-center">
+          <SubmitButton
+            type="submit"
+            className="mt-6 min-w-56 md:max-w-60"
+            disabled={proposerTeam?.id === receiverTeam?.id}
+          >
+            Invia proposta
+          </SubmitButton>
+        </div>
       </form>
     </Form>
   );

@@ -15,17 +15,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { getTeamPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { useFormContext } from "react-hook-form";
 import { TradeProposalSchema } from "../schema/trade";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { useCallback } from "react";
 import { NavArrowDown } from "iconoir-react";
 import { Check } from "iconoir-react/regular";
+import { EnrichedPlayer } from "@/contexts/PlayersProvider";
 
 interface MultiSelectProps {
   offeredByProposer?: boolean;
-  players: Awaited<ReturnType<typeof getTeamPlayers>>;
+  players: EnrichedPlayer[];
   onPlayerSelect: (player: TradeProposalSchema["players"][number]) => void;
   triggerText: string;
 }
@@ -48,20 +48,31 @@ export default function TradePlayersMultiSelect({
     [form]
   );
 
+  const handleSelectPlayer = useCallback(
+    ({ id, roleId }: EnrichedPlayer) => {
+    if (!isPlayerSelected(id)) {
+      onPlayerSelect({
+        id,
+        roleId,
+        offeredByProposer,
+      });
+    }
+  }, []);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="mt-8">
+        <Button className="mt-8 bg-background">
           {triggerText}
           <NavArrowDown className="size-5 shrink-0" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 rounded-2xl">
+      <PopoverContent className="min-w-[200px] sm:min-w-[400px] p-0 rounded-2xl">
         <Command>
           <CommandInput placeholder="Cerca giocatori" />
           <CommandList className="px-4">
             <CommandEmpty>Nessun giocatore trovato</CommandEmpty>
-            {players.map(({ purchaseCost, ...player }) => (
+            {players.map((player) => (
               <CommandItem
                 key={player.id}
                 className={cn(
@@ -82,22 +93,10 @@ export default function TradePlayersMultiSelect({
                 )}
                 <PlayerCard
                   {...player}
-                  role={null}
-                  team={null}
                   showSelectButton={false}
                   canSelectCard
-                  onSelect={({ id, displayName, roleId, teamId, avatarUrl }) =>
-                    !isPlayerSelected(player.id) &&
-                    onPlayerSelect({
-                      id,
-                      displayName,
-                      roleId,
-                      teamId,
-                      avatarUrl,
-                      offeredByProposer,
-                    })
-                  }
-                  className="border-transparent p-0"
+                  onSelect={handleSelectPlayer}
+                  className="border-transparent p-0 w-full"
                 />
               </CommandItem>
             ))}

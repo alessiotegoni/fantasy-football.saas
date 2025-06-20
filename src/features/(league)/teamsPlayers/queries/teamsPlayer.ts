@@ -10,7 +10,7 @@ import {
   playerRoles,
   players,
 } from "@/drizzle/schema";
-import { count, eq } from "drizzle-orm";
+import { count, eq, inArray } from "drizzle-orm";
 
 export async function getPlayersRoles() {
   "use cache";
@@ -19,9 +19,9 @@ export async function getPlayersRoles() {
   return db.query.playerRoles.findMany();
 }
 
-export async function getTeamPlayers(teamId: string) {
+export async function getTeamPlayers(teamsIds: string[]) {
   "use cache";
-  cacheTag(getTeamPlayersTag(teamId));
+  cacheTag(...teamsIds.map(getTeamPlayersTag));
 
   return db
     .select({
@@ -30,11 +30,12 @@ export async function getTeamPlayers(teamId: string) {
       roleId: players.roleId,
       teamId: players.teamId,
       avatarUrl: players.avatarUrl,
+      leagueTeamId: leagueMemberTeamPlayers.memberTeamId,
       purchaseCost: leagueMemberTeamPlayers.purchaseCost,
     })
     .from(leagueMemberTeamPlayers)
     .innerJoin(players, eq(players.id, leagueMemberTeamPlayers.playerId))
-    .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId));
+    .where(inArray(leagueMemberTeamPlayers.memberTeamId, teamsIds));
 }
 
 export async function getTeamPlayerPerRoles(teamId: string) {

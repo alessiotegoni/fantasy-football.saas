@@ -15,16 +15,22 @@ const PlayerEnrichmentContext =
   createContext<PlayerEnrichmentContextType | null>(null);
 
 export function PlayersEnrichmentProvider({
+  defaultTeams = [],
+  defaultRoles = [],
   children,
 }: {
+  defaultTeams?: Team[];
+  defaultRoles?: Role[];
   children: React.ReactNode;
 }) {
-  const { players } = usePlayers()
+  const { players } = usePlayers();
 
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
+  const [teams, setTeams] = useState<Team[]>(defaultTeams);
+  const [roles, setRoles] = useState<Role[]>(defaultRoles);
 
   const enrichedPlayers = useMemo(() => {
+    if (!players.length) return [];
+
     const rolesMap = new Map(roles.map((r) => [r.id, r]));
     const teamsMap = new Map(teams.map((t) => [t.id, t]));
 

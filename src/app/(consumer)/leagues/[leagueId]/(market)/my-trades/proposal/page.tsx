@@ -1,8 +1,7 @@
 import Container from "@/components/Container";
-import Disclaimer from "@/components/Disclaimer";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
-import { getTeamPlayers } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import TradeProposalForm from "@/features/(league)/trades/components/TradeProposalForm";
+import TradeProposalWrapper from "@/features/(league)/trades/components/TradeProposalWrapper";
+import { getUUIdSchema } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -25,31 +24,30 @@ async function SuspenseBoundary({ params, searchParams }: Props) {
   const [{ leagueId }, searchP] = await Promise.all([params, searchParams]);
   if (!searchP?.proposerTeamId) notFound();
 
+  const idsValidations = Object.values(searchP).map((teamId) =>
+    getUUIdSchema("Id del team invalido").safeParse(teamId)
+  );
+  if (idsValidations.some((validation) => !validation.success)) notFound();
+
   const leagueTeams = await getLeagueTeams(leagueId);
-  const teamsPlayersPromises = searchP.receiverTeamId
-    ? Promise.all([
-        getTeamPlayers(searchP.proposerTeamId),
-        getTeamPlayers(searchP.receiverTeamId),
-      ])
-    : undefined;
+
+  const proposerTeam = leagueTeams.find(
+    (team) => team.id === searchP.proposerTeamId
+  );
+  const receiverTeam = leagueTeams.find(
+    (team) => team.id === searchP.receiverTeamId
+  );
+
+  const props = {
+    leagueId: leagueId,
+    leagueTeams: leagueTeams,
+    proposerTeam: proposerTeam,
+    receiverTeam: receiverTeam,
+  };
 
   return (
-    <>
-      <TradeProposalForm
-        leagueId={leagueId}
-        leagueTeams={leagueTeams}
-        proposerTeamPlayersPromise={
-          teamsPlayersPromises
-            ? teamsPlayersPromises.then((promise) => promise[0])
-            : undefined
-        }
-        receiverTeamPlayersPromise={
-          teamsPlayersPromises
-            ? teamsPlayersPromises.then((promise) => promise[1])
-            : undefined
-        }
-      />
-      <Disclaimer />
-    </>
+    <Suspense fallback={<TradeProposalWrapper {...props} />}>
+      <TradeProposalWrapper {...props} />
+    </Suspense>
   );
 }

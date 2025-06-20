@@ -11,25 +11,34 @@ import { UseFieldArrayRemove } from "react-hook-form";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { Button } from "@/components/ui/button";
 import { XmarkCircleSolid } from "iconoir-react";
+import { usePlayersEnrichment } from "@/contexts/PlayersEnrichmentProvider";
+import { useMemo } from "react";
 
 interface PlayerCarouselProps {
-  players: {
+  tradePlayers: {
     index: number;
     id: number;
-    displayName: string;
-    roleId: number;
-    teamId: number;
-    avatarUrl: string | null;
     offeredByProposer: boolean;
   }[];
   onRemovePlayer: UseFieldArrayRemove;
 }
 
 export function TradePlayersCarousel({
-  players,
+  tradePlayers,
   onRemovePlayer,
 }: PlayerCarouselProps) {
-  console.log(players);
+  const { enrichedPlayers } = usePlayersEnrichment();
+
+  const players = useMemo(
+    () =>
+      enrichedPlayers.map((enrichPlayer) => ({
+        ...enrichPlayer,
+        index: tradePlayers.find(
+          (tradePlayer) => tradePlayer.id === enrichPlayer.id
+        )!.index,
+      })),
+    [enrichedPlayers, tradePlayers]
+  );
 
   return (
     <div className="mt-4">
@@ -41,8 +50,6 @@ export function TradePlayersCarousel({
                 <PlayerCard
                   {...player}
                   showSelectButton={false}
-                  role={null}
-                  team={null}
                   className="border-transparent p-0"
                 />
                 <Button
