@@ -68,6 +68,7 @@ export default function TradeProposalForm({
 
   console.log(form.formState.errors);
 
+
   return (
     <Form {...form}>
       {form.formState.errors.root && (

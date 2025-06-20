@@ -17,18 +17,18 @@ export const tradeProposalSchema = z
       "L'id del team che riceve lo scambio e' invalido"
     ),
     creditOfferedByProposer: z
-      .number()
+      .number({ message: "Deve essere un numero valido" })
       .positive("Deve essere un numero maggiore di 0")
+      .transform((num) => num || null)
       .nullable(),
     creditRequestedByProposer: z
-      .number()
+      .number({ message: "Deve essere un numero valido" })
       .positive("Deve essere un numero maggiore di 0")
+      .transform((num) => num || null)
       .nullable(),
     players: z.array(tradeProposalPlayer),
   })
   .superRefine((data, ctx) => {
-    console.log(data.proposerTeamId === data.receiverTeamId);
-
     if (data.proposerTeamId === data.receiverTeamId) {
       ctx.addIssue({
         code: "custom",
