@@ -49,7 +49,7 @@ export default function TradeProposalForm({
   } = useFieldArray({
     control: form.control,
     name: "players",
-    keyName: undefined,
+    keyName: "fieldKey",
   });
 
   const groupedTradePlayers = useMemo(() => {

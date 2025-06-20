@@ -4,8 +4,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { UseFieldArrayRemove } from "react-hook-form";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
@@ -31,20 +29,22 @@ export function TradePlayersCarousel({
 
   const players = useMemo(
     () =>
-      enrichedPlayers.map((enrichPlayer) => ({
-        ...enrichPlayer,
-        index: tradePlayers.find(
-          (tradePlayer) => tradePlayer.id === enrichPlayer.id
-        )!.index,
+      tradePlayers.map((tradePlayer) => ({
+        ...tradePlayer,
+        ...enrichedPlayers.find(
+          (enrichPlayer) => enrichPlayer.id === tradePlayer.id
+        ),
       })),
+
     [enrichedPlayers, tradePlayers]
   );
+  console.log(enrichedPlayers);
 
   return (
     <div className="mt-4">
       <Carousel className="w-full">
         <CarouselContent className="-ml-2 md:-ml-4">
-          {players.map((player) => (
+          {players.map(({ purchaseCost, ...player }) => (
             <CarouselItem key={player.id} className="pl-2 md:pl-4 basis-auto">
               <div className="flex items-center gap-3 border border-border rounded-3xl p-2 pr-2.5 py-2 bg-background">
                 <PlayerCard
@@ -64,12 +64,6 @@ export function TradePlayersCarousel({
             </CarouselItem>
           ))}
         </CarouselContent>
-        {players.length > 3 && (
-          <>
-            <CarouselPrevious />
-            <CarouselNext />
-          </>
-        )}
       </Carousel>
     </div>
   );
