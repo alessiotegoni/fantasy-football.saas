@@ -97,6 +97,7 @@ export default function TradePlayersMultiSelect({
                   canSelectCard
                   onSelect={handleSelectPlayer}
                   className="border-transparent p-0 w-full"
+                  avatarSize={10}
                 />
               </CommandItem>
             ))}

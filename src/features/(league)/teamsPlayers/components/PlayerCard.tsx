@@ -16,11 +16,13 @@ type Props = EnrichedPlayer & {
   canSelectCard?: boolean;
   onSelect?: (player: EnrichedPlayer) => void;
   className?: string;
+  avatarSize?: number
 };
 
 export default memo(function PlayerCard({
   showSelectButton = true,
   className,
+  avatarSize = 12,
   canSelectCard = false,
   onSelect,
   ...player
@@ -36,17 +38,17 @@ export default memo(function PlayerCard({
       {...(canSelectCard ? { onClick: onSelect?.bind(null, player) } : {})}
     >
       <div className="flex items-center gap-3">
-        <div className="relative size-12">
+        <div className={cn("relative", `size-${avatarSize}`)}>
           <Avatar
             imageUrl={player.avatarUrl}
             name={player.displayName}
-            size={12}
+            size={avatarSize}
             renderFallback={() => <User />}
           />
           {player.role && (
             <PlayerRoleBadge
               role={player.role}
-              className="absolute -top-1 -left-1"
+              className={cn("absolute -top-1 -left-1")}
             />
           )}
         </div>
