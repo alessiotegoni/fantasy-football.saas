@@ -56,12 +56,14 @@ export async function deleteTrade(
   const [res] = await tx
     .delete(leagueTradeProposals)
     .where(eq(leagueTradeProposals.id, tradeId))
-    .returning({ tradeId: leagueTradeProposals.id });
+    .returning();
 
-  if (!res.tradeId)
+  if (!res.id)
     throw new Error(getError("Errore nell'eliminazione dello scambio").message);
 
   revalidateLeagueTradesCache({ leagueId, tradeId });
+
+  return res
 }
 
 export async function deleteTradePlayers(

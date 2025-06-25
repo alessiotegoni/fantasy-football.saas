@@ -5,14 +5,20 @@ import { getError, insertTrade, insertTradePlayers } from "../db/trade";
 import { tradeProposalSchema, TradeProposalSchema } from "../schema/trade";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
+import { canCreateTrade } from "../permissions/trade";
+import { getUUIdSchema } from "@/schema/helpers";
 
 export async function createTrade(values: TradeProposalSchema) {
   const { success, data } = tradeProposalSchema.safeParse(values);
   if (!success) return getError();
 
   const userId = await getUserId();
+  if (!userId) return getError();
 
   const { players, ...trade } = data;
+
+  const { error, message } = await canCreateTrade({ userId, ...data });
+  if (error) return getError(message);
 
   const tradeId = await db.transaction(async (tx) => {
     const tradeProposalId = await insertTrade(trade, tx);
@@ -29,3 +35,4 @@ export async function createTrade(values: TradeProposalSchema) {
 
   redirect(`/leagues/${data.leagueId}/trades/${tradeId}`);
 }
+
