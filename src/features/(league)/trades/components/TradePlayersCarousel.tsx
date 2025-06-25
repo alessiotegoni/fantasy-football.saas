@@ -38,7 +38,6 @@ export function TradePlayersCarousel({
 
     [enrichedPlayers, tradePlayers]
   );
-  console.log(enrichedPlayers);
 
   return (
     <div className="mt-4">

@@ -1,3 +1,4 @@
+import { formatPlural } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
 
 export default function TeamCreditsBadge({
@@ -14,7 +15,7 @@ export default function TeamCreditsBadge({
         className
       )}
     >
-      {credits} crediti
+      {formatPlural(credits, { singular: "credito", plural: "crediti" })}
     </p>
   );
 }
