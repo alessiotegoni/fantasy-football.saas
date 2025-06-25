@@ -1,7 +1,7 @@
 "use server";
 
 import { getUserId } from "@/features/users/utils/user";
-import { getError } from "../db/trade";
+import { getError, insertTrade, insertTradePlayers } from "../db/trade";
 import { tradeProposalSchema, TradeProposalSchema } from "../schema/trade";
 import { db } from "@/drizzle/db";
 
@@ -11,7 +11,16 @@ export async function addTrade(values: TradeProposalSchema) {
 
   const userId = await getUserId();
 
-  const [] = await db.transaction(async (tx) => {
-    const tradeId = await
-  })
+  const { players, ...trade } = data;
+
+  await db.transaction(async (tx) => {
+    const tradeProposalId = await insertTrade(trade, tx);
+
+    const tradePlayers = players.map(({ id, offeredByProposer }) => ({
+      playerId: id,
+      tradeProposalId,
+      offeredByProposer,
+    }));
+    await insertTradePlayers(data.leagueId, tradeProposalId, tradePlayers);
+  });
 }

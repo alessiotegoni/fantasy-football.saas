@@ -2,9 +2,9 @@ import {
   pgTable,
   uuid,
   boolean,
-  unique,
   index,
   primaryKey,
+  integer,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueTradeProposals } from "./leagueTradeProposals";
@@ -16,7 +16,7 @@ export const leagueTradeProposalPlayers = pgTable(
     tradeProposalId: uuid("trade_proposal_id")
       .notNull()
       .references(() => leagueTradeProposals.id, { onDelete: "cascade" }),
-    playerId: uuid("player_id")
+    playerId: integer("player_id")
       .notNull()
       .references(() => players.id, { onDelete: "cascade" }),
     offeredByProposer: boolean("offered_by_proposer").notNull(),
