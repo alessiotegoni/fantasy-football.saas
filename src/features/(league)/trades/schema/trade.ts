@@ -16,15 +16,15 @@ export const createTradeProposalSchema = z
       "L'id del team che riceve lo scambio e' invalido"
     ),
     creditOfferedByProposer: z
-      .number({ message: "Deve essere un numero valido" })
-      .positive("Deve essere un numero maggiore di 0")
-      .transform((num) => num || null)
-      .nullable(),
+    .number({ message: "Deve essere un numero valido" })
+    .positive("Deve essere un numero maggiore di 0")
+    .transform((num) => num || null)
+    .nullable(),
     creditRequestedByProposer: z
-      .number({ message: "Deve essere un numero valido" })
-      .positive("Deve essere un numero maggiore di 0")
-      .transform((num) => num || null)
-      .nullable(),
+    .number({ message: "Deve essere un numero valido" })
+    .positive("Deve essere un numero maggiore di 0")
+    .transform((num) => num || null)
+    .nullable(),
     players: z.array(tradeProposalPlayer),
   })
   .superRefine((data, ctx) => {
@@ -46,5 +46,11 @@ export const createTradeProposalSchema = z
       return;
     }
   });
+
+  export const updateTradeProposalSchema = z.object({
+    tradeId: getUUIdSchema("Id dello scambio invalido"),
+    leagueId: getUUIdSchema("Id della lega invalido"),
+  status: z.enum()
+})
 
 export type CreateTradeProposalSchema = z.infer<typeof createTradeProposalSchema>;

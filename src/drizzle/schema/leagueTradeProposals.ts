@@ -10,13 +10,17 @@ import { leagues } from "./leagues";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { leagueTradeProposalPlayers } from "./leagueTradeProposalPlayers";
 
-export type TradeProposalStatusType = "pending" | "accepted" | "rejected";
-
-export const tradeProposalStatusEnum = pgEnum("trade_proposal_status", [
+export const tradeProposalStatuses = [
   "pending",
   "accepted",
   "rejected",
-]);
+] as const
+export type TradeProposalStatusType = (typeof tradeProposalStatuses)[number];
+
+export const tradeProposalStatusEnum = pgEnum(
+  "trade_proposal_status",
+  tradeProposalStatuses
+);
 
 export const leagueTradeProposals = pgTable("league_trade_proposals", {
   id: uuid("id").defaultRandom().primaryKey(),
