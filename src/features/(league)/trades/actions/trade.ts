@@ -1,5 +1,7 @@
 "use server"
 
-export async function addTrade(params:type) {
+import { TradeProposalSchema } from "../schema/trade";
 
+export async function addTrade(values: TradeProposalSchema) {
+    
 }

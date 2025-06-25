@@ -27,6 +27,7 @@ interface MultiSelectProps {
   players: EnrichedPlayer[];
   onPlayerSelect: (player: TradeProposalSchema["players"][number]) => void;
   triggerText: string;
+  className?: string
 }
 
 export default function TradePlayersMultiSelect({
@@ -34,6 +35,7 @@ export default function TradePlayersMultiSelect({
   players,
   triggerText,
   onPlayerSelect,
+  className
 }: MultiSelectProps) {
   const form = useFormContext<TradeProposalSchema>();
 
@@ -60,7 +62,7 @@ export default function TradePlayersMultiSelect({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button className="mt-8 bg-background">
+        <Button className={cn("mt-8 bg-background !px-5", className)}>
           {triggerText}
           <NavArrowDown className="size-5 shrink-0" />
         </Button>
@@ -74,7 +76,7 @@ export default function TradePlayersMultiSelect({
               <CommandItem
                 key={player.id}
                 className={cn(
-                  "p-0 py-3",
+                  "p-0 py-3 gap-3.5",
                   isPlayerSelected(player.id)
                     ? "border-primary"
                     : "cursor-pointer"

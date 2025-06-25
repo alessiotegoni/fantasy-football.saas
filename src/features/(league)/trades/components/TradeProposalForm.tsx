@@ -4,16 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import { TradeProposalSchema, tradeProposalSchema } from "../schema/trade";
 import { Form } from "@/components/ui/form";
-import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { useMemo } from "react";
-import { UserPlus, WarningTriangle } from "iconoir-react";
+import { SendEuros, UserPlus, WarningTriangle } from "iconoir-react";
 import FormSliderField from "@/components/FormFieldSlider";
 import TradeProposalCard from "./TradeProposalCard";
 import TradePlayersMultiSelect from "./TradePlayersMultiSelect";
 import BackButton from "@/components/BackButton";
 import SubmitButton from "@/components/SubmitButton";
 import { useTradePlayers } from "@/contexts/TradePlayersProvider";
+import TradeReceiverTeamSelect from "./TradeReceiverTeamSelect";
 
 type Props = {
   leagueId: string;
@@ -53,12 +53,10 @@ export default function TradeProposalForm({
   });
 
   const groupedTradePlayers = useMemo(() => {
-    const playersWithIndexes = tradePlayers.map(
-      (player, index) => ({
-        ...player,
-        index,
-      })
-    );
+    const playersWithIndexes = tradePlayers.map((player, index) => ({
+      ...player,
+      index,
+    }));
     return Object.groupBy(playersWithIndexes, (player) =>
       player.offeredByProposer ? "proposed" : "requested"
     );
@@ -67,7 +65,6 @@ export default function TradeProposalForm({
   async function onSubmit(values: TradeProposalSchema) {}
 
   console.log(form.formState.errors);
-
 
   return (
     <Form {...form}>
@@ -94,7 +91,7 @@ export default function TradeProposalForm({
                   unit="Crediti offerti"
                 />
               )}
-              renderSelectPlayers={() =>
+              renderSelects={() =>
                 proposerTeamPlayers && (
                   <TradePlayersMultiSelect
                     triggerText="Offri giocatori"
@@ -134,16 +131,24 @@ export default function TradeProposalForm({
                   unit="Crediti richiesti"
                 />
               )}
-              renderSelectPlayers={() =>
-                receiverTeamPlayers && (
-                  <TradePlayersMultiSelect
-                    triggerText="Richiedi giocatori"
-                    players={receiverTeamPlayers}
-                    onPlayerSelect={appendPlayer}
-                    offeredByProposer={false}
+              renderSelects={() => (
+                <div className="grid xl:grid-cols-2 gap-2 mt-8">
+                  <TradeReceiverTeamSelect
+                    leagueTeams={leagueTeams}
+                    className="!h-fit w-full py-3.5 justify-center"
+                    placeholder="Cambia squadra"
                   />
-                )
-              }
+                  {receiverTeamPlayers && (
+                    <TradePlayersMultiSelect
+                      className="w-full mt-0"
+                      triggerText="Richiedi giocatori"
+                      players={receiverTeamPlayers}
+                      onPlayerSelect={appendPlayer}
+                      offeredByProposer={false}
+                    />
+                  )}
+                </div>
+              )}
             />
           ) : (
             <div className="bg-sidebar/80 p-4 rounded-3xl">
@@ -156,12 +161,7 @@ export default function TradeProposalForm({
                   di scambio.
                 </p>
                 <div className="flex justify-center">
-                  <TeamsSelectField<TradeProposalSchema>
-                    name="receiverTeamId"
-                    teams={leagueTeams
-                      .filter((team) => team.id !== proposerTeam?.id)
-                      .map((team) => ({ id: team.id, name: team.name }))}
-                  />
+                  <TradeReceiverTeamSelect leagueTeams={leagueTeams} />
                 </div>
               </div>
             </div>
@@ -174,6 +174,7 @@ export default function TradeProposalForm({
             disabled={proposerTeam?.id === receiverTeam?.id}
           >
             Invia proposta
+            <SendEuros className="size-6" />
           </SubmitButton>
         </div>
       </form>

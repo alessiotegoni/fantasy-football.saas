@@ -11,15 +11,23 @@ import {
 import { FieldValues, Path, useFormContext } from "react-hook-form";
 
 type Props<T> = {
-  name: Path<T>
+  name: Path<T>;
   teams: {
     id: string | number;
     name: string;
   }[];
   onSelect?: (teamId: string) => void;
+  className?: string;
+  placeholder?: string;
 };
 
-export default function TeamsSelectField<T extends FieldValues>({ name, teams, onSelect }: Props<T>) {
+export default function TeamsSelectField<T extends FieldValues>({
+  name,
+  teams,
+  onSelect,
+  className = "",
+  placeholder,
+}: Props<T>) {
   const form = useFormContext<T>();
 
   return (
@@ -36,8 +44,10 @@ export default function TeamsSelectField<T extends FieldValues>({ name, teams, o
             defaultValue={field.value}
           >
             <FormControl>
-              <SelectTrigger>
-                <SelectValue placeholder="Seleziona una squadra" />
+              <SelectTrigger className={className}>
+                {placeholder || (
+                  <SelectValue placeholder="Seleziona una squadra" />
+                )}
               </SelectTrigger>
             </FormControl>
             <SelectContent>
