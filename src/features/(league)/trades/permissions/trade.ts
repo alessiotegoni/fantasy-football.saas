@@ -5,7 +5,7 @@ import { getTeamCredits } from "../../teamsPlayers/queries/teamsPlayer";
 import { isLeagueMember } from "../../members/permissions/leagueMember";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getError } from "../db/trade";
-import { CreateTradeProposalSchema, createTradeProposalSchema } from "../schema/trade";
+import { CreateTradeProposalSchema } from "../schema/trade";
 import { getTradeStatus } from "../queries/trade";
 
 export async function canCreateTrade({

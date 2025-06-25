@@ -1,15 +1,30 @@
 "use server";
 
 import { getUserId } from "@/features/users/utils/user";
-import { getError, insertTrade, insertTradePlayers } from "../db/trade";
+import {
+  deleteTrade as deleteTradeDb,
+  deleteTradePlayers,
+  getError,
+  insertTrade,
+  insertTradePlayers,
+  updateTrade,
+} from "../db/trade";
 import {
   createTradeProposalSchema,
+  deleteTradeProposalSchema,
+  type DeleteTradeProposalSchema,
+  type UpdateTradeProposalSchema,
   type CreateTradeProposalSchema,
+  updateTradeProposalSchema,
 } from "../schema/trade";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
-import { canCreateTrade } from "../permissions/trade";
-import { getUUIdSchema } from "@/schema/helpers";
+import {
+  canCreateTrade,
+  canDeleteTrade,
+  canUpdateTrade,
+} from "../permissions/trade";
+import { getTrade } from "../queries/trade";
 
 export async function createTrade(values: CreateTradeProposalSchema) {
   const { success, data } = createTradeProposalSchema.safeParse(values);
@@ -41,15 +56,62 @@ export async function createTrade(values: CreateTradeProposalSchema) {
   redirect(`/leagues/${data.leagueId}/trades/${tradeId}`);
 }
 
-export async function deleteTrade(leagueId: string, tradeId: string) {
-  const { success, data } = getUUIdSchema(
-    "Id dello scambio invalido"
-  ).safeParse({ leagueId, tradeId });
+export async function updateTradeStatus(values: UpdateTradeProposalSchema) {
+  const { success, data } = updateTradeProposalSchema.safeParse(values);
+
+  if (!success) {
+    return getError("Errore nell'aggiornamento dello stato dello scambio");
+  }
+
+  const [userId, trade] = await Promise.all([
+    getUserId(),
+    getTrade(data.tradeId),
+  ]);
+
+  if (!userId || !trade) return getError("Questo scambio non esiste");
+
+  const { error, message } = await canUpdateTrade({
+    userId,
+    ...data,
+    ...trade,
+  });
+  if (error) return getError(message);
+
+  await updateTrade(
+    trade.id,
+    data.status,
+    !!trade.creditOfferedByProposer,
+    !!trade.creditRequestedByProposer
+  );
+
+  return { error: false, message: "" };
+}
+
+export async function deleteTrade(values: DeleteTradeProposalSchema) {
+  const { success, data } = deleteTradeProposalSchema.safeParse(values);
 
   if (!success) return getError("Errore nell'eliminazione dello scambio");
 
-  const userId = await getUserId();
-  if (!userId) return getError();
+  const [userId, trade] = await Promise.all([
+    getUserId(),
+    getTrade(data.tradeId),
+  ]);
 
-  redirect(`/leagues/${leagueId}/my-trades`);
+  if (!userId || !trade) return getError("Questo scambio non esiste");
+
+  const { error, message } = await canDeleteTrade({
+    userId,
+    ...data,
+    ...trade,
+  });
+  if (error) return getError(message);
+
+  await db.transaction(async (tx) => {
+    await Promise.all([
+      deleteTradeDb(data.leagueId, data.tradeId, tx),
+      deleteTradePlayers(trade.id, tx),
+    ]);
+  });
+
+  return { error: false, message: "" };
 }
