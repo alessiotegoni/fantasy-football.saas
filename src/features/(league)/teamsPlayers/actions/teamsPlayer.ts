@@ -5,8 +5,6 @@ import { deleteTeamPlayer, getError } from "../db/teamsPlayer";
 import { canInsertPlayer } from "../permissions/teamsPlayer";
 import { insertTeamPlayer } from "../db/teamsPlayer";
 import { db } from "@/drizzle/db";
-import { eq } from "drizzle-orm";
-import { leagueMemberTeams } from "@/drizzle/schema";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import {
   insertTeamPlayerSchema,
@@ -15,6 +13,7 @@ import {
   ReleaseTeamPlayerSchema,
 } from "../schema/teamsPlayer";
 import { updateLeagueTeam } from "../../teams/db/leagueTeam";
+import { getTeamCredits } from "../queries/teamsPlayer";
 
 export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
   const { success, data } = insertTeamPlayerSchema.safeParse(values);
@@ -64,12 +63,4 @@ export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
   });
 
   return { error: false, message: "Giocatore svincolato con successo!" };
-}
-
-function getTeamCredits(teamId: string) {
-  return db
-    .select({ credits: leagueMemberTeams.credits })
-    .from(leagueMemberTeams)
-    .where(eq(leagueMemberTeams.id, teamId))
-    .then(([res]) => res.credits);
 }

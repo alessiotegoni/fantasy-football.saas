@@ -43,7 +43,7 @@ export default async function TradesList({
   const userId = await getUserId();
   if (!userId) return;
 
-  const userTeamId = await getUserTeamId({ leagueId, userId });
+  const userTeamId = await getUserTeamId(userId, leagueId);
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
   const trades = await getTrades(leagueId, userTeamId);

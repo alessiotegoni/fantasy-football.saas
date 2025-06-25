@@ -16,13 +16,7 @@ export async function getUserLeagues(userId: string) {
     .where(eq(leagueMembers.userId, userId));
 }
 
-export async function getUserTeamId({
-  leagueId,
-  userId,
-}: {
-  leagueId: string;
-  userId: string;
-}) {
+export async function getUserTeamId(userId: string, leagueId: string) {
   "use cache";
   cacheTag(getUserTeamTag(userId));
 

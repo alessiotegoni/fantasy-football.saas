@@ -7,6 +7,7 @@ import {
 } from "../db/cache/teamsPlayer";
 import {
   leagueMemberTeamPlayers,
+  leagueMemberTeams,
   playerRoles,
   players,
 } from "@/drizzle/schema";
@@ -52,4 +53,12 @@ export async function getTeamPlayerPerRoles(teamId: string) {
     .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
     .where(eq(leagueMemberTeamPlayers.memberTeamId, teamId))
     .groupBy(playerRoles.id);
+}
+
+export function getTeamCredits(teamId: string) {
+  return db
+    .select({ credits: leagueMemberTeams.credits })
+    .from(leagueMemberTeams)
+    .where(eq(leagueMemberTeams.id, teamId))
+    .then(([res]) => res.credits);
 }
