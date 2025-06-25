@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 export type TRADES_TAG =
   | "league-trades"
   | "my-proposed-trades"
-  | "my-received-proposed-trades";
+  | "my-received-trades";
 
 export const getLeagueTradesTag = (leagueId: string) =>
   getLeagueTag("league-trades", leagueId);
@@ -16,7 +16,7 @@ export const getMyProposedTradesTag = (myTeamId: string) =>
   getTeamTag("my-proposed-trades", myTeamId);
 
 export const getMyReceivedProposedTradesTag = (myTeamId: string) =>
-  getTeamTag("my-received-proposed-trades", myTeamId);
+  getTeamTag("my-received-trades", myTeamId);
 
 export const revalidateLeagueTradesCache = ({
   leagueId,
