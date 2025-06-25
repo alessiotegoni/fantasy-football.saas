@@ -90,6 +90,16 @@ export async function updateTradeStatus(values: UpdateTradeProposalSchema) {
 
     if (data.status !== "accepted") return;
 
+    const groupedPlayers = Object.groupBy(data.players, (player) =>
+      player.offeredByProposer ? "proposed" : "requested"
+    );
+
+    if (groupedPlayers["proposed"]?.length) {
+        const playersIds = groupedPlayers["proposed"].map(player => player.id)
+
+        // await deleteTeam
+    }
+
     if (trade.creditOfferedByProposer) {
       await updateLeagueTeam(
         trade.proposerTeamId,

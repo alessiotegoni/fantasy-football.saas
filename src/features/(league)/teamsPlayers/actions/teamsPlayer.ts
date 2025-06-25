@@ -1,9 +1,12 @@
 "use server";
 
 import { getUserId } from "@/features/users/utils/user";
-import { deleteTeamPlayer, getError } from "../db/teamsPlayer";
+import {
+  insertTeamPlayers,
+  deleteTeamPlayers,
+  getError,
+} from "../db/teamsPlayer";
 import { canInsertPlayer } from "../permissions/teamsPlayer";
-import { insertTeamPlayer } from "../db/teamsPlayer";
 import { db } from "@/drizzle/db";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import {
@@ -33,10 +36,16 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
     );
   }
 
+  const { leagueId, player, ...restData } = data;
+
   await db.transaction(async (tx) => {
     await Promise.all([
-      insertTeamPlayer(data, tx),
-      updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
+      insertTeamPlayers(
+        data.leagueId,
+        [{ playerId: player.id, ...restData }],
+        tx
+      ),
+      updateLeagueTeam(data.memberTeamId, leagueId, { credits }, tx),
     ]);
   });
 
@@ -51,14 +60,15 @@ export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
   if (!userId || !(await isLeagueAdmin(userId, data.leagueId))) {
     return getError("Devi essere admin per svincolare il giocatore");
   }
+  const { leagueId, playerId, memberTeamId, releaseCost } = data;
 
-  const teamCredits = await getTeamCredits(data.memberTeamId);
-  const credits = teamCredits + data.releaseCost;
+  const teamCredits = await getTeamCredits(memberTeamId);
+  const credits = teamCredits + releaseCost;
 
   await db.transaction(async (tx) => {
     await Promise.all([
-      deleteTeamPlayer(data),
-      updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
+      deleteTeamPlayers(leagueId, { memberTeamId, playersIds: [playerId] }, tx),
+      updateLeagueTeam(memberTeamId, leagueId, { credits }, tx),
     ]);
   });
 

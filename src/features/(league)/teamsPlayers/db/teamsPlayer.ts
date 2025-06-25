@@ -3,40 +3,42 @@ import { leagueMemberTeamPlayers } from "@/drizzle/schema";
 import { getErrorObject } from "@/lib/utils";
 import { revalidateLeaguePlayersCache } from "../../leagues/db/cache/league";
 import { revalidateTeamPlayersCache } from "./cache/teamsPlayer";
-import { and, eq } from "drizzle-orm";
-import { InsertTeamPlayerSchema } from "../schema/teamsPlayer";
+import { and, eq, inArray } from "drizzle-orm";
 
 export const getError = (
   message = "Errore nell'inserimento del giocatore nel team"
 ) => getErrorObject(message);
 
-export async function insertTeamPlayer(
-  { leagueId, memberTeamId, player, purchaseCost }: InsertTeamPlayerSchema,
+export async function insertTeamPlayers(
+  leagueId: string,
+  players: {
+    playerId: number;
+    purchaseCost: number;
+    memberTeamId: string;
+  }[],
   tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await tx
+  const res = await tx
     .insert(leagueMemberTeamPlayers)
+    .values(players)
+    .returning();
 
-    .values({ memberTeamId, playerId: player.id, purchaseCost })
-    .returning({ playerId: leagueMemberTeamPlayers.playerId });
-
-  if (!res.playerId) throw new Error(getError().message);
+  if (!res.length) throw new Error(getError().message);
 
   revalidateLeaguePlayersCache(leagueId);
-  revalidateTeamPlayersCache(memberTeamId);
-
-  return res.playerId;
+  players.forEach((player) => {
+    revalidateTeamPlayersCache(player.memberTeamId);
+  });
 }
 
-export async function deleteTeamPlayer(
+export async function deleteTeamPlayers(
+  leagueId: string,
   {
     memberTeamId,
-    playerId,
-    leagueId,
+    playersIds,
   }: {
     memberTeamId: string;
-    playerId: number;
-    leagueId: string;
+    playersIds: number[];
   },
   tx: Omit<typeof db, "$client"> = db
 ) {
@@ -45,7 +47,7 @@ export async function deleteTeamPlayer(
     .where(
       and(
         eq(leagueMemberTeamPlayers.memberTeamId, memberTeamId),
-        eq(leagueMemberTeamPlayers.playerId, playerId)
+        inArray(leagueMemberTeamPlayers.playerId, playersIds)
       )
     )
     .returning({ playerId: leagueMemberTeamPlayers.playerId });
