@@ -54,7 +54,7 @@ export default function TradeProposalForm({
 
   const groupedTradePlayers = useMemo(() => {
     const playersWithIndexes = tradePlayers.map(
-      ({ roleId, ...player }, index) => ({
+      (player, index) => ({
         ...player,
         index,
       })

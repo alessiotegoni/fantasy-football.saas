@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
@@ -49,11 +48,10 @@ export default function TradePlayersMultiSelect({
   );
 
   const handleSelectPlayer = useCallback(
-    ({ id, roleId }: EnrichedPlayer) => {
+    ({ id }: EnrichedPlayer) => {
     if (!isPlayerSelected(id)) {
       onPlayerSelect({
         id,
-        roleId,
         offeredByProposer,
       });
     }

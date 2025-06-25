@@ -3,7 +3,6 @@ import { z } from "zod";
 
 const tradeProposalPlayer = z.object({
   id: getSerialIdSchema("Id del giocatore non valido"),
-  roleId: getSerialIdSchema("Id del ruolo del giocatore non valido"),
   offeredByProposer: z.boolean(),
 });
 

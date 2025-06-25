@@ -33,7 +33,7 @@ export function TradePlayersCarousel({
         ...tradePlayer,
         ...enrichedPlayers.find(
           (enrichPlayer) => enrichPlayer.id === tradePlayer.id
-        ),
+        )!,
       })),
 
     [enrichedPlayers, tradePlayers]
