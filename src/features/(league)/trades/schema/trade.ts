@@ -1,6 +1,6 @@
 import { tradeProposalStatuses } from "@/drizzle/schema";
 import { getSerialIdSchema, getUUIdSchema } from "@/schema/helpers";
-import { z } from "zod";
+import { z, ZodIssueCode } from "zod";
 
 const tradeProposalPlayer = z.object({
   id: getSerialIdSchema("Id del giocatore non valido"),
@@ -31,18 +31,18 @@ export const createTradeProposalSchema = z
   .superRefine((data, ctx) => {
     if (data.proposerTeamId === data.receiverTeamId) {
       ctx.addIssue({
-        code: "custom",
+        code: ZodIssueCode.custom,
         message: "Non puoi scambiarti giocatori da solo",
-        path: [0],
+        path: ["proposerTeamId"]
       });
       return;
     }
 
     if (!data.players.length) {
       ctx.addIssue({
-        code: "custom",
+        code: ZodIssueCode.custom,
         message: "Devi inserire almeno un giocatore nello scambio",
-        path: [0],
+        path: ["proposerTeamId"]
       });
       return;
     }

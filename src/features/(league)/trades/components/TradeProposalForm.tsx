@@ -2,7 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { CreateTradeProposalSchema, createTradeProposalSchema } from "../schema/trade";
+import {
+  CreateTradeProposalSchema,
+  createTradeProposalSchema,
+} from "../schema/trade";
 import { Form } from "@/components/ui/form";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { useMemo } from "react";
@@ -14,6 +17,8 @@ import BackButton from "@/components/BackButton";
 import SubmitButton from "@/components/SubmitButton";
 import { useTradePlayers } from "@/contexts/TradePlayersProvider";
 import TradeReceiverTeamSelect from "./TradeReceiverTeamSelect";
+import useActionToast from "@/hooks/useActionToast";
+import { createTrade } from "../actions/trade";
 
 type Props = {
   leagueId: string;
@@ -28,6 +33,8 @@ export default function TradeProposalForm({
   proposerTeam,
   receiverTeam,
 }: Props) {
+  const toast = useActionToast();
+
   const { proposerTeamPlayers, receiverTeamPlayers } = useTradePlayers();
 
   const form = useForm<CreateTradeProposalSchema>({
@@ -62,16 +69,19 @@ export default function TradeProposalForm({
     );
   }, [tradePlayers]);
 
-  async function onSubmit(values: CreateTradeProposalSchema) {}
+  async function onSubmit(values: CreateTradeProposalSchema) {
+    const res = await createTrade(values);
+    if (res.error) toast(res);
+  }
 
   console.log(form.formState.errors);
 
   return (
     <Form {...form}>
-      {form.formState.errors.root && (
-        <div className="flex justify-center items-center gap-2 bg-destructive/80 border border-destructive">
-          <WarningTriangle />
-          {form.formState.errors.root.message}
+      {form.formState.errors.proposerTeamId && (
+        <div className="flex flex-col sm:flex-row justify-center items-center gap-2 bg-destructive/80 border border-destructive rounded-2xl p-3.5 mb-3 text-center text-base">
+          <WarningTriangle className="size-10 sm:size-7" />
+          {form.formState.errors.proposerTeamId.message}
         </div>
       )}
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -171,6 +181,7 @@ export default function TradeProposalForm({
           <SubmitButton
             type="submit"
             className="mt-6 min-w-56 md:max-w-60"
+            loadingText="Invio proposta"
             disabled={proposerTeam?.id === receiverTeam?.id}
           >
             Invia proposta

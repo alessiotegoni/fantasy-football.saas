@@ -24,7 +24,10 @@ import {
   canDeleteTrade,
   canUpdateTrade,
 } from "../permissions/trade";
-import { getTrade } from "../queries/trade";
+import { getTrade, Trade } from "../queries/trade";
+import { after } from "node:test";
+import { updateLeagueTeam } from "../../teams/db/leagueTeam";
+import { getTeamCredits } from "../../teamsPlayers/queries/teamsPlayer";
 
 export async function createTrade(values: CreateTradeProposalSchema) {
   const { success, data } = createTradeProposalSchema.safeParse(values);
@@ -84,7 +87,16 @@ export async function updateTradeStatus(values: UpdateTradeProposalSchema) {
     !!trade.creditRequestedByProposer
   );
 
-  return { error: false, message: "" };
+  if (data.status === "accepted") {
+    after(updateTeamCredits.bind(null, trade));
+  }
+
+  return {
+    error: false,
+    message: `Scambio ${
+      data.status === "accepted" ? "accettato" : "rifiutato"
+    } con successo`,
+  };
 }
 
 export async function deleteTrade(values: DeleteTradeProposalSchema) {
@@ -113,5 +125,33 @@ export async function deleteTrade(values: DeleteTradeProposalSchema) {
     ]);
   });
 
-  return { error: false, message: "" };
+  return { error: false, message: "Scambio eliminato con successo" };
+}
+
+async function updateTeamCredits(trade: Trade) {
+  const [proposerTeamCredits, receiverTeamCredits] = await Promise.all([
+    getTeamCredits(trade.proposerTeamId),
+    getTeamCredits(trade.receiverTeamId),
+  ]);
+
+  await db.transaction(async (tx) => {
+    await Promise.all([
+      updateLeagueTeam(
+        trade.proposerTeamId,
+        trade.leagueId,
+        {
+          credits: proposerTeamCredits - (trade.creditOfferedByProposer ?? 0),
+        },
+        tx
+      ),
+      updateLeagueTeam(
+        trade.receiverTeamId,
+        trade.leagueId,
+        {
+          credits: receiverTeamCredits - (trade.creditRequestedByProposer ?? 0),
+        },
+        tx
+      ),
+    ]);
+  });
 }

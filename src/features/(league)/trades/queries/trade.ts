@@ -18,6 +18,8 @@ export async function getTrade(tradeId: string) {
     .then(([result]) => result);
 }
 
+export type Trade = Awaited<ReturnType<typeof getTrade>>;
+
 export async function getTradePlayers(tradeId: string) {
   "use cache";
   cacheTag(getTradePlayersIdTag(tradeId));

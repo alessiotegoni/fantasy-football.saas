@@ -10,7 +10,7 @@ import { eq } from "drizzle-orm";
 import { revalidateTeamPlayersCache } from "../../teamsPlayers/db/cache/teamsPlayer";
 import { revalidateLeagueTeamsCache } from "../../teams/db/cache/leagueTeam";
 
-export const getError = (message = "Errore nella creazione dello scamnio") =>
+export const getError = (message = "Errore nella creazione dello scambio") =>
   getErrorObject(message);
 
 export async function insertTrade(
