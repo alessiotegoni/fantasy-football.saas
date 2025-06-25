@@ -43,13 +43,8 @@ export async function insertTradePlayers(
 }
 
 export async function updateTrade(
-  {
-    tradeId,
-    status,
-  }: {
-    tradeId: string;
-    status: TradeProposalStatusType;
-  },
+  tradeId: string,
+  status: TradeProposalStatusType,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
@@ -72,12 +67,8 @@ export async function updateTrade(
   return res.id;
 }
 
-export async function deleteTrade(
-  leagueId: string,
-  tradeId: string,
-  tx: Omit<typeof db, "$client"> = db
-) {
-  const [res] = await tx
+export async function deleteTrade(leagueId: string, tradeId: string) {
+  const [res] = await db
     .delete(leagueTradeProposals)
     .where(eq(leagueTradeProposals.id, tradeId))
     .returning();
@@ -89,18 +80,4 @@ export async function deleteTrade(
   revalidateLeagueTradesCache({ leagueId, tradeId });
 
   return res;
-}
-
-export async function deleteTradePlayers(
-  tradeId: string,
-  tx: Omit<typeof db, "$client"> = db
-) {
-  const res = await tx
-    .delete(leagueTradeProposalPlayers)
-    .where(eq(leagueTradeProposalPlayers.tradeProposalId, tradeId))
-    .returning();
-
-  if (!res.length) {
-    throw new Error(getError("Errore nell'eliminazione dello scambio").message);
-  }
 }

@@ -26,9 +26,7 @@ export async function insertTeamPlayers(
   if (!res.length) throw new Error(getError().message);
 
   revalidateLeaguePlayersCache(leagueId);
-  players.forEach((player) => {
-    revalidateTeamPlayersCache(player.memberTeamId);
-  });
+  revalidateTeamPlayersCache(players[0].memberTeamId);
 }
 
 export async function deleteTeamPlayers(
