@@ -15,7 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useFormContext } from "react-hook-form";
-import { TradeProposalSchema } from "../schema/trade";
+import { createTradeProposalSchema } from "../schema/trade";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { useCallback } from "react";
 import { NavArrowDown } from "iconoir-react";
@@ -25,7 +25,7 @@ import { EnrichedPlayer } from "@/contexts/PlayersProvider";
 interface MultiSelectProps {
   offeredByProposer?: boolean;
   players: EnrichedPlayer[];
-  onPlayerSelect: (player: TradeProposalSchema["players"][number]) => void;
+  onPlayerSelect: (player: createTradeProposalSchema["players"][number]) => void;
   triggerText: string;
   className?: string
 }
@@ -37,7 +37,7 @@ export default function TradePlayersMultiSelect({
   onPlayerSelect,
   className
 }: MultiSelectProps) {
-  const form = useFormContext<TradeProposalSchema>();
+  const form = useFormContext<createTradeProposalSchema>();
 
   const isPlayerSelected = useCallback(
     (playerId: number) => {

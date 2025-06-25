@@ -2,14 +2,17 @@
 
 import { getUserId } from "@/features/users/utils/user";
 import { getError, insertTrade, insertTradePlayers } from "../db/trade";
-import { tradeProposalSchema, TradeProposalSchema } from "../schema/trade";
+import {
+  createTradeProposalSchema,
+  type CreateTradeProposalSchema,
+} from "../schema/trade";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
 import { canCreateTrade } from "../permissions/trade";
 import { getUUIdSchema } from "@/schema/helpers";
 
-export async function createTrade(values: TradeProposalSchema) {
-  const { success, data } = tradeProposalSchema.safeParse(values);
+export async function createTrade(values: CreateTradeProposalSchema) {
+  const { success, data } = createTradeProposalSchema.safeParse(values);
   if (!success) return getError();
 
   const userId = await getUserId();

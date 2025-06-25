@@ -6,7 +6,7 @@ const tradeProposalPlayer = z.object({
   offeredByProposer: z.boolean(),
 });
 
-export const tradeProposalSchema = z
+export const createTradeProposalSchema = z
   .object({
     leagueId: getUUIdSchema("Id della lega invalido"),
     proposerTeamId: getUUIdSchema(
@@ -47,4 +47,4 @@ export const tradeProposalSchema = z
     }
   });
 
-export type TradeProposalSchema = z.infer<typeof tradeProposalSchema>;
+export type CreateTradeProposalSchema = z.infer<typeof createTradeProposalSchema>;

@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { TradeProposalSchema, tradeProposalSchema } from "../schema/trade";
+import { CreateTradeProposalSchema, createTradeProposalSchema } from "../schema/trade";
 import { Form } from "@/components/ui/form";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { useMemo } from "react";
@@ -30,8 +30,8 @@ export default function TradeProposalForm({
 }: Props) {
   const { proposerTeamPlayers, receiverTeamPlayers } = useTradePlayers();
 
-  const form = useForm<TradeProposalSchema>({
-    resolver: zodResolver(tradeProposalSchema),
+  const form = useForm<CreateTradeProposalSchema>({
+    resolver: zodResolver(createTradeProposalSchema),
     defaultValues: {
       leagueId,
       creditOfferedByProposer: null,
@@ -62,7 +62,7 @@ export default function TradeProposalForm({
     );
   }, [tradePlayers]);
 
-  async function onSubmit(values: TradeProposalSchema) {}
+  async function onSubmit(values: CreateTradeProposalSchema) {}
 
   console.log(form.formState.errors);
 
@@ -83,7 +83,7 @@ export default function TradeProposalForm({
               players={groupedTradePlayers["proposed"]}
               removePlayer={removePlayer}
               renderCreditsSlider={() => (
-                <FormSliderField<TradeProposalSchema>
+                <FormSliderField<CreateTradeProposalSchema>
                   name="creditOfferedByProposer"
                   min={0}
                   max={proposerTeam.credits}
@@ -123,7 +123,7 @@ export default function TradeProposalForm({
               players={groupedTradePlayers["requested"]}
               removePlayer={removePlayer}
               renderCreditsSlider={() => (
-                <FormSliderField<TradeProposalSchema>
+                <FormSliderField<CreateTradeProposalSchema>
                   name="creditRequestedByProposer"
                   min={0}
                   max={receiverTeam.credits}
