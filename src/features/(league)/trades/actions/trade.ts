@@ -23,12 +23,14 @@ export async function createTrade(values: TradeProposalSchema) {
   const tradeId = await db.transaction(async (tx) => {
     const tradeProposalId = await insertTrade(trade, tx);
 
-    const tradePlayers = players.map(({ id, offeredByProposer }) => ({
-      playerId: id,
-      tradeProposalId,
-      offeredByProposer,
-    }));
-    await insertTradePlayers(data.leagueId, tradeProposalId, tradePlayers, tx);
+    await insertTradePlayers(
+      players.map(({ id, offeredByProposer }) => ({
+        playerId: id,
+        tradeProposalId,
+        offeredByProposer,
+      })),
+      tx
+    );
 
     return tradeProposalId;
   });
@@ -36,3 +38,15 @@ export async function createTrade(values: TradeProposalSchema) {
   redirect(`/leagues/${data.leagueId}/trades/${tradeId}`);
 }
 
+export async function deleteTrade(leagueId: string, tradeId: string) {
+  const { success, data } = getUUIdSchema(
+    "Id dello scambio invalido"
+  ).safeParse({ leagueId, tradeId });
+
+  if (!success) return getError("Errore nell'eliminazione dello scambio");
+
+  const userId = await getUserId();
+  if (!userId) return getError();
+
+  redirect(`/leagues/${leagueId}/my-trades`);
+}

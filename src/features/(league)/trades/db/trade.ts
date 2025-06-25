@@ -2,10 +2,13 @@ import { db } from "@/drizzle/db";
 import {
   leagueTradeProposalPlayers,
   leagueTradeProposals,
+  TradeProposalStatusType,
 } from "@/drizzle/schema";
 import { getErrorObject } from "@/lib/utils";
 import { revalidateLeagueTradesCache } from "./cache/trade";
 import { eq } from "drizzle-orm";
+import { revalidateTeamPlayersCache } from "../../teamsPlayers/db/cache/teamsPlayer";
+import { revalidateLeagueTeamsCache } from "../../teams/db/cache/leagueTeam";
 
 export const getError = (message = "Errore nella creazione dello scamnio") =>
   getErrorObject(message);
@@ -30,8 +33,6 @@ export async function insertTrade(
 }
 
 export async function insertTradePlayers(
-  leagueId: string,
-  tradeId: string,
   tradePlayers: (typeof leagueTradeProposalPlayers.$inferInsert)[],
   tx: Omit<typeof db, "$client"> = db
 ) {
@@ -41,11 +42,51 @@ export async function insertTradePlayers(
     .returning();
 
   if (!res.length) throw new Error(getError().message);
+}
+
+export async function updateTrade(
+  tradeId: string,
+  status: TradeProposalStatusType,
+  hasProposerTeamOfferedCredits: boolean,
+  hasProposerTeamRequestedCredits: boolean
+) {
+  const [res] = await db
+    .update(leagueTradeProposals)
+    .set({ status })
+    .where(eq(leagueTradeProposals.id, tradeId))
+    .returning();
+
+  if (!res.proposerTeamId) {
+    throw new Error(
+      getError("Errore nell'aggiornamento dello scambio").message
+    );
+  }
 
   revalidateLeagueTradesCache({
-    leagueId,
+    leagueId: res.leagueId,
     tradeId,
   });
+
+  if (status === "accepted") {
+    revalidateTeamPlayersCache(res.proposerTeamId);
+    revalidateTeamPlayersCache(res.receiverTeamId);
+
+    if (hasProposerTeamOfferedCredits) {
+      revalidateLeagueTeamsCache({
+        teamId: res.proposerTeamId,
+        leagueId: res.leagueId,
+      });
+    }
+
+    if (hasProposerTeamRequestedCredits) {
+      revalidateLeagueTeamsCache({
+        teamId: res.receiverTeamId,
+        leagueId: res.leagueId,
+      });
+    }
+  }
+
+  return res.id;
 }
 
 export async function deleteTrade(
@@ -58,16 +99,16 @@ export async function deleteTrade(
     .where(eq(leagueTradeProposals.id, tradeId))
     .returning();
 
-  if (!res.id)
+  if (!res.id) {
     throw new Error(getError("Errore nell'eliminazione dello scambio").message);
+  }
 
   revalidateLeagueTradesCache({ leagueId, tradeId });
 
-  return res
+  return res;
 }
 
 export async function deleteTradePlayers(
-  leagueId: string,
   tradeId: string,
   tx: Omit<typeof db, "$client"> = db
 ) {
@@ -76,11 +117,7 @@ export async function deleteTradePlayers(
     .where(eq(leagueTradeProposalPlayers.tradeProposalId, tradeId))
     .returning();
 
-  if (!res.length)
+  if (!res.length) {
     throw new Error(getError("Errore nell'eliminazione dello scambio").message);
-
-  revalidateLeagueTradesCache({
-    leagueId,
-    tradeId,
-  });
+  }
 }

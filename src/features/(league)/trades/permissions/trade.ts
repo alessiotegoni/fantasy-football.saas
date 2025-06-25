@@ -69,59 +69,38 @@ export async function canDeleteTrade({
   leagueId,
   proposerTeamId,
   receiverTeamId,
-  creditOfferedByProposer,
-  creditRequestedByProposer,
 }: {
   userId: string;
 } & TradeProposalSchema) {
   const [
-    isMarketOpen,
     isMemberOfLeague,
     userTeamId,
-    proposerTeamCredits,
-    receiverTeamCredits,
   ] = await Promise.all([
-    isTradeMarketOpen(leagueId),
     isLeagueMember(userId, leagueId),
     getUserTeamId(userId, leagueId),
-    getTeamCredits(proposerTeamId),
-    getTeamCredits(receiverTeamId),
   ]);
-
-  if (!isMarketOpen) {
-    return getError("Il mercato degli scambi e' attualmente chiuso");
-  }
 
   if (!isMemberOfLeague) {
     return getError("Non sei membro della lega");
   }
 
   if (userTeamId !== proposerTeamId) {
-    return getError("La squadra che propone lo scambio deve essere la tua");
-  }
-
-  if (
-    creditOfferedByProposer &&
-    creditOfferedByProposer > proposerTeamCredits
-  ) {
-    return getError(
-      `Non hai abbastanza crediti per questo scambio (${proposerTeamCredits})`
-    );
-  }
-
-  if (
-    creditRequestedByProposer &&
-    creditRequestedByProposer > receiverTeamCredits
-  ) {
-    return getError(
-      `La squadra dello scambio non ha abbastanza crediti da offrire (${receiverTeamCredits})`
-    );
+    return getError("Puoi eliminare solo gli scambi proposti da te");
   }
 
   return { error: false, message: "" };
 }
 
 export async function isTradeMarketOpen(leagueId: string) {
+  const [res] = await db
+    .select({ isOpen: leagueOptions.isTradingMarketOpen })
+    .from(leagueOptions)
+    .where(eq(leagueOptions.leagueId, leagueId));
+
+  return res.isOpen;
+}
+
+export async function isUserTeamTrade(userId: string, leagueId: string) {
   const [res] = await db
     .select({ isOpen: leagueOptions.isTradingMarketOpen })
     .from(leagueOptions)

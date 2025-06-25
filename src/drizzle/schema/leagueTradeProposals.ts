@@ -10,6 +10,8 @@ import { leagues } from "./leagues";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { leagueTradeProposalPlayers } from "./leagueTradeProposalPlayers";
 
+export type TradeProposalStatusType = "pending" | "accepted" | "rejected";
+
 export const tradeProposalStatusEnum = pgEnum("trade_proposal_status", [
   "pending",
   "accepted",
