@@ -33,7 +33,7 @@ export const createTradeProposalSchema = z
       ctx.addIssue({
         code: ZodIssueCode.custom,
         message: "Non puoi scambiarti giocatori da solo",
-        path: ["proposerTeamId"]
+        path: ["proposerTeamId"],
       });
       return;
     }
@@ -42,7 +42,7 @@ export const createTradeProposalSchema = z
       ctx.addIssue({
         code: ZodIssueCode.custom,
         message: "Devi inserire almeno un giocatore nello scambio",
-        path: ["proposerTeamId"]
+        path: ["proposerTeamId"],
       });
       return;
     }
@@ -52,10 +52,12 @@ export const updateTradeProposalSchema = z.object({
   tradeId: getUUIdSchema("Id dello scambio invalido"),
   leagueId: getUUIdSchema("Id della lega invalido"),
   status: z.enum(tradeProposalStatuses),
+  players: z.array(tradeProposalPlayer),
 });
 
-export const deleteTradeProposalSchema = updateTradeProposalSchema.omit({
-  status: true,
+export const deleteTradeProposalSchema = updateTradeProposalSchema.pick({
+  tradeId: true,
+  leagueId: true,
 });
 
 export type CreateTradeProposalSchema = z.infer<

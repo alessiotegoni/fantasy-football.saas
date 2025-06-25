@@ -7,8 +7,6 @@ import {
 import { getErrorObject } from "@/lib/utils";
 import { revalidateLeagueTradesCache } from "./cache/trade";
 import { eq } from "drizzle-orm";
-import { revalidateTeamPlayersCache } from "../../teamsPlayers/db/cache/teamsPlayer";
-import { revalidateLeagueTeamsCache } from "../../teams/db/cache/leagueTeam";
 
 export const getError = (message = "Errore nella creazione dello scambio") =>
   getErrorObject(message);
@@ -45,12 +43,16 @@ export async function insertTradePlayers(
 }
 
 export async function updateTrade(
-  tradeId: string,
-  status: TradeProposalStatusType,
-  hasProposerTeamOfferedCredits: boolean,
-  hasProposerTeamRequestedCredits: boolean
+  {
+    tradeId,
+    status,
+  }: {
+    tradeId: string;
+    status: TradeProposalStatusType;
+  },
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await db
+  const [res] = await tx
     .update(leagueTradeProposals)
     .set({ status })
     .where(eq(leagueTradeProposals.id, tradeId))
@@ -66,25 +68,6 @@ export async function updateTrade(
     leagueId: res.leagueId,
     tradeId,
   });
-
-  if (status === "accepted") {
-    revalidateTeamPlayersCache(res.proposerTeamId);
-    revalidateTeamPlayersCache(res.receiverTeamId);
-
-    if (hasProposerTeamOfferedCredits) {
-      revalidateLeagueTeamsCache({
-        teamId: res.proposerTeamId,
-        leagueId: res.leagueId,
-      });
-    }
-
-    if (hasProposerTeamRequestedCredits) {
-      revalidateLeagueTeamsCache({
-        teamId: res.receiverTeamId,
-        leagueId: res.leagueId,
-      });
-    }
-  }
 
   return res.id;
 }

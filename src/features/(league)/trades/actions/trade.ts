@@ -28,6 +28,7 @@ import { getTrade, Trade } from "../queries/trade";
 import { after } from "node:test";
 import { updateLeagueTeam } from "../../teams/db/leagueTeam";
 import { getTeamCredits } from "../../teamsPlayers/queries/teamsPlayer";
+import { insertTeamPlayer } from "../../teamsPlayers/db/teamsPlayer";
 
 export async function createTrade(values: CreateTradeProposalSchema) {
   const { success, data } = createTradeProposalSchema.safeParse(values);
@@ -73,23 +74,43 @@ export async function updateTradeStatus(values: UpdateTradeProposalSchema) {
 
   if (!userId || !trade) return getError("Questo scambio non esiste");
 
-  const { error, message } = await canUpdateTrade({
+  const result = await canUpdateTrade(data.tradeId, {
     userId,
     ...data,
     ...trade,
   });
-  if (error) return getError(message);
+  if (result.error) return getError(result.message);
 
-  await updateTrade(
-    trade.id,
-    data.status,
-    !!trade.creditOfferedByProposer,
-    !!trade.creditRequestedByProposer
-  );
+  const {
+    data: { proposerTeamCredits, receiverTeamCredits },
+  } = result;
 
-  if (data.status === "accepted") {
-    after(updateTeamCredits.bind(null, trade));
-  }
+  await db.transaction(async (tx) => {
+    await updateTrade({ tradeId: trade.id, status: data.status }, tx);
+
+    if (data.status !== "accepted") return;
+
+    if (trade.creditOfferedByProposer) {
+      await updateLeagueTeam(
+        trade.proposerTeamId,
+        trade.leagueId,
+        {
+          credits: proposerTeamCredits - trade.creditOfferedByProposer,
+        },
+        tx
+      );
+    }
+    if (trade.creditRequestedByProposer) {
+      await updateLeagueTeam(
+        trade.receiverTeamId,
+        trade.leagueId,
+        {
+          credits: receiverTeamCredits - trade.creditRequestedByProposer,
+        },
+        tx
+      );
+    }
+  });
 
   return {
     error: false,
@@ -128,30 +149,38 @@ export async function deleteTrade(values: DeleteTradeProposalSchema) {
   return { error: false, message: "Scambio eliminato con successo" };
 }
 
-async function updateTeamCredits(trade: Trade) {
-  const [proposerTeamCredits, receiverTeamCredits] = await Promise.all([
-    getTeamCredits(trade.proposerTeamId),
-    getTeamCredits(trade.receiverTeamId),
-  ]);
+// async function updateTeamPlayers(
+//   trade: Trade,
+//   tx: Omit<typeof db, "$client"> = db
+// ) {
+//   const ;
+// }
 
-  await db.transaction(async (tx) => {
-    await Promise.all([
-      updateLeagueTeam(
-        trade.proposerTeamId,
-        trade.leagueId,
-        {
-          credits: proposerTeamCredits - (trade.creditOfferedByProposer ?? 0),
-        },
-        tx
-      ),
-      updateLeagueTeam(
-        trade.receiverTeamId,
-        trade.leagueId,
-        {
-          credits: receiverTeamCredits - (trade.creditRequestedByProposer ?? 0),
-        },
-        tx
-      ),
-    ]);
-  });
-}
+// async function updateTeamCredits(
+//   trade: Trade,
+//   tx: Omit<typeof db, "$client"> = db
+// ) {
+//   const [proposerTeamCredits, receiverTeamCredits] = await Promise.all([
+//     getTeamCredits(trade.proposerTeamId),
+//     getTeamCredits(trade.receiverTeamId),
+//   ]);
+
+//   await Promise.all([
+//     updateLeagueTeam(
+//       trade.proposerTeamId,
+//       trade.leagueId,
+//       {
+//         credits: proposerTeamCredits - (trade.creditOfferedByProposer ?? 0),
+//       },
+//       tx
+//     ),
+//     updateLeagueTeam(
+//       trade.receiverTeamId,
+//       trade.leagueId,
+//       {
+//         credits: receiverTeamCredits - (trade.creditRequestedByProposer ?? 0),
+//       },
+//       tx
+//     ),
+//   ]);
+// }

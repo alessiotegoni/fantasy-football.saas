@@ -41,7 +41,7 @@ export async function canCreateTrade({
   }
 
   if (userTeamId !== proposerTeamId) {
-    return getError("La squadra che propone lo scambio deve essere la tua");
+    return getError("La squadra che fa lo scambio deve essere la tua");
   }
 
   if (
@@ -62,49 +62,31 @@ export async function canCreateTrade({
     );
   }
 
-  return { error: false, message: "" };
+  return {
+    error: false,
+    message: "",
+    data: { proposerTeamCredits, receiverTeamCredits },
+  };
 }
 
-export async function canUpdateTrade({
-  tradeId,
-  userId,
-  leagueId,
-  proposerTeamId,
-}: {
-  tradeId: string;
-  userId: string;
-  leagueId: string;
-  proposerTeamId: string;
-}) {
-  const [isMarketOpen, isMemberOfLeague, userTeamId, tradeStatus] =
-    await Promise.all([
-      isTradeMarketOpen(leagueId),
-      isLeagueMember(userId, leagueId),
-      getUserTeamId(userId, leagueId),
-      getTradeStatus(tradeId),
-    ]);
+export async function canUpdateTrade(
+  tradeId: string,
+  args: {
+    userId: string;
+  } & CreateTradeProposalSchema
+) {
+  const [canCreate, tradeStatus] = await Promise.all([
+    canCreateTrade(args),
+    getTradeStatus(tradeId),
+  ]);
 
-  if (!isMarketOpen) {
-    return getError("Il mercato degli scambi e' attualmente chiuso");
-  }
-
-  if (!isMemberOfLeague) {
-    return getError("Non sei membro della lega");
-  }
-
-  if (userTeamId !== proposerTeamId) {
-    return getError(
-      "Puoi accettare o rifiutare proposte di scambio fatte solamente da te"
-    );
-  }
+  if (canCreate.error) return canCreate;
 
   if (tradeStatus !== "pending") {
-    return getError(
-      "Puoi eliminare solo le proposte di scambio che nono sono ancora state accettate o rifiutate"
-    );
+    return getError("Puoi accettare o rifiutare solo le richieste in sospeso");
   }
 
-  return { error: false, message: "" };
+  return { error: false, message: "", data: canCreate.data };
 }
 
 export async function canDeleteTrade({
