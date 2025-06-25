@@ -11,9 +11,10 @@ export const getError = (message = "Errore nella creazione dello scamnio") =>
   getErrorObject(message);
 
 export async function insertTrade(
-  trade: typeof leagueTradeProposals.$inferInsert
+  trade: typeof leagueTradeProposals.$inferInsert,
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await db
+  const [res] = await tx
     .insert(leagueTradeProposals)
     .values(trade)
     .returning({ tradeId: leagueTradeProposals.id });
@@ -31,9 +32,10 @@ export async function insertTrade(
 export async function insertTradePlayers(
   leagueId: string,
   tradeId: string,
-  tradePlayers: (typeof leagueTradeProposalPlayers.$inferInsert)[]
+  tradePlayers: (typeof leagueTradeProposalPlayers.$inferInsert)[],
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const res = await db
+  const res = await tx
     .insert(leagueTradeProposalPlayers)
     .values(tradePlayers)
     .returning();
@@ -46,8 +48,12 @@ export async function insertTradePlayers(
   });
 }
 
-export async function deleteTrade(leagueId: string, tradeId: string) {
-  const [res] = await db
+export async function deleteTrade(
+  leagueId: string,
+  tradeId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [res] = await tx
     .delete(leagueTradeProposals)
     .where(eq(leagueTradeProposals.id, tradeId))
     .returning({ tradeId: leagueTradeProposals.id });
@@ -58,8 +64,12 @@ export async function deleteTrade(leagueId: string, tradeId: string) {
   revalidateLeagueTradesCache({ leagueId, tradeId });
 }
 
-export async function deleteTradePlayers(leagueId: string, tradeId: string) {
-  const res = await db
+export async function deleteTradePlayers(
+  leagueId: string,
+  tradeId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const res = await tx
     .delete(leagueTradeProposalPlayers)
     .where(eq(leagueTradeProposalPlayers.tradeProposalId, tradeId))
     .returning();
