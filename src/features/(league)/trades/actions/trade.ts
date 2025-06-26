@@ -43,7 +43,7 @@ export async function createTrade(values: CreateTradeProposalSchema) {
   const { error, message } = await canCreateTrade({ userId, ...data });
   if (error) return getError(message);
 
-  const tradeId = await db.transaction(async (tx) => {
+  await db.transaction(async (tx) => {
     const tradeProposalId = await insertTrade(trade, tx);
 
     await insertTradePlayers(
@@ -58,7 +58,7 @@ export async function createTrade(values: CreateTradeProposalSchema) {
     return tradeProposalId;
   });
 
-  redirect(`/leagues/${data.leagueId}/trades/${tradeId}`);
+  redirect(`/leagues/${data.leagueId}/my-trades`);
 }
 
 async function updateTradeStatus(values: UpdateTradeProposalSchema) {

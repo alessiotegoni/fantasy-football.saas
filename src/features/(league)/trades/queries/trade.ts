@@ -65,11 +65,12 @@ export async function getUserTrades(
           offeredByProposer: true,
         },
         with: {
-          player: true
+          player: true,
         },
       },
     },
     where: whereCondition,
+    orderBy: ({ createdAt }, { desc }) => desc(createdAt),
   });
 
   cacheTag(

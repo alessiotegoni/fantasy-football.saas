@@ -47,7 +47,7 @@ export default function LeagueTeamCard({
         <Avatar
           imageUrl={team.imageUrl}
           name={team.name}
-          size={16}
+          className="size-14"
           renderFallback={() => team.name.charAt(0).toUpperCase()}
         />
         <div className="grow min-w-0">
