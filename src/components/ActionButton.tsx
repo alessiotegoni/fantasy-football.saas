@@ -13,9 +13,10 @@ import {
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { LoaderCircle } from "lucide-react";
-import { actionToast, cn } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, useEffect, useTransition } from "react";
 import { ExternalToast } from "sonner";
+import useActionToast from "@/hooks/useActionToast";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   action: () => Promise<{ error: boolean; message: string }>;
@@ -40,12 +41,14 @@ export default function ActionButton({
   children,
   ...props
 }: Props) {
+  const toast = useActionToast()
+
   const [isPending, startTransition] = useTransition();
 
   function performAction() {
     startTransition(async () => {
       const res = await action();
-      if (displayToast) actionToast(res, toastData);
+      if (displayToast) toast(res, toastData);
     });
   }
 

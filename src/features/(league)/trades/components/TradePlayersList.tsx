@@ -16,7 +16,7 @@ interface PlayerCarouselProps {
   onRemovePlayer: UseFieldArrayRemove;
 }
 
-export function TradePlayersCarousel({
+export function TradePlayersList({
   tradePlayers,
   onRemovePlayer,
 }: PlayerCarouselProps) {
@@ -37,7 +37,10 @@ export function TradePlayersCarousel({
   return (
     <div className="flex flex-wrap gap-1.5 mt-4">
       {players.map(({ purchaseCost, ...player }) => (
-        <div className="flex items-center gap-3.5 border border-border rounded-3xl p-2 pr-2.5 py-2 bg-background w-fit">
+        <div
+          key={player.id}
+          className="flex items-center gap-3.5 border border-border rounded-3xl p-2 pr-2.5 py-2 bg-background w-fit"
+        >
           <PlayerCard
             {...player}
             showSelectButton={false}

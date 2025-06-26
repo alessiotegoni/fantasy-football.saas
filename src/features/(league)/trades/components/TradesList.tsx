@@ -29,8 +29,6 @@ export default async function TradesList({
 }: Props) {
   const trades = await getTrades(leagueId, userTeamId, context);
 
-  console.log(trades);
-
   if (!trades.length) {
     return (
       <TradesEmptyState

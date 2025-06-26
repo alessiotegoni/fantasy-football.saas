@@ -1,7 +1,7 @@
 import { UseFieldArrayRemove } from "react-hook-form";
 import LeagueTeamCard from "../../teams/components/LeagueTeamCard";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
-import { TradePlayersCarousel } from "./TradePlayersList";
+import { TradePlayersList } from "./TradePlayersList";
 
 type Props = {
   leagueId: string;
@@ -45,7 +45,7 @@ export default function TradeProposalCard({
           <h3 className="font-medium mb-3">
             {isProposer ? "Calciatori offerti" : "Calciatori richiesti"}
           </h3>
-          <TradePlayersCarousel
+          <TradePlayersList
             tradePlayers={players}
             onRemovePlayer={removePlayer}
           />
