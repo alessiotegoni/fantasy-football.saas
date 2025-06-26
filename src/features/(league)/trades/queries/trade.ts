@@ -14,24 +14,24 @@ import {
 } from "../db/cache/trade";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getPlayersIdTag } from "@/features/players/db/cache/player";
-import { TradeProposalType } from "../components/TradesList";
+import { TradeContext } from "../components/TradesList";
 
 export async function getUserTrades(
   leagueId: string,
   userTeamId: string,
-  type: TradeProposalType
+  type: Exclude<TradeContext, "league">
 ) {
   "use cache";
 
   const cacheKey =
-    type === "proposed"
+    type === "sent"
       ? getMyProposedTradesTag(userTeamId)
       : getMyReceivedProposedTradesTag(userTeamId);
 
   cacheTag(getLeagueTradesTag(leagueId), cacheKey);
 
   const whereCondition =
-    type === "proposed"
+    type === "sent"
       ? and(
           eq(leagueTradeProposals.leagueId, leagueId),
           eq(leagueTradeProposals.proposerTeamId, userTeamId)
@@ -90,8 +90,6 @@ export async function getUserTrades(
   return trades;
 }
 
-export type Trades = Awaited<ReturnType<typeof getUserTrades>>;
-
 export async function getTrade(tradeId: string) {
   "use cache";
   cacheTag(getTradeIdTag(tradeId));
@@ -102,8 +100,6 @@ export async function getTrade(tradeId: string) {
     .where(eq(leagueTradeProposals.id, tradeId))
     .then(([result]) => result);
 }
-
-export type Trade = Awaited<ReturnType<typeof getTrade>>;
 
 export async function getTradePlayers(tradeId: string) {
   "use cache";
@@ -123,3 +119,6 @@ export async function getTradeStatus(tradeId: string) {
     .where(eq(leagueTradeProposals.id, tradeId))
     .then(([trade]) => trade.status);
 }
+
+export type Trades = Awaited<ReturnType<typeof getUserTrades>>;
+export type Trade = Awaited<ReturnType<typeof getTrade>>;

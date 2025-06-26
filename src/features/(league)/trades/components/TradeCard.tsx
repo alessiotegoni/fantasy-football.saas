@@ -6,6 +6,7 @@ import { Trash2, Check, X, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Trades } from "../queries/trade";
 import { getTradeContext } from "./TradesList";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   trade: Trades[number];
@@ -67,31 +68,12 @@ export default function TradeCard({
     }
   };
 
-  const handleAction = async (
-    action: string,
-    handler?: (tradeId: string) => Promise<void>
-  ) => {
-    if (!handler) return;
-
-    setIsLoading(true);
-    setLoadingAction(action);
-
-    try {
-      await handler(trade.id);
-    } catch (error) {
-      console.error(`Errore durante ${action}:`, error);
-    } finally {
-      setIsLoading(false);
-      setLoadingAction(null);
-    }
-  };
-
   const renderPlayers = (
-    players: Player[],
+    players: Props["trade"]["proposedPlayers"],
     title: string,
     showCredits = false
   ) => {
-    if (players.length === 0 && !showCredits) return null;
+    if (!players.length && !showCredits) return null;
 
     return (
       <div className="space-y-2">
@@ -154,71 +136,71 @@ export default function TradeCard({
     );
   };
 
-  const renderActions = () => {
-    if (variant === "league" || trade.status !== "pending") return null;
+//   const renderActions = () => {
+//     if (variant === "league" || trade.status !== "pending") return null;
 
-    if (variant === "sent" && onDelete) {
-      return (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleAction("delete", onDelete)}
-          disabled={isLoading}
-          className="text-red-600 hover:text-red-700 hover:bg-red-50"
-        >
-          {loadingAction === "delete" ? (
-            <Clock className="w-4 h-4 animate-spin" />
-          ) : (
-            <Trash2 className="w-4 h-4" />
-          )}
-          Cancella
-        </Button>
-      );
-    }
+//     if (variant === "sent" && onDelete) {
+//       return (
+//         <Button
+//           variant="outline"
+//           size="sm"
+//           onClick={() => handleAction("delete", onDelete)}
+//           disabled={isLoading}
+//           className="text-red-600 hover:text-red-700 hover:bg-red-50"
+//         >
+//           {loadingAction === "delete" ? (
+//             <Clock className="w-4 h-4 animate-spin" />
+//           ) : (
+//             <Trash2 className="w-4 h-4" />
+//           )}
+//           Cancella
+//         </Button>
+//       );
+//     }
 
-    if (variant === "received" && (onAccept || onReject)) {
-      return (
-        <div className="flex gap-2">
-          {onReject && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleAction("reject", onReject)}
-              disabled={isLoading}
-              className="text-red-600 hover:text-red-700 hover:bg-red-50"
-            >
-              {loadingAction === "reject" ? (
-                <Clock className="w-4 h-4 animate-spin" />
-              ) : (
-                <X className="w-4 h-4" />
-              )}
-              Rifiuta
-            </Button>
-          )}
-          {onAccept && (
-            <Button
-              size="sm"
-              onClick={() => handleAction("accept", onAccept)}
-              disabled={isLoading}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              {loadingAction === "accept" ? (
-                <Clock className="w-4 h-4 animate-spin" />
-              ) : (
-                <Check className="w-4 h-4" />
-              )}
-              Accetta
-            </Button>
-          )}
-        </div>
-      );
-    }
+//     if (variant === "received" && (onAccept || onReject)) {
+//       return (
+//         <div className="flex gap-2">
+//           {onReject && (
+//             <Button
+//               variant="outline"
+//               size="sm"
+//               onClick={() => handleAction("reject", onReject)}
+//               disabled={isLoading}
+//               className="text-red-600 hover:text-red-700 hover:bg-red-50"
+//             >
+//               {loadingAction === "reject" ? (
+//                 <Clock className="w-4 h-4 animate-spin" />
+//               ) : (
+//                 <X className="w-4 h-4" />
+//               )}
+//               Rifiuta
+//             </Button>
+//           )}
+//           {onAccept && (
+//             <Button
+//               size="sm"
+//               onClick={() => handleAction("accept", onAccept)}
+//               disabled={isLoading}
+//               className="bg-green-600 hover:bg-green-700"
+//             >
+//               {loadingAction === "accept" ? (
+//                 <Clock className="w-4 h-4 animate-spin" />
+//               ) : (
+//                 <Check className="w-4 h-4" />
+//               )}
+//               Accetta
+//             </Button>
+//           )}
+//         </div>
+//       );
+//     }
 
-    return null;
-  };
+//     return null;
+//   };
 
   return (
-    <Card
+    <div
       className={cn(
         "w-full transition-all duration-200",
         trade.status === "accepted" && "ring-2 ring-green-200 bg-green-50/50",
@@ -226,7 +208,7 @@ export default function TradeCard({
         trade.status === "pending" && "hover:shadow-md"
       )}
     >
-      <CardContent className="p-4">
+      <div className="p-4">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <Avatar className="w-10 h-10">
@@ -260,12 +242,12 @@ export default function TradeCard({
           )}
         </div>
 
-        {renderActions() && (
+        {/* {renderActions() && (
           <div className="flex justify-end pt-2 border-t">
             {renderActions()}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        )} */}
+      </div>
+    </div>
   );
 }
