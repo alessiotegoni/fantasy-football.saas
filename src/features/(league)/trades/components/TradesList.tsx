@@ -8,6 +8,8 @@ import {
   getMyReceivedProposedTradesTag,
 } from "../db/cache/trade";
 import { db } from "@/drizzle/db";
+import { and, eq } from "drizzle-orm";
+import { leagueTradeProposals } from "@/drizzle/schema";
 
 type Props = {
   leagueId: string;
@@ -63,16 +65,14 @@ async function getUserTrades(
 
   const whereCondition =
     type === "proposed"
-      ? (trade: any, { and, eq }: any) =>
-          and(
-            eq(trade.leagueId, leagueId),
-            eq(trade.proposerTeamId, userTeamId)
-          )
-      : (trade: any, { and, eq }: any) =>
-          and(
-            eq(trade.leagueId, leagueId),
-            eq(trade.receiverTeamId, userTeamId)
-          );
+      ? and(
+          eq(leagueTradeProposals.leagueId, leagueId),
+          eq(leagueTradeProposals.proposerTeamId, userTeamId)
+        )
+      : and(
+          eq(leagueTradeProposals.leagueId, leagueId),
+          eq(leagueTradeProposals.receiverTeamId, userTeamId)
+        );
 
   const trades = await db.query.leagueTradeProposals.findMany({
     columns: {
