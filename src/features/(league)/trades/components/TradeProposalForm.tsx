@@ -107,7 +107,7 @@ export default function TradeProposalForm({
                 )
               }
               renderSelects={() =>
-                proposerTeamPlayers && (
+                !!proposerTeamPlayers.length && (
                   <TradePlayersMultiSelect
                     triggerText="Offri giocatori"
                     players={proposerTeamPlayers}

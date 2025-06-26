@@ -6,6 +6,7 @@ import TradeProposalButton from "@/features/(league)/trades/components/TradeProp
 import { getUserId } from "@/features/users/utils/user";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { redirect } from "next/navigation";
+import { getUserTrades } from "@/features/(league)/trades/queries/trade";
 
 export default async function MyTradesPage({
   params,
@@ -16,12 +17,12 @@ export default async function MyTradesPage({
 
   return (
     <Suspense fallback={<TradesPageSkeleton />}>
-      <TradesPageContent leagueId={leagueId} />
+      <SuspenseBoundary leagueId={leagueId} />
     </Suspense>
   );
 }
 
-async function TradesPageContent({ leagueId }: { leagueId: string }) {
+async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
   const userId = await getUserId();
   if (!userId) return null;
 
@@ -51,9 +52,10 @@ async function TradesPageContent({ leagueId }: { leagueId: string }) {
         <TabsContent value="proposed">
           <Suspense>
             <TradesList
+              context="sent"
+              getTrades={getUserTrades}
               leagueId={leagueId}
               userTeamId={userTeamId}
-              type="proposed"
               emptyState={{
                 description:
                   "Non hai ancora fatto proposte di scambio ad altre squadre",
@@ -66,8 +68,9 @@ async function TradesPageContent({ leagueId }: { leagueId: string }) {
           <Suspense>
             <TradesList
               leagueId={leagueId}
+              getTrades={getUserTrades}
               userTeamId={userTeamId}
-              type="received"
+              context="received"
               emptyState={{
                 description:
                   "Non hai ancora ricevuto proposte di scambio da altre squadre",

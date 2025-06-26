@@ -1,33 +1,33 @@
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { Trades } from "../queries/trade";
 import TradesEmptyState from "./TradesEmptyState";
-import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
-import { getPlayersIdTag } from "@/features/players/db/cache/player";
-import {
-  getLeagueTradesTag,
-  getMyProposedTradesTag,
-  getMyReceivedProposedTradesTag,
-} from "../db/cache/trade";
-import { db } from "@/drizzle/db";
-import { and, eq } from "drizzle-orm";
-import { leagueTradeProposals } from "@/drizzle/schema";
+import TradeCard from "./TradeCard";
+import { acceptTrade, deleteTrade, rejectTrade } from "../actions/trade";
+
+export type TradeContext = "sent" | "received" | "league";
 
 type Props = {
   leagueId: string;
   userTeamId: string;
-  type: "proposed" | "received";
+  context: TradeContext;
   emptyState?: {
     title?: string;
     description?: string;
   };
+  getTrades: (
+    leagueId: string,
+    userTeamId: string,
+    context: TradeContext
+  ) => Promise<Trades>;
 };
 
 export default async function TradesList({
   leagueId,
   userTeamId,
-  type,
+  context,
   emptyState,
+  getTrades,
 }: Props) {
-  const trades = await getUserTrades(leagueId, userTeamId, type);
+  const trades = await getTrades(leagueId, userTeamId, context);
 
   if (!trades.length) {
     return (
@@ -39,86 +39,50 @@ export default async function TradesList({
     );
   }
 
-  // // Renderizza la lista dei trade
-  // return (
-  //   <div className="space-y-4">
-  //     {trades.map((trade) => (
-  //       <TradeCard key={trade.id} trade={trade} />
-  //     ))}
-  //   </div>
-  // );
+  const contextConfig = getTradeContext(context);
+
+  return (
+    <div className="space-y-4">
+      {trades.map((trade) => (
+        <TradeCard
+          key={trade.id}
+          trade={trade}
+          currentUserTeamId={userTeamId}
+          {...contextConfig}
+        />
+      ))}
+    </div>
+  );
 }
 
-async function getUserTrades(
-  leagueId: string,
-  userTeamId: string,
-  type: "proposed" | "received"
-) {
-  "use cache";
-
-  const cacheKey =
-    type === "proposed"
-      ? getMyProposedTradesTag(userTeamId)
-      : getMyReceivedProposedTradesTag(userTeamId);
-
-  cacheTag(getLeagueTradesTag(leagueId), cacheKey);
-
-  const whereCondition =
-    type === "proposed"
-      ? and(
-          eq(leagueTradeProposals.leagueId, leagueId),
-          eq(leagueTradeProposals.proposerTeamId, userTeamId)
-        )
-      : and(
-          eq(leagueTradeProposals.leagueId, leagueId),
-          eq(leagueTradeProposals.receiverTeamId, userTeamId)
-        );
-
-  const trades = await db.query.leagueTradeProposals.findMany({
-    columns: {
-      leagueId: false,
-    },
-    with: {
-      proposerTeam: {
-        columns: {
-          name: true,
-          managerName: true,
-          imageUrl: true,
+export function getTradeContext(context: TradeContext) {
+  switch (context) {
+    case "sent":
+      return {
+        variant: "sent",
+        showActions: true,
+        actionHandlers: {
+          onDelete: deleteTrade,
         },
-      },
-      receiverTeam: {
-        columns: {
-          name: true,
-          managerName: true,
-          imageUrl: true,
-        },
-      },
-      proposedPlayers: {
-        columns: {
-          playerId: true,
-          offeredByProposer: true,
-        },
-        with: {
-          player: {
-            columns: {
-              avatarUrl: true,
-            },
-          },
-        },
-      },
-    },
-    where: whereCondition,
-  });
+      } as const;
 
-  cacheTag(
-    ...trades.flatMap((trade) => [
-      getTeamIdTag(trade.proposerTeamId),
-      getTeamIdTag(trade.receiverTeamId),
-    ]),
-    ...trades.flatMap((trade) =>
-      trade.proposedPlayers.map((player) => getPlayersIdTag(player.playerId))
-    )
-  );
+    case "received":
+      return {
+        variant: "received",
+        showActions: true,
+        actionHandlers: {
+          onAccept: acceptTrade,
+          onReject: rejectTrade,
+        },
+      } as const;
 
-  return trades;
+    case "league":
+      return {
+        variant: "league",
+        showActions: false,
+      } as const;
+
+    default:
+      throw new Error(`Contesto non supportato: ${context}`);
+  }
 }

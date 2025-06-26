@@ -61,7 +61,7 @@ export async function createTrade(values: CreateTradeProposalSchema) {
   redirect(`/leagues/${data.leagueId}/trades/${tradeId}`);
 }
 
-export async function updateTradeStatus(values: UpdateTradeProposalSchema) {
+async function updateTradeStatus(values: UpdateTradeProposalSchema) {
   const parsed = updateTradeProposalSchema.safeParse(values);
   if (!parsed.success) {
     return getError("Errore nell'aggiornamento dello stato dello scambio");
@@ -97,6 +97,9 @@ export async function updateTradeStatus(values: UpdateTradeProposalSchema) {
     } con successo`,
   };
 }
+
+export const acceptTrade = updateTradeStatus;
+export const rejectTrade = updateTradeStatus;
 
 export async function deleteTrade(values: DeleteTradeProposalSchema) {
   const { success, data } = deleteTradeProposalSchema.safeParse(values);
