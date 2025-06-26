@@ -1,13 +1,13 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { Trade, Trades } from "../queries/trade";
+import { Trades } from "../queries/trade";
 import { getTradeContext, TradeContext } from "./TradesList";
 import { Badge } from "@/components/ui/badge";
 import { TradeProposalStatusType } from "@/drizzle/schema";
 import ActionButton from "@/components/ActionButton";
-import { Clock } from "iconoir-react";
+import { Clock, User } from "iconoir-react";
+import Avatar from "@/components/Avatar";
 
 type Props = {
   trade: Trades[number];
@@ -16,12 +16,11 @@ type Props = {
 } & ReturnType<typeof getTradeContext>;
 
 export default function TradeCard(props: Props) {
-  const { leagueId, trade, variant, currentUserTeamId, actionHandlers } = props;
+  const { leagueId, trade, variant, currentUserTeamId } = props;
 
   const isProposer = trade.proposerTeamId === currentUserTeamId;
   const otherTeam = isProposer ? trade.receiverTeam : trade.proposerTeam;
 
-  // Separa i giocatori offerti da quelli richiesti
   const offeredPlayers = trade.proposedPlayers.filter((p) =>
     variant === "sent" ? p.offeredByProposer : !p.offeredByProposer
   );
@@ -45,27 +44,32 @@ export default function TradeCard(props: Props) {
         "w-full rounded-3xl bg-muted transition-all duration-200",
         trade.status === "accepted" && "ring-2 ring-green-200 bg-green-50/50",
         trade.status === "rejected" && "ring-2 ring-red-200 bg-red-50/50",
-        trade.status === "pending" && "hover:shadow-md"
+        trade.status === "pending" && "ring-2 ring-zinc-600 bg-zinc-600/30"
       )}
     >
       <div className="p-4">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <Avatar className="w-10 h-10">
-              <AvatarImage src={otherTeam.imageUrl || undefined} />
-              <AvatarFallback>{otherTeam.name.charAt(0)}</AvatarFallback>
-            </Avatar>
+            <Avatar
+              imageUrl={otherTeam.imageUrl}
+              name={otherTeam.name}
+              size={10}
+              renderFallback={() => otherTeam.name.charAt(0)}
+            />
+
             <div>
               <h3 className="font-semibold text-base">{otherTeam.name}</h3>
-              <p className="text-sm text-gray-600">{otherTeam.managerName}</p>
+              <p className="text-sm text-muted-foreground">
+                {otherTeam.managerName}
+              </p>
             </div>
           </div>
           {getStatusBadge(trade.status)}
         </div>
 
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="size-4 text-gray-400" />
-          <span className="text-sm text-gray-600">
+          <Clock className="size-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground font-medium">
             {formatDate(trade.createdAt)}
           </span>
         </div>
@@ -115,16 +119,16 @@ function renderPlayers({
     <div className="space-y-2">
       {players.length > 0 && (
         <>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <p className="text-sm font-medium">{title}</p>
           <div className="flex -space-x-2">
-            {players.slice(0, 3).map((player, index) => (
+            {players.slice(0, 3).map(({ player }, index) => (
               <Avatar
-                key={player.playerId}
-                className="w-8 h-8 border-2 border-white"
-              >
-                <AvatarImage src={player.player.avatarUrl || undefined} />
-                <AvatarFallback className="text-xs">P</AvatarFallback>
-              </Avatar>
+                key={player.id}
+                imageUrl={player.avatarUrl}
+                name={player.displayName}
+                size={8}
+                renderFallback={() => <User />}
+              />
             ))}
             {players.length > 3 && (
               <div className="w-8 h-8 bg-gray-100 rounded-full border-2 border-white flex items-center justify-center">
@@ -203,8 +207,8 @@ function renderActions({ variant, actionHandlers, trade, leagueId }: Props) {
             action={actionHandlers.onReject.bind(null, {
               leagueId,
               players: trade.proposedPlayers.map(
-                ({ playerId, offeredByProposer }) => ({
-                  id: playerId,
+                ({ player, offeredByProposer }) => ({
+                  id: player.id,
                   offeredByProposer,
                 })
               ),
@@ -221,8 +225,8 @@ function renderActions({ variant, actionHandlers, trade, leagueId }: Props) {
             action={actionHandlers.onAccept.bind(null, {
               leagueId,
               players: trade.proposedPlayers.map(
-                ({ playerId, offeredByProposer }) => ({
-                  id: playerId,
+                ({ player, offeredByProposer }) => ({
+                  id: player.id,
                   offeredByProposer,
                 })
               ),
@@ -246,7 +250,7 @@ function getStatusBadge(status: TradeProposalStatusType) {
       return (
         <Badge
           variant="outline"
-          className="bg-yellow-600 rounded-full p-2 text-sm gap-2"
+          className="bg-zinc-600 border border-zinc-500 rounded-full p-2 text-sm gap-2"
         >
           <Clock className="!size-5" />
           In attesa

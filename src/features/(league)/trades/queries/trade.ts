@@ -62,13 +62,16 @@ export async function getUserTrades(
       },
       proposedPlayers: {
         columns: {
-          playerId: true,
           offeredByProposer: true,
         },
         with: {
           player: {
             columns: {
+              id: true,
+              displayName: true,
               avatarUrl: true,
+              roleId: true,
+              teamId: true,
             },
           },
         },
@@ -83,7 +86,7 @@ export async function getUserTrades(
       getTeamIdTag(trade.receiverTeamId),
     ]),
     ...trades.flatMap((trade) =>
-      trade.proposedPlayers.map((player) => getPlayersIdTag(player.playerId))
+      trade.proposedPlayers.map(({ player }) => getPlayersIdTag(player.id))
     )
   );
 
