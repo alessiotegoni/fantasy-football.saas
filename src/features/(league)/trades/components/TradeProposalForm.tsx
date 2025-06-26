@@ -92,8 +92,8 @@ export default function TradeProposalForm({
               removePlayer={removePlayer}
               renderCreditsSlider={() =>
                 !proposerTeam.credits ? (
-                  <div className="flex justify-center items-center gap-2 bg-yellow-600 border border-yellow-400 rounded-2xl p-3.5 mb-3 text-center">
-                    <WarningTriangle className="size-7" />
+                  <div className="flex justify-center items-center gap-2 bg-yellow-600 border border-yellow-400 rounded-2xl p-2.5 text-center text-sm">
+                    <WarningTriangle className="size-6" />
                     Non hai crediti da offrire
                   </div>
                 ) : (
@@ -137,15 +137,22 @@ export default function TradeProposalForm({
               team={receiverTeam}
               players={groupedTradePlayers["requested"]}
               removePlayer={removePlayer}
-              renderCreditsSlider={() => (
-                <FormSliderField<CreateTradeProposalSchema>
-                  name="creditRequestedByProposer"
-                  min={0}
-                  max={receiverTeam.credits}
-                  label="Richiedi crediti"
-                  unit="Crediti richiesti"
-                />
-              )}
+              renderCreditsSlider={() =>
+                !receiverTeam.credits ? (
+                  <div className="flex justify-center items-center gap-2 bg-yellow-600 border border-yellow-400 rounded-2xl p-2.5 text-center text-sm">
+                    <WarningTriangle className="size-6" />
+                    Non ha crediti da offrire
+                  </div>
+                ) : (
+                  <FormSliderField<CreateTradeProposalSchema>
+                    name="creditRequestedByProposer"
+                    min={0}
+                    max={receiverTeam.credits}
+                    label="Richiedi crediti"
+                    unit="Crediti richiesti"
+                  />
+                )
+              }
               renderSelects={() => (
                 <div className="grid xl:grid-cols-2 gap-2 mt-8">
                   <TradeReceiverTeamSelect
