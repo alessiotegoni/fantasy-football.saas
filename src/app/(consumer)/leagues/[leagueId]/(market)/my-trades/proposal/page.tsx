@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
-  searchParamsarams?: Promise<{
+  searchParams?: Promise<{
     proposerTeamId?: string;
     receiverTeamId?: string;
   }>;
@@ -15,13 +15,9 @@ type Props = {
 
 export default async function TradeProposalPage({
   params,
-  searchParamsarams,
+  searchParams,
 }: Props) {
-  const [{ leagueId }, searchParams] = await Promise.all([
-    params,
-    searchParamsarams,
-  ]);
-  if (!searchParams?.proposerTeamId) notFound();
+  const { leagueId } = await params;
 
   return (
     <Container
@@ -41,9 +37,11 @@ async function SuspenseBoundary({
   searchParams,
 }: {
   leagueId: string;
-  searchParams: { proposerTeamId?: string; receiverTeamId?: string };
-}) {
-  const idsValidations = Object.values(searchParams).map((teamId) =>
+} & Pick<Props, "searchParams">) {
+  const searchP = await searchParams;
+  if (!searchP?.proposerTeamId) notFound();
+
+  const idsValidations = Object.values(searchP).map((teamId) =>
     getUUIdSchema("Id del team invalido").safeParse(teamId)
   );
   if (idsValidations.some((validation) => !validation.success)) notFound();
@@ -51,10 +49,10 @@ async function SuspenseBoundary({
   const leagueTeams = await getLeagueTeams(leagueId);
 
   const proposerTeam = leagueTeams.find(
-    (team) => team.id === searchParams.proposerTeamId
+    (team) => team.id === searchP.proposerTeamId
   );
   const receiverTeam = leagueTeams.find(
-    (team) => team.id === searchParams.receiverTeamId
+    (team) => team.id === searchP.receiverTeamId
   );
 
   const props = {
