@@ -4,6 +4,7 @@ import { TradeCardProps } from "./TradeCard";
 import TeamInfo from "./TradeTeamInfo";
 import { cn } from "@/lib/utils";
 import TradeStatusBadge from "./TradeStatusBadge";
+import PlayersSection from "./TradePlayerSection";
 
 export default function LeagueTradeCard({
   trade,
