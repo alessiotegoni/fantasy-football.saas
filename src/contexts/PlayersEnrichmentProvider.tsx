@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { EnrichedPlayer, Role, Team, usePlayers } from "./PlayersProvider";
 
 interface PlayerEnrichmentContextType {
@@ -25,8 +25,13 @@ export function PlayersEnrichmentProvider({
 }) {
   const { players } = usePlayers();
 
-  const [teams, setTeams] = useState<Team[]>(defaultTeams);
-  const [roles, setRoles] = useState<Role[]>(defaultRoles);
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [roles, setRoles] = useState<Role[]>([]);
+
+  useEffect(() => {
+    if (defaultTeams.length) setTeams(defaultTeams)
+    if (defaultRoles.length) setRoles(defaultRoles)
+  }, [defaultTeams, defaultRoles])
 
   const enrichedPlayers = useMemo(() => {
     if (!players.length) return [];

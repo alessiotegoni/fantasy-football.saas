@@ -74,8 +74,6 @@ export default function TradeProposalForm({
     if (res.error) toast(res);
   }
 
-  console.log(form.formState.errors);
-
   return (
     <Form {...form}>
       {form.formState.errors.proposerTeamId && (
@@ -92,15 +90,22 @@ export default function TradeProposalForm({
               team={proposerTeam}
               players={groupedTradePlayers["proposed"]}
               removePlayer={removePlayer}
-              renderCreditsSlider={() => (
-                <FormSliderField<CreateTradeProposalSchema>
-                  name="creditOfferedByProposer"
-                  min={0}
-                  max={proposerTeam.credits}
-                  label="Offri crediti"
-                  unit="Crediti offerti"
-                />
-              )}
+              renderCreditsSlider={() =>
+                !proposerTeam.credits ? (
+                  <div className="flex justify-center items-center gap-2 bg-yellow-600 border border-yellow-400 rounded-2xl p-3.5 mb-3 text-center">
+                    <WarningTriangle className="size-7" />
+                    Non hai crediti da offrire
+                  </div>
+                ) : (
+                  <FormSliderField<CreateTradeProposalSchema>
+                    name="creditOfferedByProposer"
+                    min={0}
+                    max={proposerTeam.credits}
+                    label="Offri crediti"
+                    unit="Crediti offerti"
+                  />
+                )
+              }
               renderSelects={() =>
                 proposerTeamPlayers && (
                   <TradePlayersMultiSelect
