@@ -65,7 +65,12 @@ export async function getUserTrades(
           offeredByProposer: true,
         },
         with: {
-          player: true,
+          player: {
+            with: {
+              team: true,
+              role: true,
+            },
+          },
         },
       },
     },

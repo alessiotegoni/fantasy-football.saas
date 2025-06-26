@@ -35,8 +35,6 @@ export default function PlayersSection({
               {...player}
               leagueTeamId={leagueTeamId}
               showSelectButton={false}
-              role={null}
-              team={null}
               className={cn("p-1 rounded-full pr-5", theme.playerCardBg)}
             />
           ))}

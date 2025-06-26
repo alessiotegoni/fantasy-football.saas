@@ -98,7 +98,7 @@ function TradeActions({
         key="delete"
         loadingText="Elimino scambio"
         variant="destructive"
-        className="sm:w-fit sm:min-w-[150px] sm:py-3 rounded-full"
+        className="sm:w-fit sm:min-w-[150px] sm:py-3 rounded-2xl"
         action={actionHandlers.onDelete.bind(null, {
           leagueId,
           tradeId: trade.id,
@@ -117,7 +117,7 @@ function TradeActions({
         <ActionButton
           key="reject"
           loadingText="Rifiuto scambio"
-          className="sm:basis-1/2 sm:min-w-[150px] sm:py-3 rounded-full"
+          className="sm:basis-1/2 sm:min-w-[150px] sm:py-3 rounded-2xl"
           action={actionHandlers.onReject.bind(null, {
             leagueId,
             players: trade.proposedPlayers.map(
@@ -140,7 +140,7 @@ function TradeActions({
         <ActionButton
           key="accept"
           loadingText="Accetto scambio"
-          className="sm:basis-1/2 sm:min-w-[150px] sm:py-3 rounded-full"
+          className="sm:basis-1/2 sm:min-w-[150px] sm:py-3 rounded-2xl"
           action={actionHandlers.onAccept.bind(null, {
             leagueId,
             players: trade.proposedPlayers.map(
