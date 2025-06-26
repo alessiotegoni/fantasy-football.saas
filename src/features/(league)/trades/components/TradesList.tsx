@@ -1,34 +1,18 @@
-import { getUserTeamId } from "@/features/users/queries/user";
-import { getUserId } from "@/features/users/utils/user";
-import { redirect } from "next/navigation";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import TradesEmptyState from "./TradesEmptyState";
-
-type Team = { name: string; managerName: string; imageUrl: string | null };
+import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
+import { getPlayersIdTag } from "@/features/players/db/cache/player";
+import {
+  getLeagueTradesTag,
+  getMyProposedTradesTag,
+  getMyReceivedProposedTradesTag,
+} from "../db/cache/trade";
+import { db } from "@/drizzle/db";
 
 type Props = {
   leagueId: string;
-  getTrades: (
-    leagueId: string,
-    userId: string
-  ) => Promise<
-    {
-      id: string;
-      status: "pending" | "accepted" | "rejected";
-      createdAt: Date;
-      updatedAt: Date;
-      proposerTeamId: string;
-      receiverTeamId: string;
-      creditOfferedByProposer: number | null;
-      creditRequestedByProposer: number | null;
-      proposerTeam: Team;
-      receiverTeam: Team;
-      proposalPlayers: {
-        playerId: string;
-        offeredByProposer: boolean;
-        player: { avatarUrl: string | null };
-      }[];
-    }[]
-  >;
+  userTeamId: string;
+  type: "proposed" | "received";
   emptyState?: {
     title?: string;
     description?: string;
@@ -37,18 +21,13 @@ type Props = {
 
 export default async function TradesList({
   leagueId,
-  getTrades,
+  userTeamId,
+  type,
   emptyState,
 }: Props) {
-  const userId = await getUserId();
-  if (!userId) return;
+  const trades = await getUserTrades(leagueId, userTeamId, type);
 
-  const userTeamId = await getUserTeamId(userId, leagueId);
-  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
-
-  const trades = await getTrades(leagueId, userTeamId);
-
-  if (!trades.length)
+  if (!trades.length) {
     return (
       <TradesEmptyState
         {...emptyState}
@@ -56,4 +35,90 @@ export default async function TradesList({
         userTeamId={userTeamId}
       />
     );
+  }
+
+  // // Renderizza la lista dei trade
+  // return (
+  //   <div className="space-y-4">
+  //     {trades.map((trade) => (
+  //       <TradeCard key={trade.id} trade={trade} />
+  //     ))}
+  //   </div>
+  // );
+}
+
+async function getUserTrades(
+  leagueId: string,
+  userTeamId: string,
+  type: "proposed" | "received"
+) {
+  "use cache";
+
+  const cacheKey =
+    type === "proposed"
+      ? getMyProposedTradesTag(userTeamId)
+      : getMyReceivedProposedTradesTag(userTeamId);
+
+  cacheTag(getLeagueTradesTag(leagueId), cacheKey);
+
+  const whereCondition =
+    type === "proposed"
+      ? (trade: any, { and, eq }: any) =>
+          and(
+            eq(trade.leagueId, leagueId),
+            eq(trade.proposerTeamId, userTeamId)
+          )
+      : (trade: any, { and, eq }: any) =>
+          and(
+            eq(trade.leagueId, leagueId),
+            eq(trade.receiverTeamId, userTeamId)
+          );
+
+  const trades = await db.query.leagueTradeProposals.findMany({
+    columns: {
+      leagueId: false,
+    },
+    with: {
+      proposerTeam: {
+        columns: {
+          name: true,
+          managerName: true,
+          imageUrl: true,
+        },
+      },
+      receiverTeam: {
+        columns: {
+          name: true,
+          managerName: true,
+          imageUrl: true,
+        },
+      },
+      proposedPlayers: {
+        columns: {
+          playerId: true,
+          offeredByProposer: true,
+        },
+        with: {
+          player: {
+            columns: {
+              avatarUrl: true,
+            },
+          },
+        },
+      },
+    },
+    where: whereCondition,
+  });
+
+  cacheTag(
+    ...trades.flatMap((trade) => [
+      getTeamIdTag(trade.proposerTeamId),
+      getTeamIdTag(trade.receiverTeamId),
+    ]),
+    ...trades.flatMap((trade) =>
+      trade.proposedPlayers.map((player) => getPlayersIdTag(player.playerId))
+    )
+  );
+
+  return trades;
 }
