@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import {
   Avatar as RadixAvatar,
   AvatarFallback,
@@ -9,7 +8,6 @@ type Props = {
   imageUrl: string | null | undefined;
   name: string;
   renderFallback: () => React.ReactNode;
-  size?: number;
   className?: string;
 };
 
@@ -17,15 +15,14 @@ export default function Avatar({
   imageUrl,
   name,
   renderFallback,
-  size,
-  className,
+  className = "",
 }: Props) {
   return (
-    <RadixAvatar className={cn(size && `size-${size}`)}>
+    <RadixAvatar className={className}>
       <AvatarImage
         src={imageUrl ?? ""}
         alt={name}
-        className={cn("object-contain", className)}
+        className="object-contain"
       />
       <AvatarFallback>{renderFallback()}</AvatarFallback>
     </RadixAvatar>

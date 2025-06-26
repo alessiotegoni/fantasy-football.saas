@@ -65,15 +65,7 @@ export async function getUserTrades(
           offeredByProposer: true,
         },
         with: {
-          player: {
-            columns: {
-              id: true,
-              displayName: true,
-              avatarUrl: true,
-              roleId: true,
-              teamId: true,
-            },
-          },
+          player: true
         },
       },
     },

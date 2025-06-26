@@ -16,7 +16,7 @@ type Props = EnrichedPlayer & {
   canSelectCard?: boolean;
   onSelect?: (player: EnrichedPlayer) => void;
   className?: string;
-  avatarSize?: number
+  avatarSize?: number;
 };
 
 export default memo(function PlayerCard({
@@ -42,8 +42,11 @@ export default memo(function PlayerCard({
           <Avatar
             imageUrl={player.avatarUrl}
             name={player.displayName}
-            size={avatarSize}
             renderFallback={() => <User />}
+            className={cn(
+              avatarSize && `size-${avatarSize}`,
+              "ring-1 ring-zinc-700"
+            )}
           />
           {player.role && (
             <PlayerRoleBadge
