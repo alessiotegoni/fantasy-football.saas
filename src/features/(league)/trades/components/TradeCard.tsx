@@ -2,8 +2,8 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { Trades } from "../queries/trade";
-import { getTradeContext } from "./TradesList";
+import { Trade, Trades } from "../queries/trade";
+import { getTradeContext, TradeContext } from "./TradesList";
 import { Badge } from "@/components/ui/badge";
 import { TradeProposalStatusType } from "@/drizzle/schema";
 import ActionButton from "@/components/ActionButton";
@@ -39,74 +39,6 @@ export default function TradeCard(props: Props) {
     }).format(date);
   };
 
-  const renderPlayers = (
-    players: Props["trade"]["proposedPlayers"],
-    title: string,
-    showCredits = false
-  ) => {
-    if (!players.length && !showCredits) return null;
-
-    return (
-      <div className="space-y-2">
-        {players.length > 0 && (
-          <>
-            <p className="text-sm font-medium text-gray-600">{title}</p>
-            <div className="flex -space-x-2">
-              {players.slice(0, 3).map((player, index) => (
-                <Avatar
-                  key={player.playerId}
-                  className="w-8 h-8 border-2 border-white"
-                >
-                  <AvatarImage src={player.player.avatarUrl || undefined} />
-                  <AvatarFallback className="text-xs">P</AvatarFallback>
-                </Avatar>
-              ))}
-              {players.length > 3 && (
-                <div className="w-8 h-8 bg-gray-100 rounded-full border-2 border-white flex items-center justify-center">
-                  <span className="text-xs font-medium">
-                    +{players.length - 3}
-                  </span>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {showCredits && (
-          <div className="flex items-center gap-2">
-            {variant === "sent" ? (
-              <>
-                {trade.creditOfferedByProposer && (
-                  <Badge variant="secondary" className="text-blue-600">
-                    +{trade.creditOfferedByProposer}💰
-                  </Badge>
-                )}
-                {trade.creditRequestedByProposer && (
-                  <Badge variant="secondary" className="text-orange-600">
-                    -{trade.creditRequestedByProposer}💰
-                  </Badge>
-                )}
-              </>
-            ) : (
-              <>
-                {trade.creditRequestedByProposer && (
-                  <Badge variant="secondary" className="text-blue-600">
-                    +{trade.creditRequestedByProposer}💰
-                  </Badge>
-                )}
-                {trade.creditOfferedByProposer && (
-                  <Badge variant="secondary" className="text-orange-600">
-                    -{trade.creditOfferedByProposer}💰
-                  </Badge>
-                )}
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div
       className={cn(
@@ -139,15 +71,19 @@ export default function TradeCard(props: Props) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          {renderPlayers(
-            offeredPlayers,
-            variant === "sent" ? "Offri" : "Ricevi",
-            true
-          )}
-          {renderPlayers(
-            requestedPlayers,
-            variant === "sent" ? "Richiedi" : "Dai"
-          )}
+          {renderPlayers({
+            players: offeredPlayers,
+            title: variant === "sent" ? "Offri" : "Ricevi",
+            showCredits: true,
+            trade: props.trade,
+            variant,
+          })}
+          {renderPlayers({
+            players: requestedPlayers,
+            title: variant === "sent" ? "Richiedi" : "Dai",
+            trade: props.trade,
+            variant,
+          })}
         </div>
 
         {renderActions(props) && (
@@ -156,6 +92,82 @@ export default function TradeCard(props: Props) {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function renderPlayers({
+  players,
+  showCredits = false,
+  title,
+  trade,
+  variant,
+}: {
+  players: Props["trade"]["proposedPlayers"];
+  title: string;
+  variant: TradeContext;
+  showCredits?: boolean;
+  trade: Props["trade"];
+}) {
+  if (!players.length && !showCredits) return null;
+
+  return (
+    <div className="space-y-2">
+      {players.length > 0 && (
+        <>
+          <p className="text-sm font-medium text-gray-600">{title}</p>
+          <div className="flex -space-x-2">
+            {players.slice(0, 3).map((player, index) => (
+              <Avatar
+                key={player.playerId}
+                className="w-8 h-8 border-2 border-white"
+              >
+                <AvatarImage src={player.player.avatarUrl || undefined} />
+                <AvatarFallback className="text-xs">P</AvatarFallback>
+              </Avatar>
+            ))}
+            {players.length > 3 && (
+              <div className="w-8 h-8 bg-gray-100 rounded-full border-2 border-white flex items-center justify-center">
+                <span className="text-xs font-medium">
+                  +{players.length - 3}
+                </span>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {showCredits && (
+        <div className="flex items-center gap-2">
+          {variant === "sent" ? (
+            <>
+              {trade.creditOfferedByProposer && (
+                <Badge variant="secondary" className="text-blue-600">
+                  +{trade.creditOfferedByProposer}💰
+                </Badge>
+              )}
+              {trade.creditRequestedByProposer && (
+                <Badge variant="secondary" className="text-orange-600">
+                  -{trade.creditRequestedByProposer}💰
+                </Badge>
+              )}
+            </>
+          ) : (
+            <>
+              {trade.creditRequestedByProposer && (
+                <Badge variant="secondary" className="text-blue-600">
+                  +{trade.creditRequestedByProposer}💰
+                </Badge>
+              )}
+              {trade.creditOfferedByProposer && (
+                <Badge variant="secondary" className="text-orange-600">
+                  -{trade.creditOfferedByProposer}💰
+                </Badge>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
