@@ -7,24 +7,43 @@ import { Suspense } from "react";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
-  searchParams?: Promise<{ proposerTeamId?: string; receiverTeamId?: string }>;
+  searchParamsarams?: Promise<{
+    proposerTeamId?: string;
+    receiverTeamId?: string;
+  }>;
 };
 
-export default async function TradeProposalPage(props: Props) {
+export default async function TradeProposalPage({
+  params,
+  searchParamsarams,
+}: Props) {
+  const [{ leagueId }, searchParams] = await Promise.all([
+    params,
+    searchParamsarams,
+  ]);
+  if (!searchParams?.proposerTeamId) notFound();
+
   return (
-    <Container className="max-w-[1000px]" headerLabel="Proponi scambio">
+    <Container
+      leagueId={leagueId}
+      className="max-w-[1000px]"
+      headerLabel="Proponi scambio"
+    >
       <Suspense fallback={<p>loading...</p>}>
-        <SuspenseBoundary {...props} />
+        <SuspenseBoundary leagueId={leagueId} searchParams={searchParams} />
       </Suspense>
     </Container>
   );
 }
 
-async function SuspenseBoundary({ params, searchParams }: Props) {
-  const [{ leagueId }, searchP] = await Promise.all([params, searchParams]);
-  if (!searchP?.proposerTeamId) notFound();
-
-  const idsValidations = Object.values(searchP).map((teamId) =>
+async function SuspenseBoundary({
+  leagueId,
+  searchParams,
+}: {
+  leagueId: string;
+  searchParams: { proposerTeamId?: string; receiverTeamId?: string };
+}) {
+  const idsValidations = Object.values(searchParams).map((teamId) =>
     getUUIdSchema("Id del team invalido").safeParse(teamId)
   );
   if (idsValidations.some((validation) => !validation.success)) notFound();
@@ -32,10 +51,10 @@ async function SuspenseBoundary({ params, searchParams }: Props) {
   const leagueTeams = await getLeagueTeams(leagueId);
 
   const proposerTeam = leagueTeams.find(
-    (team) => team.id === searchP.proposerTeamId
+    (team) => team.id === searchParams.proposerTeamId
   );
   const receiverTeam = leagueTeams.find(
-    (team) => team.id === searchP.receiverTeamId
+    (team) => team.id === searchParams.receiverTeamId
   );
 
   const props = {

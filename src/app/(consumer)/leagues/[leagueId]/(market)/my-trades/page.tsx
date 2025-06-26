@@ -9,6 +9,9 @@ import {
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Suspense } from "react";
 import Container from "@/components/Container";
+import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
+import { getPlayersIdTag } from "@/features/players/db/cache/player";
+import TradeProposalButton from "@/features/(league)/trades/components/TradeProposalButton";
 
 export default async function MyTradesPage({
   params,
@@ -18,7 +21,15 @@ export default async function MyTradesPage({
   const { leagueId } = await params;
 
   return (
-    <Container headerLabel="I miei scambi">
+    <Container
+      leagueId={leagueId}
+      headerLabel="I miei scambi"
+      renderHeaderRight={() => (
+        <Suspense>
+          <TradeProposalButton leagueId={leagueId} />
+        </Suspense>
+      )}
+    >
       <Tabs defaultValue="proposed" className="max-w-[700px] mx-auto">
         <TabsList>
           <TabsTrigger value="proposed">Proposte inviate</TabsTrigger>
@@ -76,7 +87,7 @@ async function getMyProposedTrades(leagueId: string, userTeamId: string) {
           imageUrl: true,
         },
       },
-      proposalPlayers: {
+      proposedPlayers: {
         columns: {
           playerId: true,
           offeredByProposer: true,
@@ -95,9 +106,12 @@ async function getMyProposedTrades(leagueId: string, userTeamId: string) {
   });
 
   cacheTag(
-    ...trades.flatMap((trade) => [trade.proposerTeamId, trade.receiverTeamId]),
+    ...trades.flatMap((trade) => [
+      getTeamIdTag(trade.proposerTeamId),
+      getTeamIdTag(trade.receiverTeamId),
+    ]),
     ...trades.flatMap((trade) =>
-      trade.proposalPlayers.map((player) => player.playerId)
+      trade.proposedPlayers.map((player) => getPlayersIdTag(player.playerId))
     )
   );
 
@@ -133,7 +147,7 @@ async function getMyReceivedProposedTrades(
           imageUrl: true,
         },
       },
-      proposalPlayers: {
+      proposedPlayers: {
         columns: {
           playerId: true,
           offeredByProposer: true,
@@ -152,9 +166,12 @@ async function getMyReceivedProposedTrades(
   });
 
   cacheTag(
-    ...trades.flatMap((trade) => [trade.proposerTeamId, trade.receiverTeamId]),
+    ...trades.flatMap((trade) => [
+      getTeamIdTag(trade.proposerTeamId),
+      getTeamIdTag(trade.receiverTeamId),
+    ]),
     ...trades.flatMap((trade) =>
-      trade.proposalPlayers.map((player) => player.playerId)
+      trade.proposedPlayers.map((player) => getPlayersIdTag(player.playerId))
     )
   );
 

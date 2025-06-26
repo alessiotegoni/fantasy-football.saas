@@ -59,6 +59,6 @@ export const leagueTradeProposalsRelations = relations(
       fields: [leagueTradeProposals.receiverTeamId],
       references: [leagueMemberTeams.id],
     }),
-    proposalPlayers: many(leagueTradeProposalPlayers),
+    proposedPlayers: many(leagueTradeProposalPlayers),
   })
 );

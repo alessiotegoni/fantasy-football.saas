@@ -1,7 +1,9 @@
 import Container from "@/components/Container";
 import { db } from "@/drizzle/db";
+import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import TradesList from "@/features/(league)/trades/components/TradesList";
 import { getLeagueTradesTag } from "@/features/(league)/trades/db/cache/trade";
+import { getPlayersIdTag } from "@/features/players/db/cache/player";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Suspense } from "react";
 
@@ -13,7 +15,7 @@ export default async function LeagueTradesPage({
   const { leagueId } = await params;
 
   return (
-    <Container headerLabel=" Scambi della lega">
+    <Container leagueId={leagueId} headerLabel="Scambi della lega">
       <Suspense>
         <TradesList leagueId={leagueId} getTrades={getLeagueTrades} />
       </Suspense>
@@ -44,7 +46,7 @@ async function getLeagueTrades(leagueId: string, userTeamId: string) {
           imageUrl: true,
         },
       },
-      proposalPlayers: {
+      proposedPlayers: {
         columns: {
           playerId: true,
           offeredByProposer: true,
@@ -69,9 +71,12 @@ async function getLeagueTrades(leagueId: string, userTeamId: string) {
   });
 
   cacheTag(
-    ...trades.flatMap((trade) => [trade.proposerTeamId, trade.receiverTeamId]),
+    ...trades.flatMap((trade) => [
+      getTeamIdTag(trade.proposerTeamId),
+      getTeamIdTag(trade.receiverTeamId),
+    ]),
     ...trades.flatMap((trade) =>
-      trade.proposalPlayers.map((player) => player.playerId)
+      trade.proposedPlayers.map((player) => getPlayersIdTag(player.playerId))
     )
   );
 

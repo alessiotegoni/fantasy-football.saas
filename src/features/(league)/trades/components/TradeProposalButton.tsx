@@ -6,7 +6,7 @@ import { NavArrowRight } from "iconoir-react";
 type Props = {
   text?: string;
   leagueId: string;
-  userTeamId: string;
+  userTeamId?: string;
 };
 
 export default async function TradeProposalButton({
