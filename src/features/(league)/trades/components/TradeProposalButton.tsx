@@ -8,6 +8,7 @@ type Props = {
   text?: string;
   leagueId: string;
   userTeamId: string;
+  showButtonIfMarketDisabled?: boolean;
 } & React.ComponentPropsWithoutRef<typeof Button>;
 
 export default async function TradeProposalButton({
@@ -18,20 +19,29 @@ export default async function TradeProposalButton({
   ...buttonProps
 }: Props) {
   const isMarketOpen = await isTradeMarketOpen(leagueId);
-  if (!isMarketOpen) return null;
 
   return (
     <Button
       asChild
-      className={cn("w-fit !px-7 mt-8", className)}
+      className={cn(
+        "w-fit !px-7 mt-8",
+        !isMarketOpen &&
+          "bg-primary/60 text-muted-foreground hover:bg-primary/60 cursor-default",
+        className
+      )}
+      disabled={!isMarketOpen}
       {...buttonProps}
     >
-      <Link
-        href={`/leagues/${leagueId}/my-trades/proposal?proposerTeamId=${userTeamId}`}
-      >
-        {text}
-        <NavArrowRight />
-      </Link>
+      {isMarketOpen ? (
+        <Link
+          href={`/leagues/${leagueId}/my-trades/proposal?proposerTeamId=${userTeamId}`}
+        >
+          {text}
+          <NavArrowRight />
+        </Link>
+      ) : (
+        <div>Mercato scambi chiuso</div>
+      )}
     </Button>
   );
 }
