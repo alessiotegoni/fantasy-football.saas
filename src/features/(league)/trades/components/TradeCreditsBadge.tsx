@@ -7,7 +7,7 @@ const CREDIT_STYLES = {
   receive: "text-green-600 bg-green-50 border-green-200",
 } as const;
 
-export default function CreditsBadge({
+export default function TradeCreditsBadge({
   credits,
   type,
 }: {
