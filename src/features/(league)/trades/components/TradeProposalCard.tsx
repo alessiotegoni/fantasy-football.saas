@@ -1,7 +1,7 @@
 import { UseFieldArrayRemove } from "react-hook-form";
 import LeagueTeamCard from "../../teams/components/LeagueTeamCard";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
-import { TradePlayersCarousel } from "./TradePlayersCarousel";
+import { TradePlayersCarousel } from "./TradePlayersList";
 
 type Props = {
   leagueId: string;
