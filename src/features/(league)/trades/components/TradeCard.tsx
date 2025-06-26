@@ -6,46 +6,16 @@ import { getTradeContext } from "./TradesList";
 import { Badge } from "@/components/ui/badge";
 import { TradeProposalStatusType } from "@/drizzle/schema";
 import ActionButton from "@/components/ActionButton";
-import { Clock, Coins, ArrowRight, ThumbsDown, ThumbsUp } from "iconoir-react";
+import { Clock, ArrowRight, ThumbsDown, ThumbsUp } from "iconoir-react";
 import Avatar from "@/components/Avatar";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
+import TeamInfo from "./TradeTeamInfo";
 
 type Props = {
   trade: Trades[number];
   currentUserTeamId: string;
   leagueId: string;
 } & ReturnType<typeof getTradeContext>;
-
-// Theme configuration per ogni status
-export const STATUS_THEMES = {
-  pending: {
-    cardBg: "bg-zinc-600/30",
-    cardRing: "ring-zinc-600",
-    playerCardBg: "bg-zinc-700/80 border-zinc-600/80",
-    textMuted: "text-zinc-400",
-    badgeBg: "bg-zinc-600 border-zinc-500",
-    badgeIcon: Clock,
-    badgeText: "In attesa",
-  },
-  accepted: {
-    cardBg: "bg-green-400/40",
-    cardRing: "ring-green-400/70",
-    playerCardBg: "bg-green-600/60 border-green-500/70",
-    textMuted: "text-green-200",
-    badgeBg: "bg-green-500 border-green-400",
-    badgeIcon: ThumbsUp,
-    badgeText: "Accettata",
-  },
-  rejected: {
-    cardBg: "bg-red-500/40",
-    cardRing: "ring-red-500/70",
-    playerCardBg: "bg-red-600/60 border-red-500/70",
-    textMuted: "text-red-200",
-    badgeBg: "bg-red-500/70 border-red-500",
-    badgeIcon: ThumbsDown,
-    badgeText: "Rifiutata",
-  },
-} as const;
 
 export default function TradeCard(props: Props) {
   const { trade, variant } = props;
@@ -197,35 +167,6 @@ function UserTradeCard({
       </div>
 
       <TradeActions {...props} trade={trade} variant={variant} />
-    </div>
-  );
-}
-
-function TeamInfo({
-  team,
-  size,
-  textMuted,
-}: {
-  team: { imageUrl: string | null; name: string; managerName: string };
-  size: "sm" | "lg";
-  textMuted: string;
-}) {
-  const avatarSize = size === "lg" ? "size-12" : "size-10";
-  const nameSize = size === "lg" ? "text-base" : "text-sm";
-  const managerSize = size === "lg" ? "text-sm" : "text-xs";
-
-  return (
-    <div className="flex items-center gap-3">
-      <Avatar
-        imageUrl={team.imageUrl}
-        name={team.name}
-        className={avatarSize}
-        renderFallback={() => team.name.charAt(0)}
-      />
-      <div>
-        <h3 className={cn("font-semibold", nameSize)}>{team.name}</h3>
-        <p className={cn(managerSize, textMuted)}>{team.managerName}</p>
-      </div>
     </div>
   );
 }
