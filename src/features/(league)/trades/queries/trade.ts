@@ -19,7 +19,7 @@ import { TradeContext } from "../components/TradesList";
 export async function getUserTrades(
   leagueId: string,
   userTeamId: string,
-  type: Exclude<TradeContext, "league">
+  type: TradeContext
 ) {
   "use cache";
 

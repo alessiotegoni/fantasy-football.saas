@@ -1,24 +1,23 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trash2, Check, X, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Trades } from "../queries/trade";
 import { getTradeContext } from "./TradesList";
 import { Badge } from "@/components/ui/badge";
+import { TradeProposalStatusType } from "@/drizzle/schema";
+import ActionButton from "@/components/ActionButton";
+import { Clock } from "iconoir-react";
 
 type Props = {
   trade: Trades[number];
   currentUserTeamId: string;
+  leagueId: string;
 } & ReturnType<typeof getTradeContext>;
 
-export default function TradeCard({
-  trade,
-  variant,
-  currentUserTeamId,
-  actionHandlers,
-}: Props) {
+export default function TradeCard(props: Props) {
+  const { leagueId, trade, variant, currentUserTeamId, actionHandlers } = props;
+
   const isProposer = trade.proposerTeamId === currentUserTeamId;
   const otherTeam = isProposer ? trade.receiverTeam : trade.proposerTeam;
 
@@ -38,34 +37,6 @@ export default function TradeCard({
       hour: "2-digit",
       minute: "2-digit",
     }).format(date);
-  };
-
-  const getStatusBadge = () => {
-    switch (trade.status) {
-      case "pending":
-        return (
-          <Badge
-            variant="outline"
-            className="text-yellow-600 border-yellow-600"
-          >
-            Pendente
-          </Badge>
-        );
-      case "accepted":
-        return (
-          <Badge variant="outline" className="text-green-600 border-green-600">
-            Accettata
-          </Badge>
-        );
-      case "rejected":
-        return (
-          <Badge variant="outline" className="text-red-600 border-red-600">
-            Rifiutata
-          </Badge>
-        );
-      default:
-        return null;
-    }
   };
 
   const renderPlayers = (
@@ -136,73 +107,10 @@ export default function TradeCard({
     );
   };
 
-//   const renderActions = () => {
-//     if (variant === "league" || trade.status !== "pending") return null;
-
-//     if (variant === "sent" && onDelete) {
-//       return (
-//         <Button
-//           variant="outline"
-//           size="sm"
-//           onClick={() => handleAction("delete", onDelete)}
-//           disabled={isLoading}
-//           className="text-red-600 hover:text-red-700 hover:bg-red-50"
-//         >
-//           {loadingAction === "delete" ? (
-//             <Clock className="w-4 h-4 animate-spin" />
-//           ) : (
-//             <Trash2 className="w-4 h-4" />
-//           )}
-//           Cancella
-//         </Button>
-//       );
-//     }
-
-//     if (variant === "received" && (onAccept || onReject)) {
-//       return (
-//         <div className="flex gap-2">
-//           {onReject && (
-//             <Button
-//               variant="outline"
-//               size="sm"
-//               onClick={() => handleAction("reject", onReject)}
-//               disabled={isLoading}
-//               className="text-red-600 hover:text-red-700 hover:bg-red-50"
-//             >
-//               {loadingAction === "reject" ? (
-//                 <Clock className="w-4 h-4 animate-spin" />
-//               ) : (
-//                 <X className="w-4 h-4" />
-//               )}
-//               Rifiuta
-//             </Button>
-//           )}
-//           {onAccept && (
-//             <Button
-//               size="sm"
-//               onClick={() => handleAction("accept", onAccept)}
-//               disabled={isLoading}
-//               className="bg-green-600 hover:bg-green-700"
-//             >
-//               {loadingAction === "accept" ? (
-//                 <Clock className="w-4 h-4 animate-spin" />
-//               ) : (
-//                 <Check className="w-4 h-4" />
-//               )}
-//               Accetta
-//             </Button>
-//           )}
-//         </div>
-//       );
-//     }
-
-//     return null;
-//   };
-
   return (
     <div
       className={cn(
-        "w-full transition-all duration-200",
+        "w-full rounded-3xl bg-muted transition-all duration-200",
         trade.status === "accepted" && "ring-2 ring-green-200 bg-green-50/50",
         trade.status === "rejected" && "ring-2 ring-red-200 bg-red-50/50",
         trade.status === "pending" && "hover:shadow-md"
@@ -220,11 +128,11 @@ export default function TradeCard({
               <p className="text-sm text-gray-600">{otherTeam.managerName}</p>
             </div>
           </div>
-          {getStatusBadge()}
+          {getStatusBadge(trade.status)}
         </div>
 
         <div className="flex items-center gap-2 mb-4">
-          <Clock className="w-4 h-4 text-gray-400" />
+          <Clock className="size-4 text-gray-400" />
           <span className="text-sm text-gray-600">
             {formatDate(trade.createdAt)}
           </span>
@@ -242,12 +150,109 @@ export default function TradeCard({
           )}
         </div>
 
-        {/* {renderActions() && (
+        {renderActions(props) && (
           <div className="flex justify-end pt-2 border-t">
-            {renderActions()}
+            {renderActions(props)}
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );
+}
+
+function renderActions({ variant, actionHandlers, trade, leagueId }: Props) {
+  if (variant === "league" || trade.status !== "pending") return null;
+
+  if (variant === "sent" && actionHandlers?.onDelete) {
+    return (
+      <ActionButton
+        loadingText="Elimino scambio"
+        variant="destructive"
+        className="sm:w-fit sm:min-w-[150px] sm:py-3 rounded-xl"
+        action={actionHandlers.onDelete.bind(null, {
+          leagueId,
+          tradeId: trade.id,
+        })}
+      >
+        Elimina
+      </ActionButton>
+    );
+  }
+
+  if (
+    variant === "received" &&
+    (actionHandlers?.onAccept || actionHandlers?.onReject)
+  ) {
+    return (
+      <div className="flex gap-2">
+        {actionHandlers.onReject && (
+          <ActionButton
+            loadingText="Rifiuto scambio"
+            action={actionHandlers.onReject.bind(null, {
+              leagueId,
+              players: trade.proposedPlayers.map(
+                ({ playerId, offeredByProposer }) => ({
+                  id: playerId,
+                  offeredByProposer,
+                })
+              ),
+              status: "rejected",
+              tradeId: trade.id,
+            })}
+          >
+            Rifiuta
+          </ActionButton>
+        )}
+        {actionHandlers.onAccept && (
+          <ActionButton
+            loadingText="Accetto scambio"
+            action={actionHandlers.onAccept.bind(null, {
+              leagueId,
+              players: trade.proposedPlayers.map(
+                ({ playerId, offeredByProposer }) => ({
+                  id: playerId,
+                  offeredByProposer,
+                })
+              ),
+              status: "rejected",
+              tradeId: trade.id,
+            })}
+          >
+            Accetta
+          </ActionButton>
+        )}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function getStatusBadge(status: TradeProposalStatusType) {
+  switch (status) {
+    case "pending":
+      return (
+        <Badge
+          variant="outline"
+          className="bg-yellow-600 rounded-full p-2 text-sm gap-2"
+        >
+          <Clock className="!size-5" />
+          In attesa
+        </Badge>
+      );
+    case "accepted":
+      return (
+        <Badge variant="outline" className="text-green-600 border-green-600">
+          Accettata
+        </Badge>
+      );
+    case "rejected":
+      return (
+        <Badge variant="outline" className="text-red-600 border-red-600">
+          Rifiutata
+        </Badge>
+      );
+    default:
+      return null;
+  }
 }

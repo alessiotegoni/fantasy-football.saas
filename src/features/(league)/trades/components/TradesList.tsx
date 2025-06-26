@@ -31,7 +31,6 @@ export default async function TradesList({
 
   console.log(trades);
 
-
   if (!trades.length) {
     return (
       <TradesEmptyState
@@ -49,6 +48,7 @@ export default async function TradesList({
       {trades.map((trade) => (
         <TradeCard
           key={trade.id}
+          leagueId={leagueId}
           trade={trade}
           currentUserTeamId={userTeamId}
           {...contextConfig}
@@ -63,7 +63,6 @@ export function getTradeContext(context: TradeContext) {
     case "sent":
       return {
         variant: "sent",
-        showActions: true,
         actionHandlers: {
           onDelete: deleteTrade,
         },
@@ -72,7 +71,6 @@ export function getTradeContext(context: TradeContext) {
     case "received":
       return {
         variant: "received",
-        showActions: true,
         actionHandlers: {
           onAccept: acceptTrade,
           onReject: rejectTrade,
@@ -82,7 +80,6 @@ export function getTradeContext(context: TradeContext) {
     case "league":
       return {
         variant: "league",
-        showActions: false,
       } as const;
 
     default:
