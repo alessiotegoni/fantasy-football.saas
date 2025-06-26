@@ -144,14 +144,14 @@ async function movePlayersBetweenTeams(
       trade.leagueId,
       {
         memberTeamId: trade.proposerTeamId,
-        playersIds: grouped.proposed,
+        playersIds: grouped.proposed.map(proposedPlayer => proposedPlayer.id),
       },
       tx
     );
     await insertTeamPlayers(
       trade.leagueId,
-      grouped.proposed.map((id) => ({
-        playerId: id,
+      grouped.proposed.map((proposedPlayer) => ({
+        playerId: proposedPlayer.id,
         memberTeamId: trade.receiverTeamId,
         purchaseCost: 1,
       })),
@@ -164,14 +164,14 @@ async function movePlayersBetweenTeams(
       trade.leagueId,
       {
         memberTeamId: trade.receiverTeamId,
-        playersIds: grouped.requested,
+        playersIds: grouped.requested.map(requestedPlayer => requestedPlayer.id),
       },
       tx
     );
     await insertTeamPlayers(
       trade.leagueId,
-      grouped.requested.map((id) => ({
-        playerId: id,
+      grouped.requested.map((requested) => ({
+        playerId: requested.id,
         memberTeamId: trade.proposerTeamId,
         purchaseCost: 1,
       })),
