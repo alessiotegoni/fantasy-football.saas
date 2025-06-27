@@ -1,12 +1,15 @@
 "use client";
 
 import { login } from "@/features/auth/actions/login";
-import { actionToast } from "@/lib/utils";
 import { useCallback } from "react";
+import useActionToast from "./useActionToast";
 
 const STORAGE_KEY = "authEmail";
 
 export function useEmailLogin() {
+
+  const toast = useActionToast()
+
   const saveEmail = useCallback((email: string) => {
     sessionStorage?.setItem(STORAGE_KEY, email);
   }, []);
@@ -23,7 +26,7 @@ export function useEmailLogin() {
     const email = sessionStorage?.getItem(STORAGE_KEY) ?? "";
     const res = await login({ type: "email", email });
     if (!res.error) res.message = "Codice inviato con successo";
-    actionToast(res);
+    toast(res);
     return res;
   }, []);
 

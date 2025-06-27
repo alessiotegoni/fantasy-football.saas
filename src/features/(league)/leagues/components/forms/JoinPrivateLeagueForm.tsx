@@ -19,10 +19,13 @@ import {
   joinPrivateLeagueSchema,
   JoinPrivateLeagueSchema,
 } from "../../schema/privateLeague";
-import { joinPrivateLeague } from "@/features/leagueMembers/actions/leagueMember";
-import { actionToast } from "@/lib/utils";
+import { joinPrivateLeague } from "@/features/(league)/members/actions/leagueMember";
+import useActionToast from "@/hooks/useActionToast";
 
 export default function JoinPrivateLeagueForm() {
+
+  const toast = useActionToast()
+
   const searchParams = useSearchParams();
 
   const form = useForm<JoinPrivateLeagueSchema>({
@@ -35,7 +38,7 @@ export default function JoinPrivateLeagueForm() {
 
   async function onSubmit(data: JoinPrivateLeagueSchema) {
     const res = await joinPrivateLeague(data);
-    if (res.error) actionToast(res);
+    toast(res)
   }
 
   return (
