@@ -8,59 +8,54 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function createRouteMatcher<T extends string>(patterns: T[]) {
-  const matchers = patterns.map((pattern) =>
+  const matchers = patterns.map(pattern =>
     match(pattern, { decode: decodeURIComponent })
   );
 
   return (request: NextRequest): boolean => {
-    const url = new URL(request.url);
-    return matchers.some((fn) => !!fn(url.pathname));
+    return matchers.some(matcher => !!matcher(request.nextUrl.pathname));
   };
 }
 
 export function routeRedirect(request: Request, defaultRedirect = "/") {
-  const { origin, searchParams } = new URL(request.url);
-
-  const next = searchParams.get("next") || defaultRedirect;
-
+  const url = new URL(request.url);
+  const next = url.searchParams.get("next") || defaultRedirect;
   const forwardedHost = request.headers.get("x-forwarded-host");
   const isLocalEnv = process.env.NODE_ENV === "development";
 
-  let response: NextResponse;
+  const origin = isLocalEnv
+    ? url.origin
+    : forwardedHost
+      ? `https://${forwardedHost}`
+      : url.origin;
 
-  if (isLocalEnv) {
-    response = NextResponse.redirect(`${origin}${next}`);
-  } else if (forwardedHost) {
-    response = NextResponse.redirect(`https://${forwardedHost}${next}`);
-  } else {
-    response = NextResponse.redirect(`${origin}${next}`);
-  }
-
-  return response;
+  return NextResponse.redirect(`${origin}${next}`);
 }
 
-export function getRedirectUrl(request: NextRequest, url: string = "/") {
+export function getRedirectUrl(request: NextRequest, defaultPath = "/"): URL {
   const referer = request.headers.get("referer");
 
-  if (referer && referer !== request.url) return referer;
+  if (referer && referer !== request.url) {
+    return new URL(referer);
+  }
 
   const redirectUrl = request.nextUrl.clone();
-  redirectUrl.pathname = url;
-
+  redirectUrl.pathname = defaultPath;
   return redirectUrl;
 }
 
-export function getUrl(pathname = "/") {
-  let url =
-    process?.env?.NEXT_PUBLIC_SITE_URL ??
-    process?.env?.NEXT_PUBLIC_VERCEL_URL ??
-    "http://localhost:3000/";
+export function getUrl(pathname = "/"): string {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_VERCEL_URL ??
+    "http://localhost:3000";
 
-  url = url.startsWith("http") ? url : `https://${url}`;
-  url = url.endsWith("/") ? url : `${url}/`;
+  const url = baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`;
+  const normalizedUrl = url.endsWith("/") ? url : `${url}/`;
 
-  return new URL(pathname, url).toString();
+  return new URL(pathname, normalizedUrl).toString();
 }
 
-export const getItemHref = (href: string, leagueId: string) =>
-  href.replace(":leagueId", leagueId);
+export function getItemHref(href: string, leagueId: string): string {
+  return href.replace(":leagueId", leagueId);
+}
