@@ -12,13 +12,11 @@ export async function canInsertPlayer({
   player,
   leagueId,
 }: InsertTeamPlayerSchema & { userId: string }) {
-  const [isAdmin, hasPlayer, isSlotFull] = await Promise.all([
+  const [isAdmin, hasPlayer, { isSlotFull }] = await Promise.all([
     isLeagueAdmin(userId, leagueId),
     hasAlreadyPlayer(memberTeamId, player.id),
     isTeamRoleSlotFull(leagueId, memberTeamId, [player.roleId]),
   ]);
-
-  console.log(isSlotFull);
 
   if (!isAdmin) {
     return {
@@ -60,7 +58,7 @@ async function hasAlreadyPlayer(teamId: string, playerId: number) {
   return !!res.count;
 }
 
-async function isTeamRoleSlotFull(
+export async function isTeamRoleSlotFull(
   leagueId: string,
   teamId: string,
   playerRoleIds: number[]
@@ -70,7 +68,7 @@ async function isTeamRoleSlotFull(
     getTeamPlayerPerRoles(teamId),
   ]);
 
-  const fullRolesSlot: number[] = [];
+  const fullRolesIdsSlot: number[] = [];
 
   for (const playerRoleId of playerRoleIds) {
     const maxPlayersRole = leaguePpr[playerRoleId];
@@ -80,8 +78,8 @@ async function isTeamRoleSlotFull(
 
     if (!playersRoleCount) continue;
 
-    if (playersRoleCount >= maxPlayersRole) fullRolesSlot.push(playerRoleId);
+    if (playersRoleCount >= maxPlayersRole) fullRolesIdsSlot.push(playerRoleId);
   }
 
-  return fullRolesSlot.some(Boolean);
+  return { fullRolesIdsSlot, isSlotFull: fullRolesIdsSlot.some(Boolean) };
 }

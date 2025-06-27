@@ -1,8 +1,8 @@
 import { Clock, ThumbsDown, ThumbsUp } from "iconoir-react";
 
-export function groupTradePlayers(
-  players: { id: number; offeredByProposer: boolean }[]
-) {
+export function groupTradePlayers<
+  T extends { id: number; offeredByProposer: boolean }
+>(players: T[]) {
   return Object.groupBy(players, (player) =>
     player.offeredByProposer ? "proposed" : "requested"
   );

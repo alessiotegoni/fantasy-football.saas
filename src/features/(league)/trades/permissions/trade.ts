@@ -7,6 +7,8 @@ import { getUserTeamId } from "@/features/users/queries/user";
 import { getError } from "../db/trade";
 import { CreateTradeProposalSchema } from "../schema/trade";
 import { getTradeStatus } from "../queries/trade";
+import { isTeamRoleSlotFull } from "../../teamsPlayers/permissions/teamsPlayer";
+import { groupTradePlayers } from "../utils/trade";
 
 export async function canCreateTrade({
   userId,
@@ -75,18 +77,23 @@ export async function canUpdateTrade(
     userId: string;
   } & CreateTradeProposalSchema
 ) {
-  const [permission, tradeStatus] = await Promise.all([
+  const [permissions, tradeStatus, { isProposerTeamRoleSlotFull, isReceiverTeamRoleSlotFull }] = await Promise.all([
     canCreateTrade(args),
     getTradeStatus(tradeId),
+    getTeamsRoleSlotFull(args),
   ]);
 
-  if (permission.error) return permission;
+  if (permissions.error) return permissions;
 
   if (tradeStatus !== "pending") {
     return getError("Puoi accettare o rifiutare solo le richieste in sospeso");
   }
 
-  return { error: false, message: "", data: permission.data };
+  if (isProposerTeamRoleSlotFull) {
+    return getError("Non hai spazio in squadra");
+  }
+
+  return { error: false, message: "", data: permissions.data };
 }
 
 export async function canDeleteTrade({
@@ -130,4 +137,31 @@ export async function isTradeMarketOpen(leagueId: string) {
     .where(eq(leagueOptions.leagueId, leagueId));
 
   return res.isOpen;
+}
+
+async function getTeamsRoleSlotFull({
+  leagueId,
+  proposerTeamId,
+  receiverTeamId,
+  players,
+}: Pick<
+  CreateTradeProposalSchema,
+  "leagueId" | "proposerTeamId" | "receiverTeamId" | "players"
+>) {
+  const groupedPlayers = groupTradePlayers(players);
+
+  const [isProposerTeamRoleSlotFull, isReceiverTeamRoleSlotFull] = await Promise.all([
+    isTeamRoleSlotFull(
+      leagueId,
+      proposerTeamId,
+      groupedPlayers["requested"]?.map((player) => player.roleId) ?? []
+    ),
+    isTeamRoleSlotFull(
+      leagueId,
+      receiverTeamId,
+      groupedPlayers["proposed"]?.map((player) => player.roleId) ?? []
+    ),
+  ]);
+
+  return { isProposerTeamRoleSlotFull, isReceiverTeamRoleSlotFull };
 }
