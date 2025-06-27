@@ -68,7 +68,7 @@ export async function isTeamRoleSlotFull(
     getTeamPlayerPerRoles(teamId),
   ]);
 
-  const fullRolesIdsSlot: number[] = [];
+  const fullRolesIdsSlot = new Set<number>();
 
   for (const playerRoleId of playerRoleIds) {
     const maxPlayersRole = leaguePpr[playerRoleId];
@@ -78,8 +78,8 @@ export async function isTeamRoleSlotFull(
 
     if (!playersRoleCount) continue;
 
-    if (playersRoleCount >= maxPlayersRole) fullRolesIdsSlot.push(playerRoleId);
+    if (playersRoleCount >= maxPlayersRole) fullRolesIdsSlot.add(playerRoleId);
   }
 
-  return { fullRolesIdsSlot, isSlotFull: fullRolesIdsSlot.some(Boolean) };
+  return { fullRolesIdsSlot, isSlotFull: fullRolesIdsSlot.size > 0 };
 }

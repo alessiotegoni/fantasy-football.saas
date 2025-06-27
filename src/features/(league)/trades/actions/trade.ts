@@ -3,7 +3,6 @@
 import { getUserId } from "@/features/users/utils/user";
 import {
   deleteTrade as deleteTradeDb,
-  getError,
   insertTrade,
   insertTradePlayers,
   updateTrade,
