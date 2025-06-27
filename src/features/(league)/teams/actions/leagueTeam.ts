@@ -2,7 +2,6 @@
 
 import { db } from "@/drizzle/db";
 import {
-  getError,
   insertLeagueTeam,
   updateLeagueTeam as updateLeagueTeamDb,
 } from "../db/leagueTeam";
@@ -14,22 +13,35 @@ import { memberHasTeam } from "../permissions/leagueTeam";
 import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { redirect } from "next/navigation";
+import { createError } from "@/lib/helpers";
+import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
+
+enum TEAM_ERROR_MESSAGES {
+  NOT_MEMBER = "Non sei membro di questa lega",
+  TEAM_EXISTS = "Hai già creato una squadra in questa lega",
+  NOT_TEAM_OWNER = "Non puoi modificare le squadre di altri membri",
+}
 
 export async function createLeagueTeam(
   leagueId: string,
   values: LeagueTeamSchema
 ) {
-  const { success, data } = leagueTeamSchema.safeParse(values);
-  if (!success) return getError();
+  const schemaValidation = validateSchema<LeagueTeamSchema>(
+    leagueTeamSchema,
+    values
+  );
+  if (!schemaValidation.isValid) return schemaValidation.error;
 
   const userId = await getUserId();
-  if (!userId) return getError();
+  if (!userId) return createError(VALIDATION_ERROR);
 
   const leagueMemberId = await getMemberId(userId, leagueId);
-  if (!leagueMemberId) return getError("Non sei membro di questa lega");
+  if (!leagueMemberId) return createError(TEAM_ERROR_MESSAGES.NOT_MEMBER);
 
   if (await memberHasTeam(leagueMemberId))
-    return getError("Hai gia creato una squadra in questa lega");
+    return createError(TEAM_ERROR_MESSAGES.TEAM_EXISTS);
+
+  const { data } = schemaValidation;
 
   const teamId = await insertLeagueTeam(
     {
@@ -52,11 +64,14 @@ export async function updateLeagueTeam(
   leagueId: string,
   values: LeagueTeamSchema
 ) {
-  const { success, data } = leagueTeamSchema.safeParse(values);
-  if (!success) return getError();
+  const schemaValidation = validateSchema<LeagueTeamSchema>(
+    leagueTeamSchema,
+    values
+  );
+  if (!schemaValidation.isValid) return schemaValidation.error;
 
   const userId = await getUserId();
-  if (!userId) return getError();
+  if (!userId) return createError(VALIDATION_ERROR);
 
   const [memberId, teamMemberId] = await Promise.all([
     getMemberId(userId, leagueId),
@@ -64,8 +79,10 @@ export async function updateLeagueTeam(
   ]);
 
   if (!memberId || teamMemberId !== memberId) {
-    return getError("Non puoi modificare le squadre di altri membri");
+    return createError(TEAM_ERROR_MESSAGES.NOT_TEAM_OWNER);
   }
+
+  const { data } = schemaValidation;
 
   await updateLeagueTeamDb(teamId, leagueId, data);
 

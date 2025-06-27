@@ -1,12 +1,15 @@
 import { db } from "@/drizzle/db";
 import { leagueMemberTeams } from "@/drizzle/schema";
-import { getErrorObject } from "@/lib/utils";
 import { revalidateLeagueTeamsCache } from "./cache/leagueTeam";
 import { eq } from "drizzle-orm";
 import { revalidateUserTeam } from "@/features/users/db/cache/user";
+import { createError } from "@/lib/helpers";
 
-export const getError = (message = "Errore nella creazione del team") =>
-  getErrorObject(message);
+
+enum DB_ERROR_MESSAGES {
+  CREATION_FAILED = "Errore nella creazione della squadra",
+  UPDATE_FAILED = "Errore nell'aggiornamento della squadra",
+}
 
 export async function insertLeagueTeam(
   team: typeof leagueMemberTeams.$inferInsert,
@@ -17,7 +20,7 @@ export async function insertLeagueTeam(
     .values(team)
     .returning({ teamId: leagueMemberTeams.id });
 
-  if (!res.teamId) throw new Error(getError().message);
+  if (!res.teamId) throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
 
   revalidateLeagueTeamsCache({ leagueId: team.leagueId, teamId: res.teamId });
   revalidateUserTeam(userId)
@@ -44,7 +47,7 @@ export async function updateLeagueTeam(
 
   if (!res.teamId)
     throw new Error(
-      getError("Errore nell'aggiornamento della squadra").message
+      createError(DB_ERROR_MESSAGES.UPDATE_FAILED).message
     );
 
   revalidateLeagueTeamsCache({ leagueId, teamId: res.teamId });
