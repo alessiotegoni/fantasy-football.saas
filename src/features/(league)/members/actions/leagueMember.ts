@@ -16,9 +16,9 @@ import {
 } from "@/schema/helpers";
 import { createError } from "@/lib/helpers";
 
-const LEAGUE_MEMBER_MESSAGES = {
-  LEAGUE_CODE_ERROR: "Codice o password della lega errati",
-} as const;
+enum LEAGUE_MEMBER_MESSAGES {
+  LEAGUE_CODE_ERROR = "Codice o password della lega errati",
+}
 
 export async function joinPrivateLeague(values: JoinPrivateLeagueSchema) {
   const schemaValidation = validateSchema<JoinPrivateLeagueSchema>(
