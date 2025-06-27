@@ -20,12 +20,14 @@ import {
 import { login } from "../actions/login";
 import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 import { useEmailLogin } from "@/hooks/useLoginEmail";
 import SubmitButton from "@/components/SubmitButton";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import useActionToast from "@/hooks/useActionToast";
 
 export default function LoginForm() {
+  const toast = useActionToast();
+
   const { getEmail, saveEmail } = useEmailLogin();
 
   const router = useRouter();
@@ -49,15 +51,11 @@ export default function LoginForm() {
 
   async function emailLogin(data: LoginSchemaType) {
     const res = await login(data, { redirectUrl: searchParams.get("next") });
-
-    if (res.error) {
-      toast.error(res.message);
-      return;
-    }
+    toast(res);
 
     if (data.type === "email") saveEmail(data.email);
 
-    router.push(res.url);
+    if (!res.error) router.push(res.data.url);
   }
 
   return (
@@ -136,15 +134,14 @@ async function socialLogin(
   redirectUrl: string | null,
   formData: FormData
 ) {
+  const toast = useActionToast();
+
   const type = formData.get("provider") as OauthProviderType;
 
   const res = await login({ type }, { redirectUrl });
+  toast(res);
 
-  if (res.error) {
-    toast.error(res.message);
-    return;
-  }
-  if (res.url) router.push(res.url);
+  if (res.data?.url) router.push(res.data.url);
 }
 
 const oauthProvidersStyles: Record<

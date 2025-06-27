@@ -69,7 +69,7 @@ export async function updateLeagueProfile(
 
   await executeLeagueUpdate(leagueId, profile.data);
 
-  return createSuccess(LEAGUE_MESSAGES.PROFILE_UPDATED);
+  return createSuccess(LEAGUE_MESSAGES.PROFILE_UPDATED, null);
 }
 
 async function validateUserForLeagueCreation() {

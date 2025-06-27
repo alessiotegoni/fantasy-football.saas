@@ -124,7 +124,8 @@ async function updateTradeStatus(values: UpdateTradeProposalSchema) {
 
   const isAccepted = schemaValidation.data.status === "accepted";
   return createSuccess(
-    isAccepted ? TRADE_MESSAGES.TRADE_ACCEPTED : TRADE_MESSAGES.TRADE_REJECTED
+    isAccepted ? TRADE_MESSAGES.TRADE_ACCEPTED : TRADE_MESSAGES.TRADE_REJECTED,
+    null
   );
 }
 

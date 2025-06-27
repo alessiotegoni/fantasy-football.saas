@@ -7,7 +7,7 @@ export type ErrorResult = {
 export type SuccessResult<T = {}> = {
   error: false;
   message: string;
-  data?: T;
+  data: T;
 };
 
 export function createError(message: string): ErrorResult {
@@ -18,7 +18,7 @@ export function createError(message: string): ErrorResult {
   };
 }
 
-export function createSuccess<T>(message = "", data?: T): SuccessResult<T> {
+export function createSuccess<T>(message = "", data: T): SuccessResult<T> {
   return {
     error: false,
     message,

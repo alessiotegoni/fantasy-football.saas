@@ -77,11 +77,7 @@ async function oauthLogin(
 
   if (error) return createError(AUTH_ERRORS.LOGIN);
 
-  return {
-    error: false,
-    url: data.url,
-    message: "",
-  };
+  return createSuccess(AUTH_SUCCESS.LOGIN, { url: data.url });
 }
 
 export async function verifyOtp(values: OtpSchema) {
@@ -111,7 +107,7 @@ export async function logout() {
 
   if (error) return createError(AUTH_ERRORS.LOGOUT);
 
-  return createSuccess(AUTH_SUCCESS.LOGOUT);
+  return createSuccess(AUTH_SUCCESS.LOGOUT, null);
 }
 
 async function hasConfirmedEmail(email: string) {
