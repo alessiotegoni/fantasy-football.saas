@@ -57,7 +57,7 @@ export async function canJoinLeague(userId: string, leagueId: string) {
     return createJoinError(JOIN_LEAGUE_MESSAGES.USER_BANNED);
   }
 
-  return { canJoin: true };
+  return { canJoin: true, message: "" };
 }
 
 export async function isPremiumUnlocked(leagueId: string) {

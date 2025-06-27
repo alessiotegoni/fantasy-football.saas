@@ -6,7 +6,7 @@ import { db } from "@/drizzle/db";
 import { count, ilike } from "drizzle-orm";
 import { leagues } from "@/drizzle/schema";
 import { uploadImage } from "@/services/supabase/storage/supabase";
-import { createError, createSuccess, validateSchema } from "@/lib/helpers";
+import { createError, createSuccess } from "@/lib/helpers";
 import { insertLeague, updateLeague } from "../db/league";
 import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
@@ -18,6 +18,7 @@ import {
   leagueProfileSchema,
   LeagueProfileSchema,
 } from "../schema/leagueProfile";
+import { validateSchema } from "@/schema/helpers";
 
 const LEAGUE_MESSAGES = {
   PREMIUM_REQUIRED: "Per essere membro di 2 o più leghe devi avere il premium",

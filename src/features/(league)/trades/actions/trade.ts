@@ -3,12 +3,7 @@
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
-import {
-  createError,
-  createSuccess,
-  validateSchema,
-  VALIDATION_ERROR,
-} from "@/lib/helpers";
+import { createError, createSuccess } from "@/lib/helpers";
 import {
   deleteTrade as deleteTradeDb,
   insertTrade,
@@ -35,6 +30,7 @@ import {
   insertTeamPlayers,
 } from "../../teamsPlayers/db/teamsPlayer";
 import { groupTradePlayers } from "../utils/trade";
+import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 
 type TradeCredits = {
   proposerTeamCredits: number;

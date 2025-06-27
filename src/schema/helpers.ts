@@ -1,4 +1,25 @@
-import { z } from "zod";
+import { createError, ErrorResult } from "@/lib/helpers";
+import { z, ZodSchema } from "zod";
+
+type ValidateSchema<T> =
+  | { isValid: true; data: T }
+  | { isValid: false; error: ErrorResult };
+
+export const VALIDATION_ERROR = "Errore di validazione";
+
+export function validateSchema<T>(
+  schema: ZodSchema,
+  values: unknown,
+  errorMessage = VALIDATION_ERROR
+): ValidateSchema<T> {
+  const { success, data } = schema.safeParse(values);
+
+  if (!success) {
+    return { isValid: false, error: createError(errorMessage) };
+  }
+
+  return { isValid: true, data };
+}
 
 export const getSerialIdSchema = (errorMessage = "id invalido") =>
   z.number().int(errorMessage).positive(errorMessage);
