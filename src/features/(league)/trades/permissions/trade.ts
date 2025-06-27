@@ -11,22 +11,11 @@ import { CreateTradeProposalSchema } from "../schema/trade";
 import { getTradeStatus } from "../queries/trade";
 import { isTeamRoleSlotFull } from "../../teamsPlayers/permissions/teamsPlayer";
 import { groupTradePlayers } from "../utils/trade";
+import { createError, createSuccess } from "@/lib/helpers";
 
 type TradePermissionParams = {
   userId: string;
 } & CreateTradeProposalSchema;
-
-type SuccessResult<T = {}> = {
-  error: false;
-  message: string;
-  data: T;
-};
-
-type ErrorResult = {
-  error: true;
-  message: string;
-  data: null;
-};
 
 enum TRADE_ERRORS {
   MARKET_CLOSED = "Il mercato degli scambi è attualmente chiuso",
@@ -37,22 +26,6 @@ enum TRADE_ERRORS {
   TRADE_NOT_PENDING = "Puoi accettare o rifiutare solo le richieste in sospeso",
   DELETE_NOT_OWNER = "Puoi eliminare solo gli scambi proposti da te",
   DELETE_NOT_PENDING = "Puoi eliminare solo le proposte di scambio che non sono ancora state accettate o rifiutate",
-}
-
-function createError(message: string): ErrorResult {
-  return {
-    error: true,
-    message,
-    data: null,
-  };
-}
-
-function createSuccess<T>(data: T, message = ""): SuccessResult<T> {
-  return {
-    error: false,
-    message,
-    data,
-  };
 }
 
 export async function canCreateTrade({
@@ -84,7 +57,10 @@ export async function canCreateTrade({
   const needsCreditsValidation =
     creditOfferedByProposer || creditRequestedByProposer;
   if (!needsCreditsValidation) {
-    return createSuccess({ proposerTeamCredits: 0, receiverTeamCredits: 0 });
+    return createSuccess("", {
+      proposerTeamCredits: 0,
+      receiverTeamCredits: 0,
+    });
   }
 
   const [proposerTeamCredits, receiverTeamCredits] = await Promise.all([
@@ -101,7 +77,7 @@ export async function canCreateTrade({
 
   if (creditsValidation.error) return creditsValidation;
 
-  return createSuccess({ proposerTeamCredits, receiverTeamCredits });
+  return createSuccess("", { proposerTeamCredits, receiverTeamCredits });
 }
 
 export async function canUpdateTrade(
@@ -122,7 +98,7 @@ export async function canUpdateTrade(
   const roleSlotValidation = await validateTeamRoleSlots(args);
   if (roleSlotValidation.error) return roleSlotValidation;
 
-  return createSuccess(permissions.data);
+  return createSuccess("", permissions.data);
 }
 
 export async function canDeleteTrade({
@@ -154,7 +130,7 @@ export async function canDeleteTrade({
     return createError(TRADE_ERRORS.DELETE_NOT_PENDING);
   }
 
-  return createSuccess({});
+  return createSuccess("", null);
 }
 
 export async function isTradeMarketOpen(leagueId: string): Promise<boolean> {
@@ -196,14 +172,14 @@ function validateCredits({
     );
   }
 
-  return createSuccess({ proposerTeamCredits, receiverTeamCredits });
+  return createSuccess("", { proposerTeamCredits, receiverTeamCredits });
 }
 
 async function validateTeamRoleSlots(args: TradePermissionParams) {
   const { proposerTeam, receiverTeam } = await getTeamsRoleSlotValidation(args);
 
   if (!proposerTeam.isSlotFull && !receiverTeam.isSlotFull) {
-    return createSuccess({});
+    return createSuccess("", null);
   }
 
   const roles = await getPlayersRoles();
@@ -237,7 +213,7 @@ async function validateTeamRoleSlots(args: TradePermissionParams) {
 
   return errorMessages.length > 0
     ? createError(errorMessages.join("\n"))
-    : createSuccess({});
+    : createSuccess("", {});
 }
 
 async function getTeamsRoleSlotValidation({

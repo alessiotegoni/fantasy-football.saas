@@ -1,76 +1,89 @@
 "use server";
 
-import { getUserId } from "@/features/users/utils/user";
-import {
-  insertTeamPlayers,
-  deleteTeamPlayers,
-  getError,
-} from "../db/teamsPlayer";
-import { canInsertPlayer } from "../permissions/teamsPlayer";
 import { db } from "@/drizzle/db";
-import { isLeagueAdmin } from "../../members/permissions/leagueMember";
+import { getUserId } from "@/features/users/utils/user";
+import { insertTeamPlayers, deleteTeamPlayers } from "../db/teamsPlayer";
+import { updateLeagueTeam } from "../../teams/db/leagueTeam";
 import {
   insertTeamPlayerSchema,
   InsertTeamPlayerSchema,
   releaseTeamPlayerSchema,
   ReleaseTeamPlayerSchema,
 } from "../schema/teamsPlayer";
-import { updateLeagueTeam } from "../../teams/db/leagueTeam";
+import { canInsertPlayer } from "../permissions/teamsPlayer";
 import { getTeamCredits } from "../queries/teamsPlayer";
+import { createError, createSuccess } from "@/lib/helpers";
+import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
+
+const TEAM_PLAYERS_MESSAGES = {
+  UNAUTHORIZED: "Devi essere admin per svincolare il giocatore",
+  INSUFFICIENT_CREDITS: (teamCredits: number) =>
+    `I crediti della squadra selezionata sono insufficienti: ${teamCredits}`,
+  ADDED: "Giocatore aggiunto con successo!",
+  RELEASED: "Giocatore svincolato con successo!",
+};
 
 export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
-  const { success, data } = insertTeamPlayerSchema.safeParse(values);
-  if (!success) return getError();
+  const validation = validateSchema<InsertTeamPlayerSchema>(
+    insertTeamPlayerSchema,
+    values
+  );
+  if (!validation.isValid) return validation.error;
+  const data = validation.data;
 
   const userId = await getUserId();
-  if (!userId) return getError();
+  if (!userId) return createError(VALIDATION_ERROR);
 
-  const { canCreate, message } = await canInsertPlayer({ ...data, userId });
-  if (!canCreate) return getError(message);
+  const permissions = await canInsertPlayer({ ...data, userId });
+  if (permissions.error) return createError(permissions.message);
 
   const teamCredits = await getTeamCredits(data.memberTeamId);
   const credits = teamCredits - data.purchaseCost;
   if (credits < 0) {
-    return getError(
-      `I crediti della squadra selezionata sono insufficenti: ${teamCredits}`
-    );
+    return createError(TEAM_PLAYERS_MESSAGES.INSUFFICIENT_CREDITS(teamCredits));
   }
 
   const { leagueId, player, ...restData } = data;
 
   await db.transaction(async (tx) => {
     await Promise.all([
-      insertTeamPlayers(
-        data.leagueId,
-        [{ playerId: player.id, ...restData }],
-        tx
-      ),
+      insertTeamPlayers(leagueId, [{ playerId: player.id, ...restData }], tx),
       updateLeagueTeam(data.memberTeamId, leagueId, { credits }, tx),
     ]);
   });
 
-  return { error: false, message: "Giocatore aggiunto con successo!" };
+  return createSuccess(TEAM_PLAYERS_MESSAGES.ADDED, null);
 }
 
 export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
-  const { success, data } = releaseTeamPlayerSchema.safeParse(values);
-  if (!success) return getError();
+  const validation = validateSchema<ReleaseTeamPlayerSchema>(
+    releaseTeamPlayerSchema,
+    values
+  );
+  if (!validation.isValid) return validation.error;
+  const data = validation.data;
 
   const userId = await getUserId();
-  if (!userId || !(await isLeagueAdmin(userId, data.leagueId))) {
-    return getError("Devi essere admin per svincolare il giocatore");
-  }
-  const { leagueId, playerId, memberTeamId, releaseCost } = data;
+  const isAdmin = userId && (await isLeagueAdmin(userId, data.leagueId));
+  if (!isAdmin) return createError(TEAM_PLAYERS_MESSAGES.UNAUTHORIZED);
 
-  const teamCredits = await getTeamCredits(memberTeamId);
-  const credits = teamCredits + releaseCost;
+  const teamCredits = await getTeamCredits(data.memberTeamId);
+  const credits = teamCredits + data.releaseCost;
 
   await db.transaction(async (tx) => {
     await Promise.all([
-      deleteTeamPlayers(leagueId, { memberTeamId, playersIds: [playerId] }, tx),
-      updateLeagueTeam(memberTeamId, leagueId, { credits }, tx),
+      deleteTeamPlayers(
+        data.leagueId,
+        {
+          memberTeamId: data.memberTeamId,
+          playersIds: [data.playerId],
+        },
+        tx
+      ),
+      updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
     ]);
   });
 
-  return { error: false, message: "Giocatore svincolato con successo!" };
+  return createSuccess(TEAM_PLAYERS_MESSAGES.RELEASED, null);
 }

@@ -15,14 +15,14 @@ import {
   isLeagueMember,
   isMemberOfALeague,
 } from "../../members/permissions/leagueMember";
+import { createError, createSuccess } from "@/lib/helpers";
 
-const JOIN_LEAGUE_MESSAGES = {
-  PREMIUM_REQUIRED: "Per entrare in più di una lega devi avere il premium.",
-  LEAGUE_FULL: "La lega è piena.",
-  ALREADY_MEMBER: "Sei già un membro di questa lega.",
-  USER_BANNED:
-    "Sei stato bannato da questa lega, contatta il creatore per sapere la motivazione.",
-} as const;
+enum JOIN_LEAGUE_MESSAGES {
+  PREMIUM_REQUIRED = "Per entrare in più di una lega devi avere il premium.",
+  LEAGUE_FULL = "La lega è piena.",
+  ALREADY_MEMBER = "Sei già un membro di questa lega.",
+  USER_BANNED = "Sei stato bannato da questa lega, contatta il creatore per sapere la motivazione.",
+}
 
 export async function canCreateLeague(userId: string) {
   const [hasPremium, isLeagueMember] = await Promise.all([
@@ -42,22 +42,22 @@ export async function canJoinLeague(userId: string, leagueId: string) {
   ]);
 
   if (!canCreate) {
-    return createJoinError(JOIN_LEAGUE_MESSAGES.PREMIUM_REQUIRED);
+    return createError(JOIN_LEAGUE_MESSAGES.PREMIUM_REQUIRED);
   }
 
   if (isFull) {
-    return createJoinError(JOIN_LEAGUE_MESSAGES.LEAGUE_FULL);
+    return createError(JOIN_LEAGUE_MESSAGES.LEAGUE_FULL);
   }
 
   if (isAlreadyMember) {
-    return createJoinError(JOIN_LEAGUE_MESSAGES.ALREADY_MEMBER);
+    return createError(JOIN_LEAGUE_MESSAGES.ALREADY_MEMBER);
   }
 
   if (isBanned) {
-    return createJoinError(JOIN_LEAGUE_MESSAGES.USER_BANNED);
+    return createError(JOIN_LEAGUE_MESSAGES.USER_BANNED);
   }
 
-  return { canJoin: true, message: "" };
+  return createSuccess("", null);
 }
 
 export async function isPremiumUnlocked(leagueId: string) {
@@ -72,10 +72,6 @@ export async function isPremiumUnlocked(leagueId: string) {
     .where(and(eq(leagues.id, leagueId), isValidSubscription));
 
   return result.count > 0;
-}
-
-function createJoinError(message: string) {
-  return { canJoin: false, message };
 }
 
 async function isLeagueFull(leagueId: string) {

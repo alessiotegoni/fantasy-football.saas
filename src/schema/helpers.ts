@@ -5,7 +5,7 @@ type ValidateSchema<T> =
   | { isValid: true; data: T }
   | { isValid: false; error: ErrorResult };
 
-export const VALIDATION_ERROR = "Errore di validazione";
+export const VALIDATION_ERROR = "Errore di validazione dei dati";
 
 export function validateSchema<T>(
   schema: ZodSchema,

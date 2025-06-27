@@ -1,13 +1,14 @@
 import { db } from "@/drizzle/db";
 import { leagueMemberTeamPlayers } from "@/drizzle/schema";
-import { getErrorObject } from "@/lib/utils";
 import { revalidateLeaguePlayersCache } from "../../leagues/db/cache/league";
 import { revalidateTeamPlayersCache } from "./cache/teamsPlayer";
 import { and, eq, inArray } from "drizzle-orm";
+import { createError } from "@/lib/helpers";
 
-export const getError = (
-  message = "Errore nell'inserimento del giocatore nel team"
-) => getErrorObject(message);
+enum DB_ERROR_MESSAGES {
+  INSERT_PLAYERS = "Errore nell'inserimento dei giocatori nel team",
+  DELETE_PLAYERS = "Errore nell'eliminazione dei giocatori nel team",
+}
 
 export async function insertTeamPlayers(
   leagueId: string,
@@ -23,7 +24,9 @@ export async function insertTeamPlayers(
     .values(players)
     .returning();
 
-  if (!res.length) throw new Error(getError().message);
+  if (!res.length) {
+    throw new Error(createError(DB_ERROR_MESSAGES.INSERT_PLAYERS).message);
+  }
 
   revalidateLeaguePlayersCache(leagueId);
   revalidateTeamPlayersCache(players[0].memberTeamId);
@@ -50,7 +53,9 @@ export async function deleteTeamPlayers(
     )
     .returning({ playerId: leagueMemberTeamPlayers.playerId });
 
-  if (!res.playerId) throw new Error(getError().message);
+  if (!res.playerId) {
+    throw new Error(createError(DB_ERROR_MESSAGES.DELETE_PLAYERS).message);
+  }
 
   revalidateLeaguePlayersCache(leagueId);
   revalidateTeamPlayersCache(memberTeamId);

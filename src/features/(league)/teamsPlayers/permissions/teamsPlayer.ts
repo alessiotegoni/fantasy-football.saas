@@ -5,6 +5,13 @@ import { and, count, eq } from "drizzle-orm";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { getTeamPlayerPerRoles } from "../queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "../../leagues/queries/league";
+import { createError, createSuccess } from "@/lib/helpers";
+
+enum TEAM_PLAYER_MESSAGES {
+  ADMIN_REQUIRED = "Per aggiungere giocatori alle squadre devi essere admin della lega",
+  ALREADY_ADDED = "Il giocatore è già stato aggiunto a questa squadra",
+  ROLE_FULL = "La squadra ha già raggiunto il numero massimo di giocatori in quel ruolo",
+}
 
 export async function canInsertPlayer({
   userId,
@@ -12,41 +19,22 @@ export async function canInsertPlayer({
   player,
   leagueId,
 }: InsertTeamPlayerSchema & { userId: string }) {
-  const [isAdmin, hasPlayer, { isSlotFull }] = await Promise.all([
+  const [isAdmin, alreadyAdded, { isSlotFull }] = await Promise.all([
     isLeagueAdmin(userId, leagueId),
-    hasAlreadyPlayer(memberTeamId, player.id),
+    hasPlayerAlready(memberTeamId, player.id),
     isTeamRoleSlotFull(leagueId, memberTeamId, [player.roleId]),
   ]);
 
-  if (!isAdmin) {
-    return {
-      canCreate: false,
-      message:
-        "Per aggiungere giocatori alle squadre devi essere admin della lega",
-    };
-  }
+  if (!isAdmin) return createError(TEAM_PLAYER_MESSAGES.ADMIN_REQUIRED);
+  if (alreadyAdded) return createError(TEAM_PLAYER_MESSAGES.ALREADY_ADDED);
+  if (isSlotFull) return createError(TEAM_PLAYER_MESSAGES.ROLE_FULL);
 
-  if (hasPlayer) {
-    return {
-      canCreate: false,
-      message: "Il giocatore e' gia stato aggiunto a questa squadra",
-    };
-  }
-
-  if (isSlotFull) {
-    return {
-      canCreate: false,
-      message:
-        "La squadra ha gia raggiunto il numero massimo di giocatori in quel ruolo",
-    };
-  }
-
-  return { canCreate: true };
+  return createSuccess("", null);
 }
 
-async function hasAlreadyPlayer(teamId: string, playerId: number) {
+async function hasPlayerAlready(teamId: string, playerId: number) {
   const [res] = await db
-    .select({ count: count(leagueMemberTeamPlayers) })
+    .select({ count: count() })
     .from(leagueMemberTeamPlayers)
     .where(
       and(
@@ -55,31 +43,33 @@ async function hasAlreadyPlayer(teamId: string, playerId: number) {
       )
     );
 
-  return !!res.count;
+  return res.count > 0;
 }
 
 export async function isTeamRoleSlotFull(
   leagueId: string,
   teamId: string,
-  playerRoleIds: number[]
+  roleIds: number[]
 ) {
-  const [leaguePpr, teamPpr] = await Promise.all([
+  const [leagueLimits, teamPlayers] = await Promise.all([
     getLeaguePlayersPerRole(leagueId),
     getTeamPlayerPerRoles(teamId),
   ]);
 
-  const fullRolesIdsSlot = new Set<number>();
+  const fullRoles = new Set<number>();
 
-  for (const playerRoleId of playerRoleIds) {
-    const maxPlayersRole = leaguePpr[playerRoleId];
-    const playersRoleCount = teamPpr.find(
-      (ppr) => ppr.roleId === playerRoleId
-    )?.playersCount;
+  for (const roleId of roleIds) {
+    const maxAllowed = leagueLimits[roleId];
+    const currentCount =
+      teamPlayers.find((p) => p.roleId === roleId)?.playersCount ?? 0;
 
-    if (!playersRoleCount) continue;
-
-    if (playersRoleCount >= maxPlayersRole) fullRolesIdsSlot.add(playerRoleId);
+    if (currentCount >= maxAllowed) {
+      fullRoles.add(roleId);
+    }
   }
 
-  return { fullRolesIdsSlot, isSlotFull: fullRolesIdsSlot.size > 0 };
+  return {
+    fullRolesIdsSlot: fullRoles,
+    isSlotFull: fullRoles.size > 0,
+  };
 }

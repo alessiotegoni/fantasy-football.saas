@@ -45,8 +45,8 @@ async function joinMemberToLeague(leagueId: string) {
   const user = await getUser();
   if (!user) return createError(VALIDATION_ERROR);
 
-  const { canJoin, message } = await canJoinLeague(user.id, leagueId);
-  if (!canJoin) return createError(message);
+  const { error, message } = await canJoinLeague(user.id, leagueId);
+  if (error) return createError(message);
 
   await Promise.all([
     insertLeagueMember(user.id, leagueId),
