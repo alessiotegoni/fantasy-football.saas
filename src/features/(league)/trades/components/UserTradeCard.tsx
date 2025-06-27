@@ -7,13 +7,17 @@ import { Clock } from "iconoir-react";
 import PlayersSection from "./TradePlayerSection";
 import ActionButton from "@/components/ActionButton";
 
+type UserTradeCard = Exclude<TradeCardProps, { variant: "league" }> & {
+  theme: TradeStatusTheme;
+}
+
 export default function UserTradeCard({
   trade,
   variant,
   currentUserTeamId,
   theme,
   ...props
-}: TradeCardProps & { theme: TradeStatusTheme }) {
+}: UserTradeCard) {
   const isProposer = trade.proposerTeamId === currentUserTeamId;
   const otherTeam = isProposer ? trade.receiverTeam : trade.proposerTeam;
 
@@ -87,8 +91,8 @@ function TradeActions({
   actionHandlers,
   trade,
   leagueId,
-}: TradeCardProps) {
-  if (variant === "league" || trade.status !== "pending") return null;
+}: UserTradeCard) {
+  if (trade.status !== "pending") return null;
 
   const actions = [];
 
