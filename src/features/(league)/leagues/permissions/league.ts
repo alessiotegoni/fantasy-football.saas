@@ -16,13 +16,21 @@ import {
   isMemberOfALeague,
 } from "../../members/permissions/leagueMember";
 
+const JOIN_LEAGUE_MESSAGES = {
+  PREMIUM_REQUIRED: "Per entrare in più di una lega devi avere il premium.",
+  LEAGUE_FULL: "La lega è piena.",
+  ALREADY_MEMBER: "Sei già un membro di questa lega.",
+  USER_BANNED:
+    "Sei stato bannato da questa lega, contatta il creatore per sapere la motivazione.",
+} as const;
+
 export async function canCreateLeague(userId: string) {
   const [hasPremium, isLeagueMember] = await Promise.all([
     userHasPremium(userId),
     isMemberOfALeague(userId),
   ]);
 
-  return hasPremium ? true : !isLeagueMember;
+  return hasPremium || !isLeagueMember;
 }
 
 export async function canJoinLeague(userId: string, leagueId: string) {
@@ -34,41 +42,26 @@ export async function canJoinLeague(userId: string, leagueId: string) {
   ]);
 
   if (!canCreate) {
-    return {
-      canJoin: false,
-      message: "Per entrare in più di una lega devi avere il premium.",
-    };
+    return createJoinError(JOIN_LEAGUE_MESSAGES.PREMIUM_REQUIRED);
   }
 
   if (isFull) {
-    return {
-      canJoin: false,
-      message: "La lega è piena.",
-    };
+    return createJoinError(JOIN_LEAGUE_MESSAGES.LEAGUE_FULL);
   }
 
   if (isAlreadyMember) {
-    return {
-      canJoin: false,
-      message: "Sei già un membro di questa lega.",
-    };
+    return createJoinError(JOIN_LEAGUE_MESSAGES.ALREADY_MEMBER);
   }
 
   if (isBanned) {
-    return {
-      canJoin: false,
-      message:
-        "Sei stato bannato da questa lega, contatta il creatore per sapere la motivazione.",
-    };
+    return createJoinError(JOIN_LEAGUE_MESSAGES.USER_BANNED);
   }
 
-  return {
-    canJoin: true,
-  };
+  return { canJoin: true };
 }
 
 export async function isPremiumUnlocked(leagueId: string) {
-  const [res] = await db
+  const [result] = await db
     .select({ count: count() })
     .from(userSubscriptions)
     .innerJoin(
@@ -78,11 +71,15 @@ export async function isPremiumUnlocked(leagueId: string) {
     .innerJoin(leagues, eq(leagues.id, leagueMembers.leagueId))
     .where(and(eq(leagues.id, leagueId), isValidSubscription));
 
-  return res.count > 0;
+  return result.count > 0;
+}
+
+function createJoinError(message: string) {
+  return { canJoin: false, message };
 }
 
 async function isLeagueFull(leagueId: string) {
-  const [res] = await db
+  const [result] = await db
     .select({
       leagueMembersCount: count(leagueMembers),
       maxMembers: leagueOptions.maxMembers,
@@ -93,5 +90,5 @@ async function isLeagueFull(leagueId: string) {
     .where(eq(leagues.id, leagueId))
     .groupBy(leagueOptions.maxMembers);
 
-  return res.leagueMembersCount === res.maxMembers;
+  return result.leagueMembersCount === result.maxMembers;
 }

@@ -134,7 +134,6 @@ async function validateUniqueName(name: string) {
   return { isValid: true as const, data: true };
 }
 
-// Business Logic
 async function executeLeagueCreation(
   context: Omit<LeagueCreationContext, "leagueId">
 ) {
