@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { TradeStatusTheme } from "../utils/trade";
+import { TRADE_STATUS_THEMES, TradeStatusTheme } from "../utils/trade";
 import { TradeCardProps } from "./TradeCard";
 import TradeStatusBadge from "./TradeStatusBadge";
 import TeamInfo from "./TradeTeamInfo";
@@ -122,12 +122,16 @@ function TradeActions({
         <ActionButton
           key="reject"
           loadingText="Rifiuto scambio"
-          className="sm:basis-1/2 sm:min-w-[150px] sm:py-3 rounded-2xl"
+          className={cn(
+            "!px-4 sm:w-fit sm:min-w-[150px] sm:py-3 rounded-2xl",
+            TRADE_STATUS_THEMES["rejected"].button
+          )}
           action={actionHandlers.onReject.bind(null, {
             leagueId,
             players: trade.proposedPlayers.map(
               ({ player, offeredByProposer }) => ({
                 id: player.id,
+                roleId: player.roleId,
                 offeredByProposer,
               })
             ),
@@ -146,12 +150,16 @@ function TradeActions({
         <ActionButton
           key="accept"
           loadingText="Accetto scambio"
-          className="sm:basis-1/2 sm:min-w-[150px] sm:py-3 rounded-2xl"
+          className={cn(
+            "!px-4 sm:w-fit sm:min-w-[150px] sm:py-3 rounded-2xl",
+            TRADE_STATUS_THEMES["accepted"].button
+          )}
           action={actionHandlers.onAccept.bind(null, {
             leagueId,
             players: trade.proposedPlayers.map(
               ({ player, offeredByProposer }) => ({
                 id: player.id,
+                roleId: player.roleId,
                 offeredByProposer,
               })
             ),
@@ -169,7 +177,9 @@ function TradeActions({
   if (!actions.length) return null;
 
   return (
-    <div className="flex justify-end pt-2 border-t gap-2 mt-4">{actions}</div>
+    <div className="flex flex-wrap justify-end pt-2 border-t gap-2 mt-4">
+      {actions}
+    </div>
   );
 }
 
