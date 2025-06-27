@@ -8,22 +8,35 @@ import {
   OtpSchema,
 } from "../schema/login";
 import { SignInWithOAuthCredentials } from "@supabase/supabase-js";
-import { getErrorObject, getUrl } from "@/lib/utils";
+import { getUrl } from "@/lib/utils";
 import { authUsers } from "drizzle-orm/supabase";
 import { db } from "@/drizzle/db";
 import { eq, isNotNull } from "drizzle-orm";
+import { validateSchema } from "@/schema/helpers";
+import { createError, createSuccess } from "@/lib/helpers";
 
-const getError = (message: string) => getErrorObject(message);
+enum AUTH_ERRORS {
+  LOGIN = "Errore nel login, riprovare",
+  LOGOUT = "Errore nel logout, riprovare",
+  INVALID_CODE = "Codice non valido",
+  INVALID_DATA = "Dati non validi",
+}
+
+enum AUTH_SUCCESS {
+  LOGIN = "Login effettuato con successo",
+  LOGOUT = "Logout effettuato con successo",
+}
 
 export async function login(
   values: LoginSchemaType,
   options?: { redirectUrl?: string | null }
 ) {
-  const { success, data } = loginSchema.safeParse(values);
-
-  if (!success) return getError("Errore nel login, riprovare");
+  const schemaValidation = validateSchema<LoginSchemaType>(loginSchema, values);
+  if (!schemaValidation.isValid) return schemaValidation.error;
 
   const redirectUrl = options?.redirectUrl ? `next=${options.redirectUrl}` : "";
+
+  const { data } = schemaValidation;
 
   if (data.type === "email") {
     return await emailLogin(data.email, redirectUrl);
@@ -42,15 +55,11 @@ async function emailLogin(email: string, redirectTo: string) {
     },
   });
 
-  if (error) return getError("Errore nel login, riprovare");
+  if (error) return createError(AUTH_ERRORS.LOGIN);
 
-  console.log(`/auth/verify-otp?${redirectTo}`);
-
-  return {
-    error: false,
+  return createSuccess(AUTH_SUCCESS.LOGIN, {
     url: `/auth/verify-otp?${redirectTo}`,
-    message: "",
-  };
+  });
 }
 
 async function oauthLogin(
@@ -66,7 +75,7 @@ async function oauthLogin(
     },
   });
 
-  if (error) return getError("Errore nel login, riprovare");
+  if (error) return createError(AUTH_ERRORS.LOGIN);
 
   return {
     error: false,
@@ -76,30 +85,33 @@ async function oauthLogin(
 }
 
 export async function verifyOtp(values: OtpSchema) {
-  const { success, data } = otpSchema.safeParse(values);
-
-  if (!success) return getError("Codice non valido");
+  const schemaValidation = validateSchema<OtpSchema>(
+    otpSchema,
+    values,
+    AUTH_ERRORS.INVALID_CODE
+  );
+  if (!schemaValidation.isValid) return schemaValidation.error;
 
   const [supabase, isEmailConfirmed] = await Promise.all([
     createClient(),
-    hasConfirmedEmail(data.email),
+    hasConfirmedEmail(schemaValidation.data.email),
   ]);
 
   const { error } = await supabase.auth.verifyOtp({
     type: isEmailConfirmed ? "magiclink" : "signup",
-    ...data,
+    ...schemaValidation.data,
   });
 
-  if (error) return getError("Codice non valido");
+  if (error) return createError(AUTH_ERRORS.INVALID_CODE);
 }
 
 export async function logout() {
   const supabase = await createClient();
   const { error } = await supabase.auth.signOut();
 
-  if (error) return getError("Errore nel logout, riprovare");
+  if (error) return createError(AUTH_ERRORS.LOGOUT);
 
-  return { error: false, message: "Logout effettuato con successo" }
+  return createSuccess(AUTH_SUCCESS.LOGOUT);
 }
 
 async function hasConfirmedEmail(email: string) {
