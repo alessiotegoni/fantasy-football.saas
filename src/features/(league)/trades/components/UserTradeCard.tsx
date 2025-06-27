@@ -3,13 +3,13 @@ import { TradeStatusTheme } from "../utils/trade";
 import { TradeCardProps } from "./TradeCard";
 import TradeStatusBadge from "./TradeStatusBadge";
 import TeamInfo from "./TradeTeamInfo";
-import { Clock } from "iconoir-react";
+import { Clock, ThumbsDown, ThumbsUp, Trash } from "iconoir-react";
 import PlayersSection from "./TradePlayerSection";
 import ActionButton from "@/components/ActionButton";
 
 type UserTradeCard = Exclude<TradeCardProps, { variant: "league" }> & {
   theme: TradeStatusTheme;
-}
+};
 
 export default function UserTradeCard({
   trade,
@@ -110,6 +110,7 @@ function TradeActions({
         requireAreYouSure
         areYouSureDescription="Puoi comunque riinviare un'altra proposta in un secondo momento"
       >
+        <Trash />
         Elimina
       </ActionButton>
     );
@@ -134,6 +135,7 @@ function TradeActions({
             tradeId: trade.id,
           })}
         >
+          <ThumbsDown />
           Rifiuta
         </ActionButton>
       );
@@ -157,6 +159,7 @@ function TradeActions({
             tradeId: trade.id,
           })}
         >
+          <ThumbsUp />
           Accetta
         </ActionButton>
       );

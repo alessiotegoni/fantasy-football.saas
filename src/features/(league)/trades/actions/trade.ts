@@ -62,12 +62,11 @@ export async function createTrade(values: CreateTradeProposalSchema) {
 }
 
 async function updateTradeStatus(values: UpdateTradeProposalSchema) {
-  const parsed = updateTradeProposalSchema.safeParse(values);
-  if (!parsed.success) {
+  const { success, data } = updateTradeProposalSchema.safeParse(values);
+  if (!success) {
     return getError("Errore nell'aggiornamento dello stato dello scambio");
   }
 
-  const data = parsed.data;
   const [userId, trade] = await Promise.all([
     getUserId(),
     getTrade(data.tradeId),
@@ -147,7 +146,7 @@ async function movePlayersBetweenTeams(
       trade.leagueId,
       {
         memberTeamId: trade.proposerTeamId,
-        playersIds: grouped.proposed.map(proposedPlayer => proposedPlayer.id),
+        playersIds: grouped.proposed.map((proposedPlayer) => proposedPlayer.id),
       },
       tx
     );
@@ -167,7 +166,9 @@ async function movePlayersBetweenTeams(
       trade.leagueId,
       {
         memberTeamId: trade.receiverTeamId,
-        playersIds: grouped.requested.map(requestedPlayer => requestedPlayer.id),
+        playersIds: grouped.requested.map(
+          (requestedPlayer) => requestedPlayer.id
+        ),
       },
       tx
     );

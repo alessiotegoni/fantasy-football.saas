@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 import { Coins } from "iconoir-react";
 
 const CREDIT_STYLES = {
-  give: "text-red-600 bg-red-50 border-red-200",
-  receive: "text-green-600 bg-green-50 border-green-200",
+  give: "text-red-100 bg-red-500/70 border-red-400",
+  receive: "text-green-100 bg-green-500/70 border-green-400",
 } as const;
 
 export default function TradeCreditsBadge({

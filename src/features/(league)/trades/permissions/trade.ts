@@ -75,18 +75,18 @@ export async function canUpdateTrade(
     userId: string;
   } & CreateTradeProposalSchema
 ) {
-  const [canCreate, tradeStatus] = await Promise.all([
+  const [permission, tradeStatus] = await Promise.all([
     canCreateTrade(args),
     getTradeStatus(tradeId),
   ]);
 
-  if (canCreate.error) return canCreate;
+  if (permission.error) return permission;
 
   if (tradeStatus !== "pending") {
     return getError("Puoi accettare o rifiutare solo le richieste in sospeso");
   }
 
-  return { error: false, message: "", data: canCreate.data };
+  return { error: false, message: "", data: permission.data };
 }
 
 export async function canDeleteTrade({
