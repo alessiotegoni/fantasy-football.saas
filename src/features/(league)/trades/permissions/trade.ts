@@ -28,21 +28,17 @@ type ErrorResult = {
   data: null;
 };
 
-const TRADE_ERRORS = {
-  MARKET_CLOSED: "Il mercato degli scambi è attualmente chiuso",
-  NOT_LEAGUE_MEMBER: "Non sei membro della lega",
-  INVALID_PROPOSER: "La squadra che fa lo scambio deve essere la tua",
-  INSUFFICIENT_PROPOSER_CREDITS:
-    "Non hai abbastanza crediti per questo scambio",
-  INSUFFICIENT_RECEIVER_CREDITS:
-    "La squadra dello scambio non ha abbastanza crediti da offrire",
-  TRADE_NOT_PENDING: "Puoi accettare o rifiutare solo le richieste in sospeso",
-  DELETE_NOT_OWNER: "Puoi eliminare solo gli scambi proposti da te",
-  DELETE_NOT_PENDING:
-    "Puoi eliminare solo le proposte di scambio che non sono ancora state accettate o rifiutate",
-} as const;
+enum TRADE_ERRORS {
+  MARKET_CLOSED = "Il mercato degli scambi è attualmente chiuso",
+  NOT_LEAGUE_MEMBER = "Non sei membro della lega",
+  INVALID_PROPOSER = "La squadra che fa lo scambio deve essere la tua",
+  INSUFFICIENT_PROPOSER_CREDITS = "Non hai abbastanza crediti per questo scambio",
+  INSUFFICIENT_RECEIVER_CREDITS = "La squadra dello scambio non ha abbastanza crediti da offrire",
+  TRADE_NOT_PENDING = "Puoi accettare o rifiutare solo le richieste in sospeso",
+  DELETE_NOT_OWNER = "Puoi eliminare solo gli scambi proposti da te",
+  DELETE_NOT_PENDING = "Puoi eliminare solo le proposte di scambio che non sono ancora state accettate o rifiutate",
+}
 
-// Helper function to create error result with consistent structure
 function createError(message: string): ErrorResult {
   return {
     error: true,
@@ -51,7 +47,6 @@ function createError(message: string): ErrorResult {
   };
 }
 
-// Helper function to create success result with consistent structure
 function createSuccess<T>(data: T, message = ""): SuccessResult<T> {
   return {
     error: false,

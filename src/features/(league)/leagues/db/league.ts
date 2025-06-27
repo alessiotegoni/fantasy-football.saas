@@ -5,12 +5,12 @@ import { createError } from "@/lib/helpers";
 import { revalidateLeagueProfileCache } from "./cache/league";
 import { revalidateLeagueMembersCache } from "../../members/db/cache/leagueMember";
 
-const DB_ERROR_MESSAGES = {
-  LEAGUE_CREATION_FAILED: "Errore nella creazione della lega",
-  LEAGUE_UPDATE_FAILED: "Errore nell'aggiornamento della lega",
-  BAN_CREATION_FAILED: "Errore nel ban dell'utente",
-  BAN_DELETION_FAILED: "Errore nello sban dell'utente",
-} as const;
+enum DB_ERROR_MESSAGES {
+  LEAGUE_CREATION_FAILED = "Errore nella creazione della lega",
+  LEAGUE_UPDATE_FAILED = "Errore nell'aggiornamento della lega",
+  BAN_CREATION_FAILED = "Errore nel ban dell'utente",
+  BAN_DELETION_FAILED = "Errore nello sban dell'utente",
+}
 
 const leagueInfo = {
   leagueId: leagues.id,

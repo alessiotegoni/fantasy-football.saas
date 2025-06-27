@@ -4,34 +4,39 @@ import {
   joinPrivateLeagueSchema,
   JoinPrivateLeagueSchema,
 } from "@/features/(league)/leagues/schema/privateLeague";
-import { getError, insertLeagueMember } from "../db/leagueMember";
+import { insertLeagueMember } from "../db/leagueMember";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
 import { canJoinLeague } from "@/features/(league)/leagues/permissions/league";
+import { VALIDATION_ERROR } from "@/schema/helpers";
+import { createError } from "@/lib/helpers";
+
+const LEAGUE_MEMBER_MESSAGES = {
+  LEAGUE_CODE_ERROR: "Codice o password della lega errati",
+} as const;
 
 export async function joinPrivateLeague(values: JoinPrivateLeagueSchema) {
-  const { success, data } = joinPrivateLeagueSchema.safeParse(values);
-  if (!success) return getError();
+  const 
 
   const league = await getLeagueFromCode(data);
-  if (!league) return getError("Codice o password della lega errati");
+  if (!league) return createError(LEAGUE_MEMBER_MESSAGES.LEAGUE_CODE_ERROR);
 
   return await joinMemberToLeague(league.id);
 }
 
 export async function joinPublicLeague(leagueId: string) {
-  if (typeof leagueId !== "string") return getError();
+  if (typeof leagueId !== "string") return createError();
 
   return await joinMemberToLeague(leagueId);
 }
 
 async function joinMemberToLeague(leagueId: string) {
   const user = await getUser();
-  if (!user) return getError();
+  if (!user) return createError(VALIDATION_ERROR);
 
   const { canJoin, message } = await canJoinLeague(user.id, leagueId);
-  if (!canJoin) return getError(message);
+  if (!canJoin) return createError(message);
 
   await Promise.all([
     insertLeagueMember(user.id, leagueId),

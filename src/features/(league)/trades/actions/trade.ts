@@ -49,14 +49,14 @@ type TradeExecutionContext = {
   tx: Omit<typeof db, "$client">;
 };
 
-const TRADE_MESSAGES = {
-  UPDATE_ERROR: "Errore nell'aggiornamento dello stato dello scambio",
-  DELETE_ERROR: "Errore nell'eliminazione dello scambio",
-  TRADE_NOT_FOUND: "Questo scambio non esiste",
-  TRADE_ACCEPTED: "Scambio accettato con successo",
-  TRADE_REJECTED: "Scambio rifiutato con successo",
-  TRADE_DELETED: "Scambio eliminato con successo",
-} as const;
+enum TRADE_MESSAGES {
+  UPDATE_ERROR = "Errore nell'aggiornamento dello stato dello scambio",
+  DELETE_ERROR = "Errore nell'eliminazione dello scambio",
+  TRADE_NOT_FOUND = "Questo scambio non esiste",
+  TRADE_ACCEPTED = "Scambio accettato con successo",
+  TRADE_REJECTED = "Scambio rifiutato con successo",
+  TRADE_DELETED = "Scambio eliminato con successo",
+};
 
 export async function createTrade(values: CreateTradeProposalSchema) {
   const schemaValidation = validateSchema<CreateTradeProposalSchema>(

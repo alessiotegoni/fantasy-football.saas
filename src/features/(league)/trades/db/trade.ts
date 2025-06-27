@@ -8,6 +8,13 @@ import { revalidateLeagueTradesCache } from "./cache/trade";
 import { eq } from "drizzle-orm";
 import { createError } from "@/lib/helpers";
 
+enum DB_ERROR_MESSAGES {
+  TRADE_CREATION_FAILED = "Errore nella creazione dello scambio",
+  TRADE_PLAYERS_INSERT_FAILED = "Errore nell'inserimento dei giocatori scambio",
+  TRADE_UPDATE_FAILED = "Errore nell'aggiornamento dello scambio",
+  TRADE_DELETE_FAILED = "Errore nell'eliminazione dello scambio",
+}
+
 export async function insertTrade(
   trade: typeof leagueTradeProposals.$inferInsert,
   tx: Omit<typeof db, "$client"> = db
@@ -19,7 +26,7 @@ export async function insertTrade(
 
   if (!res.tradeId)
     throw new Error(
-      createError("Errore nella creazione dello scambio").message
+      createError(DB_ERROR_MESSAGES.TRADE_CREATION_FAILED).message
     );
 
   revalidateLeagueTradesCache({
@@ -41,7 +48,7 @@ export async function insertTradePlayers(
 
   if (!res.length)
     throw new Error(
-      createError("Errore nell'inserimento dei giocatori dello scambio").message
+      createError(DB_ERROR_MESSAGES.TRADE_PLAYERS_INSERT_FAILED).message
     );
 }
 
@@ -57,9 +64,7 @@ export async function updateTrade(
     .returning();
 
   if (!res.proposerTeamId) {
-    throw new Error(
-      createError("Errore nell'aggiornamento dello scambio").message
-    );
+    throw new Error(createError(DB_ERROR_MESSAGES.TRADE_UPDATE_FAILED).message);
   }
 
   revalidateLeagueTradesCache({
@@ -77,9 +82,7 @@ export async function deleteTrade(leagueId: string, tradeId: string) {
     .returning();
 
   if (!res.id) {
-    throw new Error(
-      createError("Errore nell'eliminazione dello scambio").message
-    );
+    throw new Error(createError(DB_ERROR_MESSAGES.TRADE_DELETE_FAILED).message);
   }
 
   revalidateLeagueTradesCache({ leagueId, tradeId });

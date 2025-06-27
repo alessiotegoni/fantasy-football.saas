@@ -20,12 +20,12 @@ import {
 } from "../schema/leagueProfile";
 import { validateSchema } from "@/schema/helpers";
 
-const LEAGUE_MESSAGES = {
-  PREMIUM_REQUIRED: "Per essere membro di 2 o più leghe devi avere il premium",
-  ADMIN_REQUIRED: "Per aggiornare il profilo della lega devi essere admin",
-  NAME_EXISTS: "Il nome della lega esiste già, utilizzane un altro",
-  PROFILE_UPDATED: "Profilo aggiornato con successo",
-} as const;
+enum LEAGUE_MESSAGES {
+  PREMIUM_REQUIRED = "Per essere membro di 2 o più leghe devi avere il premium",
+  ADMIN_REQUIRED = "Per aggiornare il profilo della lega devi essere admin",
+  NAME_EXISTS = "Il nome della lega esiste già, utilizzane un altro",
+  PROFILE_UPDATED = "Profilo aggiornato con successo",
+}
 
 interface LeagueCreationContext {
   user: NonNullable<Awaited<ReturnType<typeof getUser>>>;
