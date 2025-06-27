@@ -1,4 +1,4 @@
-import { MemberActionArgs } from "@/features/leagueMembers/permissions/leagueMember";
+import { MemberActionArgs } from "@/features/(league)/members/actions/memberActions";
 import {
   createAdminClient,
   createClient,

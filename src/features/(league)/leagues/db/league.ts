@@ -1,15 +1,12 @@
 import { db } from "@/drizzle/db";
 import { leagues } from "@/drizzle/schema";
-import { getErrorObject } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import { leagueUserBans } from "@/drizzle/schema";
 import { revalidateLeagueProfileCache } from "./cache/league";
 import { revalidateLeagueMembersCache } from "../../members/db/cache/leagueMember";
+import { createError } from "@/lib/helpers";
 
 const leagueInfo = { leagueId: leagues.id, visibility: leagues.visibility };
-
-export const getError = (message = "Errore nella creazione della lega") =>
-  getErrorObject(message);
 
 export async function insertLeague(
   league: typeof leagues.$inferInsert,
@@ -17,7 +14,7 @@ export async function insertLeague(
 ) {
   const [res] = await tx.insert(leagues).values(league).returning(leagueInfo);
 
-  if (!res.leagueId) throw new Error(getError().message);
+  if (!res.leagueId) throw new Error(createError().message);
 
   revalidateLeagueProfileCache({
     leagueId: res.leagueId,
@@ -38,7 +35,7 @@ export async function updateLeague(
     .returning(leagueInfo);
 
   if (!res.leagueId) {
-    throw new Error(getError("Erorre nell'aggiornamento della lega").message);
+    throw new Error(createError("Erorre nell'aggiornamento della lega").message);
   }
 
   revalidateLeagueProfileCache({ leagueId, visibility: res.visibility });
@@ -58,7 +55,7 @@ export async function insertLeagueBan(
     });
 
   if (!res.banId)
-    throw new Error(getError("Errore nel ban dell'utente").message);
+    throw new Error(createError("Errore nel ban dell'utente").message);
 
   revalidateLeagueMembersCache({ leagueId, userId });
 
@@ -78,7 +75,7 @@ export async function deleteLeagueBan(
     });
 
   if (!res.userId)
-    throw new Error(getError("Errore nello sban dell'utente").message);
+    throw new Error(createError("Errore nello sban dell'utente").message);
 
   revalidateLeagueMembersCache(res);
 
