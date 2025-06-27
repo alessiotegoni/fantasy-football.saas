@@ -9,7 +9,11 @@ import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
 import { canJoinLeague } from "@/features/(league)/leagues/permissions/league";
-import { VALIDATION_ERROR } from "@/schema/helpers";
+import {
+  getUUIdSchema,
+  validateSchema,
+  VALIDATION_ERROR,
+} from "@/schema/helpers";
 import { createError } from "@/lib/helpers";
 
 const LEAGUE_MEMBER_MESSAGES = {
@@ -17,16 +21,22 @@ const LEAGUE_MEMBER_MESSAGES = {
 } as const;
 
 export async function joinPrivateLeague(values: JoinPrivateLeagueSchema) {
-  const 
+  const schemaValidation = validateSchema<JoinPrivateLeagueSchema>(
+    joinPrivateLeagueSchema,
+    values
+  );
+  if (!schemaValidation.isValid) return schemaValidation.error;
 
-  const league = await getLeagueFromCode(data);
+  const league = await getLeagueFromCode(schemaValidation.data);
   if (!league) return createError(LEAGUE_MEMBER_MESSAGES.LEAGUE_CODE_ERROR);
 
   return await joinMemberToLeague(league.id);
 }
 
 export async function joinPublicLeague(leagueId: string) {
-  if (typeof leagueId !== "string") return createError();
+  if (!getUUIdSchema().safeParse(leagueId).success) {
+    return createError(VALIDATION_ERROR);
+  }
 
   return await joinMemberToLeague(leagueId);
 }
