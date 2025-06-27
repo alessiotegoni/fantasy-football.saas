@@ -15,7 +15,7 @@ export async function canInsertPlayer({
   const [isAdmin, hasPlayer, isSlotFull] = await Promise.all([
     isLeagueAdmin(userId, leagueId),
     hasAlreadyPlayer(memberTeamId, player.id),
-    isRoleSlotFull(leagueId, memberTeamId, player.roleId),
+    isTeamRoleSlotFull(leagueId, memberTeamId, [player.roleId]),
   ]);
 
   console.log(isSlotFull);
@@ -46,7 +46,7 @@ export async function canInsertPlayer({
   return { canCreate: true };
 }
 
-async function hasAlreadyPlayer(teamId: string, playerId: string) {
+async function hasAlreadyPlayer(teamId: string, playerId: number) {
   const [res] = await db
     .select({ count: count(leagueMemberTeamPlayers) })
     .from(leagueMemberTeamPlayers)
@@ -60,22 +60,28 @@ async function hasAlreadyPlayer(teamId: string, playerId: string) {
   return !!res.count;
 }
 
-async function isRoleSlotFull(
+async function isTeamRoleSlotFull(
   leagueId: string,
   teamId: string,
-  playerRoleId: number
+  playerRoleIds: number[]
 ) {
   const [leaguePpr, teamPpr] = await Promise.all([
     getLeaguePlayersPerRole(leagueId),
     getTeamPlayerPerRoles(teamId),
   ]);
 
-  const maxPlayersRole = leaguePpr[playerRoleId];
-  const playersRoleCount = teamPpr.find(
-    (ppr) => ppr.roleId === playerRoleId
-  )?.playersCount;
+  const fullRolesSlot: number[] = [];
 
-  if (!playersRoleCount) return false;
+  for (const playerRoleId of playerRoleIds) {
+    const maxPlayersRole = leaguePpr[playerRoleId];
+    const playersRoleCount = teamPpr.find(
+      (ppr) => ppr.roleId === playerRoleId
+    )?.playersCount;
 
-  return playersRoleCount >= maxPlayersRole;
+    if (!playersRoleCount) continue;
+
+    if (playersRoleCount >= maxPlayersRole) fullRolesSlot.push(playerRoleId);
+  }
+
+  return fullRolesSlot.some(Boolean);
 }

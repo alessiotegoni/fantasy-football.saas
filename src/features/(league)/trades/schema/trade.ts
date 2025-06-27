@@ -4,6 +4,7 @@ import { z, ZodIssueCode } from "zod";
 
 const tradeProposalPlayer = z.object({
   id: getSerialIdSchema("Id del giocatore non valido"),
+  roleId: getSerialIdSchema("Id del ruolo non valido"),
   offeredByProposer: z.boolean(),
 });
 
