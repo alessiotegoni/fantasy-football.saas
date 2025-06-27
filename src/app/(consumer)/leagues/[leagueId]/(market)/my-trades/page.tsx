@@ -34,7 +34,7 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
       leagueId={leagueId}
       headerLabel="I miei scambi"
       renderHeaderRight={() => (
-        <div className="fixed bottom-[99px] left-1/2 -translate-x-1/2 w-full px-4 sm:px-0 sm:static sm:translate-none sm:w-fit">
+        <div className="fixed z-50 bottom-[99px] left-1/2 -translate-x-1/2 w-full px-4 sm:px-0 sm:static sm:translate-none sm:w-fit">
           <TradeProposalButton
             leagueId={leagueId}
             userTeamId={userTeamId}

@@ -24,6 +24,7 @@ import { useEmailLogin } from "@/hooks/useLoginEmail";
 import SubmitButton from "@/components/SubmitButton";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import useActionToast from "@/hooks/useActionToast";
+import SocialLogin from "./SocialLogin";
 
 export default function LoginForm() {
   const toast = useActionToast();
@@ -41,17 +42,13 @@ export default function LoginForm() {
     },
   });
 
-  function changeLoginType(
-    type: LoginSchemaType["type"] = "email",
-    shouldTrigger: boolean = false
-  ) {
+  function changeLoginType(type: LoginSchemaType["type"] = "email") {
     form.setValue("type", type);
-    if (shouldTrigger) form.trigger();
   }
 
   async function emailLogin(data: LoginSchemaType) {
     const res = await login(data, { redirectUrl: searchParams.get("next") });
-    toast(res);
+    if (res.error) toast(res);
 
     if (data.type === "email") saveEmail(data.email);
 
@@ -84,7 +81,7 @@ export default function LoginForm() {
           <SubmitButton
             loadingText="Invio codice"
             variant="gradient"
-            onClick={changeLoginType.bind(null, "email", false)}
+            onClick={changeLoginType.bind(null, "email")}
           >
             Continua
           </SubmitButton>
@@ -99,64 +96,13 @@ export default function LoginForm() {
 
       <div className="space-y-3">
         {oauthProviders.map((provider) => (
-          <form
-            action={socialLogin.bind(null, router, searchParams.get("next"))}
+          <SocialLogin
             key={provider}
-          >
-            <input type="hidden" name="provider" value={provider} />
-            <SubmitButton
-              loadingText={`Accedo con ${provider}`}
-              className={cn(
-                "py-3 px-4",
-                oauthProvidersStyles[provider].className
-              )}
-              onClick={changeLoginType.bind(null, provider, false)}
-            >
-              <img
-                src={oauthProvidersStyles[provider].imageUrl}
-                width={25}
-                height={25}
-                alt={provider}
-              />
-              <p>
-                Accedi con <span className="capitalize">{provider}</span>
-              </p>
-            </SubmitButton>
-          </form>
+            provider={provider}
+            onClick={changeLoginType.bind(null, provider)}
+          />
         ))}
       </div>
     </>
   );
 }
-
-async function socialLogin(
-  router: AppRouterInstance,
-  redirectUrl: string | null,
-  formData: FormData
-) {
-  const toast = useActionToast();
-
-  const type = formData.get("provider") as OauthProviderType;
-
-  const res = await login({ type }, { redirectUrl });
-  toast(res);
-
-  if (res.data?.url) router.push(res.data.url);
-}
-
-const oauthProvidersStyles: Record<
-  OauthProviderType,
-  { className?: string; imageUrl: string }
-> = {
-  google: {
-    className: `bg-black hover:bg-black/90
-        dark:bg-white dark:hover:bg-white/90 dark:text-black py-3 px-4`,
-    imageUrl:
-      "https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/google-logo.png",
-  },
-  twitch: {
-    className: `bg-[#6034b2] hover:bg-[#6441a5] py-3 px-4`,
-    imageUrl:
-      "https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/twitch-logo.png",
-  },
-};
