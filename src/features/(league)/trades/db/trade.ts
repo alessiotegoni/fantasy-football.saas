@@ -6,7 +6,7 @@ import {
 } from "@/drizzle/schema";
 import { revalidateLeagueTradesCache } from "./cache/trade";
 import { eq } from "drizzle-orm";
-import { createError } from "@/lib/utils";
+import { createError } from "@/lib/helpers";
 
 export async function insertTrade(
   trade: typeof leagueTradeProposals.$inferInsert,

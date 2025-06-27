@@ -16,6 +16,18 @@ type TradePermissionParams = {
   userId: string;
 } & CreateTradeProposalSchema;
 
+type SuccessResult<T = {}> = {
+  error: false;
+  message: string;
+  data: T;
+};
+
+type ErrorResult = {
+  error: true;
+  message: string;
+  data: null;
+};
+
 const TRADE_ERRORS = {
   MARKET_CLOSED: "Il mercato degli scambi è attualmente chiuso",
   NOT_LEAGUE_MEMBER: "Non sei membro della lega",
@@ -29,6 +41,24 @@ const TRADE_ERRORS = {
   DELETE_NOT_PENDING:
     "Puoi eliminare solo le proposte di scambio che non sono ancora state accettate o rifiutate",
 } as const;
+
+// Helper function to create error result with consistent structure
+function createError(message: string): ErrorResult {
+  return {
+    error: true,
+    message,
+    data: null,
+  };
+}
+
+// Helper function to create success result with consistent structure
+function createSuccess<T>(data: T, message = ""): SuccessResult<T> {
+  return {
+    error: false,
+    message,
+    data,
+  };
+}
 
 export async function canCreateTrade({
   userId,
@@ -82,7 +112,7 @@ export async function canCreateTrade({
 export async function canUpdateTrade(
   tradeId: string,
   args: TradePermissionParams
-): Promise<PermissionResult<{ proposerTeamCredits: number; receiverTeamCredits: number }>> {
+) {
   const [permissions, tradeStatus] = await Promise.all([
     canCreateTrade(args),
     getTradeStatus(tradeId),
@@ -110,7 +140,7 @@ export async function canDeleteTrade({
   userId: string;
   leagueId: string;
   proposerTeamId: string;
-}): Promise<PermissionResult<{}>> {
+}) {
   const [isMemberOfLeague, userTeamId, tradeStatus] = await Promise.all([
     isLeagueMember(userId, leagueId),
     getUserTeamId(userId, leagueId),
@@ -152,7 +182,7 @@ function validateCredits({
   creditRequestedByProposer?: number | null;
   proposerTeamCredits: number;
   receiverTeamCredits: number;
-}): PermissionResult<{ proposerTeamCredits: number; receiverTeamCredits: number }> {
+}) {
   if (
     creditOfferedByProposer &&
     creditOfferedByProposer > proposerTeamCredits
@@ -174,7 +204,7 @@ function validateCredits({
   return createSuccess({ proposerTeamCredits, receiverTeamCredits });
 }
 
-async function validateTeamRoleSlots(args: TradePermissionParams): Promise<PermissionResult<{}>> {
+async function validateTeamRoleSlots(args: TradePermissionParams) {
   const { proposerTeam, receiverTeam } = await getTeamsRoleSlotValidation(args);
 
   if (!proposerTeam.isSlotFull && !receiverTeam.isSlotFull) {
