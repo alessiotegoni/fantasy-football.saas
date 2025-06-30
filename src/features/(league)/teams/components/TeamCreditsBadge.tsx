@@ -13,11 +13,11 @@ export default function TeamCreditsBadge({
   return (
     <Badge
       className={cn(
-        "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary",
+        "gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary",
         className
       )}
     >
-      <Coins className="!size-4" />
+      <Coins className="!size-4 !text-primary" />
       {formatPlural(credits, { singular: "credito", plural: "crediti" })}
     </Badge>
   );

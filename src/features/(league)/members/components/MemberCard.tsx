@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   Shield,
   ShieldXmark,
@@ -28,9 +27,10 @@ import {
   AlertDialogCancel,
 } from "../../../../components/ui/alert-dialog";
 import { banMember, kickMember, setMemberRole } from "../actions/memberActions";
-import { LeagueMemberRoleType } from "@/drizzle/schema";
 import Avatar from "@/components/Avatar";
 import { SetRoleMemberSchema } from "../schema/leagueMember";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   member: {
@@ -51,7 +51,12 @@ type Props = {
 
 export function MemberCard({ member, leagueId, isAdmin, userId }: Props) {
   return (
-    <div className="flex items-center justify-between p-4 bg-background rounded-xl border border-border hover:border-primary/20 transition-colors">
+    <div
+      className={cn(
+        "flex items-center justify-between p-4 bg-background rounded-3xl border border-border hover:border-primary/20 transition-colors",
+        member.user.id === userId && "border-primary"
+      )}
+    >
       <div className="flex items-center space-x-4 flex-1 min-w-0">
         <Avatar
           imageUrl={member.team?.imageUrl}
@@ -65,15 +70,15 @@ export function MemberCard({ member, leagueId, isAdmin, userId }: Props) {
         />
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center space-x-2 mb-1">
+          <div className="flex items-center gap-4 mb-1">
             <h3 className="font-medium text-foreground truncate">
               {member.team?.name || "Squadra non ancora creata"}
             </h3>
             {member.role === "admin" && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                <Shield className="size-3 mr-1" />
+              <Badge className="px-2 py-1 rounded-full bg-primary/10 text-primary">
+                <Shield className="!size-4" />
                 Admin
-              </span>
+              </Badge>
             )}
           </div>
 
