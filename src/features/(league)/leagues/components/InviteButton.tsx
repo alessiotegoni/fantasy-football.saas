@@ -2,22 +2,30 @@
 
 import { ShareAndroid } from "iconoir-react";
 import { toast } from "sonner";
-import { use, useState } from "react";
+import { use, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getLeagueInviteCredentials } from "../queries/league";
 
-type Props = {
-  leagueCredentialsPromise: Promise<
-    { joinCode: string; password: string | null } | undefined
-  >;
-};
-
-export function InviteButton({ leagueCredentialsPromise }: Props) {
-  const credentials = use(leagueCredentialsPromise);
-  if (!credentials) return null;
-
+export function InviteButton({
+  leagueId,
+  leagueCredentialsPromise,
+}: {
+  leagueId: string;
+  leagueCredentialsPromise: ReturnType<typeof getLeagueInviteCredentials>;
+}) {
   const [, setCopied] = useState(false);
 
-  const inviteUrl = `${window.location.origin}/leagues/join/private?code=${credentials.joinCode}`;
+  const league = use(leagueCredentialsPromise);
+  if (!league) return null;
+
+  const inviteUrl = useMemo(() => {
+    const privateLeagueUrl = `private?code=${league.joinCode}`;
+    const publicLeagueUrl = `public/${leagueId}`;
+
+    return `${window.location.origin}/leagues/join/${
+      league.visibility === "public" ? publicLeagueUrl : privateLeagueUrl
+    }`;
+  }, [leagueId, league]);
 
   async function handleCopy() {
     try {
@@ -26,16 +34,16 @@ export function InviteButton({ leagueCredentialsPromise }: Props) {
       toast.success("Link copiato!");
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      toast.error("Errore nel copiare il link");
+      console.error("Errore nel copiare il link");
     }
   }
 
   async function handleShare() {
     try {
       const message =
-        `Unisciti alla mia lega.\n\n` +
+        `Unisciti alla mia lega.\n` +
         `👉 Link diretto: ${inviteUrl}` +
-        (credentials?.password ? `\n🔒 Password: ${credentials.password}` : "");
+        (league?.password ? `\n🔒 Password: ${league.password}` : "");
 
       if (navigator.share) {
         await navigator.share({
@@ -54,15 +62,6 @@ export function InviteButton({ leagueCredentialsPromise }: Props) {
 
   return (
     <div className="flex gap-2 mt-2">
-      {/* <Button
-        onClick={handleCopy}
-        variant="link"
-        size="sm"
-        className="flex-1/2 rounded-lg font-normal text-sm"
-      >
-        <Copy className="size-4" />
-        {copied ? "Copiato!" : "Copia link"}
-      </Button> */}
       <Button onClick={handleShare} className=" rounded-lg p-2.5">
         <ShareAndroid className="size-5" />
         Invita i tuoi amici!

@@ -72,6 +72,7 @@ export default function LeagueDropdown({
             <DropdownMenuItem asChild>
               <Suspense>
                 <InviteButton
+                  leagueId={leagueId}
                   leagueCredentialsPromise={getLeagueInviteCredentials(
                     leagueId
                   )}
@@ -99,7 +100,7 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
         <Avatar
           imageUrl={league.imageUrl}
           name={league.name}
-          size={12}
+          className="size-12"
           renderFallback={() => (
             <div
               className={cn(
@@ -116,7 +117,9 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
             </div>
           )}
         />
-        <p className={cn(isCurrentLeague(league) && "font-semibold")}>{league.name}</p>
+        <p className={cn(isCurrentLeague(league) && "font-semibold")}>
+          {league.name}
+        </p>
       </div>
     );
     {

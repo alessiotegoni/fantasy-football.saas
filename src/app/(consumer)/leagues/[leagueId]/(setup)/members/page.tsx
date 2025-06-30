@@ -69,6 +69,7 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
         </p>
         <div>
           <InviteButton
+            leagueId={leagueId}
             leagueCredentialsPromise={getLeagueInviteCredentials(leagueId)}
           />
         </div>

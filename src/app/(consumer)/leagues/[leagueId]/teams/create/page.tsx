@@ -1,4 +1,4 @@
-import { LeagueTeamForm } from "@/features/(league)/leagueTeams/components/LeagueTeamForm";
+import { LeagueTeamForm } from "@/features/(league)/teams/components/LeagueTeamForm";
 
 export default async function CreateLeagueTeamPage({
   params,

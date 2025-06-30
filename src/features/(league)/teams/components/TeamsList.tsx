@@ -26,6 +26,7 @@ export default function TeamsList({ teams, leagueId, teamUserId }: Props) {
             team={team}
             teamUserId={teamUserId}
             leagueId={leagueId}
+            className="min-h-[110px]"
           />
         ))}
       </div>

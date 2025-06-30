@@ -2,9 +2,13 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import {
   getLeagueInviteCredentialsTag,
   getLeaguePremiumTag,
+  getLeagueProfileTag,
 } from "../db/cache/league";
 import { isPremiumUnlocked } from "../permissions/league";
-import { getLeagueGeneralOptionsTag, getLeaguePlayersPerRoleTag } from "@/features/(league)/options/db/cache/leagueOption";
+import {
+  getLeagueGeneralOptionsTag,
+  getLeaguePlayersPerRoleTag,
+} from "@/features/(league)/options/db/cache/leagueOption";
 import { db } from "@/drizzle/db";
 import { getMemberIdTag } from "../../members/db/cache/leagueMember";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
@@ -27,11 +31,13 @@ export async function getLeagueInviteCredentials(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueInviteCredentialsTag(leagueId),
-    getLeagueGeneralOptionsTag(leagueId)
+    getLeagueGeneralOptionsTag(leagueId),
+    getLeagueProfileTag(leagueId)
   );
 
   return db.query.leagues.findFirst({
     columns: {
+      visibility: true,
       joinCode: true,
       password: true,
     },
