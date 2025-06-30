@@ -17,7 +17,7 @@ import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 const TEAM_PLAYERS_MESSAGES = {
-  UNAUTHORIZED: "Devi essere admin per svincolare il giocatore",
+  ADMIN_REQUIRED: "Devi essere admin per svincolare il giocatore",
   INSUFFICIENT_CREDITS: (teamCredits: number) =>
     `I crediti della squadra selezionata sono insufficienti: ${teamCredits}`,
   ADDED: "Giocatore aggiunto con successo!",
@@ -25,12 +25,11 @@ const TEAM_PLAYERS_MESSAGES = {
 };
 
 export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
-  const validation = validateSchema<InsertTeamPlayerSchema>(
+  const { isValid, error, data } = validateSchema<InsertTeamPlayerSchema>(
     insertTeamPlayerSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
-  const data = validation.data;
+  if (!isValid) return error;
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
@@ -57,16 +56,15 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
 }
 
 export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
-  const validation = validateSchema<ReleaseTeamPlayerSchema>(
+  const { isValid, error, data } = validateSchema<ReleaseTeamPlayerSchema>(
     releaseTeamPlayerSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
-  const data = validation.data;
+  if (!isValid) return error;
 
   const userId = await getUserId();
   const isAdmin = userId && (await isLeagueAdmin(userId, data.leagueId));
-  if (!isAdmin) return createError(TEAM_PLAYERS_MESSAGES.UNAUTHORIZED);
+  if (!isAdmin) return createError(TEAM_PLAYERS_MESSAGES.ADMIN_REQUIRED);
 
   const teamCredits = await getTeamCredits(data.memberTeamId);
   const credits = teamCredits + data.releaseCost;
