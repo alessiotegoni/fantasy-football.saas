@@ -160,6 +160,7 @@ export async function getLeagueMembers(leagueId: string) {
         email: authUsers.email,
       },
       team: {
+        id: leagueMemberTeams.id,
         name: leagueMemberTeams.name,
         managerName: leagueMemberTeams.managerName,
         imageUrl: leagueMemberTeams.imageUrl,
@@ -172,6 +173,12 @@ export async function getLeagueMembers(leagueId: string) {
       eq(leagueMembers.id, leagueMemberTeams.leagueMemberId)
     )
     .where(eq(leagueMembers.leagueId, leagueId));
+
+  cacheTag(
+    ...results
+      .filter((member) => !!member.team?.id)
+      .map((member) => member.team?.id ?? "")
+  );
 
   return results;
 }

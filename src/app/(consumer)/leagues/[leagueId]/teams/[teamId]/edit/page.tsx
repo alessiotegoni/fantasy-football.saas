@@ -1,6 +1,9 @@
 import { db } from "@/drizzle/db";
 import { LeagueTeamForm } from "@/features/(league)/teams/components/LeagueTeamForm";
-import { getLeagueMemberTeamTag } from "@/features/(league)/teams/db/cache/leagueTeam";
+import {
+  getLeagueMemberTeamTag,
+  getTeamIdTag,
+} from "@/features/(league)/teams/db/cache/leagueTeam";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function EditLeagueTeamPage({
@@ -13,7 +16,7 @@ export default async function EditLeagueTeamPage({
 
   return (
     <div className="max-w-[700px] mx-auto md:p-4">
-      <h2 className="ext-2xl md:text-3xl font-heading mb-8">
+      <h2 className="text-2xl md:text-3xl font-heading mb-8">
         Modifica la tua squadra
       </h2>
       <LeagueTeamForm
@@ -27,7 +30,7 @@ export default async function EditLeagueTeamPage({
 
 async function getLeagueMemberTeam(teamId: string) {
   "use cache";
-  cacheTag(getLeagueMemberTeamTag(teamId));
+  cacheTag(getTeamIdTag(teamId), getLeagueMemberTeamTag(teamId));
 
   const memberTeam = await db.query.leagueMemberTeams.findFirst({
     columns: {

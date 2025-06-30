@@ -20,7 +20,6 @@ import SubmitButton from "@/components/SubmitButton";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { createLeagueTeam, updateLeagueTeam } from "../actions/leagueTeam";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useIsMobile } from "@/hooks/useMobile";
 import useActionToast from "@/hooks/useActionToast";
 
 type Props = {
