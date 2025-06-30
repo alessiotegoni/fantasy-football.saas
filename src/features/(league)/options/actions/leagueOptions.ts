@@ -1,10 +1,7 @@
 "use server";
 
-import { leagueOptions, LeagueVisibilityStatusType } from "@/drizzle/schema";
-import {
-  getError,
-  updateLeagueOptions as updateLeagueOptionsDb,
-} from "../db/leagueOptions";
+import { leagueOptions } from "@/drizzle/schema";
+import { updateLeagueOptions as updateLeagueOptionsDb } from "../db/leagueOptions";
 import {
   bonusMalusSchema,
   BonusMalusSchema,

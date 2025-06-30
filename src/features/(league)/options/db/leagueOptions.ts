@@ -1,11 +1,14 @@
 import { db } from "@/drizzle/db";
 import { leagueOptions, LeagueVisibilityStatusType } from "@/drizzle/schema";
-import { getErrorObject } from "@/lib/utils";
+import {} from "@/lib/utils";
 import { eq } from "drizzle-orm";
 import { revalidateLeagueOptionsCache } from "./cache/leagueOption";
+import { createError } from "@/lib/helpers";
 
-export const getError = (message = "Errore nell'aggiornamento delle opzioni") =>
-  getErrorObject(message);
+enum DB_ERROR_MESSAGES {
+  INSERT = "Errore nell'inserimento delle opzioni della lega",
+  UPDATE = "Errore nell'aggiornamento delle opzioni della lega",
+}
 
 export async function insertLeagueOptions(
   { leagueId }: typeof leagueOptions.$inferInsert,
@@ -16,7 +19,9 @@ export async function insertLeagueOptions(
     .values({ leagueId })
     .returning({ leagueId: leagueOptions.leagueId });
 
-  if (!res.leagueId) throw new Error(getError().message);
+  if (!res.leagueId) {
+    throw new Error(createError(DB_ERROR_MESSAGES.INSERT).message);
+  }
 }
 
 export async function updateLeagueOptions(
@@ -30,7 +35,9 @@ export async function updateLeagueOptions(
     .where(eq(leagueOptions.leagueId, leagueId))
     .returning({ leagueId: leagueOptions.leagueId });
 
-  if (!res.leagueId) throw new Error(getError().message);
+  if (!res.leagueId) {
+    throw new Error(createError(DB_ERROR_MESSAGES.UPDATE).message);
+  }
 
   revalidateLeagueOptionsCache({ leagueId: res.leagueId, visibility });
 
