@@ -1,5 +1,7 @@
+import { Badge } from "@/components/ui/badge";
 import { formatPlural } from "@/lib/formatters";
 import { cn } from "@/lib/utils";
+import { Coins } from "iconoir-react";
 
 export default function TeamCreditsBadge({
   credits,
@@ -9,13 +11,14 @@ export default function TeamCreditsBadge({
   className?: string;
 }) {
   return (
-    <p
+    <Badge
       className={cn(
-        "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary",
+        "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary",
         className
       )}
     >
+      <Coins className="!size-4" />
       {formatPlural(credits, { singular: "credito", plural: "crediti" })}
-    </p>
+    </Badge>
   );
 }
