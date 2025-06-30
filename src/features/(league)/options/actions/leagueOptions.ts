@@ -28,26 +28,26 @@ export async function updateGeneralOptions(
   values: GeneralOptionsSchema,
   leagueId: string
 ) {
-  const validation = validateSchema<GeneralOptionsSchema>(
+  const { isValid, error, data } = validateSchema<GeneralOptionsSchema>(
     generalOptionsSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  return await updateOptions({ ...validation.data, leagueId });
+  return await updateOptions({ ...data, leagueId });
 }
 
 export async function updateRosterModuleOptions(
   values: RosterModulesSchema,
   leagueId: string
 ) {
-  const validation = validateSchema<RosterModulesSchema>(
+  const { isValid, error, data } = validateSchema<RosterModulesSchema>(
     rosterModulesSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  const res = await updateOptions({ ...validation.data, leagueId });
+  const res = await updateOptions({ ...data, leagueId });
   revalidateLeagueRosterOptionsCache(leagueId);
 
   return res;
@@ -57,26 +57,26 @@ export async function updateBonusMalusOptions(
   values: BonusMalusSchema,
   leagueId: string
 ) {
-  const validation = validateSchema<BonusMalusSchema>(
+  const { isValid, error, data } = validateSchema<BonusMalusSchema>(
     bonusMalusSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  return await updateOptions({ ...validation.data, leagueId });
+  return await updateOptions({ ...data, leagueId });
 }
 
 export async function updateMarketOptions(
   values: MarketOptionsSchema,
   leagueId: string
 ) {
-  const validation = validateSchema<MarketOptionsSchema>(
+  const { isValid, error, data } = validateSchema<MarketOptionsSchema>(
     marketOptionsSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  return await updateOptions({ ...validation.data, leagueId });
+  return await updateOptions({ ...data, leagueId });
 }
 
 async function updateOptions(options: typeof leagueOptions.$inferInsert) {
