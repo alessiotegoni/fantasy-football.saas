@@ -15,7 +15,9 @@ export const setMemberRoleSchema = memberActionSchema.extend({
 export const banMemberSchema = memberActionSchema.extend({
   reason: z
     .string()
-    .max(200, "La ragione del ban non deve essere superiore ai 200 caratteri"),
+    .min(10, "La ragione del ban deve essere superiore ai 10 caratteri")
+    .max(200, "La ragione del ban non deve essere superiore ai 200 caratteri")
+    .nullable(),
 });
 
 export const unBanMemberSchema = memberActionSchema

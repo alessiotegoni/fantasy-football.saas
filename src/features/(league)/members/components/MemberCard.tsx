@@ -27,9 +27,10 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "../../../../components/ui/alert-dialog";
-import { banMember, kickMember, MemberActionArgs, setMemberRole } from "../actions/memberActions";
+import { banMember, kickMember, setMemberRole } from "../actions/memberActions";
 import { LeagueMemberRoleType } from "@/drizzle/schema";
 import Avatar from "@/components/Avatar";
+import { SetRoleMemberSchema } from "../schema/leagueMember";
 
 type Props = {
   member: {
@@ -55,7 +56,7 @@ export function MemberCard({ member, leagueId, isAdmin, userId }: Props) {
         <Avatar
           imageUrl={member.team?.imageUrl}
           name={member.team?.name || "Team"}
-          size={12}
+          className="size-12"
           renderFallback={() => (
             <div className="size-full flex items-center justify-center">
               <User className="size-6 text-muted-foreground" />
@@ -192,10 +193,9 @@ export function MemberActionsDropdown({
   );
 }
 
-function getMemberActions({
-  role,
-  ...args
-}: MemberActionArgs & { role: LeagueMemberRoleType }) {
+// TODO: add logic to allow user add reason to ban
+
+function getMemberActions({ role, ...args }: SetRoleMemberSchema) {
   const memberRoleAction =
     role === "admin"
       ? {
@@ -226,7 +226,7 @@ function getMemberActions({
     },
     {
       name: "Banna membro",
-      action: banMember.bind(null, args),
+      action: banMember.bind(null, { ...args, reason: "" }),
       icon: UserBadgeCheck,
       loadingText: "Banno membro",
       description:

@@ -65,16 +65,12 @@ export async function updateLeague(
 }
 
 export async function insertLeagueBan(
-  banData: {
-    leagueId: string;
-    userId: string;
-    reason?: string;
-  },
+  { leagueId, userId, reason }: typeof leagueUserBans.$inferInsert,
   tx: Omit<typeof db, "$client"> = db
 ): Promise<string> {
   const [result] = await tx
     .insert(leagueUserBans)
-    .values(banData)
+    .values({ leagueId, userId, reason })
     .returning({ banId: leagueUserBans.id });
 
   if (!result?.banId) {
@@ -82,8 +78,8 @@ export async function insertLeagueBan(
   }
 
   revalidateLeagueMembersCache({
-    leagueId: banData.leagueId,
-    userId: banData.userId,
+    leagueId,
+    userId,
   });
 
   return result.banId;
