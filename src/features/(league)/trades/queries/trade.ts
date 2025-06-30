@@ -3,7 +3,7 @@ import {
   leagueTradeProposalPlayers,
   leagueTradeProposals,
 } from "@/drizzle/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, ne, or, SQL } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import {
   getLeagueTradesTag,
@@ -41,7 +41,61 @@ export async function getUserTrades(
           eq(leagueTradeProposals.receiverTeamId, userTeamId)
         );
 
-  const trades = await db.query.leagueTradeProposals.findMany({
+  const trades = await getBaseTradesQuery(whereCondition);
+  cacheTag(...getTradesTeamsTags(trades), ...getTradesPlayersTags(trades));
+
+  return trades;
+}
+
+export async function getLeagueTrades(leagueId: string, userTeamId: string) {
+  "use cache";
+
+  const whereCondition = and(
+    eq(leagueTradeProposals.leagueId, leagueId),
+    or(
+      ne(leagueTradeProposals.proposerTeamId, userTeamId),
+      ne(leagueTradeProposals.receiverTeamId, userTeamId)
+    )
+  );
+
+  const trades = await getBaseTradesQuery(whereCondition);
+  cacheTag(...getTradesTeamsTags(trades), ...getTradesPlayersTags(trades));
+
+  return trades;
+}
+
+export async function getTrade(tradeId: string) {
+  "use cache";
+  cacheTag(getTradeIdTag(tradeId));
+
+  return db
+    .select()
+    .from(leagueTradeProposals)
+    .where(eq(leagueTradeProposals.id, tradeId))
+    .then(([result]) => result);
+}
+
+export async function getTradePlayers(tradeId: string) {
+  "use cache";
+  cacheTag(getTradePlayersIdTag(tradeId));
+
+  return db
+    .select()
+    .from(leagueTradeProposalPlayers)
+    .where(eq(leagueTradeProposalPlayers.tradeProposalId, tradeId))
+    .then(([result]) => result);
+}
+
+export async function getTradeStatus(tradeId: string) {
+  return db
+    .select({ status: leagueTradeProposals.status })
+    .from(leagueTradeProposals)
+    .where(eq(leagueTradeProposals.id, tradeId))
+    .then(([trade]) => trade.status);
+}
+
+function getBaseTradesQuery(whereCondition: SQL | undefined) {
+  return db.query.leagueTradeProposals.findMany({
     columns: {
       leagueId: false,
     },
@@ -77,49 +131,19 @@ export async function getUserTrades(
     where: whereCondition,
     orderBy: ({ createdAt }, { desc }) => desc(createdAt),
   });
+}
 
-  cacheTag(
-    ...trades.flatMap((trade) => [
-      getTeamIdTag(trade.proposerTeamId),
-      getTeamIdTag(trade.receiverTeamId),
-    ]),
-    ...trades.flatMap((trade) =>
-      trade.proposedPlayers.map(({ player }) => getPlayersIdTag(player.id))
-    )
+function getTradesTeamsTags(trades: Trades) {
+  return trades.flatMap((trade) => [
+    getTeamIdTag(trade.proposerTeamId),
+    getTeamIdTag(trade.receiverTeamId),
+  ]);
+}
+function getTradesPlayersTags(trades: Trades) {
+  return trades.flatMap((trade) =>
+    trade.proposedPlayers.map(({ player }) => getPlayersIdTag(player.id))
   );
-
-  return trades;
 }
 
-export async function getTrade(tradeId: string) {
-  "use cache";
-  cacheTag(getTradeIdTag(tradeId));
-
-  return db
-    .select()
-    .from(leagueTradeProposals)
-    .where(eq(leagueTradeProposals.id, tradeId))
-    .then(([result]) => result);
-}
-
-export async function getTradePlayers(tradeId: string) {
-  "use cache";
-  cacheTag(getTradePlayersIdTag(tradeId));
-
-  return db
-    .select()
-    .from(leagueTradeProposalPlayers)
-    .where(eq(leagueTradeProposalPlayers.tradeProposalId, tradeId))
-    .then(([result]) => result);
-}
-
-export async function getTradeStatus(tradeId: string) {
-  return db
-    .select({ status: leagueTradeProposals.status })
-    .from(leagueTradeProposals)
-    .where(eq(leagueTradeProposals.id, tradeId))
-    .then(([trade]) => trade.status);
-}
-
-export type Trades = Awaited<ReturnType<typeof getUserTrades>>;
+export type Trades = Awaited<ReturnType<typeof getBaseTradesQuery>>;
 export type Trade = Awaited<ReturnType<typeof getTrade>>;
