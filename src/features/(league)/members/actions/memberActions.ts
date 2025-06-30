@@ -1,44 +1,62 @@
 "use server";
 
-import {
-  deleteLeagueMember,
-  getError,
-  updateLeagueMember,
-} from "../db/leagueMember";
+import { deleteLeagueMember, updateLeagueMember } from "../db/leagueMember";
 import { db } from "@/drizzle/db";
 import { leagueMemberRoles, LeagueMemberRoleType } from "@/drizzle/schema";
-import { deleteLeagueBan, insertLeagueBan } from "@/features/(league)/leagues/db/league";
+import {
+  deleteLeagueBan,
+  insertLeagueBan,
+} from "@/features/(league)/leagues/db/league";
 import { canPerformMemberAction } from "../permissions/leagueMember";
 import { removeUserLeagueMetadata } from "@/features/users/utils/user";
 
-export type MemberActionArgs = {
-  memberId: string;
-  userId: string;
-  leagueId: string;
-};
+enum MEMBER_ACTION_MESSAGES {
+  SET_ROLE_ERROR = "Impossibile settare il ruolo al membro",
+  SET_ROLE_OWNER_ERROR = "Non puoi cambiare ruolo al creatore della lega",
+  KICK_ERROR = "Impossibile espellere l'utente",
+  KICK_OWNER_ERROR = "Non puoi espellere il creatore della lega",
+  BAN_ERROR = "Impossibile bannare l'utente",
+  BAN_OWNER_ERROR = "Non puoi bannare il creatore della lega",
+  UNBAN_ERROR = "Impossibile sbannare l'utente",
+  UNBAN_OWNER_ERROR = "Non puoi sbannare il creatore della lega",
+
+  SET_ROLE_SUCCESS = "Ruolo aggiornato con successo",
+  KICK_SUCCESS = "Membro espulso con successo",
+  BAN_SUCCESS = "Membro bannato con successo",
+  UNBAN_SUCCESS = "Membro sbannato con successo",
+}
+
+
 
 export async function setMemberRole(
   args: MemberActionArgs & { role: LeagueMemberRoleType }
 ) {
-  if (!validateMemberAction(args) || !leagueMemberRoles.includes(args.role)) {
-    return getError("Impossibile settare il ruolo al membro");
+  const validation = validateSchema<typeof args>(
+    MemberActionSchema.extend({ role: z.string() }),
+    args,
+    MEMBER_ACTION_MESSAGES.SET_ROLE
+  );
+  if (!validation.isValid) return validation.error;
+
+  if (!leagueMemberRoles.includes(args.role)) {
+    return createError(MEMBER_ACTION_MESSAGES.SET_ROLE);
   }
 
   if (!(await canPerformMemberAction(args))) {
-    return getError("Non puoi cambiare ruolo al creatore della lega");
+    return createError(MEMBER_ACTION_MESSAGES.SET_ROLE_OWNER);
   }
 
   await updateLeagueMember(args.memberId, { role: args.role });
 
-  return { error: false, message: "Ruolo aggiornato con successo" };
+  return createSuccess(MEMBER_ACTION_MESSAGES.SET_ROLE, {});
 }
 
 export async function kickMember(args: MemberActionArgs) {
-  if (!validateMemberAction(args))
-    return getError("Impossibile espellere l'utente");
+  const validation = validateSchema(MemberActionSchema, args, MEMBER_ACTION_MESSAGES.KICK);
+  if (!validation.isValid) return validation.error;
 
   if (!(await canPerformMemberAction(args))) {
-    return getError("Non puoi espellere il creatore della lega");
+    return createError(MEMBER_ACTION_MESSAGES.KICK_OWNER);
   }
 
   await Promise.all([
@@ -46,43 +64,47 @@ export async function kickMember(args: MemberActionArgs) {
     removeUserLeagueMetadata(args),
   ]);
 
-  return { error: false, message: "Membro espulso con successo" };
+  return createSuccess(MEMBER_ACTION_MESSAGES.KICK, {});
 }
 
-export async function banMember(args: MemberActionArgs & { reason?: string }) {
-  if (!validateMemberAction(args))
-    return getError("Impossibile bannare l'utente");
+export async function banMember(
+  args: MemberActionArgs & { reason?: string }
+) {
+  const validation = validateSchema(MemberActionSchema, args, MEMBER_ACTION_MESSAGES.BAN);
+  if (!validation.isValid) return validation.error;
 
   if (!(await canPerformMemberAction(args))) {
-    return getError("Non puoi bannare il creatore della lega");
+    return createError(MEMBER_ACTION_MESSAGES.BAN_OWNER);
   }
 
   await db.transaction(async (tx) => {
-    return await Promise.all([
+    await Promise.all([
       deleteLeagueMember(args.memberId, tx),
       insertLeagueBan(args, tx),
       removeUserLeagueMetadata(args),
     ]);
   });
 
-  return { error: false, message: "Membro bannato con successo" };
+  return createSuccess(MEMBER_ACTION_MESSAGES.BAN, {});
 }
 
 export async function unBanMember(
   args: Omit<MemberActionArgs, "memberId"> & { banId: string }
 ) {
-  if (!validateMemberAction(args))
-    return getError("Impossibile sbannare l'utente");
+  const validation = validateSchema(
+    MemberActionSchema.omit({ memberId: true }).extend({
+      banId: z.string().uuid("ID ban non valido"),
+    }),
+    args,
+    MEMBER_ACTION_MESSAGES.UNBAN
+  );
+  if (!validation.isValid) return validation.error;
 
   if (!(await canPerformMemberAction(args))) {
-    return getError("Non puoi sbannare il creatore della lega");
+    return createError(MEMBER_ACTION_MESSAGES.UNBAN_OWNER);
   }
 
   await deleteLeagueBan(args.banId);
 
-  return { error: false, message: "Membro sbannato con successo" };
-}
-
-function validateMemberAction<T extends object>(args: T) {
-  return Object.values(args).every((arg) => typeof arg === "string");
+  return createSuccess(MEMBER_ACTION_MESSAGES.UNBAN, {});
 }
