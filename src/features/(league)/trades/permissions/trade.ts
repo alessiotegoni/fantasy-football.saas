@@ -21,6 +21,7 @@ enum TRADE_ERRORS {
   MARKET_CLOSED = "Il mercato degli scambi è attualmente chiuso",
   NOT_LEAGUE_MEMBER = "Non sei membro della lega",
   INVALID_PROPOSER = "La squadra che fa lo scambio deve essere la tua",
+  INVALID_RECEIVER = "Solo il team ricevente può accettare o rifiutare lo scambio.",
   INSUFFICIENT_PROPOSER_CREDITS = "Non hai abbastanza crediti per questo scambio",
   INSUFFICIENT_RECEIVER_CREDITS = "La squadra dello scambio non ha abbastanza crediti da offrire",
   TRADE_NOT_PENDING = "Puoi accettare o rifiutare solo le richieste in sospeso",
@@ -28,77 +29,52 @@ enum TRADE_ERRORS {
   DELETE_NOT_PENDING = "Puoi eliminare solo le proposte di scambio che non sono ancora state accettate o rifiutate",
 }
 
-export async function canCreateTrade({
-  userId,
-  leagueId,
-  proposerTeamId,
-  receiverTeamId,
-  creditOfferedByProposer,
-  creditRequestedByProposer,
-}: TradePermissionParams) {
-  const [isMarketOpen, isMemberOfLeague, userTeamId] = await Promise.all([
-    isTradeMarketOpen(leagueId),
-    isLeagueMember(userId, leagueId),
-    getUserTeamId(userId, leagueId),
-  ]);
+export async function canCreateTrade(args: TradePermissionParams) {
+  const baseValidation = await validateTradeBaseRequirements(
+    args.userId,
+    args.leagueId
+  );
+  if (baseValidation.error) return baseValidation;
 
-  if (!isMarketOpen) {
-    return createError(TRADE_ERRORS.MARKET_CLOSED);
-  }
-
-  if (!isMemberOfLeague) {
-    return createError(TRADE_ERRORS.NOT_LEAGUE_MEMBER);
-  }
-
-  if (userTeamId !== proposerTeamId) {
+  if (baseValidation.data.userTeamId !== args.proposerTeamId) {
     return createError(TRADE_ERRORS.INVALID_PROPOSER);
   }
 
-  const needsCreditsValidation =
-    creditOfferedByProposer || creditRequestedByProposer;
-  if (!needsCreditsValidation) {
-    return createSuccess("", {
-      proposerTeamCredits: 0,
-      receiverTeamCredits: 0,
-    });
-  }
-
-  const [proposerTeamCredits, receiverTeamCredits] = await Promise.all([
-    getTeamCredits(proposerTeamId),
-    getTeamCredits(receiverTeamId),
-  ]);
-
-  const creditsValidation = validateCredits({
-    creditOfferedByProposer,
-    creditRequestedByProposer,
-    proposerTeamCredits,
-    receiverTeamCredits,
-  });
-
+  const creditsValidation = await validateTradeCredits(args);
   if (creditsValidation.error) return creditsValidation;
 
-  return createSuccess("", { proposerTeamCredits, receiverTeamCredits });
+  return createSuccess("", null);
 }
 
 export async function canUpdateTrade(
   tradeId: string,
   args: TradePermissionParams
 ) {
-  const [permissions, tradeStatus] = await Promise.all([
-    canCreateTrade(args),
-    getTradeStatus(tradeId),
-  ]);
+  const baseValidation = await validateTradeBaseRequirements(
+    args.userId,
+    args.leagueId
+  );
+  if (baseValidation.error) return baseValidation;
 
-  if (permissions.error) return permissions;
+  if (baseValidation.data.userTeamId !== args.receiverTeamId) {
+    return createError(TRADE_ERRORS.INVALID_RECEIVER);
+  }
+
+  const [tradeStatus, creditValidation, roleSlotValidation] = await Promise.all(
+    [
+      getTradeStatus(tradeId),
+      validateTradeCredits(args),
+      validateTeamRoleSlots(args),
+    ]
+  );
 
   if (tradeStatus !== "pending") {
     return createError(TRADE_ERRORS.TRADE_NOT_PENDING);
   }
-
-  const roleSlotValidation = await validateTeamRoleSlots(args);
+  if (creditValidation.error) return creditValidation;
   if (roleSlotValidation.error) return roleSlotValidation;
 
-  return createSuccess("", permissions.data);
+  return createSuccess("", creditValidation.data);
 }
 
 export async function canDeleteTrade({
@@ -133,27 +109,49 @@ export async function canDeleteTrade({
   return createSuccess("", null);
 }
 
-export async function isTradeMarketOpen(leagueId: string): Promise<boolean> {
-  const [result] = await db
-    .select({ isOpen: leagueOptions.isTradingMarketOpen })
-    .from(leagueOptions)
-    .where(eq(leagueOptions.leagueId, leagueId))
-    .limit(1);
+async function validateTradeBaseRequirements(userId: string, leagueId: string) {
+  const [isMarketOpen, isMemberOfLeague, userTeamId] = await Promise.all([
+    isTradeMarketOpen(leagueId),
+    isLeagueMember(userId, leagueId),
+    getUserTeamId(userId, leagueId),
+  ]);
 
-  return result?.isOpen ?? false;
+  if (!isMarketOpen) {
+    return createError(TRADE_ERRORS.MARKET_CLOSED);
+  }
+
+  if (!isMemberOfLeague) {
+    return createError(TRADE_ERRORS.NOT_LEAGUE_MEMBER);
+  }
+
+  return createSuccess("", { userTeamId });
 }
 
-function validateCredits({
+async function validateTradeCredits({
+  proposerTeamId,
+  receiverTeamId,
   creditOfferedByProposer,
   creditRequestedByProposer,
-  proposerTeamCredits,
-  receiverTeamCredits,
 }: {
+  proposerTeamId: string;
+  receiverTeamId: string;
   creditOfferedByProposer?: number | null;
   creditRequestedByProposer?: number | null;
-  proposerTeamCredits: number;
-  receiverTeamCredits: number;
 }) {
+  const needsValidation = creditOfferedByProposer || creditRequestedByProposer;
+
+  if (!needsValidation) {
+    return createSuccess("", {
+      proposerTeamCredits: 0,
+      receiverTeamCredits: 0,
+    });
+  }
+
+  const [proposerTeamCredits, receiverTeamCredits] = await Promise.all([
+    getTeamCredits(proposerTeamId),
+    getTeamCredits(receiverTeamId),
+  ]);
+
   if (
     creditOfferedByProposer &&
     creditOfferedByProposer > proposerTeamCredits
@@ -172,7 +170,10 @@ function validateCredits({
     );
   }
 
-  return createSuccess("", { proposerTeamCredits, receiverTeamCredits });
+  return createSuccess("", {
+    proposerTeamCredits,
+    receiverTeamCredits,
+  });
 }
 
 async function validateTeamRoleSlots(args: TradePermissionParams) {
@@ -241,4 +242,14 @@ async function getTeamsRoleSlotValidation({
   ]);
 
   return { proposerTeam, receiverTeam };
+}
+
+export async function isTradeMarketOpen(leagueId: string): Promise<boolean> {
+  const [result] = await db
+    .select({ isOpen: leagueOptions.isTradingMarketOpen })
+    .from(leagueOptions)
+    .where(eq(leagueOptions.leagueId, leagueId))
+    .limit(1);
+
+  return result?.isOpen ?? false;
 }

@@ -52,7 +52,7 @@ type TradeExecutionContext = {
 enum TRADE_MESSAGES {
   UPDATE_ERROR = "Errore nell'aggiornamento dello stato dello scambio",
   DELETE_ERROR = "Errore nell'eliminazione dello scambio",
-  TRADE_NOT_FOUND = "Questo scambio non esiste",
+  TRADE_NOT_FOUND = "Questo scambio non esiste piu",
   TRADE_ACCEPTED = "Scambio accettato con successo",
   TRADE_REJECTED = "Scambio rifiutato con successo",
   TRADE_DELETED = "Scambio eliminato con successo",
