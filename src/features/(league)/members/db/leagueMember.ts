@@ -1,12 +1,14 @@
 import { db } from "@/drizzle/db";
 import { LeagueMemberRoleType, leagueMembers } from "@/drizzle/schema";
-import { getErrorObject } from "@/lib/utils";
 import { revalidateLeagueMembersCache } from "./cache/leagueMember";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
+import { createError } from "@/lib/helpers";
 
-export const getError = (
-  message = "Impossibile entrare nella lega, riprovare"
-) => getErrorObject(message);
+enum DB_ERROR_MESSAGES {
+  INSERT = "Errore nell'inserimento del membro nella lega",
+  UPDATE = "Errore nell'aggiornamento del membro nella lega",
+  DELETE = "Errore nell'eliminazione del membro nella lega",
+}
 
 export async function insertLeagueMember(
   memberId: string,
@@ -19,9 +21,7 @@ export async function insertLeagueMember(
     .returning({ memberId: leagueMembers.id });
 
   if (!res.memberId)
-    throw new Error(
-      getError("Errore nell'inserimento del membro nella lega").message
-    );
+    throw new Error(createError(DB_ERROR_MESSAGES.INSERT).message);
 
   revalidateLeagueMembersCache({ leagueId, userId: memberId });
 
@@ -42,9 +42,7 @@ export async function updateLeagueMember(
     });
 
   if (!res.userId)
-    throw new Error(
-      getError("Errore nell'aggiornamento del membro nella lega").message
-    );
+    throw new Error(createError(DB_ERROR_MESSAGES.UPDATE).message);
 
   revalidateLeagueMembersCache(res);
 
@@ -64,9 +62,7 @@ export async function deleteLeagueMember(
     });
 
   if (!res.userId)
-    throw new Error(
-      getError("Errore nell'eliminazione del membro nella lega").message
-    );
+    throw new Error(createError(DB_ERROR_MESSAGES.DELETE).message);
 
   revalidateLeagueMembersCache(res);
 

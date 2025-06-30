@@ -110,7 +110,7 @@ function TradeActions({
         requireAreYouSure
         areYouSureDescription="Puoi comunque riinviare un'altra proposta in un secondo momento"
       >
-        <Trash />
+        <Trash className="!size-5" />
         Elimina
       </ActionButton>
     );
@@ -139,7 +139,7 @@ function TradeActions({
             tradeId: trade.id,
           })}
         >
-          <ThumbsDown />
+          <ThumbsDown className="!size-5" />
           Rifiuta
         </ActionButton>
       );
@@ -167,7 +167,7 @@ function TradeActions({
             tradeId: trade.id,
           })}
         >
-          <ThumbsUp />
+          <ThumbsUp className="!size-5" />
           Accetta
         </ActionButton>
       );
