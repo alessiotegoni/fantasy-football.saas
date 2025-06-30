@@ -31,12 +31,13 @@ export async function login(
   values: LoginSchemaType,
   options?: { redirectUrl?: string | null }
 ) {
-  const validation = validateSchema<LoginSchemaType>(loginSchema, values);
-  if (!validation.isValid) return validation.error;
+  const { isValid, error, data } = validateSchema<LoginSchemaType>(
+    loginSchema,
+    values
+  );
+  if (!isValid) return error;
 
   const redirectUrl = options?.redirectUrl ? `next=${options.redirectUrl}` : "";
-
-  const { data } = validation;
 
   if (data.type === "email") {
     return await emailLogin(data.email, redirectUrl);
@@ -81,24 +82,24 @@ async function oauthLogin(
 }
 
 export async function verifyOtp(values: OtpSchema) {
-  const validation = validateSchema<OtpSchema>(
+  const { isValid, error, data } = validateSchema<OtpSchema>(
     otpSchema,
     values,
     AUTH_ERRORS.INVALID_CODE
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
   const [supabase, isEmailConfirmed] = await Promise.all([
     createClient(),
-    hasConfirmedEmail(validation.data.email),
+    hasConfirmedEmail(data.email),
   ]);
 
-  const { error } = await supabase.auth.verifyOtp({
+  const result = await supabase.auth.verifyOtp({
     type: isEmailConfirmed ? "magiclink" : "signup",
-    ...validation.data,
+    ...data,
   });
 
-  if (error) return createError(AUTH_ERRORS.INVALID_CODE);
+  if (result.error) return createError(AUTH_ERRORS.INVALID_CODE);
 }
 
 export async function logout() {
