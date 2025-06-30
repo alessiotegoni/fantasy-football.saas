@@ -41,7 +41,7 @@ export default function UserTradeCard({
   return (
     <div
       className={cn(
-        "w-full rounded-3xl transition-all duration-200 p-4 ring-2",
+        "w-full rounded-3xl transition-all duration-200 p-4 ring-2 min-h-[300px]",
         theme.cardBg,
         theme.cardRing
       )}

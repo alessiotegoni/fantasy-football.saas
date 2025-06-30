@@ -17,6 +17,7 @@ export const TRADE_STATUS_THEMES = {
     badgeBg: "bg-zinc-600 border-zinc-500",
     badgeIcon: Clock,
     badgeText: "In attesa",
+    filterText: "In attesa",
   },
   accepted: {
     cardBg: "bg-green-400/40",
@@ -27,6 +28,7 @@ export const TRADE_STATUS_THEMES = {
     button: "bg-green-500 border border-green-400 hover:bg-green-500/80",
     badgeIcon: ThumbsUp,
     badgeText: "Accettata",
+    filterText: "Accettati",
   },
   rejected: {
     cardBg: "bg-red-500/40",
@@ -37,6 +39,7 @@ export const TRADE_STATUS_THEMES = {
     button: "bg-red-500/70 border border-red-500 hover:bg-red-500/50",
     badgeIcon: ThumbsDown,
     badgeText: "Rifiutata",
+    filterText: "Rifiutati",
   },
 } as const;
 export type TradeStatusTheme =

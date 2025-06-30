@@ -33,6 +33,10 @@ async function SuspendedComponent({ leagueId }: { leagueId: string }) {
       getTrades={getLeagueTrades}
       userTeamId={userTeamId}
       context="league"
+      emptyState={{
+        description:
+          "Non sono ancora state effetuate proposte di scambio in questa lega, le proposte che riguardano la tua squadra saranno mostrate nella sezione 'I miei scambi'",
+      }}
     />
   );
 }
