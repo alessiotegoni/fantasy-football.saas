@@ -28,26 +28,26 @@ export async function updateGeneralOptions(
   values: GeneralOptionsSchema,
   leagueId: string
 ) {
-  const schemaValidation = validateSchema<GeneralOptionsSchema>(
+  const validation = validateSchema<GeneralOptionsSchema>(
     generalOptionsSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
-  return await updateOptions({ ...schemaValidation.data, leagueId });
+  return await updateOptions({ ...validation.data, leagueId });
 }
 
 export async function updateRosterModuleOptions(
   values: RosterModulesSchema,
   leagueId: string
 ) {
-  const schemaValidation = validateSchema<RosterModulesSchema>(
+  const validation = validateSchema<RosterModulesSchema>(
     rosterModulesSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
-  const res = await updateOptions({ ...schemaValidation.data, leagueId });
+  const res = await updateOptions({ ...validation.data, leagueId });
   revalidateLeagueRosterOptionsCache(leagueId);
 
   return res;
@@ -57,26 +57,26 @@ export async function updateBonusMalusOptions(
   values: BonusMalusSchema,
   leagueId: string
 ) {
-  const schemaValidation = validateSchema<BonusMalusSchema>(
+  const validation = validateSchema<BonusMalusSchema>(
     bonusMalusSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
-  return await updateOptions({ ...schemaValidation.data, leagueId });
+  return await updateOptions({ ...validation.data, leagueId });
 }
 
 export async function updateMarketOptions(
   values: MarketOptionsSchema,
   leagueId: string
 ) {
-  const schemaValidation = validateSchema<MarketOptionsSchema>(
+  const validation = validateSchema<MarketOptionsSchema>(
     marketOptionsSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
-  return await updateOptions({ ...schemaValidation.data, leagueId });
+  return await updateOptions({ ...validation.data, leagueId });
 }
 
 async function updateOptions(options: typeof leagueOptions.$inferInsert) {

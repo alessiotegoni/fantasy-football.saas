@@ -9,7 +9,7 @@ export const memberActionSchema = z.object({
 });
 
 export const setMemberRoleSchema = memberActionSchema.extend({
-  role: z.enum(leagueMemberRoles),
+  role: z.enum(leagueMemberRoles, { message: "Ruolo invalido" }),
 });
 
 export const banMemberSchema = memberActionSchema.extend({

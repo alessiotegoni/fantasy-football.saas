@@ -9,6 +9,18 @@ import {
 } from "@/features/(league)/leagues/db/league";
 import { canPerformMemberAction } from "../permissions/leagueMember";
 import { removeUserLeagueMetadata } from "@/features/users/utils/user";
+import { createError, createSuccess } from "@/lib/helpers";
+import { validateSchema } from "@/schema/helpers";
+import {
+  banMemberSchema,
+  BanMemberSchema,
+  memberActionSchema,
+  MemberActionSchema,
+  setMemberRoleSchema,
+  SetRoleMemberSchema,
+  unBanMemberSchema,
+  UnBanMemberSchema,
+} from "../schema/leagueMember";
 
 enum MEMBER_ACTION_MESSAGES {
   SET_ROLE_ERROR = "Impossibile settare il ruolo al membro",
@@ -26,85 +38,79 @@ enum MEMBER_ACTION_MESSAGES {
   UNBAN_SUCCESS = "Membro sbannato con successo",
 }
 
-
-
-export async function setMemberRole(
-  args: MemberActionArgs & { role: LeagueMemberRoleType }
-) {
-  const validation = validateSchema<typeof args>(
-    MemberActionSchema.extend({ role: z.string() }),
-    args,
-    MEMBER_ACTION_MESSAGES.SET_ROLE
+export async function setMemberRole(values: SetRoleMemberSchema) {
+  const { isValid, error, data } = validateSchema<SetRoleMemberSchema>(
+    setMemberRoleSchema,
+    values,
+    MEMBER_ACTION_MESSAGES.SET_ROLE_ERROR
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  if (!leagueMemberRoles.includes(args.role)) {
-    return createError(MEMBER_ACTION_MESSAGES.SET_ROLE);
+  if (!(await canPerformMemberAction(data))) {
+    return createError(MEMBER_ACTION_MESSAGES.SET_ROLE_OWNER_ERROR);
   }
 
-  if (!(await canPerformMemberAction(args))) {
-    return createError(MEMBER_ACTION_MESSAGES.SET_ROLE_OWNER);
-  }
+  await updateLeagueMember(data.memberId, { role: data.role });
 
-  await updateLeagueMember(args.memberId, { role: args.role });
-
-  return createSuccess(MEMBER_ACTION_MESSAGES.SET_ROLE, {});
+  return createSuccess(MEMBER_ACTION_MESSAGES.SET_ROLE_SUCCESS, null);
 }
 
-export async function kickMember(args: MemberActionArgs) {
-  const validation = validateSchema(MemberActionSchema, args, MEMBER_ACTION_MESSAGES.KICK);
-  if (!validation.isValid) return validation.error;
+export async function kickMember(values: MemberActionSchema) {
+  const { isValid, error, data } = validateSchema<MemberActionSchema>(
+    memberActionSchema,
+    values,
+    MEMBER_ACTION_MESSAGES.KICK_ERROR
+  );
+  if (!isValid) return error;
 
-  if (!(await canPerformMemberAction(args))) {
-    return createError(MEMBER_ACTION_MESSAGES.KICK_OWNER);
+  if (!(await canPerformMemberAction(data))) {
+    return createError(MEMBER_ACTION_MESSAGES.KICK_OWNER_ERROR);
   }
 
   await Promise.all([
-    deleteLeagueMember(args.memberId),
-    removeUserLeagueMetadata(args),
+    deleteLeagueMember(data.memberId),
+    removeUserLeagueMetadata(data),
   ]);
 
-  return createSuccess(MEMBER_ACTION_MESSAGES.KICK, {});
+  return createSuccess(MEMBER_ACTION_MESSAGES.KICK_SUCCESS, null);
 }
 
-export async function banMember(
-  args: MemberActionArgs & { reason?: string }
-) {
-  const validation = validateSchema(MemberActionSchema, args, MEMBER_ACTION_MESSAGES.BAN);
-  if (!validation.isValid) return validation.error;
+export async function banMember(values: BanMemberSchema) {
+  const { isValid, error, data } = validateSchema<BanMemberSchema>(
+    banMemberSchema,
+    values,
+    MEMBER_ACTION_MESSAGES.BAN_ERROR
+  );
+  if (!isValid) return error;
 
-  if (!(await canPerformMemberAction(args))) {
-    return createError(MEMBER_ACTION_MESSAGES.BAN_OWNER);
+  if (!(await canPerformMemberAction(data))) {
+    return createError(MEMBER_ACTION_MESSAGES.BAN_OWNER_ERROR);
   }
 
   await db.transaction(async (tx) => {
     await Promise.all([
-      deleteLeagueMember(args.memberId, tx),
-      insertLeagueBan(args, tx),
-      removeUserLeagueMetadata(args),
+      deleteLeagueMember(data.memberId, tx),
+      insertLeagueBan(data, tx),
+      removeUserLeagueMetadata(data),
     ]);
   });
 
-  return createSuccess(MEMBER_ACTION_MESSAGES.BAN, {});
+  return createSuccess(MEMBER_ACTION_MESSAGES.BAN_SUCCESS, null);
 }
 
-export async function unBanMember(
-  args: Omit<MemberActionArgs, "memberId"> & { banId: string }
-) {
-  const validation = validateSchema(
-    MemberActionSchema.omit({ memberId: true }).extend({
-      banId: z.string().uuid("ID ban non valido"),
-    }),
-    args,
-    MEMBER_ACTION_MESSAGES.UNBAN
+export async function unBanMember(values: UnBanMemberSchema) {
+  const { isValid, error, data } = validateSchema<UnBanMemberSchema>(
+    unBanMemberSchema,
+    values,
+    MEMBER_ACTION_MESSAGES.UNBAN_ERROR
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  if (!(await canPerformMemberAction(args))) {
-    return createError(MEMBER_ACTION_MESSAGES.UNBAN_OWNER);
+  if (!(await canPerformMemberAction(data))) {
+    return createError(MEMBER_ACTION_MESSAGES.UNBAN_OWNER_ERROR);
   }
 
-  await deleteLeagueBan(args.banId);
+  await deleteLeagueBan(data.banId);
 
-  return createSuccess(MEMBER_ACTION_MESSAGES.UNBAN, {});
+  return createSuccess(MEMBER_ACTION_MESSAGES.UNBAN_SUCCESS, null);
 }

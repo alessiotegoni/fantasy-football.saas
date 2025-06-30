@@ -59,25 +59,25 @@ enum TRADE_MESSAGES {
 };
 
 export async function createTrade(values: CreateTradeProposalSchema) {
-  const schemaValidation = validateSchema<CreateTradeProposalSchema>(
+  const validation = validateSchema<CreateTradeProposalSchema>(
     createTradeProposalSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const { players, ...trade } = schemaValidation.data;
+  const { players, ...trade } = validation.data;
 
   const permissions = await canCreateTrade({
     userId,
-    ...schemaValidation.data,
+    ...validation.data,
   });
   if (permissions.error) return createError(permissions.message);
 
   await executeTradeCreation(trade, players);
-  redirect(`/leagues/${schemaValidation.data.leagueId}/my-trades`);
+  redirect(`/leagues/${validation.data.leagueId}/my-trades`);
 }
 
 async function executeTradeCreation(
@@ -98,31 +98,31 @@ async function executeTradeCreation(
 }
 
 async function updateTradeStatus(values: UpdateTradeProposalSchema) {
-  const schemaValidation = validateSchema<UpdateTradeProposalSchema>(
+  const validation = validateSchema<UpdateTradeProposalSchema>(
     updateTradeProposalSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
   const [userId, trade] = await Promise.all([
     getUserId(),
-    getTrade(schemaValidation.data.tradeId),
+    getTrade(validation.data.tradeId),
   ]);
 
   if (!userId || !trade) {
     return createError(TRADE_MESSAGES.TRADE_NOT_FOUND);
   }
 
-  const permissions = await canUpdateTrade(schemaValidation.data.tradeId, {
+  const permissions = await canUpdateTrade(validation.data.tradeId, {
     userId,
-    ...schemaValidation.data,
+    ...validation.data,
     ...trade,
   });
   if (permissions.error) return createError(permissions.message);
 
-  await executeTradeUpdate(schemaValidation.data, trade, permissions.data);
+  await executeTradeUpdate(validation.data, trade, permissions.data);
 
-  const isAccepted = schemaValidation.data.status === "accepted";
+  const isAccepted = validation.data.status === "accepted";
   return createSuccess(
     isAccepted ? TRADE_MESSAGES.TRADE_ACCEPTED : TRADE_MESSAGES.TRADE_REJECTED,
     null
@@ -149,15 +149,15 @@ async function executeTradeUpdate(
 }
 
 export async function deleteTrade(values: DeleteTradeProposalSchema) {
-  const schemaValidation = validateSchema<DeleteTradeProposalSchema>(
+  const validation = validateSchema<DeleteTradeProposalSchema>(
     deleteTradeProposalSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
   const [userId, trade] = await Promise.all([
     getUserId(),
-    getTrade(schemaValidation.data.tradeId),
+    getTrade(validation.data.tradeId),
   ]);
 
   if (!userId || !trade) {
@@ -166,14 +166,14 @@ export async function deleteTrade(values: DeleteTradeProposalSchema) {
 
   const permissions = await canDeleteTrade({
     userId,
-    ...schemaValidation.data,
+    ...validation.data,
     ...trade,
   });
   if (permissions.error) return createError(permissions.message);
 
   await deleteTradeDb(
-    schemaValidation.data.leagueId,
-    schemaValidation.data.tradeId
+    validation.data.leagueId,
+    validation.data.tradeId
   );
 
   return {

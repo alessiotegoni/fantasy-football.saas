@@ -26,11 +26,11 @@ export async function createLeagueTeam(
   leagueId: string,
   values: LeagueTeamSchema
 ) {
-  const schemaValidation = validateSchema<LeagueTeamSchema>(
+  const validation = validateSchema<LeagueTeamSchema>(
     leagueTeamSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
@@ -41,7 +41,7 @@ export async function createLeagueTeam(
   if (await memberHasTeam(leagueMemberId))
     return createError(TEAM_ERROR_MESSAGES.TEAM_EXISTS);
 
-  const { data } = schemaValidation;
+  const { data } = validation;
 
   const teamId = await insertLeagueTeam(
     {
@@ -64,11 +64,11 @@ export async function updateLeagueTeam(
   leagueId: string,
   values: LeagueTeamSchema
 ) {
-  const schemaValidation = validateSchema<LeagueTeamSchema>(
+  const validation = validateSchema<LeagueTeamSchema>(
     leagueTeamSchema,
     values
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
@@ -82,7 +82,7 @@ export async function updateLeagueTeam(
     return createError(TEAM_ERROR_MESSAGES.NOT_TEAM_OWNER);
   }
 
-  const { data } = schemaValidation;
+  const { data } = validation;
 
   await updateLeagueTeamDb(teamId, leagueId, data);
 

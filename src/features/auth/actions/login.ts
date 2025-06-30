@@ -31,12 +31,12 @@ export async function login(
   values: LoginSchemaType,
   options?: { redirectUrl?: string | null }
 ) {
-  const schemaValidation = validateSchema<LoginSchemaType>(loginSchema, values);
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  const validation = validateSchema<LoginSchemaType>(loginSchema, values);
+  if (!validation.isValid) return validation.error;
 
   const redirectUrl = options?.redirectUrl ? `next=${options.redirectUrl}` : "";
 
-  const { data } = schemaValidation;
+  const { data } = validation;
 
   if (data.type === "email") {
     return await emailLogin(data.email, redirectUrl);
@@ -81,21 +81,21 @@ async function oauthLogin(
 }
 
 export async function verifyOtp(values: OtpSchema) {
-  const schemaValidation = validateSchema<OtpSchema>(
+  const validation = validateSchema<OtpSchema>(
     otpSchema,
     values,
     AUTH_ERRORS.INVALID_CODE
   );
-  if (!schemaValidation.isValid) return schemaValidation.error;
+  if (!validation.isValid) return validation.error;
 
   const [supabase, isEmailConfirmed] = await Promise.all([
     createClient(),
-    hasConfirmedEmail(schemaValidation.data.email),
+    hasConfirmedEmail(validation.data.email),
   ]);
 
   const { error } = await supabase.auth.verifyOtp({
     type: isEmailConfirmed ? "magiclink" : "signup",
-    ...schemaValidation.data,
+    ...validation.data,
   });
 
   if (error) return createError(AUTH_ERRORS.INVALID_CODE);

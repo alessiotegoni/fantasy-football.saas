@@ -2,8 +2,8 @@ import { createError, ErrorResult } from "@/lib/helpers";
 import { z, ZodSchema } from "zod";
 
 type ValidateSchema<T> =
-  | { isValid: true; data: T }
-  | { isValid: false; error: ErrorResult };
+  | { isValid: true; data: T; error?: ErrorResult }
+  | { isValid: false; error: ErrorResult; data?: T };
 
 export const VALIDATION_ERROR = "Errore di validazione dei dati";
 
