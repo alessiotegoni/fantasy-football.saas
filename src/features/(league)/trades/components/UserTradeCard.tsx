@@ -61,7 +61,7 @@ export default function UserTradeCard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <PlayersSection
           players={offeredPlayers}
-          title={variant === "sent" ? "Offri" : "Ricevi"}
+          title={variant === "sent" ? "Offri" : "Dai"}
           leagueTeamId={
             isProposer ? trade.proposerTeamId : trade.receiverTeamId
           }
@@ -71,7 +71,7 @@ export default function UserTradeCard({
         />
         <PlayersSection
           players={requestedPlayers}
-          title={variant === "sent" ? "Richiedi" : "Dai"}
+          title={variant === "sent" ? "Richiedi" : "Ricevi"}
           leagueTeamId={
             isProposer ? trade.receiverTeamId : trade.proposerTeamId
           }
