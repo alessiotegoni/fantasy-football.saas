@@ -22,7 +22,11 @@ export async function canInsertPlayer({
   const [isAdmin, alreadyAdded, { isSlotFull }] = await Promise.all([
     isLeagueAdmin(userId, leagueId),
     hasPlayerAlready(memberTeamId, player.id),
-    isTeamRoleSlotFull(leagueId, memberTeamId, [player.roleId]),
+    isTeamRoleSlotFull({
+      leagueId,
+      teamId: memberTeamId,
+      playersRolesIdsIn: [player.roleId],
+    }),
   ]);
 
   if (!isAdmin) return createError(TEAM_PLAYER_MESSAGES.ADMIN_REQUIRED);
@@ -46,30 +50,43 @@ async function hasPlayerAlready(teamId: string, playerId: number) {
   return res.count > 0;
 }
 
-export async function isTeamRoleSlotFull(
-  leagueId: string,
-  teamId: string,
-  roleIds: number[]
-) {
+export async function isTeamRoleSlotFull({
+  leagueId,
+  teamId,
+  playersRolesIdsIn,
+  playersRolesIdsOut,
+}: {
+  leagueId: string;
+  teamId: string;
+  playersRolesIdsIn: number[];
+  playersRolesIdsOut?: number[];
+}) {
   const [leagueLimits, teamPlayers] = await Promise.all([
     getLeaguePlayersPerRole(leagueId),
     getTeamPlayerPerRoles(teamId),
   ]);
 
-  const fullRoles = new Set<number>();
+  const roleCountMap = new Map<number, number>();
+  teamPlayers.forEach((p) => roleCountMap.set(p.roleId, p.playersCount));
 
-  for (const roleId of roleIds) {
-    const maxAllowed = leagueLimits[roleId];
-    const currentCount =
-      teamPlayers.find((p) => p.roleId === roleId)?.playersCount ?? 0;
+  const fullRolesIdsSlot = new Set<number>();
 
-    if (currentCount >= maxAllowed) {
-      fullRoles.add(roleId);
-    }
+  for (const roleId of new Set([
+    ...playersRolesIdsIn,
+    ...(playersRolesIdsOut ?? []),
+  ])) {
+    const inCount = playersRolesIdsIn.filter((r) => r === roleId).length;
+    const outCount =
+      playersRolesIdsOut?.filter((r) => r === roleId).length ?? 0;
+    const currentCount = roleCountMap.get(roleId) || 0;
+    const maxAllowed = leagueLimits[roleId] || Infinity;
+
+    const newCount = currentCount + inCount - outCount;
+    if (newCount > maxAllowed) fullRolesIdsSlot.add(roleId);
   }
 
   return {
-    fullRolesIdsSlot: fullRoles,
-    isSlotFull: fullRoles.size > 0,
+    isSlotFull: fullRolesIdsSlot.size > 0,
+    fullRolesIdsSlot,
   };
 }

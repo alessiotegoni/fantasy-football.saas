@@ -193,7 +193,7 @@ async function validateTeamRoleSlots(args: TradePermissionParams) {
 
     if (fullRoles.length > 0) {
       errorMessages.push(
-        `Non hai abbastanza spazio in questi ruoli: ${fullRoles.join(", ")}`
+        `Non hai abbastanza spazio in questi ruoli: ${fullRoles.join(", ")}.`
       );
     }
   }
@@ -207,7 +207,7 @@ async function validateTeamRoleSlots(args: TradePermissionParams) {
       errorMessages.push(
         `La squadra con il quale vuoi scambiare non ha spazio in questi ruoli: ${fullRoles.join(
           ", "
-        )}`
+        )}.`
       );
     }
   }
@@ -229,16 +229,18 @@ async function getTeamsRoleSlotValidation({
   const groupedPlayers = groupTradePlayers(players);
 
   const [proposerTeam, receiverTeam] = await Promise.all([
-    isTeamRoleSlotFull(
+    isTeamRoleSlotFull({
       leagueId,
-      proposerTeamId,
-      groupedPlayers.requested?.map((player) => player.roleId) ?? []
-    ),
-    isTeamRoleSlotFull(
+      teamId: proposerTeamId,
+      playersRolesIdsIn: groupedPlayers.requested?.map((p) => p.roleId) ?? [],
+      playersRolesIdsOut: groupedPlayers.proposed?.map((p) => p.roleId) ?? [],
+    }),
+    isTeamRoleSlotFull({
       leagueId,
-      receiverTeamId,
-      groupedPlayers.proposed?.map((player) => player.roleId) ?? []
-    ),
+      teamId: receiverTeamId,
+      playersRolesIdsIn: groupedPlayers.proposed?.map((p) => p.roleId) ?? [],
+      playersRolesIdsOut: groupedPlayers.requested?.map((p) => p.roleId) ?? [],
+    }),
   ]);
 
   return { proposerTeam, receiverTeam };
