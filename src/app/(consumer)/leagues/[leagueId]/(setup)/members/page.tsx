@@ -19,6 +19,7 @@ import {
   getLeagueMembersTag,
   getLeagueMembersTeamsTag,
 } from "@/features/(league)/members/db/cache/leagueMember";
+import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 
 export default async function LeagueMembersPage({
   params,
@@ -177,7 +178,7 @@ export async function getLeagueMembers(leagueId: string) {
   cacheTag(
     ...results
       .filter((member) => !!member.team?.id)
-      .map((member) => member.team?.id ?? "")
+      .map((member) => getTeamIdTag(member.team?.id ?? ""))
   );
 
   return results;
