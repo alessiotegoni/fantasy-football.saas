@@ -262,6 +262,14 @@ async function updateTeamCredits(
   if (trade.creditOfferedByProposer) {
     creditUpdates.push(
       updateLeagueTeam(
+        trade.receiverTeamId,
+        trade.leagueId,
+        {
+          credits: credits.receiverTeamCredits + trade.creditOfferedByProposer,
+        },
+        tx
+      ),
+      updateLeagueTeam(
         trade.proposerTeamId,
         trade.leagueId,
         {
@@ -274,6 +282,15 @@ async function updateTeamCredits(
 
   if (trade.creditRequestedByProposer) {
     creditUpdates.push(
+      updateLeagueTeam(
+        trade.proposerTeamId,
+        trade.leagueId,
+        {
+          credits:
+            credits.proposerTeamCredits + trade.creditRequestedByProposer,
+        },
+        tx
+      ),
       updateLeagueTeam(
         trade.receiverTeamId,
         trade.leagueId,

@@ -40,8 +40,12 @@ export async function canCreateTrade(args: TradePermissionParams) {
     return createError(TRADE_ERRORS.INVALID_PROPOSER);
   }
 
-  const creditsValidation = await validateTradeCredits(args);
+  const [creditsValidation, teamsSlotsValidation] = await Promise.all([
+    validateTradeCredits(args),
+    validateTeamRoleSlots(args),
+  ]);
   if (creditsValidation.error) return creditsValidation;
+  if (teamsSlotsValidation.error) return teamsSlotsValidation;
 
   return createSuccess("", null);
 }
