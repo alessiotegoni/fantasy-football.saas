@@ -1,4 +1,4 @@
-import { ArrowRight, Clock } from "iconoir-react";
+import { Clock, FastArrowDown, FastArrowRight } from "iconoir-react";
 import { TradeStatusTheme } from "../utils/trade";
 import { TradeCardProps } from "./TradeCard";
 import TeamInfo from "./TradeTeamInfo";
@@ -28,21 +28,39 @@ export default function LeagueTradeCard({
         theme.cardRing
       )}
     >
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <TeamInfo
-            team={trade.proposerTeam}
-            size="sm"
-            textMuted={theme.textMuted}
+      <div className="flex flex-col w-fit sm:w-full sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <TeamInfo
+              team={trade.proposerTeam}
+              size="sm"
+              textMuted={theme.textMuted}
+            />
+          </div>
+          <FastArrowRight
+            className={cn(
+              "hidden sm:block size-5 mx-2 self-center sm:mx-2",
+              theme.textMuted
+            )}
           />
-          <ArrowRight className={cn("size-4 mx-2", theme.textMuted)} />
-          <TeamInfo
-            team={trade.receiverTeam}
-            size="sm"
-            textMuted={theme.textMuted}
+          <FastArrowDown
+            className={cn(
+              "sm:hidden size-5 mx-2 self-center sm:mx-2",
+              theme.textMuted
+            )}
           />
+          <div className="flex items-center gap-2 min-w-0">
+            <TeamInfo
+              team={trade.receiverTeam}
+              size="sm"
+              textMuted={theme.textMuted}
+            />
+          </div>
         </div>
-        <TradeStatusBadge theme={theme} />
+
+        <div className="flex-shrink-0 self-start">
+          <TradeStatusBadge theme={theme} />
+        </div>
       </div>
 
       <div className="flex items-center gap-2 mb-4">
