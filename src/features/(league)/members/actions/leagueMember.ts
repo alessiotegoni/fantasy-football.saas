@@ -21,13 +21,13 @@ enum LEAGUE_MEMBER_MESSAGES {
 }
 
 export async function joinPrivateLeague(values: JoinPrivateLeagueSchema) {
-  const validation = validateSchema<JoinPrivateLeagueSchema>(
+  const { isValid, error, data } = validateSchema<JoinPrivateLeagueSchema>(
     joinPrivateLeagueSchema,
     values
   );
-  if (!validation.isValid) return validation.error;
+  if (!isValid) return error;
 
-  const league = await getLeagueFromCode(validation.data);
+  const league = await getLeagueFromCode(data);
   if (!league) return createError(LEAGUE_MEMBER_MESSAGES.LEAGUE_CODE_ERROR);
 
   return await joinMemberToLeague(league.id);
