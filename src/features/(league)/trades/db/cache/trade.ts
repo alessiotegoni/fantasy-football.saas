@@ -5,7 +5,8 @@ export type TRADES_TAG =
   | "league-trades"
   | "my-proposed-trades"
   | "my-received-trades"
-  | "trade-players";
+  | "not-mine-trades"
+  | "trade-players"
 
 export const getLeagueTradesTag = (leagueId: string) =>
   getLeagueTag("league-trades", leagueId);
@@ -21,6 +22,9 @@ export const getMyProposedTradesTag = (myTeamId: string) =>
 
 export const getMyReceivedProposedTradesTag = (myTeamId: string) =>
   getTeamTag("my-received-trades", myTeamId);
+
+export const getNotMineTradesTag = (myTeamId: string) =>
+  getTeamTag("not-mine-trades", myTeamId);
 
 export const revalidateLeagueTradesCache = ({
   leagueId,

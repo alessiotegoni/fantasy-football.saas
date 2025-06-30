@@ -9,6 +9,7 @@ import {
   getLeagueTradesTag,
   getMyProposedTradesTag,
   getMyReceivedProposedTradesTag,
+  getNotMineTradesTag,
   getTradeIdTag,
   getTradePlayersIdTag,
 } from "../db/cache/trade";
@@ -23,12 +24,12 @@ export async function getUserTrades(
 ) {
   "use cache";
 
-  const cacheKey =
+  const myTradeTag =
     type === "sent"
       ? getMyProposedTradesTag(userTeamId)
       : getMyReceivedProposedTradesTag(userTeamId);
 
-  cacheTag(getLeagueTradesTag(leagueId), cacheKey);
+  cacheTag(getLeagueTradesTag(leagueId), myTradeTag);
 
   const whereCondition =
     type === "sent"
@@ -49,10 +50,11 @@ export async function getUserTrades(
 
 export async function getLeagueTrades(leagueId: string, userTeamId: string) {
   "use cache";
+  cacheTag(getNotMineTradesTag(userTeamId), getLeagueTradesTag(leagueId));
 
   const whereCondition = and(
     eq(leagueTradeProposals.leagueId, leagueId),
-    or(
+    and(
       ne(leagueTradeProposals.proposerTeamId, userTeamId),
       ne(leagueTradeProposals.receiverTeamId, userTeamId)
     )
