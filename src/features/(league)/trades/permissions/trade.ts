@@ -208,20 +208,20 @@ export async function getInvalidPlayersIds({
 
   const groupedPlayers = groupTradePlayers(players);
 
-  const invalidProposedPlayersIds = getTeamInvalidPlayersIds(
+  const proposedPlayersIds = getTeamInvalidPlayersIds(
     groupedPlayers,
     teamsPlayers,
     proposerTeamId,
     "proposed"
   );
-  const invalidRequestedPlayersIds = getTeamInvalidPlayersIds(
+  const requestedPlayersIds = getTeamInvalidPlayersIds(
     groupedPlayers,
     teamsPlayers,
     receiverTeamId,
     "requested"
   );
 
-  return { invalidProposedPlayersIds, invalidRequestedPlayersIds };
+  return [...proposedPlayersIds, ...requestedPlayersIds];
 }
 
 function getTeamInvalidPlayersIds(
