@@ -5,7 +5,7 @@ import {
   TradeProposalStatusType,
 } from "@/drizzle/schema";
 import { revalidateLeagueTradesCache } from "./cache/trade";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { createError } from "@/lib/helpers";
 
 enum DB_ERROR_MESSAGES {
@@ -31,7 +31,7 @@ export async function insertTrade(
 
   revalidateLeagueTradesCache({
     leagueId: trade.leagueId,
-    tradeId: res.tradeId,
+    tradesIds: [res.tradeId],
   });
 
   return res.tradeId;
@@ -69,23 +69,23 @@ export async function updateTrade(
 
   revalidateLeagueTradesCache({
     leagueId: res.leagueId,
-    tradeId,
+    tradesIds: [tradeId],
   });
 
   return res.id;
 }
 
-export async function deleteTrade(leagueId: string, tradeId: string) {
+export async function deleteTrade(leagueId: string, tradesIds: string[]) {
   const [res] = await db
     .delete(leagueTradeProposals)
-    .where(eq(leagueTradeProposals.id, tradeId))
+    .where(inArray(leagueTradeProposals.id, tradesIds))
     .returning();
 
   if (!res.id) {
     throw new Error(createError(DB_ERROR_MESSAGES.TRADE_DELETE_FAILED).message);
   }
 
-  revalidateLeagueTradesCache({ leagueId, tradeId });
+  revalidateLeagueTradesCache({ leagueId, tradesIds });
 
   return res;
 }

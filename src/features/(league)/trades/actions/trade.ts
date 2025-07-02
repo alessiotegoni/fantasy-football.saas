@@ -307,7 +307,7 @@ async function updateTeamCredits(
 export const acceptTrade = updateTradeStatus;
 export const rejectTrade = updateTradeStatus;
 
-async function getInvalidTrades(data: CreateTradeProposalSchema) {
+async function getInvalidTradesIds(data: CreateTradeProposalSchema) {
   const invalidPlayersIds = await getInvalidPlayersIds(data);
 
   const invalidTrades = await db

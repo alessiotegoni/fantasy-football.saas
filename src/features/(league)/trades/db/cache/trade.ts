@@ -6,7 +6,7 @@ export type TRADES_TAG =
   | "my-proposed-trades"
   | "my-received-trades"
   | "not-mine-trades"
-  | "trade-players"
+  | "trade-players";
 
 export const getLeagueTradesTag = (leagueId: string) =>
   getLeagueTag("league-trades", leagueId);
@@ -28,11 +28,11 @@ export const getNotMineTradesTag = (myTeamId: string) =>
 
 export const revalidateLeagueTradesCache = ({
   leagueId,
-  tradeId,
+  tradesIds,
 }: {
   leagueId: string;
-  tradeId: string;
+  tradesIds: string[];
 }) => {
   revalidateTag(getLeagueTradesTag(leagueId));
-  revalidateTag(getTradeIdTag(tradeId));
+  tradesIds.forEach((tradeId) => revalidateTag(getTradeIdTag(tradeId)));
 };
