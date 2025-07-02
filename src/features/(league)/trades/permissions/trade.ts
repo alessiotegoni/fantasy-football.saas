@@ -206,9 +206,39 @@ export async function getInvalidPlayersIds({
 }: Omit<TradePermissionParams, "userId">) {
   const teamsPlayers = await getTeamPlayers([proposerTeamId, receiverTeamId]);
 
-  const invalidPlayers = players.filter((tradePlayer) =>
-    teamsPlayers.some((teamPlayer) => teamPlayer.id !== tradePlayer.id)
+  const groupedPlayers = groupTradePlayers(players);
+
+  const invalidProposedPlayersIds = getTeamInvalidPlayersIds(
+    groupedPlayers,
+    teamsPlayers,
+    proposerTeamId,
+    "proposed"
   );
+  const invalidRequestedPlayersIds = getTeamInvalidPlayersIds(
+    groupedPlayers,
+    teamsPlayers,
+    receiverTeamId,
+    "requested"
+  );
+
+  return { invalidProposedPlayersIds, invalidRequestedPlayersIds };
+}
+
+function getTeamInvalidPlayersIds(
+  tradePlayers: ReturnType<typeof groupTradePlayers>,
+  teamsPlayers: Awaited<ReturnType<typeof getTeamPlayers>>,
+  teamId: string,
+  playersType: "proposed" | "requested"
+) {
+  const teamPlayers = teamsPlayers.filter(
+    (player) => player.leagueTeamId === teamId
+  );
+
+  const invalidPlayers =
+    tradePlayers[playersType]?.filter(
+      (tradePlayer) =>
+        !teamPlayers.some((teamPlayer) => teamPlayer.id === tradePlayer.id)
+    ) ?? [];
 
   return invalidPlayers.map((player) => player.id);
 }
@@ -230,7 +260,9 @@ async function validateTeamRoleSlots(args: TradePermissionParams) {
 
     if (fullRoles.length > 0) {
       errorMessages.push(
-        `Non hai abbastanza spazio in questi ruoli: ${fullRoles.join(", ")}.`
+        `Non hai abbastanza spazio per i seguenti ruoli: ${fullRoles.join(
+          ", "
+        )}.`
       );
     }
   }
@@ -242,7 +274,7 @@ async function validateTeamRoleSlots(args: TradePermissionParams) {
 
     if (fullRoles.length > 0) {
       errorMessages.push(
-        `La squadra con il quale vuoi scambiare non ha spazio in questi ruoli: ${fullRoles.join(
+        `La squadra con il quale vuoi scambiare non ha spazio nei seguenti ruoli: ${fullRoles.join(
           ", "
         )}.`
       );
