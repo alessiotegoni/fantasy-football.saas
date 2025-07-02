@@ -37,6 +37,7 @@ import {
   leagueTradeProposalPlayers,
 } from "@/drizzle/schema";
 import { and, eq, inArray } from "drizzle-orm";
+import { after } from "next/server";
 
 type TradeCredits = {
   proposerTeamCredits: number;
@@ -131,6 +132,7 @@ async function updateTradeStatus(values: UpdateTradeProposalSchema) {
   if (permissions.error) return createError(permissions.message);
 
   await executeTradeUpdate(data, trade, permissions.data);
+  after(deleteInvalidTrades.bind(null, { ...trade, players: data.players }));
 
   const isAccepted = data.status === "accepted";
   return createSuccess(
@@ -158,7 +160,12 @@ async function executeTradeUpdate(
   });
 }
 
+async function deleteInvalidTrades(data: CreateTradeProposalSchema) {
+  const invalidTradesIds = await getInvalidTradesIds(data);
+  if (!invalidTradesIds.length) return;
 
+  await deleteTradeDb(data.leagueId, invalidTradesIds);
+}
 
 export async function deleteTrade(values: DeleteTradeProposalSchema) {
   const { isValid, error, data } = validateSchema<DeleteTradeProposalSchema>(
@@ -183,7 +190,7 @@ export async function deleteTrade(values: DeleteTradeProposalSchema) {
   });
   if (permissions.error) return createError(permissions.message);
 
-  await deleteTradeDb(data.leagueId, data.tradeId);
+  await deleteTradeDb(data.leagueId, [data.tradeId]);
 
   return {
     error: false,
@@ -309,6 +316,7 @@ export const rejectTrade = updateTradeStatus;
 
 async function getInvalidTradesIds(data: CreateTradeProposalSchema) {
   const invalidPlayersIds = await getInvalidPlayersIds(data);
+  if (!invalidPlayersIds.length) return [];
 
   const invalidTrades = await db
     .select({ id: leagueTradeProposals.id })
