@@ -6,6 +6,7 @@ import TradeCreditsBadge from "./TradeCreditsBadge";
 
 type Props = {
   players: TradeCardProps["trade"]["proposedPlayers"];
+  tradeStatus: TradeCardProps["trade"]["status"];
   title: string;
   leagueTeamId: string;
   credits?: number | null;
@@ -15,6 +16,7 @@ type Props = {
 
 export default function PlayersSection({
   players,
+  tradeStatus,
   title,
   leagueTeamId,
   credits,
@@ -41,7 +43,13 @@ export default function PlayersSection({
         </div>
       )}
 
-      {credits && <TradeCreditsBadge credits={credits} type={creditsType} />}
+      {credits && (
+        <TradeCreditsBadge
+          tradeStatus={tradeStatus}
+          credits={credits}
+          type={creditsType}
+        />
+      )}
     </div>
   );
 }
