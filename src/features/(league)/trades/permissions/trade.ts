@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import {
   getPlayersRoles,
   getTeamCredits,
+  getTeamPlayers,
 } from "../../teamsPlayers/queries/teamsPlayer";
 import { isLeagueMember } from "../../members/permissions/leagueMember";
 import { getUserTeamId } from "@/features/users/queries/user";
@@ -25,6 +26,7 @@ enum TRADE_ERRORS {
   INSUFFICIENT_PROPOSER_CREDITS = "Non hai abbastanza crediti per questo scambio",
   INSUFFICIENT_RECEIVER_CREDITS = "La squadra dello scambio non ha abbastanza crediti da offrire",
   TRADE_NOT_PENDING = "Puoi accettare o rifiutare solo le richieste in sospeso",
+  PLAYERS_NOT_VALID = "Uno o più giocatori non sono più nella squadra originale e non possono essere scambiati.",
   DELETE_NOT_OWNER = "Puoi eliminare solo gli scambi proposti da te",
   DELETE_NOT_PENDING = "Puoi eliminare solo le proposte di scambio che non sono ancora state accettate o rifiutate",
 }
@@ -52,6 +54,7 @@ export async function canCreateTrade(args: TradePermissionParams) {
 
 export async function canUpdateTrade(
   tradeId: string,
+  isTradeAccepted: boolean,
   args: TradePermissionParams
 ) {
   const baseValidation = await validateTradeBaseRequirements(
@@ -64,17 +67,21 @@ export async function canUpdateTrade(
     return createError(TRADE_ERRORS.INVALID_RECEIVER);
   }
 
-  const [tradeStatus, creditValidation, roleSlotValidation] = await Promise.all(
-    [
-      getTradeStatus(tradeId),
-      validateTradeCredits(args),
-      validateTeamRoleSlots(args),
-    ]
-  );
-
+  const tradeStatus = await getTradeStatus(tradeId);
   if (tradeStatus !== "pending") {
     return createError(TRADE_ERRORS.TRADE_NOT_PENDING);
   }
+
+  if (!isTradeAccepted) return createSuccess("", null);
+
+  const [stillInTeamsValidation, creditValidation, roleSlotValidation] =
+    await Promise.all([
+      validateTradePlayersStillInTeams(args),
+      validateTradeCredits(args),
+      validateTeamRoleSlots(args),
+    ]);
+
+  if (stillInTeamsValidation.error) return stillInTeamsValidation;
   if (creditValidation.error) return creditValidation;
   if (roleSlotValidation.error) return roleSlotValidation;
 
@@ -178,6 +185,27 @@ async function validateTradeCredits({
     proposerTeamCredits,
     receiverTeamCredits,
   });
+}
+
+async function validateTradePlayersStillInTeams(args: TradePermissionParams) {
+  const invalidPlayers = await getInvalidPlayersIds(args)
+  if (invalidPlayers.length) return createError(TRADE_ERRORS.PLAYERS_NOT_VALID);
+
+  return createSuccess("", null)
+}
+
+export async function getInvalidPlayersIds({
+  proposerTeamId,
+  receiverTeamId,
+  players,
+}: TradePermissionParams) {
+  const teamsPlayers = await getTeamPlayers([proposerTeamId, receiverTeamId]);
+
+  const invalidPlayers = players.filter((tradePlayer) =>
+    teamsPlayers.some((teamPlayer) => teamPlayer.id !== tradePlayer.id)
+  );
+
+  return invalidPlayers.map((player) => player.id);
 }
 
 async function validateTeamRoleSlots(args: TradePermissionParams) {

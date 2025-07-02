@@ -113,11 +113,15 @@ async function updateTradeStatus(values: UpdateTradeProposalSchema) {
     return createError(TRADE_MESSAGES.TRADE_NOT_FOUND);
   }
 
-  const permissions = await canUpdateTrade(data.tradeId, {
-    userId,
-    ...data,
-    ...trade,
-  });
+  const permissions = await canUpdateTrade(
+    trade.id,
+    data.status === "accepted",
+    {
+      userId,
+      ...data,
+      ...trade,
+    }
+  );
   if (permissions.error) return createError(permissions.message);
 
   await executeTradeUpdate(data, trade, permissions.data);
