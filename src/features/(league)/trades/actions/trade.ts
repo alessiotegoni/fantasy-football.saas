@@ -22,6 +22,7 @@ import {
   canCreateTrade,
   canDeleteTrade,
   canUpdateTrade,
+  getInvalidPlayersIds,
 } from "../permissions/trade";
 import { getTrade, type Trade } from "../queries/trade";
 import { updateLeagueTeam } from "../../teams/db/leagueTeam";
@@ -31,6 +32,11 @@ import {
 } from "../../teamsPlayers/db/teamsPlayer";
 import { groupTradePlayers } from "../utils/trade";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
+import {
+  leagueTradeProposals,
+  leagueTradeProposalPlayers,
+} from "@/drizzle/schema";
+import { and, eq, inArray } from "drizzle-orm";
 
 type TradeCredits = {
   proposerTeamCredits: number;
@@ -151,6 +157,8 @@ async function executeTradeUpdate(
     }
   });
 }
+
+
 
 export async function deleteTrade(values: DeleteTradeProposalSchema) {
   const { isValid, error, data } = validateSchema<DeleteTradeProposalSchema>(
@@ -298,3 +306,23 @@ async function updateTeamCredits(
 
 export const acceptTrade = updateTradeStatus;
 export const rejectTrade = updateTradeStatus;
+
+async function getInvalidTrades(data: CreateTradeProposalSchema) {
+  const invalidPlayersIds = await getInvalidPlayersIds(data);
+
+  const invalidTrades = await db
+    .select({ id: leagueTradeProposals.id })
+    .from(leagueTradeProposals)
+    .innerJoin(
+      leagueTradeProposalPlayers,
+      eq(leagueTradeProposalPlayers.tradeProposalId, leagueTradeProposals.id)
+    )
+    .where(
+      and(
+        eq(leagueTradeProposals.status, "pending"),
+        inArray(leagueTradeProposalPlayers.playerId, invalidPlayersIds)
+      )
+    );
+
+  return invalidTrades.map((trade) => trade.id);
+}

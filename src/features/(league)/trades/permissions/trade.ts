@@ -72,7 +72,12 @@ export async function canUpdateTrade(
     return createError(TRADE_ERRORS.TRADE_NOT_PENDING);
   }
 
-  if (!isTradeAccepted) return createSuccess("", null);
+  if (!isTradeAccepted) {
+    return createSuccess("", {
+      proposerTeamCredits: 0,
+      receiverTeamCredits: 0,
+    });
+  }
 
   const [stillInTeamsValidation, creditValidation, roleSlotValidation] =
     await Promise.all([
@@ -188,17 +193,17 @@ async function validateTradeCredits({
 }
 
 async function validateTradePlayersStillInTeams(args: TradePermissionParams) {
-  const invalidPlayers = await getInvalidPlayersIds(args)
+  const invalidPlayers = await getInvalidPlayersIds(args);
   if (invalidPlayers.length) return createError(TRADE_ERRORS.PLAYERS_NOT_VALID);
 
-  return createSuccess("", null)
+  return createSuccess("", null);
 }
 
 export async function getInvalidPlayersIds({
   proposerTeamId,
   receiverTeamId,
   players,
-}: TradePermissionParams) {
+}: Omit<TradePermissionParams, "userId">) {
   const teamsPlayers = await getTeamPlayers([proposerTeamId, receiverTeamId]);
 
   const invalidPlayers = players.filter((tradePlayer) =>
