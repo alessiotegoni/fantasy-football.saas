@@ -12,7 +12,6 @@ import { useMemo } from "react";
 import { SendEuros, UserPlus, WarningTriangle } from "iconoir-react";
 import FormSliderField from "@/components/FormFieldSlider";
 import TradeProposalCard from "./TradeProposalCard";
-import TradePlayersMultiSelect from "./TradePlayersMultiSelect";
 import BackButton from "@/components/BackButton";
 import SubmitButton from "@/components/SubmitButton";
 import { useTradePlayers } from "@/contexts/TradePlayersProvider";
