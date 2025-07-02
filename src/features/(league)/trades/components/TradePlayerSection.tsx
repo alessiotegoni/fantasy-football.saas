@@ -1,12 +1,12 @@
 import { cn } from "@/lib/utils";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
-import { TradeStatusTheme } from "../utils/trade";
 import { TradeCardProps } from "./TradeCard";
 import TradeCreditsBadge from "./TradeCreditsBadge";
+import { TradeStatusTheme } from "../utils/trade";
 
 type Props = {
   players: TradeCardProps["trade"]["proposedPlayers"];
-  tradeStatus: TradeCardProps["trade"]["status"];
+  isTradeOver: boolean;
   title: string;
   leagueTeamId: string;
   credits?: number | null;
@@ -16,7 +16,7 @@ type Props = {
 
 export default function PlayersSection({
   players,
-  tradeStatus,
+  isTradeOver,
   title,
   leagueTeamId,
   credits,
@@ -45,7 +45,7 @@ export default function PlayersSection({
 
       {credits && (
         <TradeCreditsBadge
-          isTradeOver={tradeStatus !== "pending"}
+          isTradeOver={isTradeOver}
           credits={credits}
           type={creditsType}
         />

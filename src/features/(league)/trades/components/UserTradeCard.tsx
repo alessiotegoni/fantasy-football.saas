@@ -8,11 +8,13 @@ import PlayersSection from "./TradePlayerSection";
 import ActionButton from "@/components/ActionButton";
 
 type UserTradeCard = Exclude<TradeCardProps, { variant: "league" }> & {
+  isTradeOver: boolean;
   theme: TradeStatusTheme;
 };
 
 export default function UserTradeCard({
   trade,
+  isTradeOver,
   variant,
   currentUserTeamId,
   theme,
@@ -61,8 +63,10 @@ export default function UserTradeCard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <PlayersSection
           players={offeredPlayers}
-          tradeStatus={trade.status}
-          title={variant === "sent" ? "Offri" : "Dai"}
+          isTradeOver={isTradeOver}
+          title={
+            isTradeOver ? "Hai dato" : variant === "sent" ? "Offri" : "Dai"
+          }
           leagueTeamId={
             isProposer ? trade.proposerTeamId : trade.receiverTeamId
           }
@@ -70,10 +74,17 @@ export default function UserTradeCard({
           creditsType="give"
           theme={theme}
         />
+
         <PlayersSection
           players={requestedPlayers}
-          tradeStatus={trade.status}
-          title={variant === "sent" ? "Richiedi" : "Ricevi"}
+          isTradeOver={isTradeOver}
+          title={
+            isTradeOver
+              ? "Hai ricevuto"
+              : variant === "sent"
+              ? "Richiedi"
+              : "Ricevi"
+          }
           leagueTeamId={
             isProposer ? trade.receiverTeamId : trade.proposerTeamId
           }

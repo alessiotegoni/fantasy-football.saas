@@ -8,8 +8,9 @@ import PlayersSection from "./TradePlayerSection";
 
 export default function LeagueTradeCard({
   trade,
+  isTradeOver,
   theme,
-}: TradeCardProps & { theme: TradeStatusTheme }) {
+}: TradeCardProps & { isTradeOver: boolean; theme: TradeStatusTheme }) {
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat("it-IT", {
       day: "2-digit",
@@ -73,7 +74,7 @@ export default function LeagueTradeCard({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <PlayersSection
           players={trade.proposedPlayers.filter((p) => p.offeredByProposer)}
-          tradeStatus={trade.status}
+          isTradeOver={isTradeOver}
           title={`${trade.proposerTeam.name} offre`}
           leagueTeamId={trade.proposerTeamId}
           credits={trade.creditOfferedByProposer}
@@ -82,7 +83,7 @@ export default function LeagueTradeCard({
         />
         <PlayersSection
           players={trade.proposedPlayers.filter((p) => !p.offeredByProposer)}
-          tradeStatus={trade.status}
+          isTradeOver={isTradeOver}
           title={`${trade.receiverTeam.name} offre`}
           leagueTeamId={trade.receiverTeamId}
           credits={trade.creditRequestedByProposer}

@@ -14,7 +14,7 @@ type Props = {
   }[];
   removePlayer: UseFieldArrayRemove;
   renderCreditsSlider: () => React.ReactNode;
-  renderSelects: () => React.ReactNode;
+  renderDialog: () => React.ReactNode;
 };
 
 export default function TradeProposalCard({
@@ -24,7 +24,7 @@ export default function TradeProposalCard({
   players,
   removePlayer,
   renderCreditsSlider,
-  renderSelects,
+  renderDialog,
 }: Props) {
   return (
     <div className="bg-sidebar p-4 rounded-3xl">
@@ -51,7 +51,7 @@ export default function TradeProposalCard({
           />
         </div>
       )}
-      {renderSelects()}
+      {renderDialog()}
     </div>
   );
 }

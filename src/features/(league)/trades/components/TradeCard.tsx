@@ -16,9 +16,14 @@ export default function TradeCard(props: TradeCardProps) {
   const { trade, variant } = props;
   const theme = TRADE_STATUS_THEMES[trade.status];
 
+  const options = {
+    theme,
+    isTradeOver: trade.status !== "pending",
+  };
+
   if (variant === "league") {
-    return <LeagueTradeCard {...props} theme={theme} />;
+    return <LeagueTradeCard {...props} {...options} />;
   }
 
-  return <UserTradeCard {...props} theme={theme} />;
+  return <UserTradeCard {...props} {...options} />;
 }

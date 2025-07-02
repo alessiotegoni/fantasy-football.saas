@@ -19,6 +19,7 @@ import { useTradePlayers } from "@/contexts/TradePlayersProvider";
 import TradeReceiverTeamSelect from "./TradeReceiverTeamSelect";
 import useActionToast from "@/hooks/useActionToast";
 import { createTrade } from "../actions/trade";
+import TradePlayersDialog from "./TradePlayersDialog";
 
 type Props = {
   leagueId: string;
@@ -106,9 +107,9 @@ export default function TradeProposalForm({
                   />
                 )
               }
-              renderSelects={() =>
+              renderDialog={() =>
                 !!proposerTeamPlayers.length && (
-                  <TradePlayersMultiSelect
+                  <TradePlayersDialog
                     triggerText="Offri giocatori"
                     players={proposerTeamPlayers}
                     onPlayerSelect={appendPlayer}
@@ -153,7 +154,7 @@ export default function TradeProposalForm({
                   />
                 )
               }
-              renderSelects={() => (
+              renderDialog={() => (
                 <div className="grid xl:grid-cols-2 gap-2 mt-8">
                   <TradeReceiverTeamSelect
                     leagueTeams={leagueTeams}
@@ -161,7 +162,7 @@ export default function TradeProposalForm({
                     placeholder="Cambia squadra"
                   />
                   {receiverTeamPlayers && (
-                    <TradePlayersMultiSelect
+                    <TradePlayersDialog
                       className="w-full mt-0"
                       triggerText="Richiedi giocatori"
                       players={receiverTeamPlayers}
