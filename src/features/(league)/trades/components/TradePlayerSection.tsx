@@ -45,7 +45,7 @@ export default function PlayersSection({
 
       {credits && (
         <TradeCreditsBadge
-          tradeStatus={tradeStatus}
+          isTradeOver={tradeStatus !== "pending"}
           credits={credits}
           type={creditsType}
         />

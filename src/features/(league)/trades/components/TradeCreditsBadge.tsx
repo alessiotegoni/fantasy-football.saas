@@ -11,9 +11,11 @@ const CREDIT_STYLES = {
 } as const;
 
 export default function TradeCreditsBadge({
+  isTradeOver,
   credits,
   type,
 }: {
+  isTradeOver: boolean;
   credits: number;
   type: "offered" | "requested" | "give" | "receive";
 }) {
@@ -30,14 +32,19 @@ export default function TradeCreditsBadge({
   if (isGiving) {
     styles = CREDIT_STYLES.give;
     prefix = "-";
-    suffix = isMyTrade ? "(perdi)" : "(perde)";
+    if (isTradeOver) {
+      suffix = isMyTrade ? "(hai perso)" : "(ha perso)";
+    } else {
+      suffix = isMyTrade ? "(perdi)" : "(perde)";
+    }
   } else if (isReceiving) {
     styles = CREDIT_STYLES.receive;
     prefix = "+";
-    suffix = isMyTrade ? "(guadagni)" : "(guadagna)";
-  } else {
-    styles = isGiving ? "text-orange-600" : "text-blue-600";
-    prefix = isGiving ? "-" : "+";
+    if (isTradeOver) {
+      suffix = isMyTrade ? "(hai guadagnato)" : "(ha guadagnato)";
+    } else {
+      suffix = isMyTrade ? "(guadagni)" : "(guadagna)";
+    }
   }
 
   return (
