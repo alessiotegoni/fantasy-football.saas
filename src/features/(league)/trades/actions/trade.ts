@@ -257,53 +257,39 @@ async function updateTeamCredits(
   credits: TradeCredits,
   tx: Omit<typeof db, "$client">
 ) {
-  const creditUpdates = [];
+  const { creditOfferedByProposer, creditRequestedByProposer } = trade;
 
-  if (trade.creditOfferedByProposer) {
-    creditUpdates.push(
-      updateLeagueTeam(
-        trade.receiverTeamId,
-        trade.leagueId,
-        {
-          credits: credits.receiverTeamCredits + trade.creditOfferedByProposer,
-        },
-        tx
-      ),
-      updateLeagueTeam(
-        trade.proposerTeamId,
-        trade.leagueId,
-        {
-          credits: credits.proposerTeamCredits - trade.creditOfferedByProposer,
-        },
-        tx
-      )
-    );
+  if (!creditOfferedByProposer && !creditRequestedByProposer) {
+    return;
   }
 
-  if (trade.creditRequestedByProposer) {
-    creditUpdates.push(
-      updateLeagueTeam(
-        trade.proposerTeamId,
-        trade.leagueId,
-        {
-          credits:
-            credits.proposerTeamCredits + trade.creditRequestedByProposer,
-        },
-        tx
-      ),
-      updateLeagueTeam(
-        trade.receiverTeamId,
-        trade.leagueId,
-        {
-          credits:
-            credits.receiverTeamCredits - trade.creditRequestedByProposer,
-        },
-        tx
-      )
-    );
+  let proposerCredits = credits.proposerTeamCredits;
+  let receiverCredits = credits.receiverTeamCredits;
+
+  if (creditOfferedByProposer) {
+    proposerCredits -= creditOfferedByProposer;
+    receiverCredits += creditOfferedByProposer;
   }
 
-  await Promise.all(creditUpdates);
+  if (creditRequestedByProposer) {
+    proposerCredits += creditRequestedByProposer;
+    receiverCredits -= creditRequestedByProposer;
+  }
+
+  await Promise.all([
+    updateLeagueTeam(
+      trade.proposerTeamId,
+      trade.leagueId,
+      { credits: proposerCredits },
+      tx
+    ),
+    updateLeagueTeam(
+      trade.receiverTeamId,
+      trade.leagueId,
+      { credits: receiverCredits },
+      tx
+    ),
+  ]);
 }
 
 export const acceptTrade = updateTradeStatus;
