@@ -25,7 +25,7 @@ export async function resetCredits(values: ResetCreditsSchema) {
   if (!isValid) return error;
 
   const permissions = await canUpdateCredits(data.leagueId);
-  if (permissions.error) return permissions.error;
+  if (permissions.error) return permissions;
 
   const leagueTeams = await getLeagueTeams(data.leagueId);
   const leagueTeamsIds = leagueTeams.map((team) => team.id);
@@ -45,7 +45,7 @@ export async function setTeamsCredits(values: SetCreditsSchema) {
   if (!isValid) return error;
 
   const permissions = await canUpdateCredits(data.leagueId);
-  if (permissions.error) return permissions.error;
+  if (permissions.error) return permissions;
 
   const updateCreditsPromise = data.updatedTeamsCredits.map(
     ({ teamId, credits }) =>
