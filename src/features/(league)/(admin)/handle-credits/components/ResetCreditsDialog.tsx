@@ -1,6 +1,5 @@
 "use client";
 
-import ActionButton from "@/components/ActionButton";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { use } from "react";
+import { use, useState } from "react";
 import { resetCredits } from "../actions/handle-credits";
 import { useForm } from "react-hook-form";
 import {
@@ -23,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
 import useActionToast from "@/hooks/useActionToast";
+import FormSliderField from "@/components/FormFieldSlider";
 
 export default function ResetCreditsDialog({
   leagueId,
@@ -31,6 +31,7 @@ export default function ResetCreditsDialog({
   leagueId: string;
   defaultCreditsPromise: Promise<number>;
 }) {
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useActionToast();
 
   const form = useForm<ResetCreditsSchema>({
@@ -41,16 +42,17 @@ export default function ResetCreditsDialog({
     },
   });
 
-  console.log(form.getValues());
-  
-
   async function onSubmit(data: ResetCreditsSchema) {
+    setIsLoading(true);
+
     const res = await resetCredits(data);
     toast(res);
+
+    setIsLoading(false);
   }
 
   return (
-    <Dialog open={form.formState.isSubmitting ? true : undefined}>
+    <Dialog open={isLoading ? true : undefined}>
       <Button asChild className="w-fit">
         <DialogTrigger>Resetta crediti</DialogTrigger>
       </Button>
@@ -58,17 +60,25 @@ export default function ResetCreditsDialog({
         <DialogHeader>
           <DialogTitle>Vuoi davvero resettare i crediti ?</DialogTitle>
           <DialogDescription>
-            I crediti di tutte le squadre verranno settati col numero scelto da
-            te nelle impostazioni generali della lega
+            I crediti di tutte le squadre verranno settati col numero che
+            imposterai qui sotto
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogFooter>
+            <FormSliderField<ResetCreditsSchema>
+              label="Crediti di reset"
+              min={200}
+              max={5000}
+              name="credits"
+            />
+            <DialogFooter className="mt-4">
               <DialogClose asChild className="sm:w-fit">
                 <Button variant="outline">Chiudi</Button>
               </DialogClose>
-              <SubmitButton className="sm:w-fit">Resetta</SubmitButton>
+              <SubmitButton className="sm:w-fit" loadingText="Resetto crediti">
+                Resetta
+              </SubmitButton>
             </DialogFooter>
           </form>
         </Form>
