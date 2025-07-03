@@ -1,10 +1,9 @@
 import { db } from "@/drizzle/db";
 import { leagueMemberTeams } from "@/drizzle/schema";
 import { revalidateLeagueTeamsCache } from "./cache/leagueTeam";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { revalidateUserTeam } from "@/features/users/db/cache/user";
 import { createError } from "@/lib/helpers";
-
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione della squadra",
@@ -20,16 +19,20 @@ export async function insertLeagueTeam(
     .values(team)
     .returning({ teamId: leagueMemberTeams.id });
 
-  if (!res.teamId) throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
+  if (!res.teamId)
+    throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
 
-  revalidateLeagueTeamsCache({ leagueId: team.leagueId, teamId: res.teamId });
-  revalidateUserTeam(userId)
+  revalidateLeagueTeamsCache({
+    leagueId: team.leagueId,
+    teamsIds: [res.teamId],
+  });
+  revalidateUserTeam(userId);
 
   return res.teamId;
 }
 
 export async function updateLeagueTeam(
-  teamId: string,
+  teamsIds: string[],
   leagueId: string,
   team: Partial<
     Omit<
@@ -42,15 +45,14 @@ export async function updateLeagueTeam(
   const [res] = await tx
     .update(leagueMemberTeams)
     .set(team)
-    .where(eq(leagueMemberTeams.id, teamId))
+    .where(inArray(leagueMemberTeams.id, teamsIds))
     .returning({ teamId: leagueMemberTeams.id });
 
-  if (!res.teamId)
-    throw new Error(
-      createError(DB_ERROR_MESSAGES.UPDATE_FAILED).message
-    );
+  if (!res.teamId) {
+    throw new Error(createError(DB_ERROR_MESSAGES.UPDATE_FAILED).message);
+  }
 
-  revalidateLeagueTeamsCache({ leagueId, teamId: res.teamId });
+  revalidateLeagueTeamsCache({ leagueId, teamsIds });
 
   return res.teamId;
 }

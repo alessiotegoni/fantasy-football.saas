@@ -13,12 +13,12 @@ export const getLeagueMemberTeamTag = (teamId: string) =>
   getTeamTag("league-teams", teamId);
 
 export const revalidateLeagueTeamsCache = ({
-  teamId,
+  teamsIds,
   leagueId,
 }: {
-  teamId: string;
+  teamsIds: string[];
   leagueId: string;
 }) => {
   revalidateTag(getLeagueTeamsTag(leagueId));
-  revalidateTag(getTeamIdTag(teamId));
+  teamsIds.forEach((teamId) => revalidateTag(getTeamIdTag(teamId)));
 };

@@ -48,7 +48,7 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
   await db.transaction(async (tx) => {
     await Promise.all([
       insertTeamPlayers(leagueId, [{ playerId: player.id, ...restData }], tx),
-      updateLeagueTeam(data.memberTeamId, leagueId, { credits }, tx),
+      updateLeagueTeam([data.memberTeamId], leagueId, { credits }, tx),
     ]);
   });
 
@@ -79,7 +79,7 @@ export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
         },
         tx
       ),
-      updateLeagueTeam(data.memberTeamId, data.leagueId, { credits }, tx),
+      updateLeagueTeam([data.memberTeamId], data.leagueId, { credits }, tx),
     ]);
   });
 

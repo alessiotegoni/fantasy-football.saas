@@ -297,13 +297,13 @@ async function updateTeamCredits(
 
   await Promise.all([
     updateLeagueTeam(
-      trade.proposerTeamId,
+      [trade.proposerTeamId],
       trade.leagueId,
       { credits: proposerCredits },
       tx
     ),
     updateLeagueTeam(
-      trade.receiverTeamId,
+      [trade.receiverTeamId],
       trade.leagueId,
       { credits: receiverCredits },
       tx
