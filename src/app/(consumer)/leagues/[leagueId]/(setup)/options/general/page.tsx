@@ -1,10 +1,5 @@
-import { db } from "@/drizzle/db";
 import { GeneralOptionsForm } from "@/features/(league)/options/components/forms/GeneralOptionsForm";
-import {
-  getLeagueGeneralOptionsTag,
-  getLeagueOptionsTag,
-} from "@/features/(league)/options/db/cache/leagueOption";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getGeneralOptions } from "@/features/(league)/options/queries/leagueOptions";
 
 export default async function LeagueGeneralOptionsPage({
   params,
@@ -20,17 +15,4 @@ export default async function LeagueGeneralOptionsPage({
       <GeneralOptionsForm leagueId={leagueId} initialData={generalOptions} />
     </div>
   );
-}
-
-async function getGeneralOptions(leagueId: string) {
-  "use cache";
-  cacheTag(getLeagueOptionsTag(leagueId), getLeagueGeneralOptionsTag(leagueId));
-
-  return db.query.leagueOptions.findFirst({
-    columns: {
-      initialCredits: true,
-      maxMembers: true,
-    },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
-  });
 }

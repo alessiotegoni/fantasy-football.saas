@@ -203,7 +203,7 @@ export const privateSections = [
       },
       {
         name: "Gestisci Crediti",
-        href: "/leagues/:leagueId/admin/credits",
+        href: "/leagues/:leagueId/admin/handle-credits",
         icon: Coins,
       },
     ],
