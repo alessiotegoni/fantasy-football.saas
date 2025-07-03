@@ -17,3 +17,4 @@ export async function canUpdateCredits(leagueId: string) {
 
   return createSuccess("", null)
 }
+
