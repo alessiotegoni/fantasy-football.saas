@@ -1,16 +1,13 @@
 import {
   Shield,
   Settings,
-  UserPlus,
   Calculator,
   Calendar,
-  Database,
   Refresh,
   User,
-  List,
-  LotOfCash,
   Community,
   CoinsSwap,
+  Coins,
 } from "iconoir-react";
 import { Star } from "iconoir-react/solid";
 import {
@@ -205,19 +202,9 @@ export const privateSections = [
         icon: Calendar,
       },
       {
-        name: "Gestione rose",
-        href: "/leagues/:leagueId/admin/team-management",
-        icon: Database,
-      },
-      {
-        name: "Gestione admin",
-        href: "/leagues/:leagueId/admin/",
-        icon: Database,
-      },
-      {
-        name: "Crediti",
+        name: "Gestisci Crediti",
         href: "/leagues/:leagueId/admin/credits",
-        icon: LotOfCash,
+        icon: Coins,
       },
     ],
   },
