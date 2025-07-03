@@ -11,7 +11,7 @@ export const resetCreditsSchema = z.object({
   credits,
 });
 
-export const updateCreditsSchema = z.object({
+export const setCreditsSchema = z.object({
   leagueId: getUUIdSchema("Id della lega invalido"),
   updatedTeamsCredits: z.array(
     z.object({ teamId: getUUIdSchema("Id del team non valido"), credits })
@@ -19,4 +19,4 @@ export const updateCreditsSchema = z.object({
 });
 
 export type ResetCreditsSchema = z.infer<typeof resetCreditsSchema>;
-export type UpdateCreditsSchema = z.infer<typeof updateCreditsSchema>;
+export type SetCreditsSchema = z.infer<typeof setCreditsSchema>;

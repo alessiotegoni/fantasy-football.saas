@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { leagueMemberTeams } from "@/drizzle/schema";
 import { revalidateLeagueTeamsCache } from "./cache/leagueTeam";
-import { eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { revalidateUserTeam } from "@/features/users/db/cache/user";
 import { createError } from "@/lib/helpers";
 
@@ -45,7 +45,12 @@ export async function updateLeagueTeam(
   const [res] = await tx
     .update(leagueMemberTeams)
     .set(team)
-    .where(inArray(leagueMemberTeams.id, teamsIds))
+    .where(
+      and(
+        eq(leagueMemberTeams.leagueId, leagueId),
+        inArray(leagueMemberTeams.id, teamsIds)
+      )
+    )
     .returning({ teamId: leagueMemberTeams.id });
 
   if (!res.teamId) {
