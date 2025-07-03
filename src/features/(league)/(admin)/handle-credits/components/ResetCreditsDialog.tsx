@@ -31,7 +31,6 @@ export default function ResetCreditsDialog({
   leagueId: string;
   defaultCreditsPromise: Promise<number>;
 }) {
-  const [isLoading, setIsLoading] = useState(false);
   const toast = useActionToast();
 
   const form = useForm<ResetCreditsSchema>({
@@ -43,17 +42,13 @@ export default function ResetCreditsDialog({
   });
 
   async function onSubmit(data: ResetCreditsSchema) {
-    setIsLoading(true);
-
     const res = await resetCredits(data);
     toast(res);
-
-    setIsLoading(false);
   }
 
   return (
-    <Dialog open={isLoading ? true : undefined}>
-      <Button asChild className="w-fit">
+    <Dialog open={form.formState.isSubmitting ? true : undefined}>
+      <Button asChild className="w-fit py-2.5 px-3 sm:py-3.5 sm:px-4">
         <DialogTrigger>Resetta crediti</DialogTrigger>
       </Button>
       <DialogContent>
