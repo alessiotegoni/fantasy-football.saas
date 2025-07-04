@@ -2,7 +2,7 @@
 
 import Slider from "@/components/Slider";
 import NumberInput from "@/components/ui/number-input";
-import { useTeamCredits } from "@/contexts/TeamsCreditsProvider";
+import { useTeamsCredits } from "@/contexts/TeamsCreditsProvider";
 import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
 import { ComponentPropsWithoutRef, useMemo } from "react";
 
@@ -13,7 +13,7 @@ export default function LeagueTeamCardWithCredits({
   ComponentPropsWithoutRef<typeof LeagueTeamCard>,
   "renderTeamPpr" | "className"
 >) {
-  const { changes, updateTeamCredits } = useTeamCredits();
+  const { changes, updateTeamCredits } = useTeamsCredits();
 
   const value = useMemo(() => {
     const updatedCredits = changes.find((change) => change.teamId === team.id);

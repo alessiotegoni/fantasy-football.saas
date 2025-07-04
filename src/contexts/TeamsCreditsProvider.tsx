@@ -52,7 +52,7 @@ export default function TeamsCreditsProvider({
   );
 }
 
-export const useTeamCredits = () => {
+export const useTeamsCredits = () => {
   const context = useContext(TeamCreditsContext);
   if (!context) {
     throw new Error("useTeamCredits must be used within a TeamCreditsProvider");

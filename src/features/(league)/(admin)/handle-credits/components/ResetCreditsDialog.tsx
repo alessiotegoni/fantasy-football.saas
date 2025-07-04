@@ -51,9 +51,9 @@ export default function ResetCreditsDialog({
       <Button
         variant="destructive"
         asChild
-        className="w-fit py-2.5 px-3 sm:py-3.5 sm:px-4"
+        className="w-fit h-fit py-3 sm:px-4 min-w-[100px] rounded-xl"
       >
-        <DialogTrigger>Resetta crediti</DialogTrigger>
+        <DialogTrigger>Resetta</DialogTrigger>
       </Button>
       <DialogContent>
         <DialogHeader>
