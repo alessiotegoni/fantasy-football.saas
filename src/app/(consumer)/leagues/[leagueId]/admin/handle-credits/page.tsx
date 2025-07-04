@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import TeamsCreditsProvider from "@/contexts/TeamsCreditsProvider";
 import ResetCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/ResetCreditsDialog";
 import { getGeneralOptions } from "@/features/(league)/options/queries/leagueOptions";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
@@ -26,6 +27,9 @@ export default async function HandleCreditsPage({
           />
         </Suspense>
       )}
-    ></Container>
+    >
+      <TeamsCreditsProvider>
+      </TeamsCreditsProvider>
+    </Container>
   );
 }
