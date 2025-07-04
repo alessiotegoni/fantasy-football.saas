@@ -1,28 +1,22 @@
 "use client";
 
-import React from "react";
+import React, { ComponentProps } from "react";
 import {
   FormControl,
   FormField,
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Slider } from "@/components/ui/slider";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { useFormContext } from "react-hook-form";
-import { NumberInputProps } from "./ui/number-input";
+import Slider from "./Slider";
 
 type Props<T> = {
   label: string;
   tip?: string;
   name: keyof T & string;
-  min: number;
-  max: number;
-  step?: number;
-  unit?: string;
   className?: string;
-  renderNumberInput?: (props: NumberInputProps) => React.ReactNode;
-};
+} & ComponentProps<typeof Slider>;
 
 export default function FormSliderField<T>({
   name,
@@ -43,7 +37,11 @@ export default function FormSliderField<T>({
       name={name}
       render={({ field: { value, onChange } }) => (
         <FormItem className={className}>
-          <FormFieldTooltip label={label} tip={tip} classNames={{ label: "mb-4" }}>
+          <FormFieldTooltip
+            label={label}
+            tip={tip}
+            classNames={{ label: "mb-4" }}
+          >
             <FormControl>
               <div className="space-y-3">
                 <Slider
@@ -56,8 +54,16 @@ export default function FormSliderField<T>({
                 />
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <span>{min}</span>
-                  {renderNumberInput?.({ value, onChange, min, max, containerClassName: "my-3" }) ?? (
-                    <span className="font-medium text-white">{value} {unit}</span>
+                  {renderNumberInput?.({
+                    value,
+                    onChange,
+                    min,
+                    max,
+                    containerClassName: "my-3",
+                  }) ?? (
+                    <span className="font-medium text-white">
+                      {value} {unit}
+                    </span>
                   )}
                   <span>{max}</span>
                 </div>
