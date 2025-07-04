@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import ResetCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/ResetCreditsDialog";
 import { getGeneralOptions } from "@/features/(league)/options/queries/leagueOptions";
+import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { Suspense } from "react";
 
 export default async function HandleCreditsPage({
@@ -9,6 +10,7 @@ export default async function HandleCreditsPage({
   params: Promise<{ leagueId: string }>;
 }) {
   const { leagueId } = await params;
+  const leagueTeams = await getLeagueTeams(leagueId)
 
   return (
     <Container

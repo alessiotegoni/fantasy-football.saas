@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { use, useState } from "react";
+import { use } from "react";
 import { resetCredits } from "../actions/handle-credits";
 import { useForm } from "react-hook-form";
 import {
