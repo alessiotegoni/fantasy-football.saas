@@ -32,7 +32,7 @@ enum TRADE_ERRORS {
 }
 
 export async function canCreateTrade(args: TradePermissionParams) {
-  const baseValidation = await validateTradeBaseRequirements(
+  const baseValidation = await validateBaseRequirements(
     args.userId,
     args.leagueId
   );
@@ -57,7 +57,7 @@ export async function canUpdateTrade(
   isTradeAccepted: boolean,
   args: TradePermissionParams
 ) {
-  const baseValidation = await validateTradeBaseRequirements(
+  const baseValidation = await validateBaseRequirements(
     args.userId,
     args.leagueId
   );
@@ -125,7 +125,7 @@ export async function canDeleteTrade({
   return createSuccess("", null);
 }
 
-async function validateTradeBaseRequirements(userId: string, leagueId: string) {
+async function validateBaseRequirements(userId: string, leagueId: string) {
   const [isMarketOpen, isMemberOfLeague, userTeamId] = await Promise.all([
     isTradeMarketOpen(leagueId),
     isLeagueMember(userId, leagueId),

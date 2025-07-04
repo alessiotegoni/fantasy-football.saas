@@ -12,10 +12,10 @@ export const createTradeProposalSchema = z
   .object({
     leagueId: getUUIdSchema("Id della lega invalido"),
     proposerTeamId: getUUIdSchema(
-      "L'id del team che propone lo scambio e' invalido"
+      "L'id del team che propone lo scambio è invalido"
     ),
     receiverTeamId: getUUIdSchema(
-      "L'id del team che riceve lo scambio e' invalido"
+      "L'id del team che riceve lo scambio è invalido"
     ),
     creditOfferedByProposer: z
       .number({ message: "Deve essere un numero valido" })

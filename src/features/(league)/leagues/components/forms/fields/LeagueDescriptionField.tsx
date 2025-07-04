@@ -16,7 +16,7 @@ export default function LeagueDescriptionField() {
     <TooltipProvider>
       <FormFieldTooltip
         label="Descrizione"
-        tip="La descrizione della lega e' visualizzabile da tutti gli utenti"
+        tip="La descrizione della lega è visualizzabile da tutti gli utenti"
       >
         <FormField
           control={form.control}

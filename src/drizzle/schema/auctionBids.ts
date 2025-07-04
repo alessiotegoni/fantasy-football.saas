@@ -24,5 +24,5 @@ export const auctionBidsRelations = relations(auctionBids, ({ one }) => ({
   }),
 }));
 
-// TODO: aggiungere che se allo scadere del timer la nominations e' sold si eliminano
+// TODO: aggiungere che se allo scadere del timer la nominations è sold si eliminano
 // tutte le tabelle delle bids di quella nomination

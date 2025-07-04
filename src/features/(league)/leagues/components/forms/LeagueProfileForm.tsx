@@ -49,13 +49,13 @@ export function LeagueProfileForm({
         <LeagueImageField
           image={initialData?.imageUrl}
           label="Logo della Lega"
-          tip="Il logo della lega e' visualizzabile da tutti gli utenti"
+          tip="Il logo della lega è visualizzabile da tutti gli utenti"
         />
 
         <LeagueNameField
           name={initialData?.name}
           label="Nome della Lega"
-          tip="Il nome della lega e' visualizzabile da tutti gli utenti e non sara' piu modificabile"
+          tip="Il nome della lega è visualizzabile da tutti gli utenti e non sara' piu modificabile"
         />
 
         <LeagueDescriptionField />

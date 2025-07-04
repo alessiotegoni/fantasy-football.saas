@@ -41,13 +41,13 @@ export default function CreateLeagueForm() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <LeagueNameField
           label="Nome della Lega"
-          tip="Il nome della lega e' visualizzabile da tutti gli utenti e non sara' piu modificabile"
+          tip="Il nome della lega è visualizzabile da tutti gli utenti e non sara' piu modificabile"
           placeholder="Es. Champions League"
         />
 
         <LeagueImageField
           label="Logo della Lega"
-          tip="Il logo della lega e' visualizzabile da tutti gli utenti"
+          tip="Il logo della lega è visualizzabile da tutti gli utenti"
         />
 
         <LeagueTypeField />

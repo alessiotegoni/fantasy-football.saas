@@ -118,7 +118,7 @@ function TeamPlayersEmptyState({ leagueId }: Pick<Props, "leagueId">) {
   return (
     <EmptyState
       title="Nessun giocatore acquistato"
-      description="Se l'asta e' conclusa ed hai gia acquistato giocatori chiedi agli admin della lega di aggiungerteli"
+      description="Se l'asta è conclusa ed hai gia acquistato giocatori chiedi agli admin della lega di aggiungerteli"
       renderButton={() => (
         <Button asChild>
           <Link href={`/leagues/${leagueId}/players-list`}>

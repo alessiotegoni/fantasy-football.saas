@@ -9,7 +9,7 @@ import { useParams } from "next/navigation";
 
 export default function PlayersEmptyState({
   title = "Nessun giocatore trovato",
-  description = `Se non trovi il giocatore che stai cercando probabilmente e' gia stato
+  description = `Se non trovi il giocatore che stai cercando probabilmente è gia stato
         acquistato da qualcuno`,
 }: {
   title?: string;

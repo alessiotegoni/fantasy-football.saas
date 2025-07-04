@@ -67,19 +67,19 @@ export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <ImageField
           label="Logo della squadra"
-          tip="Il logo della squadra e' visibile a tutti i membri della lega"
+          tip="Il logo della squadra è visibile a tutti i membri della lega"
           image={initialData?.imageUrl}
         />
 
         <NameField
           label="Nome della squadra"
-          tip="Il nome della squadra e' visibile a tutti i membri della lega"
+          tip="Il nome della squadra è visibile a tutti i membri della lega"
           placeholder="Es. Bari FC"
         />
 
         <FormFieldTooltip
           label="Nome dell'allenatore"
-          tip="Il nome dell'allenatore e' visibile a tutti i membri della lega"
+          tip="Il nome dell'allenatore è visibile a tutti i membri della lega"
         >
           <FormField
             control={form.control}

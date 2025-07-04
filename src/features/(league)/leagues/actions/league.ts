@@ -18,12 +18,10 @@ import {
   leagueProfileSchema,
   LeagueProfileSchema,
 } from "../schema/leagueProfile";
-import { validateSchema } from "@/schema/helpers";
+import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 
 enum LEAGUE_MESSAGES {
-  PREMIUM_REQUIRED = "Per essere membro di 2 o più leghe devi avere il premium",
   ADMIN_REQUIRED = "Per aggiornare il profilo della lega devi essere admin",
-  NAME_EXISTS = "Il nome della lega esiste già, utilizzane un altro",
   PROFILE_UPDATED = "Profilo aggiornato con successo",
 }
 
@@ -34,23 +32,26 @@ interface LeagueCreationContext {
 }
 
 export async function createLeague(values: CreateLeagueSchema) {
-  const user = await validateUserForLeagueCreation();
-  if (!user.isValid) return user.error;
+  const { isValid, error, data } = validateSchema<CreateLeagueSchema>(
+    createLeagueSchema,
+    values
+  );
+  if (!isValid) return error;
 
-  const league = validateLeagueSchema(values);
-  if (!league.isValid) return league.error;
+  const user = await getUser();
+  if (!user) return createError(VALIDATION_ERROR);
 
-  const uniqueNameCheck = await validateUniqueName(league.data.name);
-  if (!uniqueNameCheck.isValid) return uniqueNameCheck.error;
+  const permissions = await canCreateLeague(user.id, data.name);
+  if (permissions.error) return permissions;
 
   const leagueId = await executeLeagueCreation({
-    user: user.data,
-    league: league.data,
+    user,
+    league: data,
   });
 
   await schedulePostCreationTasks({
-    user: user.data,
-    league: league.data,
+    user,
+    league: data,
     leagueId,
   });
 
@@ -61,78 +62,22 @@ export async function updateLeagueProfile(
   values: LeagueProfileSchema,
   leagueId: string
 ) {
-  const user = await validateUserForLeagueUpdate(leagueId);
-  if (!user.isValid) return user.error;
+  const { isValid, error, data } = validateSchema<LeagueProfileSchema>(
+    leagueProfileSchema,
+    values
+  );
+  if (!isValid) return error;
 
-  const profile = validateProfileSchema(values);
-  if (!profile.isValid) return profile.error;
+  const user = await getUser();
+  if (!user) return createError(VALIDATION_ERROR);
 
-  await executeLeagueUpdate(leagueId, profile.data);
+  if (!(await isLeagueAdmin(user.id, leagueId))) {
+    return createError(LEAGUE_MESSAGES.ADMIN_REQUIRED);
+  }
+
+  await executeLeagueUpdate(leagueId, data);
 
   return createSuccess(LEAGUE_MESSAGES.PROFILE_UPDATED, null);
-}
-
-async function validateUserForLeagueCreation() {
-  const user = await getUser();
-
-  if (!user) {
-    return {
-      isValid: false as const,
-      error: createError(LEAGUE_MESSAGES.PREMIUM_REQUIRED),
-    };
-  }
-
-  const canCreate = await canCreateLeague(user.id);
-  if (!canCreate) {
-    return {
-      isValid: false as const,
-      error: createError(LEAGUE_MESSAGES.PREMIUM_REQUIRED),
-    };
-  }
-
-  return { isValid: true as const, data: user };
-}
-
-async function validateUserForLeagueUpdate(leagueId: string) {
-  const user = await getUser();
-
-  if (!user) {
-    return {
-      isValid: false as const,
-      error: createError(LEAGUE_MESSAGES.ADMIN_REQUIRED),
-    };
-  }
-
-  const isAdmin = await isLeagueAdmin(user.id, leagueId);
-  if (!isAdmin) {
-    return {
-      isValid: false as const,
-      error: createError(LEAGUE_MESSAGES.ADMIN_REQUIRED),
-    };
-  }
-
-  return { isValid: true as const, data: user };
-}
-
-function validateLeagueSchema(values: CreateLeagueSchema) {
-  return validateSchema<CreateLeagueSchema>(createLeagueSchema, values);
-}
-
-function validateProfileSchema(values: LeagueProfileSchema) {
-  return validateSchema<LeagueProfileSchema>(leagueProfileSchema, values);
-}
-
-async function validateUniqueName(name: string) {
-  const isUnique = await isUniqueName(name);
-
-  if (!isUnique) {
-    return {
-      isValid: false as const,
-      error: createError(LEAGUE_MESSAGES.NAME_EXISTS),
-    };
-  }
-
-  return { isValid: true as const, data: true };
 }
 
 async function executeLeagueCreation(
@@ -182,15 +127,6 @@ async function updateLeagueImage(leagueId: string, file: File) {
   if (imageUrl) {
     await updateLeague(leagueId, { imageUrl });
   }
-}
-
-async function isUniqueName(leagueName: string) {
-  const [result] = await db
-    .select({ count: count() })
-    .from(leagues)
-    .where(ilike(leagues.name, leagueName));
-
-  return result.count === 0;
 }
 
 function redirectToLeagueSetup(leagueId: string) {

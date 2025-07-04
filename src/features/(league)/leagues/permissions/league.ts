@@ -10,40 +10,58 @@ import {
   isValidSubscription,
   userHasPremium,
 } from "@/features/users/permissions/user";
-import { and, count, eq } from "drizzle-orm";
+import { and, count, eq, ilike } from "drizzle-orm";
 import {
   isLeagueMember,
   isMemberOfALeague,
 } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/lib/helpers";
+import { getLiveSplit } from "@/features/splits/split";
 
 enum JOIN_LEAGUE_MESSAGES {
   PREMIUM_REQUIRED = "Per entrare in più di una lega devi avere il premium.",
+  NAME_EXISTS = "Il nome della lega esiste già, utilizzane un altro",
   LEAGUE_FULL = "La lega è piena.",
   ALREADY_MEMBER = "Sei già un membro di questa lega.",
-  USER_BANNED = "Sei stato bannato da questa lega, contatta il creatore per sapere la motivazione.",
+  USER_BANNED = "Sei stato bannato da questa lega, contatta gli admin per sapere la motivazione.",
+  SPLIT_ALREADY_LIVE = "Lo split è gia iniziato e la lega è chiusa",
 }
 
-export async function canCreateLeague(userId: string) {
+async function validateBaseRequirements(userId: string) {
   const [hasPremium, isLeagueMember] = await Promise.all([
     userHasPremium(userId),
     isMemberOfALeague(userId),
   ]);
 
-  return hasPremium || !isLeagueMember;
+  if (!hasPremium && isLeagueMember) {
+    return createError(JOIN_LEAGUE_MESSAGES.PREMIUM_REQUIRED);
+  }
+  
+  return createSuccess("", null);
+}
+
+export async function canCreateLeague(userId: string, leagueName: string) {
+  const baseValidation = await validateBaseRequirements(userId);
+  if (baseValidation.error) return baseValidation;
+
+  if (!(await isUniqueName(leagueName))) {
+    return createError(JOIN_LEAGUE_MESSAGES.NAME_EXISTS);
+  }
+
+  return createSuccess("", null);
 }
 
 export async function canJoinLeague(userId: string, leagueId: string) {
-  const [canCreate, isFull, isAlreadyMember, isBanned] = await Promise.all([
-    canCreateLeague(userId),
-    isLeagueFull(leagueId),
-    isLeagueMember(userId, leagueId),
-    isUserBanned(userId, leagueId),
-  ]);
+  const [baseValidation, isFull, isAlreadyMember, isBanned, liveSplit] =
+    await Promise.all([
+      validateBaseRequirements(userId),
+      isLeagueFull(leagueId),
+      isLeagueMember(userId, leagueId),
+      isUserBanned(userId, leagueId),
+      getLiveSplit(),
+    ]);
 
-  if (!canCreate) {
-    return createError(JOIN_LEAGUE_MESSAGES.PREMIUM_REQUIRED);
-  }
+  if (baseValidation.error) return baseValidation;
 
   if (isFull) {
     return createError(JOIN_LEAGUE_MESSAGES.LEAGUE_FULL);
@@ -55,6 +73,10 @@ export async function canJoinLeague(userId: string, leagueId: string) {
 
   if (isBanned) {
     return createError(JOIN_LEAGUE_MESSAGES.USER_BANNED);
+  }
+
+  if (liveSplit) {
+    return createError(JOIN_LEAGUE_MESSAGES.SPLIT_ALREADY_LIVE);
   }
 
   return createSuccess("", null);
@@ -72,6 +94,15 @@ export async function isPremiumUnlocked(leagueId: string) {
     .where(and(eq(leagues.id, leagueId), isValidSubscription));
 
   return result.count > 0;
+}
+
+async function isUniqueName(leagueName: string) {
+  const [result] = await db
+    .select({ count: count() })
+    .from(leagues)
+    .where(ilike(leagues.name, leagueName));
+
+  return result.count === 0;
 }
 
 async function isLeagueFull(leagueId: string) {

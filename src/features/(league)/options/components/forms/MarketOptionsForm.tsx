@@ -36,7 +36,7 @@ export function MarketOptionsForm({
         <FormSliderField<MarketOptionsSchema>
           name="releasePercentage"
           label="Percentuale di svincolo"
-          tip="La percentuale di svincolo e' la percentuale con cui verranno calcolati i crediti da restituire alla squadra in caso di svincolo di un giocatore"
+          tip="La percentuale di svincolo è la percentuale con cui verranno calcolati i crediti da restituire alla squadra in caso di svincolo di un giocatore"
           min={0}
           max={100}
           step={5}
