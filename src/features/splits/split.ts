@@ -9,3 +9,23 @@ export async function getSplits() {
 
   return db.select().from(splits);
 }
+
+export type Split = typeof splits.$inferSelect;
+
+export async function getLastSplit() {
+  const splits = await getSplits();
+
+  return splits.at(-1);
+}
+
+export async function getUpcomingSplit() {
+  const splits = await getSplits();
+
+  return splits.find((split) => split.status === "upcoming");
+}
+
+export async function getLiveSplit() {
+  const splits = await getSplits();
+
+  return splits.find((split) => split.status === "live");
+}
