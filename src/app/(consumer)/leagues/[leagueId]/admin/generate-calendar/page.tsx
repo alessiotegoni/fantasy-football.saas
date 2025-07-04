@@ -12,8 +12,6 @@ export default async function GenerateCalendarPage({
   ]);
 
   return (
-    <Container leagueId={leagueId} headerLabel="Genera calendario">
-
-    </Container>
+    <Container leagueId={leagueId} headerLabel="Genera calendario"></Container>
   );
 }
