@@ -20,19 +20,7 @@ export default async function HandleCreditsPage({
       <Container
         leagueId={leagueId}
         headerLabel="Gestisci crediti"
-        renderHeaderRight={() => (
-          <div className="flex gap-2">
-            <Suspense>
-              <ResetCreditsDialog
-                leagueId={leagueId}
-                defaultCreditsPromise={getGeneralOptions(leagueId).then(
-                  (options) => options?.initialCredits ?? 500
-                )}
-              />
-            </Suspense>
-            <UpdateCreditsButton leagueId={leagueId} />
-          </div>
-        )}
+        renderHeaderRight={() => <HeaderRightButtons leagueId={leagueId} />}
       >
         <div className="space-y-4">
           {leagueTeams.map((team) => (
@@ -45,5 +33,23 @@ export default async function HandleCreditsPage({
         </div>
       </Container>
     </TeamsCreditsProvider>
+  );
+}
+
+function HeaderRightButtons({ leagueId }: { leagueId: string }) {
+  const defaultCreditsPromise = getGeneralOptions(leagueId).then(
+    (options) => options?.initialCredits ?? 500
+  );
+
+  return (
+    <div className="flex gap-2">
+      <Suspense>
+        <ResetCreditsDialog
+          leagueId={leagueId}
+          defaultCreditsPromise={defaultCreditsPromise}
+        />
+      </Suspense>
+      <UpdateCreditsButton leagueId={leagueId} />
+    </div>
   );
 }
