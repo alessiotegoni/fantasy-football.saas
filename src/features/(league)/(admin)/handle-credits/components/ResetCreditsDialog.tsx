@@ -48,7 +48,11 @@ export default function ResetCreditsDialog({
 
   return (
     <Dialog open={form.formState.isSubmitting ? true : undefined}>
-      <Button asChild className="w-fit py-2.5 px-3 sm:py-3.5 sm:px-4">
+      <Button
+        variant="destructive"
+        asChild
+        className="w-fit py-2.5 px-3 sm:py-3.5 sm:px-4"
+      >
         <DialogTrigger>Resetta crediti</DialogTrigger>
       </Button>
       <DialogContent>
