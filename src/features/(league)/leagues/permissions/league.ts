@@ -16,7 +16,7 @@ import {
   isMemberOfALeague,
 } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/lib/helpers";
-import { getLiveSplit } from "@/features/splits/split";
+import { getLiveSplit } from "@/features/splits/queries/split";
 
 enum JOIN_LEAGUE_MESSAGES {
   PREMIUM_REQUIRED = "Per entrare in più di una lega devi avere il premium.",
@@ -36,7 +36,7 @@ async function validateBaseRequirements(userId: string) {
   if (!hasPremium && isLeagueMember) {
     return createError(JOIN_LEAGUE_MESSAGES.PREMIUM_REQUIRED);
   }
-  
+
   return createSuccess("", null);
 }
 

@@ -4,7 +4,7 @@ import { splits } from "@/drizzle/schema";
 import { getSplitsTag } from "@/cache/global";
 
 export async function getSplits() {
-  "use client";
+  "use cache";
   cacheTag(getSplitsTag());
 
   return db.select().from(splits);
