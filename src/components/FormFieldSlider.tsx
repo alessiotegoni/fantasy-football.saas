@@ -16,18 +16,14 @@ type Props<T> = {
   tip?: string;
   name: keyof T & string;
   className?: string;
-} & ComponentProps<typeof Slider>;
+} & Omit<ComponentProps<typeof Slider>, "value" | "onChange" | "className">;
 
 export default function FormSliderField<T>({
   name,
   label,
   tip,
-  min,
-  max,
-  step = 1,
-  unit,
   className,
-  renderNumberInput,
+  ...sliderProps
 }: Props<T>) {
   const form = useFormContext();
 
@@ -35,7 +31,7 @@ export default function FormSliderField<T>({
     <FormField
       control={form.control}
       name={name}
-      render={({ field: { value, onChange } }) => (
+      render={({ field }) => (
         <FormItem className={className}>
           <FormFieldTooltip
             label={label}
@@ -43,31 +39,7 @@ export default function FormSliderField<T>({
             classNames={{ label: "mb-4" }}
           >
             <FormControl>
-              <div className="space-y-3">
-                <Slider
-                  min={min}
-                  max={max}
-                  step={step}
-                  value={[value]}
-                  onValueChange={(value) => onChange(value[0])}
-                  className="w-full"
-                />
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>{min}</span>
-                  {renderNumberInput?.({
-                    value,
-                    onChange,
-                    min,
-                    max,
-                    containerClassName: "my-3",
-                  }) ?? (
-                    <span className="font-medium text-white">
-                      {value} {unit}
-                    </span>
-                  )}
-                  <span>{max}</span>
-                </div>
-              </div>
+              <Slider {...sliderProps} {...field} />
             </FormControl>
             <FormMessage className="mt-2" />
           </FormFieldTooltip>
