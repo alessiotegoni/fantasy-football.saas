@@ -10,15 +10,8 @@ import {
 } from "@/components/ui/select";
 import { Split } from "@/features/splits/queries/split";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use } from "react";
 
-export default function SplitSelect({
-  splitsPromise,
-}: {
-  splitsPromise: Promise<Split[]>;
-}) {
-  const splits = use(splitsPromise);
-
+export default function SplitSelect({ splits }: { splits: Split[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -35,7 +28,7 @@ export default function SplitSelect({
       onValueChange={handleChange}
       defaultValue={currentSplitId ?? undefined}
     >
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-[140px]">
         <SelectValue placeholder="Seleziona split" />
       </SelectTrigger>
       <SelectContent>
