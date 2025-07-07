@@ -8,6 +8,7 @@ import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueM
 import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trade";
+import { CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/calendar";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
@@ -15,6 +16,7 @@ export type CACHE_TAG =
   | LEAGUE_TAG
   | LEAGUE_OPTIONS_TAG
   | LEAGUE_MEMBERS_TAG
+  | CALENDAR_TAG
   | TRADES_TAG
   | TEAM_TAG
   | TEAM_PLAYERS_TAG
