@@ -38,7 +38,7 @@ export async function generateCalendar(leagueId: string) {
 
   const calendar = buildCalendar(leagueTeams, splitMatchdays, leagueId);
 
-  await insertCalendar(calendar)
+  await insertCalendar(calendar);
 
   return createSuccess(CALENDAR_MESSAGES.GENERATE_SUCCESS, null);
 }
@@ -89,6 +89,12 @@ function generateRoundRobin(teams: Team[]) {
   return rounds;
 }
 
+type ScheduledMatch = {
+  splitMatchdayId: number;
+  leagueId: string;
+  isBye: boolean;
+} & Match;
+
 function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
   const homeRounds = generateRoundRobin(teams);
   const allRounds = [...homeRounds, ...getAwayRounds(homeRounds)];
@@ -103,10 +109,7 @@ function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
     repeatedRounds.push(...allRounds);
   }
 
-  const scheduledMatches: (Match & {
-    splitMatchdayId: number;
-    leagueId: string;
-  })[] = [];
+  const scheduledMatches: ScheduledMatch[] = [];
 
   for (let i = 0; i < matchdays.length; i++) {
     const day = matchdays[i];
@@ -118,6 +121,7 @@ function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
         leagueId,
         homeTeamId: match.homeTeamId,
         awayTeamId: match.awayTeamId,
+        isBye: !match.homeTeamId || !match.awayTeamId,
       });
     });
   }
