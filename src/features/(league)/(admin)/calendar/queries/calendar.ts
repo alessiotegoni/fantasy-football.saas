@@ -11,12 +11,14 @@ import { eq, and, asc } from "drizzle-orm";
 
 import { getLeagueTeamsTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { db } from "@/drizzle/db";
+import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache/league";
 
 export async function getLeagueCalendar(leagueId: string, splitId: number) {
   "use cache";
   cacheTag(
     getLeagueCalendarTag(leagueId),
     getLeagueTeamsTag(leagueId),
+    getLeagueMatchesResultsTag(leagueId),
     getSplitsMatchdaysTag()
   );
 
