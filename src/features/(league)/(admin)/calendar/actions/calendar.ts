@@ -88,3 +88,48 @@ function generateRoundRobin(teams: Team[]) {
   return rounds;
 }
 
+function reverseRounds(rounds: Match[][]): Match[][] {
+  return rounds.map((matches) =>
+    matches.map((match) => ({
+      ...match,
+      homeTeamId: match.awayTeamId,
+      awayTeamId: match.homeTeamId,
+    }))
+  );
+}
+
+function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
+  const homeRounds = generateRoundRobin(teams);
+  const allRounds = [...homeRounds, ...reverseRounds(homeRounds)];
+
+  const repeatedRounds: Match[][] = [];
+  const totalDays = matchdays.length;
+
+  while (
+    repeatedRounds.flat().length <
+    totalDays * Math.ceil(teams.length / 2)
+  ) {
+    repeatedRounds.push(...allRounds);
+  }
+
+  const scheduledMatches: (Match & {
+    splitMatchdayId: number;
+    leagueId: string;
+  })[] = [];
+
+  for (let i = 0; i < matchdays.length; i++) {
+    const day = matchdays[i];
+    const matches = repeatedRounds[i] || [];
+
+    matches.forEach((match) => {
+      scheduledMatches.push({
+        splitMatchdayId: day.id,
+        leagueId,
+        homeTeamId: match.homeTeamId,
+        awayTeamId: match.awayTeamId,
+      });
+    });
+  }
+
+  return scheduledMatches.slice(0, totalDays * Math.ceil(teams.length / 2));
+}
