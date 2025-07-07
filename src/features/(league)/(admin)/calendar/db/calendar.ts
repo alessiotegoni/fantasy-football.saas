@@ -1,6 +1,7 @@
 import { db } from "@/drizzle/db";
 import { leagueMatches } from "@/drizzle/schema";
 import { createError } from "@/lib/helpers";
+import { revalidateLeagueCalendarCache } from "./cache/calendar";
 
 enum DB_ERRORS {
   INSERT_ERROR = "Errore nella creazione del calendario",
@@ -18,5 +19,5 @@ export async function insertCalendar(
     throw new Error(createError(DB_ERRORS.INSERT_ERROR).message);
   }
 
-  revalidateCalend
+  revalidateLeagueCalendarCache(data[0].leagueId);
 }

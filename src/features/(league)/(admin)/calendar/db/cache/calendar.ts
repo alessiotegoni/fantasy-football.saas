@@ -6,5 +6,5 @@ export type CALENDAR_TAG = "league-calendar";
 export const getLeagueCalendarTag = (leagueId: string) =>
   getLeagueTag("league-calendar", leagueId);
 
-export const revaidateLeagueCalendar = (leagueId: string) =>
+export const revalidateLeagueCalendarCache = (leagueId: string) =>
   revalidateTag(getLeagueCalendarTag(leagueId));
