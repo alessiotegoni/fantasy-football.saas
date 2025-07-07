@@ -4,6 +4,7 @@ import SplitSelect from "@/features/(league)/(admin)/calendar/components/SplitSe
 import { getLeagueCalendar } from "@/features/(league)/(admin)/calendar/queries/calendar";
 import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
+import { WarningTriangle } from "iconoir-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -59,6 +60,7 @@ async function SuspenseBoundary({
 
     return (
       <CalendarEmptyState
+        icon={WarningTriangle}
         leagueId={leagueId}
         showButton={isUpcoming}
         description={
