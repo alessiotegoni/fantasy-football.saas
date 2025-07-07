@@ -1,6 +1,8 @@
 import Container from "@/components/Container";
 import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
+import SplitSelect from "@/features/(league)/(admin)/calendar/components/SplitSelect";
 import { getLeagueCalendar } from "@/features/(league)/(admin)/calendar/queries/calendar";
+import { getSplits } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -16,7 +18,15 @@ export default async function LeagueCalendarPage({
   const { leagueId } = await params;
 
   return (
-    <Container headerLabel="Calendario" leagueId={leagueId}>
+    <Container
+      headerLabel="Calendario"
+      leagueId={leagueId}
+      renderHeaderRight={() => (
+        <Suspense>
+          <SplitSelect splitsPromise={getSplits()} />
+        </Suspense>
+      )}
+    >
       <Suspense>
         <SuspenseBoundary leagueId={leagueId} searchParams={searchParams} />
       </Suspense>
@@ -36,7 +46,7 @@ async function SuspenseBoundary({
   if (!validateSerialId(parsedSplitId).success) notFound();
 
   const calendar = await getLeagueCalendar(leagueId, parsedSplitId);
-  if (!calendar) return <CalendarEmptyState leagueId={leagueId} />;
+  if (calendar) return <CalendarEmptyState leagueId={leagueId} />;
 
   console.log(calendar);
 

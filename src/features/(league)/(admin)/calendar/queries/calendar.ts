@@ -1,6 +1,5 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueCalendarTag } from "../db/cache/calendar";
-import { getSplitsMatchdaysTag } from "@/cache/global";
 import {
   leagueMatches,
   splitMatchdays,
@@ -12,15 +11,16 @@ import { eq, and, asc } from "drizzle-orm";
 import { getLeagueTeamsTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { db } from "@/drizzle/db";
 import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache/league";
+import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 
 export async function getLeagueCalendar(leagueId: string, splitId: number) {
-//   "use cache";
-//   cacheTag(
-//     getLeagueCalendarTag(leagueId),
-//     getLeagueTeamsTag(leagueId),
-//     getLeagueMatchesResultsTag(leagueId),
-//     getSplitsMatchdaysTag()
-//   );
+  "use cache";
+  cacheTag(
+    getLeagueCalendarTag(leagueId),
+    getLeagueTeamsTag(leagueId),
+    getLeagueMatchesResultsTag(leagueId),
+    getSplitMatchdaysIdTag(splitId)
+  );
 
   const results = await db
     .select({
