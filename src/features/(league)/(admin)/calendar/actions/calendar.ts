@@ -10,6 +10,7 @@ import {
 import { canGenerateCalendar } from "../permissions/calendar";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
+import { insertCalendar } from "../db/calendar";
 
 // TODO:  regenerate calendar function
 
@@ -35,9 +36,9 @@ export async function generateCalendar(leagueId: string) {
     getSplitMatchdays(permissions.data.upcomingSplitId),
   ]);
 
-  const schedule = buildCalendar(leagueTeams, splitMatchdays, leagueId);
+  const calendar = buildCalendar(leagueTeams, splitMatchdays, leagueId);
 
-  console.log(schedule);
+  await insertCalendar(calendar)
 
   return createSuccess(CALENDAR_MESSAGES.GENERATE_SUCCESS, null);
 }
@@ -88,19 +89,9 @@ function generateRoundRobin(teams: Team[]) {
   return rounds;
 }
 
-function reverseRounds(rounds: Match[][]): Match[][] {
-  return rounds.map((matches) =>
-    matches.map((match) => ({
-      ...match,
-      homeTeamId: match.awayTeamId,
-      awayTeamId: match.homeTeamId,
-    }))
-  );
-}
-
 function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
   const homeRounds = generateRoundRobin(teams);
-  const allRounds = [...homeRounds, ...reverseRounds(homeRounds)];
+  const allRounds = [...homeRounds, ...getAwayRounds(homeRounds)];
 
   const repeatedRounds: Match[][] = [];
   const totalDays = matchdays.length;
@@ -132,4 +123,14 @@ function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
   }
 
   return scheduledMatches.slice(0, totalDays * Math.ceil(teams.length / 2));
+}
+
+function getAwayRounds(rounds: Match[][]): Match[][] {
+  return rounds.map((matches) =>
+    matches.map((match) => ({
+      ...match,
+      homeTeamId: match.awayTeamId,
+      awayTeamId: match.homeTeamId,
+    }))
+  );
 }

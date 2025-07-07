@@ -1,4 +1,10 @@
-import { pgTable, uuid, smallint, uniqueIndex } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  smallint,
+  uniqueIndex,
+  boolean,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { splitMatchdays } from "./splitMatchdays";
 import { leagues } from "./leagues";
@@ -15,12 +21,13 @@ export const leagueMatches = pgTable(
     leagueId: uuid("league_id")
       .notNull()
       .references(() => leagues.id, { onDelete: "cascade" }),
-    homeTeamId: uuid("home_team_id")
-      .notNull()
-      .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
-    awayTeamId: uuid("away_team_id")
-      .notNull()
-      .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
+    homeTeamId: uuid("home_team_id").references(() => leagueMemberTeams.id, {
+      onDelete: "set null",
+    }),
+    awayTeamId: uuid("away_team_id").references(() => leagueMemberTeams.id, {
+      onDelete: "set null",
+    }),
+    isBye: boolean("is_bye").notNull().default(false),
   },
   (table) => ({
     oneMatchPerAwayTeamPerDay: uniqueIndex(
@@ -37,22 +44,25 @@ export const leagueMatches = pgTable(
   })
 );
 
-export const leagueMatchesRelations = relations(leagueMatches, ({ one, many }) => ({
-  splitMatchday: one(splitMatchdays, {
-    fields: [leagueMatches.splitMatchdayId],
-    references: [splitMatchdays.id],
-  }),
-  league: one(leagues, {
-    fields: [leagueMatches.leagueId],
-    references: [leagues.id],
-  }),
-  homeTeam: one(leagueMemberTeams, {
-    fields: [leagueMatches.homeTeamId],
-    references: [leagueMemberTeams.id],
-  }),
-  awayTeam: one(leagueMemberTeams, {
-    fields: [leagueMatches.awayTeamId],
-    references: [leagueMemberTeams.id],
-  }),
-  matchResults: many(leagueMatchResults)
-}));
+export const leagueMatchesRelations = relations(
+  leagueMatches,
+  ({ one, many }) => ({
+    splitMatchday: one(splitMatchdays, {
+      fields: [leagueMatches.splitMatchdayId],
+      references: [splitMatchdays.id],
+    }),
+    league: one(leagues, {
+      fields: [leagueMatches.leagueId],
+      references: [leagues.id],
+    }),
+    homeTeam: one(leagueMemberTeams, {
+      fields: [leagueMatches.homeTeamId],
+      references: [leagueMemberTeams.id],
+    }),
+    awayTeam: one(leagueMemberTeams, {
+      fields: [leagueMatches.awayTeamId],
+      references: [leagueMemberTeams.id],
+    }),
+    matchResults: many(leagueMatchResults),
+  })
+);
