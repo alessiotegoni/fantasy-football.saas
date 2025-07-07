@@ -21,6 +21,9 @@ export async function insertCalendar(
     throw new Error(createError(DB_ERRORS.INSERT_ERROR).message);
   }
 
+  console.log(res);
+  
+
   revalidateLeagueCalendarCache(data[0].leagueId);
 }
 

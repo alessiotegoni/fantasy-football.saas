@@ -11,6 +11,7 @@ import { canGenerateCalendar } from "../permissions/calendar";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
 import { insertCalendar } from "../db/calendar";
+import { redirect } from "next/navigation";
 
 // TODO:  regenerate calendar function
 
@@ -18,17 +19,18 @@ enum CALENDAR_MESSAGES {
   GENERATE_SUCCESS = "Calendario generato con successo!",
 }
 
-export async function generateCalendar(leagueId: string) {
-  const { isValid, error, data } = validateSchema<string>(
-    getUUIdSchema(),
-    leagueId
-  );
+export async function generateCalendar(values: string) {
+  const {
+    isValid,
+    error,
+    data: leagueId,
+  } = validateSchema<string>(getUUIdSchema(), values);
   if (!isValid) return error;
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const permissions = await canGenerateCalendar(userId, data);
+  const permissions = await canGenerateCalendar(userId, leagueId);
   if (permissions.error) return permissions;
 
   const [leagueTeams, splitMatchdays] = await Promise.all([
@@ -40,7 +42,7 @@ export async function generateCalendar(leagueId: string) {
 
   await insertCalendar(calendar);
 
-  return createSuccess(CALENDAR_MESSAGES.GENERATE_SUCCESS, null);
+  redirect(`/leagues/${leagueId}/calendar`);
 }
 
 type Team = {
@@ -56,13 +58,11 @@ type Match = {
   awayTeamId: string | null;
 };
 
-function generateRoundRobin(teams: Team[]) {
+function getHomeRounds(teams: Team[]) {
   const teamList = [...teams];
   const isOdd = teamList.length % 2 !== 0;
 
-  if (isOdd) {
-    teamList.push({ id: null });
-  }
+  if (isOdd) teamList.push({ id: null });
 
   const rounds: Match[][] = [];
   const n = teamList.length;
@@ -84,6 +84,8 @@ function generateRoundRobin(teams: Team[]) {
 
     const last = teamList.pop();
     if (last) teamList.splice(1, 0, last);
+
+    rounds.push(roundMatches);
   }
 
   return rounds;
@@ -96,16 +98,13 @@ type ScheduledMatch = {
 } & Match;
 
 function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
-  const homeRounds = generateRoundRobin(teams);
+  const homeRounds = getHomeRounds(teams);
+
   const allRounds = [...homeRounds, ...getAwayRounds(homeRounds)];
 
   const repeatedRounds: Match[][] = [];
-  const totalDays = matchdays.length;
 
-  while (
-    repeatedRounds.flat().length <
-    totalDays * Math.ceil(teams.length / 2)
-  ) {
+  while (repeatedRounds.length < matchdays.length) {
     repeatedRounds.push(...allRounds);
   }
 
@@ -126,15 +125,17 @@ function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
     });
   }
 
-  return scheduledMatches.slice(0, totalDays * Math.ceil(teams.length / 2));
+  return scheduledMatches.slice(
+    0,
+    matchdays.length * Math.ceil(teams.length / 2)
+  );
 }
 
 function getAwayRounds(rounds: Match[][]): Match[][] {
   return rounds.map((matches) =>
-    matches.map((match) => ({
-      ...match,
-      homeTeamId: match.awayTeamId,
-      awayTeamId: match.homeTeamId,
+    matches.map(({ homeTeamId, awayTeamId }) => ({
+      homeTeamId: awayTeamId,
+      awayTeamId: homeTeamId,
     }))
   );
 }
