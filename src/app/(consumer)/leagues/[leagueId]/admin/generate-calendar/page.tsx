@@ -1,6 +1,7 @@
 import ActionButton from "@/components/ActionButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
@@ -9,11 +10,10 @@ import {
   regenerateCalendar,
 } from "@/features/(league)/(admin)/calendar/actions/calendar";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
-import { cn } from "@/lib/utils";
 import { and, count, eq } from "drizzle-orm";
 import { NavArrowRight, WarningTriangle } from "iconoir-react";
 import Link from "next/link";
-import { ComponentPropsWithoutRef, Suspense } from "react";
+import { Suspense } from "react";
 
 export default async function GenerateCalendarPage({
   params,
@@ -56,48 +56,42 @@ async function SuspenseBoundary({
       <p className="text-muted-foreground mb-4">
         Il calendario è già stato generato. Puoi rigenerarlo se necessario.
       </p>
-      <div className="flex gap-3">
-        <Button asChild className="!px-5">
-          <Link href={`/leagues/${leagueId}/calendar`}>
-            Vedi
-            <NavArrowRight className="size-5" />
-          </Link>
-        </Button>
-        <GenerateCalendarButton
-          loadingText="Rigenero calendario"
-          leagueId={leagueId}
-          action={regenerateCalendar.bind(null, leagueId)}
+      <MobileButtonsContainer>
+        <div
+          className="mt-7 sm:mt-0 flex flex-col sm:flex-row
+      sm:items-center sm:justify-end gap-3"
         >
-          Rigenera
-        </GenerateCalendarButton>
-      </div>
+          <ActionButton
+            className="sm:w-fit sm:mt-7 !px-5"
+            variant="outline"
+            loadingText="Rigenero calendario"
+            action={regenerateCalendar.bind(null, leagueId)}
+          >
+            Rigenera
+          </ActionButton>
+          <Button asChild className="sm:w-fit sm:mt-7 !px-5">
+            <Link href={`/leagues/${leagueId}/calendar`}>
+              Vedi
+              <NavArrowRight className="size-5" />
+            </Link>
+          </Button>
+        </div>
+      </MobileButtonsContainer>
     </>
   ) : (
     <EmptyState
       title="Nessun calendario trovato"
       description="Non hai ancora generato un calendario abbinamenti, fallo cliccando sul bottone qui sotto"
       renderButton={() => (
-        <GenerateCalendarButton
+        <ActionButton
+          className="w-fit mt-7 !px-5"
           loadingText="Genero calendario"
-          leagueId={leagueId}
           action={generateCalendar.bind(null, leagueId)}
         >
           Genera calendario
-        </GenerateCalendarButton>
+        </ActionButton>
       )}
     />
-  );
-}
-
-// TODO: add generateCalendar server actions to buttons
-
-function GenerateCalendarButton({
-  leagueId,
-  className,
-  ...props
-}: ComponentPropsWithoutRef<typeof ActionButton> & { leagueId: string }) {
-  return (
-    <ActionButton className={cn("w-fit mt-7 !px-5", className)} {...props} />
   );
 }
 

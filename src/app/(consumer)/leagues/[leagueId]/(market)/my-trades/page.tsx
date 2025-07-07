@@ -7,6 +7,7 @@ import { getUserId } from "@/features/users/utils/user";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { redirect } from "next/navigation";
 import { getUserTrades } from "@/features/(league)/trades/queries/trade";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 
 export default async function MyTradesPage({
   params,
@@ -34,13 +35,13 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
       leagueId={leagueId}
       headerLabel="I miei scambi"
       renderHeaderRight={() => (
-        <div className="fixed z-50 bottom-[99px] left-1/2 -translate-x-1/2 w-full px-4 sm:px-0 sm:static sm:translate-none sm:w-fit">
+        <MobileButtonsContainer>
           <TradeProposalButton
             leagueId={leagueId}
             userTeamId={userTeamId}
             className="mt-0 w-full sm:w-fit"
           />
-        </div>
+        </MobileButtonsContainer>
       )}
     >
       <Tabs defaultValue="proposed" className="max-w-[700px] mx-auto">
