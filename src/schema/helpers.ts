@@ -1,7 +1,7 @@
 import { createError, ErrorResult } from "@/lib/helpers";
 import { z, ZodSchema } from "zod";
 
-type ValidateSchema<T> =
+export type ValidateSchema<T> =
   | { isValid: true; data: T; error?: ErrorResult }
   | { isValid: false; error: ErrorResult; data?: T };
 

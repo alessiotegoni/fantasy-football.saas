@@ -10,27 +10,14 @@ import {
 import { canGenerateCalendar } from "../permissions/calendar";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
-import { insertCalendar } from "../db/calendar";
+import { deleteCalendar, insertCalendar } from "../db/calendar";
 import { redirect } from "next/navigation";
 
-// TODO:  regenerate calendar function
+export async function generateCalendar(leagueId: string) {
+  const { error, message, data } = await calendarValidation(leagueId);
+  if (error) return createError(message);
 
-enum CALENDAR_MESSAGES {
-  GENERATE_SUCCESS = "Calendario generato con successo!",
-}
-
-export async function generateCalendar(values: string) {
-  const {
-    isValid,
-    error,
-    data: leagueId,
-  } = validateSchema<string>(getUUIdSchema(), values);
-  if (!isValid) return error;
-
-  const userId = await getUserId();
-  if (!userId) return createError(VALIDATION_ERROR);
-
-  const permissions = await canGenerateCalendar(userId, leagueId);
+  const permissions = await canGenerateCalendar(data.userId, leagueId);
   if (permissions.error) return permissions;
 
   const [leagueTeams, splitMatchdays] = await Promise.all([
@@ -45,6 +32,26 @@ export async function generateCalendar(values: string) {
   redirect(`/leagues/${leagueId}/calendar`);
 }
 
+export async function regenerateCalendar(leagueId: string) {
+  const { error, message } = await calendarValidation(leagueId);
+  if (error) return createError(message);
+
+  await deleteCalendar(leagueId);
+  await generateCalendar(leagueId);
+
+  redirect(`/leagues/${leagueId}/calendar`);
+}
+
+async function calendarValidation(values: string) {
+  const validation = validateSchema<string>(getUUIdSchema(), values);
+  if (!validation.isValid) return validation.error;
+
+  const userId = await getUserId();
+  if (!userId) return createError(VALIDATION_ERROR);
+
+  return createSuccess("", { leagueId: validation.data, userId });
+}
+
 type Team = {
   id: string | null;
 };
@@ -57,39 +64,6 @@ type Match = {
   homeTeamId: string | null;
   awayTeamId: string | null;
 };
-
-function getHomeRounds(teams: Team[]) {
-  const teamList = [...teams];
-  const isOdd = teamList.length % 2 !== 0;
-
-  if (isOdd) teamList.push({ id: null });
-
-  const rounds: Match[][] = [];
-  const n = teamList.length;
-
-  for (let round = 0; round < n - 1; round++) {
-    const roundMatches: Match[] = [];
-
-    for (let i = 0; i < n / 2; i++) {
-      const home = teamList[i];
-      const away = teamList[n - 1 - i];
-
-      if (!(home.id === null && away.id === null)) {
-        roundMatches.push({
-          homeTeamId: home.id,
-          awayTeamId: away.id,
-        });
-      }
-    }
-
-    const last = teamList.pop();
-    if (last) teamList.splice(1, 0, last);
-
-    rounds.push(roundMatches);
-  }
-
-  return rounds;
-}
 
 type ScheduledMatch = {
   splitMatchdayId: number;
@@ -131,6 +105,39 @@ function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
   );
 }
 
+function getHomeRounds(teams: Team[]) {
+  const teamList = shuffle(teams);
+  const isOdd = teamList.length % 2 !== 0;
+
+  if (isOdd) teamList.push({ id: null });
+
+  const rounds: Match[][] = [];
+  const n = teamList.length;
+
+  for (let round = 0; round < n - 1; round++) {
+    const roundMatches: Match[] = [];
+
+    for (let i = 0; i < n / 2; i++) {
+      const home = teamList[i];
+      const away = teamList[n - 1 - i];
+
+      if (!(home.id === null && away.id === null)) {
+        roundMatches.push({
+          homeTeamId: home.id,
+          awayTeamId: away.id,
+        });
+      }
+    }
+
+    const last = teamList.pop();
+    if (last) teamList.splice(1, 0, last);
+
+    rounds.push(roundMatches);
+  }
+
+  return rounds;
+}
+
 function getAwayRounds(rounds: Match[][]): Match[][] {
   return rounds.map((matches) =>
     matches.map(({ homeTeamId, awayTeamId }) => ({
@@ -138,4 +145,13 @@ function getAwayRounds(rounds: Match[][]): Match[][] {
       awayTeamId: homeTeamId,
     }))
   );
+}
+
+function shuffle<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
 }

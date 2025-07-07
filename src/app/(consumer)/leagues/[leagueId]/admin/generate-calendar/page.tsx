@@ -4,7 +4,10 @@ import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
-import { generateCalendar } from "@/features/(league)/(admin)/calendar/actions/calendar";
+import {
+  generateCalendar,
+  regenerateCalendar,
+} from "@/features/(league)/(admin)/calendar/actions/calendar";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
 import { cn } from "@/lib/utils";
 import { and, count, eq } from "drizzle-orm";
@@ -63,6 +66,7 @@ async function SuspenseBoundary({
         <GenerateCalendarButton
           loadingText="Rigenero calendario"
           leagueId={leagueId}
+          action={regenerateCalendar.bind(null, leagueId)}
         >
           Rigenera
         </GenerateCalendarButton>
