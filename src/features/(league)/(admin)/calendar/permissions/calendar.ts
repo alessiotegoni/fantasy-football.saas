@@ -9,25 +9,16 @@ enum GENERATE_CALENDAR_MESSAGES {
   INVALID_TEAMS_LENGTH = "Per generare il calendario la lega deve avere almeno 4 squadre",
 }
 
-export async function validateBaseRequirements(
-  userId: string,
-  leagueId: string
-) {
-  const isAdmin = await getLeagueAdmin(userId, leagueId);
-
-  if (!isAdmin) return createError(GENERATE_CALENDAR_MESSAGES.REQUIRE_ADMIN);
-
-  return createSuccess("", null);
-}
-
 export async function canGenerateCalendar(userId: string, leagueId: string) {
-  const [baseValidation, upcomingSplit, leagueTeams] = await Promise.all([
-    validateBaseRequirements(userId, leagueId),
+  const [isAdmin, upcomingSplit, leagueTeams] = await Promise.all([
+    getLeagueAdmin(userId, leagueId),
     getUpcomingSplit(),
     getLeagueTeams(leagueId),
   ]);
 
-  if (baseValidation.error) return baseValidation;
+  if (!isAdmin) {
+    return createError(GENERATE_CALENDAR_MESSAGES.REQUIRE_ADMIN);
+  }
 
   if (!upcomingSplit) {
     return createError(GENERATE_CALENDAR_MESSAGES.SPLIT_NOT_UNCOMING);
@@ -38,19 +29,4 @@ export async function canGenerateCalendar(userId: string, leagueId: string) {
   }
 
   return createSuccess("", { upcomingSplitId: upcomingSplit.id });
-}
-
-export async function canDeleteCalendar(userId: string, leagueId: string) {
-  const [baseValidation, upcomingSplit] = await Promise.all([
-    validateBaseRequirements(userId, leagueId),
-    getUpcomingSplit(),
-  ]);
-
-  if (baseValidation.error) return baseValidation;
-
-  if (!upcomingSplit) {
-    return createError(GENERATE_CALENDAR_MESSAGES.SPLIT_NOT_UNCOMING);
-  }
-
-  return createSuccess("", null);
 }

@@ -12,44 +12,62 @@ import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
 import { deleteCalendar, insertCalendar } from "../db/calendar";
 import { redirect } from "next/navigation";
+import { db } from "@/drizzle/db";
 
 export async function generateCalendar(leagueId: string) {
   const { error, message, data } = await calendarValidation(leagueId);
   if (error) return createError(message);
 
-  const permissions = await canGenerateCalendar(data.userId, leagueId);
-  if (permissions.error) return permissions;
-
-  const [leagueTeams, splitMatchdays] = await Promise.all([
-    getLeagueTeams(leagueId),
-    getSplitMatchdays(permissions.data.upcomingSplitId),
-  ]);
-
-  const calendar = buildCalendar(leagueTeams, splitMatchdays, leagueId);
-
+  const calendar = await getCalendar(data);
   await insertCalendar(calendar);
 
   redirect(`/leagues/${leagueId}/calendar`);
 }
 
 export async function regenerateCalendar(leagueId: string) {
-  const { error, message } = await calendarValidation(leagueId);
+  const { error, message, data } = await calendarValidation(leagueId);
   if (error) return createError(message);
 
-  await deleteCalendar(leagueId);
-  await generateCalendar(leagueId);
+  const calendar = await getCalendar(data);
+
+  await db.transaction(async (tx) => {
+    await deleteCalendar(leagueId, tx);
+    await insertCalendar(calendar, tx);
+  });
 
   redirect(`/leagues/${leagueId}/calendar`);
 }
 
-async function calendarValidation(values: string) {
-  const validation = validateSchema<string>(getUUIdSchema(), values);
+async function getCalendar({
+  leagueId,
+  upcomingSplitId,
+}: {
+  leagueId: string;
+  upcomingSplitId: number;
+}) {
+  const [leagueTeams, splitMatchdays] = await Promise.all([
+    getLeagueTeams(leagueId),
+    getSplitMatchdays(upcomingSplitId),
+  ]);
+
+  return buildCalendar(leagueTeams, splitMatchdays, leagueId);
+}
+
+async function calendarValidation(leagueId: string) {
+  const validation = validateSchema<string>(getUUIdSchema(), leagueId);
   if (!validation.isValid) return validation.error;
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  return createSuccess("", { leagueId: validation.data, userId });
+  const permissions = await canGenerateCalendar(userId, leagueId);
+  if (permissions.error) return permissions;
+
+  return createSuccess("", {
+    leagueId: validation.data,
+    userId,
+    ...permissions.data,
+  });
 }
 
 type Team = {
@@ -106,7 +124,7 @@ function buildCalendar(teams: Team[], matchdays: Matchday[], leagueId: string) {
 }
 
 function getHomeRounds(teams: Team[]) {
-  const teamList = shuffle(teams);
+  const teamList = shuffleTeams(teams);
   const isOdd = teamList.length % 2 !== 0;
 
   if (isOdd) teamList.push({ id: null });
@@ -147,8 +165,8 @@ function getAwayRounds(rounds: Match[][]): Match[][] {
   );
 }
 
-function shuffle<T>(array: T[]): T[] {
-  const result = [...array];
+function shuffleTeams(teams: Team[]) {
+  const result = [...teams];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [result[i], result[j]] = [result[j], result[i]];

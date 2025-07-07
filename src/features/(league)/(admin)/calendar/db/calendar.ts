@@ -10,9 +10,10 @@ enum DB_ERRORS {
 }
 
 export async function insertCalendar(
-  data: (typeof leagueMatches.$inferInsert)[]
+  data: (typeof leagueMatches.$inferInsert)[],
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await db
+  const [res] = await tx
     .insert(leagueMatches)
     .values(data)
     .returning({ calendarId: leagueMatches.id });
@@ -24,8 +25,11 @@ export async function insertCalendar(
   revalidateLeagueCalendarCache(data[0].leagueId);
 }
 
-export async function deleteCalendar(leagueId: string) {
-  const [res] = await db
+export async function deleteCalendar(
+  leagueId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [res] = await tx
     .delete(leagueMatches)
     .where(eq(leagueMatches.leagueId, leagueId))
     .returning({ calendarId: leagueMatches.id });
