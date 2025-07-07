@@ -10,6 +10,7 @@ import { splitMatchdays } from "./splitMatchdays";
 import { leagues } from "./leagues";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { leagueMatchResults } from "./leagueMatchResults";
+import { leagueMatchTeamLineup } from "./leagueMatchTeamLineup";
 
 export const leagueMatches = pgTable(
   "league_matches",
@@ -64,5 +65,6 @@ export const leagueMatchesRelations = relations(
       references: [leagueMemberTeams.id],
     }),
     matchResults: many(leagueMatchResults),
+    lineups: many(leagueMatchTeamLineup),
   })
 );
