@@ -1,7 +1,9 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { db } from "@/drizzle/db";
-import { splits } from "@/drizzle/schema";
-import { getSplitsTag } from "@/cache/global";
+import { splitMatchdays, splits } from "@/drizzle/schema";
+import { getSplitsMatchdaysTag, getSplitsTag } from "@/cache/global";
+import { getSplitMatchdayIdTag } from "../db/cache/split";
+import { eq } from "drizzle-orm";
 
 export async function getSplits() {
   "use cache";
@@ -28,4 +30,14 @@ export async function getLiveSplit() {
   const splits = await getSplits();
 
   return splits.find((split) => split.status === "live");
+}
+
+export async function getSplitMatchdays(splitId: number) {
+  "use cache";
+  cacheTag(getSplitsMatchdaysTag(), getSplitMatchdayIdTag(splitId));
+
+  return db
+    .select()
+    .from(splitMatchdays)
+    .where(eq(splitMatchdays.splitId, splitId));
 }
