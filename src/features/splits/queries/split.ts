@@ -3,7 +3,7 @@ import { db } from "@/drizzle/db";
 import { splitMatchdays, splits } from "@/drizzle/schema";
 import { getSplitsMatchdaysTag, getSplitsTag } from "@/cache/global";
 import { getSplitMatchdayIdTag } from "../db/cache/split";
-import { eq } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 
 export async function getSplits() {
   "use cache";
@@ -39,5 +39,6 @@ export async function getSplitMatchdays(splitId: number) {
   return db
     .select()
     .from(splitMatchdays)
-    .where(eq(splitMatchdays.splitId, splitId));
+    .where(eq(splitMatchdays.splitId, splitId))
+    .orderBy(asc(splitMatchdays.number));
 }

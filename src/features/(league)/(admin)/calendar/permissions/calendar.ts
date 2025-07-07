@@ -33,11 +33,11 @@ export async function canGenerateCalendar(userId: string, leagueId: string) {
     return createError(GENERATE_CALENDAR_MESSAGES.SPLIT_NOT_UNCOMING);
   }
 
-  if (leagueTeams.length < 4) {
+  if (leagueTeams.length < 3) {
     return createError(GENERATE_CALENDAR_MESSAGES.INVALID_TEAMS_LENGTH);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", { upcomingSplitId: upcomingSplit.id });
 }
 
 export async function canDeleteCalendar(userId: string, leagueId: string) {
