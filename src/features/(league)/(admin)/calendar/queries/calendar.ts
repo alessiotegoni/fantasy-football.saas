@@ -14,13 +14,13 @@ import { db } from "@/drizzle/db";
 import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache/league";
 
 export async function getLeagueCalendar(leagueId: string, splitId: number) {
-  "use cache";
-  cacheTag(
-    getLeagueCalendarTag(leagueId),
-    getLeagueTeamsTag(leagueId),
-    getLeagueMatchesResultsTag(leagueId),
-    getSplitsMatchdaysTag()
-  );
+//   "use cache";
+//   cacheTag(
+//     getLeagueCalendarTag(leagueId),
+//     getLeagueTeamsTag(leagueId),
+//     getLeagueMatchesResultsTag(leagueId),
+//     getSplitsMatchdaysTag()
+//   );
 
   const results = await db
     .select({
@@ -61,10 +61,6 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
     .innerJoin(
       leagueMemberTeams,
       eq(leagueMatches.homeTeamId, leagueMemberTeams.id)
-    )
-    .innerJoin(
-      leagueMemberTeams,
-      eq(leagueMatches.awayTeamId, leagueMemberTeams.id)
     )
     .leftJoin(
       leagueMatchResults,

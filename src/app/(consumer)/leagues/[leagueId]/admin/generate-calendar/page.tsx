@@ -9,6 +9,7 @@ import {
   generateCalendar,
   regenerateCalendar,
 } from "@/features/(league)/(admin)/calendar/actions/calendar";
+import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
 import { and, count, eq } from "drizzle-orm";
 import { NavArrowRight, WarningTriangle } from "iconoir-react";
@@ -70,7 +71,7 @@ async function SuspenseBoundary({
             Rigenera
           </ActionButton>
           <Button asChild className="sm:w-fit sm:mt-7 !px-5">
-            <Link href={`/leagues/${leagueId}/calendar`}>
+            <Link href={`/leagues/${leagueId}/calendar?splitId=${splitId}`}>
               Vedi
               <NavArrowRight className="size-5" />
             </Link>
@@ -79,19 +80,7 @@ async function SuspenseBoundary({
       </MobileButtonsContainer>
     </>
   ) : (
-    <EmptyState
-      title="Nessun calendario trovato"
-      description="Non hai ancora generato un calendario abbinamenti, fallo cliccando sul bottone qui sotto"
-      renderButton={() => (
-        <ActionButton
-          className="w-fit mt-7 !px-5"
-          loadingText="Genero calendario"
-          action={generateCalendar.bind(null, leagueId)}
-        >
-          Genera calendario
-        </ActionButton>
-      )}
-    />
+    <CalendarEmptyState leagueId={leagueId} />
   );
 }
 

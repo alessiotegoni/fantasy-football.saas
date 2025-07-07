@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
 import { getLeagueCalendar } from "@/features/(league)/(admin)/calendar/queries/calendar";
 import { validateSerialId } from "@/schema/helpers";
 import { notFound } from "next/navigation";
@@ -35,6 +36,9 @@ async function SuspenseBoundary({
   if (!validateSerialId(parsedSplitId).success) notFound();
 
   const calendar = await getLeagueCalendar(leagueId, parsedSplitId);
+  if (!calendar) return <CalendarEmptyState leagueId={leagueId} />;
 
-  return <></>
+  console.log(calendar);
+
+  return <></>;
 }
