@@ -122,8 +122,8 @@ async function SuspenseBoundary({
                       {/* Score */}
                       <div className="text-center min-w-[80px]">
                         <div className="text-primary text-xl font-bold">
-                          {homeResult ? homeResult.points : 0} -{" "}
-                          {awayResult ? awayResult.points : 0}
+                          {homeResult ? homeResult.goals : 0} -{" "}
+                          {awayResult ? awayResult.goals : 0}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           {homeResult?.totalScore ?? "-"}{" "}

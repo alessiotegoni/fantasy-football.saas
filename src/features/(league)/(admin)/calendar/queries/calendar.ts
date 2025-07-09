@@ -22,13 +22,13 @@ type MatchResult = {
 };
 
 export async function getLeagueCalendar(leagueId: string, splitId: number) {
-  "use cache";
-  cacheTag(
-    getLeagueCalendarTag(leagueId),
-    getLeagueTeamsTag(leagueId),
-    getLeagueMatchesResultsTag(leagueId),
-    getSplitMatchdaysIdTag(splitId)
-  );
+  // "use cache";
+  // cacheTag(
+  //   getLeagueCalendarTag(leagueId),
+  //   getLeagueTeamsTag(leagueId),
+  //   getLeagueMatchesResultsTag(leagueId),
+  //   getSplitMatchdaysIdTag(splitId)
+  // );
 
   const homeTeam = alias(leagueMemberTeams, "homeTeam");
   const awayTeam = alias(leagueMemberTeams, "awayTeam");
@@ -85,12 +85,15 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
 
 function matchResultsSql() {
   return sql<MatchResult[]>`
+    coalesce(
       json_agg(
         jsonb_build_object(
           'teamId', ${leagueMatchResults.teamId},
           'goals', ${leagueMatchResults.goals},
           'totalScore', ${leagueMatchResults.totalScore}
         )
-      ) FILTER (WHERE ${leagueMatchResults.leagueMatchId} = ${leagueMatches.id})
-    `.as("matchResults");
+      ) FILTER (WHERE ${leagueMatchResults.leagueMatchId} = ${leagueMatches.id}),
+      '[]'
+    )
+  `.as("matchResults");
 }
