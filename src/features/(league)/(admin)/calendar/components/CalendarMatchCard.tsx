@@ -21,35 +21,41 @@ export default function CalendarMatchCard({
 
   const homeGoals = homeResult?.goals ?? 0;
   const awayGoals = awayResult?.goals ?? 0;
+  const isHomeWinner = homeGoals > awayGoals;
+  const isAwayWinner = awayGoals > homeGoals;
 
   return (
     <Link href={`/leagues/${leagueId}/matches/${id}`} className="group">
-      <div className="bg-input/30 p-6 flex items-center justify-between group-last:rounded-b-2xl">
-        <div className="flex-1">
-          <MatchTeam team={homeTeam} isBye={isBye} className="items-start" />
+      <div className="bg-input/30 p-4 sm:p-6 flex items-center justify-between group-last:rounded-b-2xl">
+        <MatchTeam
+          team={homeTeam}
+          isBye={isBye}
+          isWinner={isHomeWinner}
+          className="items-start"
+        />
+
+        <div className="shrink-0 text-center">
+          <MatchPoints
+            homePoints={homeGoals}
+            awayPoints={awayGoals}
+            isMatchPlayed={matchResults.length > 0}
+            isHomeWinner={isHomeWinner}
+            isAwayWinner={isAwayWinner}
+          />
+          <MatchScores
+            homeScore={homeResult?.totalScore}
+            awayScore={awayResult?.totalScore}
+            isHomeWinner={isHomeWinner}
+            isAwayWinner={isAwayWinner}
+          />
         </div>
 
-        <div className="shrink-0 mx-6">
-          <div className="text-center">
-            <MatchPoints
-              homePoints={homeGoals}
-              awayPoints={awayGoals}
-              isMatchPlayed={matchResults.length > 0}
-              isHomeWinner={homeGoals > awayGoals}
-              isAwayWinner={awayGoals > homeGoals}
-            />
-            <MatchScores
-              homeScore={homeResult?.totalScore}
-              awayScore={awayResult?.totalScore}
-              isHomeWinner={homeGoals > awayGoals}
-              isAwayWinner={awayGoals > homeGoals}
-            />
-          </div>
-        </div>
-
-        <div className="flex-1">
-          <MatchTeam team={awayTeam} isBye={isBye} className="items-end" />
-        </div>
+        <MatchTeam
+          team={awayTeam}
+          isBye={isBye}
+          isWinner={isAwayWinner}
+          className="items-end"
+        />
       </div>
     </Link>
   );
