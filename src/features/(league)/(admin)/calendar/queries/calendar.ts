@@ -22,13 +22,13 @@ type MatchResult = {
 };
 
 export async function getLeagueCalendar(leagueId: string, splitId: number) {
-  // "use cache";
-  // cacheTag(
-  //   getLeagueCalendarTag(leagueId),
-  //   getLeagueTeamsTag(leagueId),
-  //   getLeagueMatchesResultsTag(leagueId),
-  //   getSplitMatchdaysIdTag(splitId)
-  // );
+  "use cache";
+  cacheTag(
+    getLeagueCalendarTag(leagueId),
+    getLeagueTeamsTag(leagueId),
+    getLeagueMatchesResultsTag(leagueId),
+    getSplitMatchdaysIdTag(splitId)
+  );
 
   const homeTeam = alias(leagueMemberTeams, "homeTeam");
   const awayTeam = alias(leagueMemberTeams, "awayTeam");

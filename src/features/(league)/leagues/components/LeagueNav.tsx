@@ -120,7 +120,6 @@ function LeagueCalendarLink({
       key={item.name}
       href={getItemHref(href, leagueId)}
       className="w-fit flex-col gap-1 xs:gap-0.5"
-      exact
     >
       <item.icon className="size-5 xs:size-6" />
       <span className="text-xs xs:text-sm">{item.name}</span>
@@ -130,7 +129,6 @@ function LeagueCalendarLink({
       key={item.name}
       href={getItemHref(href, leagueId)}
       className="w-fit flex-col gap-1 xs:gap-0.5"
-      exact
       render={({ isActive, href }) => (
         <Button
           variant="ghost"

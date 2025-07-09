@@ -2,11 +2,12 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { ComponentPropsWithoutRef } from "react";
 import { Button } from "./ui/button";
 
 type Props = {
+  href: string;
   render?: ({
     isActive,
     href,
@@ -16,7 +17,7 @@ type Props = {
   }) => React.ReactNode;
   activeBasePath?: string;
   exact?: boolean;
-} & ComponentPropsWithoutRef<typeof Link>;
+} & Omit<ComponentPropsWithoutRef<typeof Link>, "href">;
 
 export default function NavLink({
   href,
@@ -28,7 +29,7 @@ export default function NavLink({
 }: Props) {
   const pathname = usePathname();
 
-  const basePath = activeBasePath || href;
+  const basePath = getBasePath(activeBasePath, href);
   const isPathEqual = pathname === basePath;
 
   const isActive = exact
@@ -49,4 +50,11 @@ export default function NavLink({
       <Link href={href}>{children}</Link>
     </Button>
   );
+}
+
+function getBasePath(activeBasePath: string | undefined, href: string) {
+  const searchParamsIndex = href.indexOf("?");
+  if (searchParamsIndex === -1) return activeBasePath || href;
+
+  return activeBasePath || href.slice(0, searchParamsIndex);
 }
