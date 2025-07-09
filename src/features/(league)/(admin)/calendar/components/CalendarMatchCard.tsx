@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Match } from "../queries/calendar";
+import CalendarMatchTeam from "./CalendarMatchTeam";
 
 export default function CalendarMatchCard({
   id,
@@ -16,59 +17,82 @@ export default function CalendarMatchCard({
     (result) => result.teamId === awayTeam?.id
   );
 
-  const homePoints = homeResult?.goals ?? 0;
-  const awayPoints = awayResult?.goals ?? 0;
-  const homeFantasyScore = homeResult?.totalScore;
-  const awayFantasyScore = awayResult?.totalScore;
-
   return (
-    <Link
-      href={`/leagues/${leagueId}/matches/${id}`}
-      className="bg-gray-800 rounded-xl p-4 border border-gray-700 hover:border-gray-600 transition-colors cursor-pointer"
-    >
-      <div className="flex items-center justify-between">
-        {/* Home Team */}
+    <Link href={`/leagues/${leagueId}/matches/${id}`} className="group">
+      <div className="bg-input/30 p-6 flex items-center justify-between group-last:rounded-b-2xl">
         <div className="flex-1">
-          <TeamCard
+          <CalendarMatchTeam
             team={homeTeam}
-            isBye={isBye && !awayTeam}
-            fantasyScore={homeFantasyScore}
+            isBye={isBye}
             className="items-start"
           />
         </div>
 
-        {/* Score Section */}
-        {matchResults.length > 0 && (
-          <div className="flex-shrink-0 mx-6">
-            <div className="text-center">
-              {/* Match Score */}
-              <div className="bg-blue-500/20 rounded-full px-4 py-2 mb-2">
-                <span className="text-xl font-bold text-white">
-                  {homePoints} - {awayPoints}
-                </span>
-              </div>
-              {/* Fantasy Scores */}
-              {(homeFantasyScore || awayFantasyScore) && (
-                <div className="text-sm text-gray-400">
-                  <span>{homeFantasyScore || "-"}</span>
-                  <span className="mx-2">-</span>
-                  <span>{awayFantasyScore || "-"}</span>
-                </div>
-              )}
-            </div>
+        <div className="shrink-0 mx-6">
+          <div className="text-center">
+            <Points
+              homePoints={homeResult?.goals ?? 0}
+              awayPoints={awayResult?.goals ?? 0}
+              isMatchPlayed={matchResults.length > 0}
+            />
+            <Score
+              homeScore={homeResult?.totalScore}
+              awayScore={awayResult?.totalScore}
+            />
           </div>
-        )}
+        </div>
 
-        {/* Away Team */}
         <div className="flex-1">
-          <TeamCard
+          <CalendarMatchTeam
             team={awayTeam}
-            isBye={isBye && !homeTeam}
-            fantasyScore={awayFantasyScore}
+            isBye={isBye}
             className="items-end"
           />
         </div>
       </div>
     </Link>
+  );
+}
+
+function Points({
+  isMatchPlayed,
+  homePoints,
+  awayPoints,
+}: {
+  isMatchPlayed: boolean;
+  homePoints: number;
+  awayPoints: number;
+}) {
+  if (isMatchPlayed) {
+    return (
+      <div className="bg-primary/20 rounded-full px-4.5 py-1.5 mb-2">
+        <span className="text-xl font-bold text-primary">
+          {homePoints} - {awayPoints}
+        </span>
+      </div>
+    );
+  }
+
+  <span className="text-xl font-bold text-primary">
+    {homePoints || null} - {awayPoints || null}
+  </span>;
+}
+
+function Score({
+  homeScore,
+  awayScore,
+}: {
+  homeScore?: string;
+  awayScore?: string;
+}) {
+  return (
+    homeScore ||
+    (awayScore && (
+      <div className="text-sm text-gray-400">
+        <span>{homeScore || "-"}</span>
+        <span className="mx-2">-</span>
+        <span>{awayScore || "-"}</span>
+      </div>
+    ))
   );
 }

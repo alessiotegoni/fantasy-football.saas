@@ -47,14 +47,12 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
       homeTeam: {
         id: homeTeam.id,
         name: homeTeam.name,
-        managerName: homeTeam.managerName,
         imageUrl: homeTeam.imageUrl,
       },
 
       awayTeam: {
         id: awayTeam.id,
         name: awayTeam.name,
-        managerName: awayTeam.managerName,
         imageUrl: awayTeam.imageUrl,
       },
 
@@ -83,7 +81,7 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
   return results;
 }
 
-export type Match = Awaited<ReturnType<typeof getLeagueCalendar>>[number]
+export type Match = Awaited<ReturnType<typeof getLeagueCalendar>>[number];
 
 function matchResultsSql() {
   return sql<MatchResult[]>`

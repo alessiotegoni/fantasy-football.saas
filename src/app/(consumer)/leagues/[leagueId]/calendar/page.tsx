@@ -83,16 +83,20 @@ async function SuspenseBoundary({
     (match) => match.splitMatchday.number
   );
 
-  return Object.entries(groupedMatches).map(
-    ([matchdayNum, matches]) =>
-      matches && (
-        <MatchdaySection
-          key={matchdayNum}
-          matchday={matches[0].splitMatchday}
-          matches={matches}
-          leagueId={leagueId}
-        />
-      )
+  return (
+    <div className="space-y-8">
+      {Object.entries(groupedMatches).map(
+        ([matchdayNum, matches]) =>
+          matches && (
+            <MatchdaySection
+              key={matchdayNum}
+              matchday={matches[0].splitMatchday}
+              matches={matches}
+              leagueId={leagueId}
+            />
+          )
+      )}
+    </div>
   );
 }
 
@@ -105,9 +109,11 @@ function MatchdaySection({
   matches: Match[];
   leagueId: string;
 }) {
+  console.log(matches);
+
   return (
-    <div className="mb-8 last:mb-0">
-      <div className="bg-primary rounded-t-xl px-4 py-3 mb-4">
+    <div>
+      <div className="bg-primary rounded-t-2xl px-4 py-3">
         <h2 className="text-lg font-bold text-white">
           {matchday.number}ª giornata
         </h2>
