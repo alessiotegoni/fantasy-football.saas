@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Match } from "../queries/calendar";
-import CalendarMatchTeam from "./CalendarMatchTeam";
+import MatchTeam from "../../../matches/components/MatchTeam";
 
 export default function CalendarMatchCard({
   id,
@@ -21,7 +21,7 @@ export default function CalendarMatchCard({
     <Link href={`/leagues/${leagueId}/matches/${id}`} className="group">
       <div className="bg-input/30 p-6 flex items-center justify-between group-last:rounded-b-2xl">
         <div className="flex-1">
-          <CalendarMatchTeam
+          <MatchTeam
             team={homeTeam}
             isBye={isBye}
             className="items-start"
@@ -43,7 +43,7 @@ export default function CalendarMatchCard({
         </div>
 
         <div className="flex-1">
-          <CalendarMatchTeam
+          <MatchTeam
             team={awayTeam}
             isBye={isBye}
             className="items-end"
