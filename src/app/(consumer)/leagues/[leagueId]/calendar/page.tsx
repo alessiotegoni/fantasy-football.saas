@@ -109,8 +109,6 @@ function MatchdaySection({
   matches: Match[];
   leagueId: string;
 }) {
-  console.log(matches);
-
   return (
     <div>
       <div className="bg-primary rounded-t-2xl px-4 py-3">
