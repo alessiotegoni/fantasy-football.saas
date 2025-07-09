@@ -3,9 +3,13 @@ import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache
 import { revalidateTag } from "next/cache";
 
 export type MATCH_TAG =
+  | "lineup-info"
   | "match-starters-lineup"
   | "match-benchs-lineup"
   | "match-results";
+
+export const getMatchLineupInfoTag = (matchId: string) =>
+  getMatchTag("lineup-info", matchId);
 
 export const getMatchStartersLineupTag = (matchId: string) =>
   getMatchTag("match-starters-lineup", matchId);
@@ -13,10 +17,10 @@ export const getMatchStartersLineupTag = (matchId: string) =>
 export const getMatchBenchsLineupTag = (matchId: string) =>
   getMatchTag("match-benchs-lineup", matchId);
 
-export const getMatchResultTag = (matchId: string) =>
+export const getMatchResultsTag = (matchId: string) =>
   getMatchTag("match-results", matchId);
 
-export const revalidateMatchLinuep = (matchId: string) => {
+export const revalidateMatchLinueps = (matchId: string) => {
   revalidateTag(getMatchStartersLineupTag(matchId));
   revalidateTag(getMatchBenchsLineupTag(matchId));
 };
@@ -26,5 +30,5 @@ export const revalidateMatchResultsCache = (
   matchesIds: string[]
 ) => {
   revalidateTag(getLeagueMatchesResultsTag(leagueId));
-  matchesIds.map((matchId) => revalidateTag(getMatchResultTag(matchId)));
+  matchesIds.map((matchId) => revalidateTag(getMatchResultsTag(matchId)));
 };
