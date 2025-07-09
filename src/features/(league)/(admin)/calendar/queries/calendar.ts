@@ -6,12 +6,20 @@ import {
   leagueMemberTeams,
   leagueMatchResults,
 } from "@/drizzle/schema";
-import { eq, and, asc } from "drizzle-orm";
+import { eq, and, asc, sql } from "drizzle-orm";
 
 import { getLeagueTeamsTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { db } from "@/drizzle/db";
 import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache/league";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
+import { alias } from "drizzle-orm/pg-core";
+
+type MatchResult = {
+  leagueMatchId: string;
+  teamId: string;
+  goals: number;
+  totalScore: string;
+};
 
 export async function getLeagueCalendar(leagueId: string, splitId: number) {
   "use cache";
@@ -22,24 +30,13 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
     getSplitMatchdaysIdTag(splitId)
   );
 
+  const homeTeam = alias(leagueMemberTeams, "homeTeam");
+  const awayTeam = alias(leagueMemberTeams, "awayTeam");
+
   const results = await db
     .select({
       id: leagueMatches.id,
       isBye: leagueMatches.isBye,
-
-      homeTeam: {
-        id: leagueMemberTeams.id,
-        name: leagueMemberTeams.name,
-        managerName: leagueMemberTeams.managerName,
-        imageUrl: leagueMemberTeams.imageUrl,
-      },
-
-      awayTeam: {
-        id: leagueMemberTeams.id,
-        name: leagueMemberTeams.name,
-        managerName: leagueMemberTeams.managerName,
-        imageUrl: leagueMemberTeams.imageUrl,
-      },
 
       splitMatchday: {
         id: splitMatchdays.id,
@@ -47,21 +44,29 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
         status: splitMatchdays.status,
       },
 
-      matchResult: {
-        teamId: leagueMatchResults.teamId,
-        points: leagueMatchResults.points,
-        totalScore: leagueMatchResults.totalScore,
+      homeTeam: {
+        id: homeTeam.id,
+        name: homeTeam.name,
+        managerName: homeTeam.managerName,
+        imageUrl: homeTeam.imageUrl,
       },
+
+      awayTeam: {
+        id: awayTeam.id,
+        name: awayTeam.name,
+        managerName: awayTeam.managerName,
+        imageUrl: awayTeam.imageUrl,
+      },
+
+      matchResults: matchResultsSql(),
     })
     .from(leagueMatches)
     .innerJoin(
       splitMatchdays,
       eq(leagueMatches.splitMatchdayId, splitMatchdays.id)
     )
-    .innerJoin(
-      leagueMemberTeams,
-      eq(leagueMatches.homeTeamId, leagueMemberTeams.id)
-    )
+    .leftJoin(homeTeam, eq(leagueMatches.homeTeamId, homeTeam.id))
+    .leftJoin(awayTeam, eq(leagueMatches.awayTeamId, awayTeam.id))
     .leftJoin(
       leagueMatchResults,
       eq(leagueMatchResults.leagueMatchId, leagueMatches.id)
@@ -72,7 +77,20 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
         eq(splitMatchdays.splitId, splitId)
       )
     )
-    .orderBy(asc(splitMatchdays.number));
+    .orderBy(asc(splitMatchdays.number))
+    .groupBy(leagueMatches.id, splitMatchdays.id, homeTeam.id, awayTeam.id);
 
   return results;
+}
+
+function matchResultsSql() {
+  return sql<MatchResult[]>`
+      json_agg(
+        jsonb_build_object(
+          'teamId', ${leagueMatchResults.teamId},
+          'goals', ${leagueMatchResults.goals},
+          'totalScore', ${leagueMatchResults.totalScore}
+        )
+      ) FILTER (WHERE ${leagueMatchResults.leagueMatchId} = ${leagueMatches.id})
+    `.as("matchResults");
 }

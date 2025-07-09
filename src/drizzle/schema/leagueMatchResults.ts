@@ -4,6 +4,7 @@ import {
   smallint,
   numeric,
   uniqueIndex,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueMatches } from "./leagueMatches";
@@ -20,13 +21,9 @@ export const leagueMatchResults = pgTable(
       .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
     points: smallint("points").notNull(),
     totalScore: numeric("total_score").notNull(),
+    goals: smallint("goals").notNull().default(0),
   },
-  (table) => ({
-    uniqueMatchTeamPerLeague: uniqueIndex("unique_match_team_per_league").on(
-      table.leagueMatchId,
-      table.teamId
-    ),
-  })
+  (table) => [primaryKey({ columns: [table.leagueMatchId, table.teamId] })]
 );
 
 export const leagueMatchResultsRelations = relations(

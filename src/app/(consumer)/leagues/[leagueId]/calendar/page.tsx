@@ -54,8 +54,8 @@ async function SuspenseBoundary({
   const split = splits.find((split) => split.id === splitId);
   if (!split) notFound();
 
-  const calendar = await getLeagueCalendar(leagueId, splitId);
-  if (calendar) {
+  const calendar = await getLeagueCalendar(leagueId, split.id);
+  if (!calendar) {
     const isUpcoming = split.status === "upcoming";
 
     return (
@@ -76,5 +76,82 @@ async function SuspenseBoundary({
 
   console.log(calendar);
 
-  return <></>;
+  const groupedMatches = Object.groupBy(
+    calendar,
+    (match) => match.splitMatchday.number
+  );
+
+  return (
+    <div className="space-y-6 pb-20">
+      {Object.entries(groupedMatches).map(
+        ([day, matches]) =>
+          matches && (
+            <div key={day}>
+              <div className="bg-primary text-white font-semibold text-sm px-4 py-2 rounded-t-md">
+                {day}ª giornata - {matches[0].splitMatchday.status}
+              </div>
+
+              <div className="bg-white rounded-b-md shadow-sm divide-y">
+                {matches.map((match) => {
+                  const home = match.homeTeam;
+                  const away = match.awayTeam;
+
+                  const homeResult = match.matchResults?.find(
+                    (r) => r.teamId === home.id
+                  );
+                  const awayResult = match.matchResults?.find(
+                    (r) => r.teamId === away.id
+                  );
+
+                  return (
+                    <div key={match.id} className="flex items-center px-4 py-3">
+                      {/* Home */}
+                      <div className="flex-1 flex items-center gap-2">
+                        {/* {home.imageUrl && (
+                          <Image
+                            src={home.imageUrl}
+                            alt={home.name}
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        )} */}
+                        <div className="text-sm font-medium">{home?.name}</div>
+                      </div>
+
+                      {/* Score */}
+                      <div className="text-center min-w-[80px]">
+                        <div className="text-primary text-xl font-bold">
+                          {homeResult ? homeResult.points : 0} -{" "}
+                          {awayResult ? awayResult.points : 0}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {homeResult?.totalScore ?? "-"}{" "}
+                          <span className="text-gray-300">·</span>{" "}
+                          {awayResult?.totalScore ?? "-"}
+                        </div>
+                      </div>
+
+                      {/* Away */}
+                      <div className="flex-1 flex items-center justify-end gap-2 text-right">
+                        <div className="text-sm font-medium">{away?.name}</div>
+                        {/* {away.imageUrl && (
+                          <Image
+                            src={away.imageUrl}
+                            alt={away.name}
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        )} */}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )
+      )}
+    </div>
+  );
 }
