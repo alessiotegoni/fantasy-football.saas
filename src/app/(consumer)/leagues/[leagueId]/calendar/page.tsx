@@ -1,12 +1,16 @@
 import Container from "@/components/Container";
 import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
-import SplitSelect from "@/features/(league)/(admin)/calendar/components/SplitSelect";
-import { getLeagueCalendar } from "@/features/(league)/(admin)/calendar/queries/calendar";
+import SplitSelect from "@/features/splits/components/SplitSelect";
+import {
+  getLeagueCalendar,
+  Match,
+} from "@/features/(league)/(admin)/calendar/queries/calendar";
 import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { WarningTriangle } from "iconoir-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
@@ -74,84 +78,46 @@ async function SuspenseBoundary({
     );
   }
 
-  console.log(calendar);
-
   const groupedMatches = Object.groupBy(
     calendar,
     (match) => match.splitMatchday.number
   );
 
+  return Object.entries(groupedMatches).map(
+    ([matchdayNum, matches]) =>
+      matches && (
+        <MatchdaySection
+          key={matchdayNum}
+          matchday={matches[0].splitMatchday}
+          matches={matches}
+          leagueId={leagueId}
+        />
+      )
+  );
+}
+
+function MatchdaySection({
+  matchday,
+  matches,
+  leagueId,
+}: {
+  matchday: Match["splitMatchday"];
+  matches: Match[];
+  leagueId: string;
+}) {
   return (
-    <div className="space-y-6 pb-20">
-      {Object.entries(groupedMatches).map(
-        ([day, matches]) =>
-          matches && (
-            <div key={day}>
-              <div className="bg-primary text-white font-semibold text-sm px-4 py-2 rounded-t-md">
-                {day}ª giornata - {matches[0].splitMatchday.status}
-              </div>
+    <div className="mb-8 last:mb-0">
+      <div className="bg-primary rounded-t-xl px-4 py-3 mb-4">
+        <h2 className="text-lg font-bold text-white">
+          {matchday.number}ª giornata
+        </h2>
+      </div>
 
-              <div className="bg-white rounded-b-md shadow-sm divide-y">
-                {matches.map((match) => {
-                  const home = match.homeTeam;
-                  const away = match.awayTeam;
-
-                  const homeResult = match.matchResults?.find(
-                    (r) => r.teamId === home.id
-                  );
-                  const awayResult = match.matchResults?.find(
-                    (r) => r.teamId === away.id
-                  );
-
-                  return (
-                    <div key={match.id} className="flex items-center px-4 py-3">
-                      {/* Home */}
-                      <div className="flex-1 flex items-center gap-2">
-                        {/* {home.imageUrl && (
-                          <Image
-                            src={home.imageUrl}
-                            alt={home.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
-                          />
-                        )} */}
-                        <div className="text-sm font-medium">{home?.name}</div>
-                      </div>
-
-                      {/* Score */}
-                      <div className="text-center min-w-[80px]">
-                        <div className="text-primary text-xl font-bold">
-                          {homeResult ? homeResult.goals : 0} -{" "}
-                          {awayResult ? awayResult.goals : 0}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {homeResult?.totalScore ?? "-"}{" "}
-                          <span className="text-gray-300">·</span>{" "}
-                          {awayResult?.totalScore ?? "-"}
-                        </div>
-                      </div>
-
-                      {/* Away */}
-                      <div className="flex-1 flex items-center justify-end gap-2 text-right">
-                        <div className="text-sm font-medium">{away?.name}</div>
-                        {/* {away.imageUrl && (
-                          <Image
-                            src={away.imageUrl}
-                            alt={away.name}
-                            width={40}
-                            height={40}
-                            className="rounded-full"
-                          />
-                        )} */}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )
-      )}
+      <div className="space-y-4">
+        {matches.map((match) => (
+          <CalendarMatchCard key={match.id} {...match} leagueId={leagueId} />
+        ))}
+      </div>
     </div>
   );
 }

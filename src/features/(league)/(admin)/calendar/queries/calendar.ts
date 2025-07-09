@@ -83,6 +83,8 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
   return results;
 }
 
+export type Match = Awaited<ReturnType<typeof getLeagueCalendar>>[number]
+
 function matchResultsSql() {
   return sql<MatchResult[]>`
     coalesce(
