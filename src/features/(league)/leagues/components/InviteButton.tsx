@@ -47,7 +47,7 @@ export function InviteButton({
 
       if (navigator.share) {
         await navigator.share({
-          title: `Unisciti alla mia lega "${name}"!`,
+          title: `Unisciti alla mia lega!`,
           text: message,
           url: inviteUrl,
         });

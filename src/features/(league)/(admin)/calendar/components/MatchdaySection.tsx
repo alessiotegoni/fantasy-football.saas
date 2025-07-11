@@ -41,11 +41,9 @@ export default function MatchdaySection({
         </h2>
       </div>
 
-      <div className="space-y-4">
-        {matches.map((match) => (
-          <CalendarMatchCard key={match.id} {...match} leagueId={leagueId} />
-        ))}
-      </div>
+      {matches.map((match) => (
+        <CalendarMatchCard key={match.id} {...match} leagueId={leagueId} />
+      ))}
     </div>
   );
 }
