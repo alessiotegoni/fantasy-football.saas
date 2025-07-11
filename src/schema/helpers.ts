@@ -21,8 +21,18 @@ export function validateSchema<T>(
   return { isValid: true, data };
 }
 
+export function validateUUIds<T extends Record<string, string>>(uuids: T) {
+  const validations = Object.values(uuids).map((id) => validateUUId(id));
+
+  const success = validations.some((validation) => validation.success);
+  if (!success) return { success, ...uuids } as const;
+
+  return { success, ...uuids };
+}
+
 export const validateUUId = (id: string) => getUUIdSchema().safeParse(id);
-export const validateSerialId = (id: number) => getSerialIdSchema().safeParse(id);
+export const validateSerialId = (id: number) =>
+  getSerialIdSchema().safeParse(id);
 
 export const getSerialIdSchema = (errorMessage = "id invalido") =>
   z.number().int(errorMessage).positive(errorMessage);

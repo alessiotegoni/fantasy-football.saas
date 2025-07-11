@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import TradeProposalWrapper from "@/features/(league)/trades/components/TradeProposalWrapper";
-import { getUUIdSchema } from "@/schema/helpers";
+import { getUUIdSchema, validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
@@ -41,10 +41,7 @@ async function SuspenseBoundary({
   const searchP = await searchParams;
   if (!searchP?.proposerTeamId) notFound();
 
-  const idsValidations = Object.values(searchP).map((teamId) =>
-    getUUIdSchema("Id del team invalido").safeParse(teamId)
-  );
-  if (idsValidations.some((validation) => !validation.success)) notFound();
+  if (!validateUUIds(searchP).success) notFound();
 
   const leagueTeams = await getLeagueTeams(leagueId);
 
