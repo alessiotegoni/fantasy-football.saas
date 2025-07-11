@@ -85,43 +85,28 @@ async function SuspenseBoundary({
 
   return (
     <div className="space-y-8">
-      {Object.entries(groupedMatches).map(
-        ([matchdayNum, matches]) =>
-          matches && (
-            <MatchdaySection
-              key={matchdayNum}
-              matchday={matches[0].splitMatchday}
-              matches={matches}
-              leagueId={leagueId}
-            />
-          )
-      )}
+      <Suspense >
+        <CalendarSections />
+      </Suspense>
     </div>
   );
 }
 
-function MatchdaySection({
-  matchday,
-  matches,
-  leagueId,
+function CalendarSections({
+  groupedMatches,
 }: {
-  matchday: Match["splitMatchday"];
-  matches: Match[];
-  leagueId: string;
+  groupedMatches: Partial<Record<number, Match[]>>;
+  currentMatchday: 
 }) {
-  return (
-    <div>
-      <div className="bg-primary rounded-t-2xl px-4 py-3">
-        <h2 className="text-lg font-bold text-white">
-          {matchday.number}ª giornata
-        </h2>
-      </div>
-
-      <div className="space-y-4">
-        {matches.map((match) => (
-          <CalendarMatchCard key={match.id} {...match} leagueId={leagueId} />
-        ))}
-      </div>
-    </div>
+  return Object.entries(groupedMatches).map(
+    ([matchdayNum, matches]) =>
+      matches && (
+        <MatchdaySection
+          key={matchdayNum}
+          matchday={matches[0].splitMatchday}
+          matches={matches}
+          leagueId={leagueId}
+        />
+      )
   );
 }

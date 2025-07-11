@@ -42,3 +42,24 @@ export async function getSplitMatchdays(splitId: number) {
     .where(eq(splitMatchdays.splitId, splitId))
     .orderBy(asc(splitMatchdays.number));
 }
+
+export type SplitMatchday = Awaited<
+  ReturnType<typeof getSplitMatchdays>
+>[number];
+
+export async function getCurrentMatchday(splitId: number) {
+  const matchdays = await getSplitMatchdays(splitId);
+  const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
+
+  return liveMatchday || getNextMatchday(matchdays);
+}
+
+async function getNextMatchday(matchdays: SplitMatchday[]) {
+  const lastEndedMatchday = matchdays.findLastIndex(
+    (matchday) => matchday.status === "ended"
+  );
+
+  if (lastEndedMatchday === -1) return undefined;
+
+  return matchdays[lastEndedMatchday + 1];
+}
