@@ -5,12 +5,17 @@ import {
   getLeagueCalendar,
   Match,
 } from "@/features/(league)/(admin)/calendar/queries/calendar";
-import { getSplits, Split } from "@/features/splits/queries/split";
+import {
+  getCurrentMatchday,
+  getSplits,
+  Split,
+  SplitMatchday,
+} from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { WarningTriangle } from "iconoir-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
+import MatchdaySection from "@/features/(league)/(admin)/calendar/components/MatchdaySection";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
@@ -85,27 +90,31 @@ async function SuspenseBoundary({
 
   return (
     <div className="space-y-8">
-      <Suspense >
-        <CalendarSections />
+      <Suspense fallback={<CalendarSections matches={groupedMatches} />}>
+        <CalendarSections
+          matches={groupedMatches}
+          currentMatchday={await getCurrentMatchday(split.id)}
+        />
       </Suspense>
     </div>
   );
 }
 
 function CalendarSections({
-  groupedMatches,
+  matches,
+  currentMatchday,
 }: {
-  groupedMatches: Partial<Record<number, Match[]>>;
-  currentMatchday: 
+  matches: Partial<Record<number, Match[]>>;
+  currentMatchday?: SplitMatchday;
 }) {
-  return Object.entries(groupedMatches).map(
+  return Object.entries(matches).map(
     ([matchdayNum, matches]) =>
       matches && (
         <MatchdaySection
           key={matchdayNum}
           matchday={matches[0].splitMatchday}
           matches={matches}
-          leagueId={leagueId}
+          currentMatchday={currentMatchday}
         />
       )
   );
