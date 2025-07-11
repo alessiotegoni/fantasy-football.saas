@@ -23,7 +23,7 @@ export default function MatchdaySection({
   const scrollToMatchday = () => {
     matchdayRef.current!.scrollIntoView({
       behavior: "smooth",
-      block: "start",
+      block: "center",
     });
   };
 
