@@ -6,10 +6,10 @@ import { tacticalModules } from "./tacticalModules";
 
 export const leagueMatchTeamLineup = pgTable("league_match_team_lineup", {
   id: uuid("id").defaultRandom().primaryKey(),
-  leagueMatchId: uuid("league_match_id")
+  matchId: uuid("match_id")
     .notNull()
     .references(() => leagueMatches.id, { onDelete: "cascade" }),
-  leagueMemberTeamId: uuid("league_member_team_id")
+  teamId: uuid("team_id")
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
   tacticalModuleId: smallint("tactical_module_id")
@@ -21,11 +21,11 @@ export const leagueMatchTeamLineupRelations = relations(
   leagueMatchTeamLineup,
   ({ one }) => ({
     leagueMatch: one(leagueMatches, {
-      fields: [leagueMatchTeamLineup.leagueMatchId],
+      fields: [leagueMatchTeamLineup.matchId],
       references: [leagueMatches.id],
     }),
     team: one(leagueMemberTeams, {
-      fields: [leagueMatchTeamLineup.leagueMemberTeamId],
+      fields: [leagueMatchTeamLineup.teamId],
       references: [leagueMemberTeams.id],
     }),
     tacticalModule: one(tacticalModules, {
