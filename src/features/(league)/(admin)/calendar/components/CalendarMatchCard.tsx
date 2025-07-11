@@ -3,20 +3,26 @@ import { Match } from "../queries/calendar";
 import MatchTeam from "../../../matches/components/MatchTeam";
 import MatchPoints from "./MatchPoints";
 import MatchScores from "./MatchScores";
+import { cn } from "@/lib/utils";
 
 type Props = Match & {
   leagueId: string;
   isDetailView?: boolean;
-  tacticalModuleName?: string;
+  homeModule?: string;
+  awayModule?: string;
+  className?: string;
 };
 
 export default function CalendarMatchCard({
   id,
   homeTeam,
+  homeModule,
   awayTeam,
+  awayModule,
   matchResults,
   isBye,
   leagueId,
+  className,
   ...teamProps
 }: Props) {
   const homeResult = matchResults?.find(
@@ -33,14 +39,18 @@ export default function CalendarMatchCard({
 
   const content = (
     <div
-      className="bg-input/30 p-4 sm:p-6 flex items-center justify-between group-last:rounded-b-2xl
-    group-last:border-t group-last:border-border"
+      className={cn(
+        `bg-input/30 p-4 sm:p-6 flex items-center justify-between group-last:rounded-b-2xl
+    group-last:border-t group-last:border-border`,
+        className
+      )}
     >
       <MatchTeam
         team={homeTeam}
         isBye={isBye}
         isWinner={isHomeWinner}
         className="items-start"
+        module={homeModule}
         {...teamProps}
       />
 
@@ -65,6 +75,7 @@ export default function CalendarMatchCard({
         isBye={isBye}
         isWinner={isAwayWinner}
         className="items-end"
+        module={awayModule}
         {...teamProps}
       />
     </div>

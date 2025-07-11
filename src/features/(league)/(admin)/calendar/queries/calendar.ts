@@ -15,7 +15,6 @@ import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { alias } from "drizzle-orm/pg-core";
 
 type MatchResult = {
-  leagueMatchId: string;
   teamId: string;
   goals: number;
   totalScore: string;

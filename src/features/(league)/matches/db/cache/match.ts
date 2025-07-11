@@ -3,13 +3,13 @@ import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache
 import { revalidateTag } from "next/cache";
 
 export type MATCH_TAG =
-  | "lineup-info"
+  | "match-info"
   | "match-starters-lineup"
   | "match-benchs-lineup"
   | "match-results";
 
-export const getMatchLineupInfoTag = (matchId: string) =>
-  getMatchTag("lineup-info", matchId);
+export const getMatchInfoTag = (matchId: string) =>
+  getMatchTag("match-info", matchId);
 
 export const getMatchStartersLineupTag = (matchId: string) =>
   getMatchTag("match-starters-lineup", matchId);

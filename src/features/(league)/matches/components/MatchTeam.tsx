@@ -6,7 +6,7 @@ type TeamCardProps = {
   team: Pick<LeagueTeam, "id" | "name" | "imageUrl"> | null;
   isBye?: boolean;
   isDetailView?: boolean;
-  tacticalModuleName?: string;
+  module?: string;
   isWinner?: boolean;
   className?: string;
 };
@@ -16,7 +16,7 @@ export default function MatchTeam({
   isWinner,
   isBye = false,
   isDetailView = false,
-  tacticalModuleName,
+  module,
   className = "",
 }: TeamCardProps) {
   if (isBye && !team) {
@@ -59,7 +59,7 @@ export default function MatchTeam({
         className={`flex flex-col items-center justify-center space-y-3 text-center w-full ${className}`}
       >
         <h3 className="text-lg font-semibold text-white">{team.name}</h3>
-        <p className="text-muted-foreground">{tacticalModuleName}</p>
+        {module && <p className="text-muted-foreground">{module}</p>}
         <Avatar
           imageUrl={team.imageUrl}
           name={team.name}

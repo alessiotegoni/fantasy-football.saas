@@ -1,8 +1,10 @@
 import { getTacticalModulesTag } from "@/cache/global";
+import Container from "@/components/Container";
 import { db } from "@/drizzle/db";
 import { RolePosition } from "@/drizzle/schema";
+import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
 import {
-  getMatchLineupInfoTag,
+  getMatchInfoTag,
   getMatchResultsTag,
 } from "@/features/(league)/matches/db/cache/match";
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
@@ -20,22 +22,33 @@ export default async function MatchPage({
   const { success, leagueId, matchId } = validateUUIds(await params);
   if (!success) notFound();
 
-  const lineupInfo = await getMatchLineupInfo(leagueId, matchId);
+  const matchInfo = await getMatchInfo(leagueId, matchId);
+  if (!matchInfo) notFound();
 
-  return <div>MatchPage</div>;
+  console.log(matchInfo);
+
+  return (
+    <Container headerLabel="Partita" leagueId={leagueId}>
+      <CalendarMatchCard
+        className="rounded-3xl"
+        leagueId={leagueId}
+        homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name}
+        awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name}
+        isDetailView
+        {...matchInfo}
+      />
+    </Container>
+  );
 }
 
-async function getMatchLineupInfo(leagueId: string, matchId: string) {
+async function getMatchInfo(leagueId: string, matchId: string) {
   "use cache";
-  cacheTag(
-    getMatchLineupInfoTag(matchId),
-    getMatchResultsTag(matchId),
-    getTacticalModulesTag(),
-    getLeagueOptionsTag(leagueId)
-  );
 
   const result = await db.query.leagueMatches.findFirst({
-    columns: {},
+    columns: {
+      id: true,
+      isBye: true,
+    },
     with: {
       league: {
         columns: {},
@@ -49,8 +62,10 @@ async function getMatchLineupInfo(leagueId: string, matchId: string) {
       },
       splitMatchday: {
         columns: {
+          id: true,
           splitId: true,
           status: true,
+          number: true,
         },
       },
       homeTeam: {
@@ -93,47 +108,68 @@ async function getMatchLineupInfo(leagueId: string, matchId: string) {
   if (result.homeTeam) cacheTag(getTeamIdTag(result.homeTeam.id));
   if (result.awayTeam) cacheTag(getTeamIdTag(result.awayTeam.id));
 
-  cacheTag(getSplitMatchdaysIdTag(result.splitMatchday.splitId));
+  cacheTag(
+    ...getMatchInfoTags({
+      ...result,
+      leagueId,
+      matchId,
+      splitId: result.splitMatchday.splitId,
+    })
+  );
+
+  const { homeTeam, awayTeam, lineups, league, ...matchInfo } = result;
 
   return {
-    splitId: result.splitMatchday.splitId,
-    splitMatchdayStatus: result.splitMatchday.status,
-    leagueCustomBonusMalus: result.league.options[0].customBonusMalus,
-    homeTeam: formatTeamData(
-      result.homeTeam,
-      result.lineups,
-      result.matchResults
-    ),
-    awayTeam: formatTeamData(
-      result.awayTeam,
-      result.lineups,
-      result.matchResults
-    ),
+    homeTeam: formatTeamData(homeTeam, lineups),
+    awayTeam: formatTeamData(awayTeam, lineups),
+    leagueCustomBonusMalus: league.options[0].customBonusMalus,
+    ...matchInfo,
   };
 }
 
+type Team = { id: string; name: string; imageUrl: string | null } | null;
+
 function formatTeamData(
-  team: { id: string; name: string; imageUrl: string | null } | null,
+  team: Team,
   lineups: {
+    id: string;
     teamId: string;
     tacticalModule: { id: number; layout: RolePosition[]; name: string };
-  }[],
-  matchResults: {
-    teamId: string;
-    goals: number;
-    totalScore: string;
   }[]
 ) {
   if (!team) return null;
 
-  const lineup = lineups.find((l) => l.teamId === team.id);
-  const result = matchResults.find((r) => r.teamId === team.id);
+  const lineup = lineups.find((l) => l.teamId === team.id) ?? null;
 
   return {
-    id: team.id,
-    name: team.name,
-    imageUrl: team.imageUrl,
-    tacticalModule: lineup?.tacticalModule ?? null,
-    result: result ?? null,
+    ...team,
+    lineup,
   };
+}
+
+function getMatchInfoTags({
+  homeTeam,
+  awayTeam,
+  leagueId,
+  matchId,
+  splitId,
+}: {
+  homeTeam: Team;
+  awayTeam: Team;
+  leagueId: string;
+  matchId: string;
+  splitId: number;
+}) {
+  const tags = [
+    getMatchInfoTag(matchId),
+    getMatchResultsTag(matchId),
+    getTacticalModulesTag(),
+    getLeagueOptionsTag(leagueId),
+    getSplitMatchdaysIdTag(splitId),
+  ];
+
+  if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));
+  if (awayTeam) tags.push(getTeamIdTag(awayTeam.id));
+
+  return tags;
 }
