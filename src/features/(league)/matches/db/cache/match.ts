@@ -20,7 +20,7 @@ export const getMatchBenchsLineupTag = (matchId: string) =>
 export const getMatchResultsTag = (matchId: string) =>
   getMatchTag("match-results", matchId);
 
-export const revalidateMatchLinueps = (matchId: string) => {
+export const revalidateMatchLinuepsCache = (matchId: string) => {
   revalidateTag(getMatchStartersLineupTag(matchId));
   revalidateTag(getMatchBenchsLineupTag(matchId));
 };

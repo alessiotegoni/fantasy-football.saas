@@ -1,11 +1,8 @@
-import { db } from "@/drizzle/db";
 import { BonusMalusOptionsForm } from "@/features/(league)/options/components/forms/BonusMalusOptionsForm";
 import {
-  getLeagueBonusMalusOptionsTag,
-  getLeagueOptionsTag,
-} from "@/features/(league)/options/db/cache/leagueOption";
-import { getBonusMaluses } from "@/features/(league)/options/queries/leagueOptions";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+  getBonusMaluses,
+  getBonusMalusesOptions,
+} from "@/features/(league)/options/queries/leagueOptions";
 
 export default async function LeagueBonusMalusOptionsPage({
   params,
@@ -32,21 +29,4 @@ export default async function LeagueBonusMalusOptionsPage({
       />
     </>
   );
-}
-
-async function getBonusMalusesOptions(leagueId: string) {
-  "use cache";
-  cacheTag(
-    getLeagueOptionsTag(leagueId),
-    getLeagueBonusMalusOptionsTag(leagueId)
-  );
-
-  const bonusMalusOptions = await db.query.leagueOptions.findFirst({
-    columns: {
-      customBonusMalus: true,
-    },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
-  });
-
-  return bonusMalusOptions;
 }

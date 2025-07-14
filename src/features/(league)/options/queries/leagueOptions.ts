@@ -1,7 +1,11 @@
 import { getBonusMalusTag, getTacticalModulesTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getLeagueGeneralOptionsTag, getLeagueOptionsTag } from "../db/cache/leagueOption";
+import {
+  getLeagueBonusMalusOptionsTag,
+  getLeagueGeneralOptionsTag,
+  getLeagueOptionsTag,
+} from "../db/cache/leagueOption";
 
 export async function getTacticalModules() {
   "use cache";
@@ -28,4 +32,21 @@ export async function getGeneralOptions(leagueId: string) {
     },
     where: (options, { eq }) => eq(options.leagueId, leagueId),
   });
+}
+
+export async function getBonusMalusesOptions(leagueId: string) {
+  "use cache";
+  cacheTag(
+    getLeagueOptionsTag(leagueId),
+    getLeagueBonusMalusOptionsTag(leagueId)
+  );
+
+  const bonusMalusOptions = await db.query.leagueOptions.findFirst({
+    columns: {
+      customBonusMalus: true,
+    },
+    where: (options, { eq }) => eq(options.leagueId, leagueId),
+  });
+
+  return bonusMalusOptions;
 }

@@ -9,6 +9,7 @@ type Props = Omit<Match, "splitMatchday"> & {
   leagueId: string;
   homeModule?: string | null;
   awayModule?: string | null;
+  isLink?: boolean;
   className?: string;
 };
 
@@ -21,6 +22,7 @@ export default function CalendarMatchCard({
   matchResults,
   isBye,
   leagueId,
+  isLink = true,
   className,
   ...teamProps
 }: Props) {
@@ -80,7 +82,7 @@ export default function CalendarMatchCard({
     </div>
   );
 
-  return isBye ? (
+  return isBye && !isLink ? (
     <div className="group">{content}</div>
   ) : (
     <Link href={`/leagues/${leagueId}/matches/${id}`} className="group">

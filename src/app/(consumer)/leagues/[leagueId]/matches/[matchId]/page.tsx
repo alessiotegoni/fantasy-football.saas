@@ -28,14 +28,16 @@ export default async function MatchPage({
   console.log(matchInfo);
 
   return (
-    <Container headerLabel="Partita" leagueId={leagueId} className="mb-4">
+    <Container headerLabel="Partita" leagueId={leagueId}>
       <CalendarMatchCard
-        className="!rounded-4xl"
+        className="!rounded-4xl -mt-4"
         leagueId={leagueId}
         homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
         awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
+        isLink={false}
         {...matchInfo}
       />
+      <Suspe
     </Container>
   );
 }
@@ -49,16 +51,6 @@ async function getMatchInfo(leagueId: string, matchId: string) {
       isBye: true,
     },
     with: {
-      league: {
-        columns: {},
-        with: {
-          options: {
-            columns: {
-              customBonusMalus: true,
-            },
-          },
-        },
-      },
       splitMatchday: {
         columns: {
           id: true,
@@ -113,12 +105,11 @@ async function getMatchInfo(leagueId: string, matchId: string) {
     })
   );
 
-  const { homeTeam, awayTeam, lineups, league, ...matchInfo } = result;
+  const { homeTeam, awayTeam, lineups, ...matchInfo } = result;
 
   return {
     homeTeam: formatTeamData(homeTeam, lineups),
     awayTeam: formatTeamData(awayTeam, lineups),
-    leagueCustomBonusMalus: league.options[0].customBonusMalus,
     ...matchInfo,
   };
 }
