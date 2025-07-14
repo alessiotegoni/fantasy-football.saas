@@ -18,7 +18,11 @@ import {
   teams,
 } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
-import { getTacticalModulesTag, getTeamsTag } from "@/cache/global";
+import {
+  getPlayersTag,
+  getTacticalModulesTag,
+  getTeamsTag,
+} from "@/cache/global";
 import {
   getMatchInfoTag,
   getMatchResultsTag,
@@ -110,7 +114,7 @@ export async function getStarterLineups(
   currentMatchdayId: number
 ) {
   "use cache";
-  cacheTag(getMatchStartersLineupTag(matchId), getTeamsTag());
+  cacheTag(getMatchStartersLineupTag(matchId), getPlayersTag(), getTeamsTag());
 
   return getLineup(matchId, currentMatchdayId, "starter");
 }
@@ -120,7 +124,7 @@ export async function getBenchLineups(
   currentMatchdayId: number
 ) {
   "use cache";
-  cacheTag(getMatchBenchsLineupTag(matchId), getTeamsTag());
+  cacheTag(getMatchBenchsLineupTag(matchId), getPlayersTag(), getTeamsTag());
 
   return getLineup(matchId, currentMatchdayId, "bench");
 }
@@ -188,7 +192,7 @@ async function getLineup(
   return results;
 }
 
-function formatTeamData(
+export function formatTeamData(
   team: Team,
   lineups: {
     id: string;

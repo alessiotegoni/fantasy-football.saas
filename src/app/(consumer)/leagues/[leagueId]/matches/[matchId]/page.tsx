@@ -1,10 +1,8 @@
 import Container from "@/components/Container";
 import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
+import FootballFieldBg from "@/features/(league)/matches/components/FootballFieldBg";
+import LineupsWrapper from "@/features/(league)/matches/components/LineupsWrapper";
 import { getMatchInfo } from "@/features/(league)/matches/queries/match";
-import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
-import { getCurrentMatchday } from "@/features/splits/queries/split";
-import { getUserTeamId } from "@/features/users/queries/user";
-import { getUserId } from "@/features/users/utils/user";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -32,18 +30,9 @@ export default async function MatchPage({
         isLink={false}
         {...matchInfo}
       />
-      <Suspense>
-        <SuspenseBoundary
-          leagueId={leagueId}
-          isBye={matchInfo.isBye}
-          matchTeamsIds={[
-            matchInfo.homeTeam?.id || null,
-            matchInfo.awayTeam?.id || null,
-          ]}
-          splitMatchday={matchInfo.splitMatchday}
-        />
+      <Suspense fallback={<FootballFieldBg />}>
+        <LineupsWrapper leagueId={leagueId} {...matchInfo} />
       </Suspense>
     </Container>
   );
 }
-
