@@ -5,8 +5,8 @@ import { TacticalModule } from "@/drizzle/schema";
 type Props = {
   matchId: string;
   currentMatchdayId: number;
-  homeTacticalModule: TacticalModule;
-  awayTacticalModule: TacticalModule;
+  homeTacticalModule?: TacticalModule;
+  awayTacticalModule?: TacticalModule;
   canEditHome: boolean;
   canEditAway: boolean;
 };
@@ -22,7 +22,7 @@ export default async function StarterLineupFieldsWrapper({
   const starterPlayers = await getStarterLineups(matchId, currentMatchdayId);
 
   return (
-    <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px]">
+    <>
       <StarterLineupField
         matchId={matchId}
         currentMatchdayId={currentMatchdayId}
@@ -37,6 +37,6 @@ export default async function StarterLineupFieldsWrapper({
         canEdit={canEditAway}
         starterPlayers={starterPlayers}
       />
-    </div>
+    </>
   );
 }

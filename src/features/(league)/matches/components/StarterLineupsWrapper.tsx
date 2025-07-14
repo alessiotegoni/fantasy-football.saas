@@ -4,6 +4,7 @@ import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { formatTeamData } from "../queries/match";
 import { WarningTriangle } from "iconoir-react";
+import StarterLineupFieldsWrapper from "./StarterLineupFieldsWrapper";
 
 type Team = ReturnType<typeof formatTeamData>;
 
@@ -38,35 +39,52 @@ export default async function StarterLineupsWrapper({
   ]);
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === userTeamId);
 
-  const canPutLineup = [
+  const canEditLineup = [
     !!myTeam,
     !isBye,
     splitMatchday.id === currentMatchday?.id,
     currentMatchday?.status === "upcoming",
   ].every(Boolean);
 
+  const showLineupFields =
+    canEditLineup && (!homeTeam?.lineup || !awayTeam?.lineup);
+
   return (
-    <div
-      className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full
-    min-h-[600px] sm:min-h-[400px]"
-    >
-      {homeTeam?.lineup ? (
-        <div></div>
-      ) : homeTeam?.id !== myTeam?.id ? (
-        <LineupEmptyState />
-      ) : canPutLineup ? (
-        <div></div>
+    <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px]">
+      {showLineupFields ? (
+        <StarterLineupFieldsWrapper
+          matchId={matchId}
+          currentMatchdayId={splitMatchday.id}
+          homeTacticalModule={homeTeam?.lineup?.tacticalModule}
+          awayTacticalModule={awayTeam?.lineup?.tacticalModule}
+          canEditHome={canEditLineup && homeTeam?.id === myTeam?.id}
+          canEditAway={canEditLineup && homeTeam?.id === myTeam?.id}
+        />
       ) : (
-        <LineupEmptyState text="Non puoi piu inserire la formazione" />
-      )}
-      {awayTeam?.lineup ? (
-        <div></div>
-      ) : awayTeam?.id !== myTeam?.id ? (
-        <LineupEmptyState />
-      ) : canPutLineup ? (
-        <div></div>
-      ) : (
-        <LineupEmptyState text="Non puoi piu inserire la formazione" />
+        <>
+          {homeTeam?.lineup ? (
+            <div></div>
+          ) : (
+            <LineupEmptyState
+              text={
+                homeTeam?.id === myTeam?.id
+                  ? "Non puoi piu inserire la formazione"
+                  : undefined
+              }
+            />
+          )}
+          {awayTeam?.lineup ? (
+            <div></div>
+          ) : (
+            <LineupEmptyState
+              text={
+                awayTeam?.id === myTeam?.id
+                  ? "Non puoi piu inserire la formazione"
+                  : undefined
+              }
+            />
+          )}
+        </>
       )}
     </div>
   );
