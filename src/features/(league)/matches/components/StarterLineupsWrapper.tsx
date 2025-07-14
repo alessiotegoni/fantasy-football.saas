@@ -48,21 +48,33 @@ export default async function StarterLineupsWrapper({
       className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full
     min-h-[600px] sm:min-h-[400px]"
     >
-      {!homeTeam?.lineup && homeTeam?.id !== myTeam?.id ? (
-        <LineupEmptyState />
-      ) : (
+      {homeTeam?.lineup ? (
         <div></div>
+      ) : homeTeam?.id !== myTeam?.id ? (
+        <LineupEmptyState />
+      ) : canPutLineup ? (
+        <div></div>
+      ) : (
+        <LineupEmptyState text="Non puoi piu inserire la formazione" />
       )}
-      {!awayTeam?.lineup && awayTeam?.id !== myTeam?.id ? (
-        <LineupEmptyState />
-      ) : (
+      {awayTeam?.lineup ? (
         <div></div>
+      ) : awayTeam?.id !== myTeam?.id ? (
+        <LineupEmptyState />
+      ) : canPutLineup ? (
+        <div></div>
+      ) : (
+        <LineupEmptyState text="Non puoi piu inserire la formazione" />
       )}
     </div>
   );
 }
 
-function LineupEmptyState() {
+function LineupEmptyState({
+  text = "Formazione non inserita",
+}: {
+  text?: string;
+}) {
   return (
     <div className="flex justify-center items-center">
       <div
@@ -70,7 +82,7 @@ function LineupEmptyState() {
           flex flex-col justify-center items-center p-4 border border-border"
       >
         <WarningTriangle className="size-12 mb-3" />
-        Formazione non inserita
+        {text}
       </div>
     </div>
   );
