@@ -19,7 +19,7 @@ type Props = {
   leagueCustomBonusMalus: CustomBonusMalus;
 };
 
-export default async function LineupsWrapper({
+export default async function StarterLineupWrapper({
   leagueId,
   isBye,
   homeTeam,
@@ -36,30 +36,14 @@ export default async function LineupsWrapper({
   ]);
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === userTeamId);
 
-  const canPutLineup = [
+  const  = [
     !!myTeam,
     !isBye,
     splitMatchday.id === currentMatchday?.id,
     currentMatchday?.status === "upcoming",
-  ].every(Boolean);
+  ].every(Boolean);canPutLineup
 
   return (
-    <div className="relative min-h-[600px] sm:min-h-[400px] rounded-3xl overflow-hidden mt-5">
-      <Image
-        src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/football-field-horizontal.jpeg"
-        alt="Football field"
-        fill
-        className="hidden sm:block"
-        priority
-      />
-      <Image
-        src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/football-field-vertical.jpeg"
-        alt="Football field"
-        fill
-        objectFit="cover"
-        className="sm:hidden"
-        priority
-      />
-    </div>
+    <></>
   );
 }

@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
 import FootballFieldBg from "@/features/(league)/matches/components/FootballFieldBg";
-import LineupsWrapper from "@/features/(league)/matches/components/LineupsWrapper";
+import StarterLineupWrapper from "@/features/(league)/matches/components/StarterLineupWrapper";
 import { getMatchInfo } from "@/features/(league)/matches/queries/match";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
@@ -31,7 +31,9 @@ export default async function MatchPage({
         {...matchInfo}
       />
       <Suspense fallback={<FootballFieldBg />}>
-        <LineupsWrapper leagueId={leagueId} {...matchInfo} />
+        <FootballFieldBg>
+          <StarterLineupWrapper leagueId={leagueId} {...matchInfo} />
+        </FootballFieldBg>
       </Suspense>
     </Container>
   );

@@ -53,13 +53,13 @@ export default function MatchTeam({
 
   return (
     <div
-      className={`flex flex-col items-center justify-center space-y-2 text-center w-full ${className}`}
+      className={`flex flex-col items-center justify-center text-center w-full ${className}`}
     >
       <Avatar
         imageUrl={team.imageUrl}
         name={team.name}
         renderFallback={() => null}
-        className="size-12 sm:size-20"
+        className="size-12 sm:size-20 mb-2"
       />
       {module !== undefined && (
         <p className="hidden sm:block text-sm text-muted-foreground">
