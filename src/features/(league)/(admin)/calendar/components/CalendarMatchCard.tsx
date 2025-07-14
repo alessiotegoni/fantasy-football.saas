@@ -5,7 +5,7 @@ import MatchPoints from "./MatchPoints";
 import MatchScores from "./MatchScores";
 import { cn } from "@/lib/utils";
 
-type Props = Match & {
+type Props = Omit<Match, "splitMatchday"> & {
   leagueId: string;
   homeModule?: string | null;
   awayModule?: string | null;

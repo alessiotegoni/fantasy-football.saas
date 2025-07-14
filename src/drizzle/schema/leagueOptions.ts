@@ -9,9 +9,9 @@ import {
 import { relations, sql } from "drizzle-orm";
 import { leagues } from "./leagues";
 
-type PlayersPerRole = Record<string, number>;
-type AvailableTacticalModules = number[];
-type CustomBonusMalus = Record<string, number>;
+export type PlayersPerRole = Record<string, number>;
+export type AvailableTacticalModules = number[];
+export type CustomBonusMalus = Record<string, number>;
 
 export const leagueOptions = pgTable(
   "league_options",

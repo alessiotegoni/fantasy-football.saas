@@ -4,7 +4,7 @@ import { leagueMatchTeamLineup } from "./leagueMatchTeamLineup";
 import { players } from "./players";
 
 export const lineupPlayerTypes = ["starter", "bench"] as const;
-export type LineupPlayer = (typeof lineupPlayerTypes)[number];
+export type LineupPlayerType = (typeof lineupPlayerTypes)[number];
 
 export const lineupPlayerTypeEnum = pgEnum(
   "lineup_player_type",

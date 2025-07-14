@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import TradeProposalWrapper from "@/features/(league)/trades/components/TradeProposalWrapper";
-import { getUUIdSchema, validateUUIds } from "@/schema/helpers";
+import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
