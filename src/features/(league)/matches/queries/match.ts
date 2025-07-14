@@ -33,7 +33,13 @@ import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 
 type Team = { id: string; name: string; imageUrl: string | null } | null;
 
-export async function getMatchInfo(leagueId: string, matchId: string) {
+export async function getMatchInfo({
+  leagueId,
+  matchId,
+}: {
+  leagueId: string;
+  matchId: string;
+}) {
   "use cache";
 
   const result = await db.query.leagueMatches.findFirst({

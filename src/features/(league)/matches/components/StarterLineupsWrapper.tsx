@@ -8,6 +8,7 @@ import { WarningTriangle } from "iconoir-react";
 type Team = ReturnType<typeof formatTeamData>;
 
 type Props = {
+  matchId: string;
   leagueId: string;
   homeTeam: Team;
   awayTeam: Team;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 export default async function StarterLineupsWrapper({
+  matchId,
   leagueId,
   isBye,
   homeTeam,

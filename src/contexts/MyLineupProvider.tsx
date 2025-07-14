@@ -3,7 +3,7 @@
 import { TacticalModule } from "@/drizzle/schema";
 import { createContext, useCallback, useState } from "react";
 
-type LineupPlayer = {
+export type LineupPlayer = {
   id: string;
   playerId: string;
   roleId: number;

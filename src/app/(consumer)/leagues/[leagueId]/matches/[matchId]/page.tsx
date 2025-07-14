@@ -13,28 +13,28 @@ export default async function MatchPage({
 }: {
   params: Promise<{ leagueId: string; matchId: string }>;
 }) {
-  const { success, leagueId, matchId } = validateUUIds(await params);
+  const { success, ...ids } = validateUUIds(await params);
   if (!success) notFound();
 
-  const matchInfo = await getMatchInfo(leagueId, matchId);
+  const matchInfo = await getMatchInfo(ids);
   if (!matchInfo) notFound();
 
   console.log(matchInfo);
 
   return (
-    <Container headerLabel="Partita" leagueId={leagueId}>
+    <Container headerLabel="Partita" {...ids}>
       <MyLineupProvider>
         <CalendarMatchCard
           className="!rounded-4xl sm:-mt-4"
-          leagueId={leagueId}
           homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
           awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
           isLink={false}
+          {...ids}
           {...matchInfo}
         />
         <FootballFieldBg>
           <Suspense>
-            <StarterLineupsWrapper leagueId={leagueId} {...matchInfo} />
+            <StarterLineupsWrapper {...ids} {...matchInfo} />
           </Suspense>
         </FootballFieldBg>
       </MyLineupProvider>
