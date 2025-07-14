@@ -198,6 +198,8 @@ async function getLineup(
   return results;
 }
 
+export type LineupPlayer = Awaited<ReturnType<typeof getLineup>>[0];
+
 export function formatTeamData(
   team: Team,
   lineups: {

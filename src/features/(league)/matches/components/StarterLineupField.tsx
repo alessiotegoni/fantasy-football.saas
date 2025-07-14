@@ -1,12 +1,12 @@
 import { TacticalModule } from "@/drizzle/schema";
-import { getStarterLineups } from "../queries/match";
+import { LineupPlayer } from "../queries/match";
 
 type Props = {
   matchId: string;
   currentMatchdayId: number;
   tacticalModule: TacticalModule;
   canEdit: boolean;
-  starterPlayers: Awaited<ReturnType<typeof getStarterLineups>>;
+  starterPlayers: LineupPlayer[]
 };
 
 export default function StarterLineupField({
