@@ -1,56 +1,80 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getMatchLineupInfoTag, getMatchResultsTag } from "../db/cache/match";
+import { getMatchStartersLineupTag } from "../db/cache/match";
 import { db } from "@/drizzle/db";
-import { getLeagueTeamsTag } from "../../teams/db/cache/leagueTeam";
-import { getTacticalModulesTag } from "@/cache/global";
+import {
+  bonusMalusTypes,
+  leagueMatches,
+  leagueMatchLineupPlayers,
+  leagueMatchTeamLineup,
+  matchdayBonusMalus,
+  matchdayVotes,
+  playerRoles,
+  players,
+  teams,
+} from "@/drizzle/schema";
+import { and, eq } from "drizzle-orm";
+import { getTeamsTag } from "@/cache/global";
 
-export async function getMatchLineupInfo(leagueId: string, matchId: string) {
+export async function getStarterLineups(
+  matchId: string,
+  currentMatchdayId: number
+) {
   "use cache";
-  cacheTag(
-    getLeagueTeamsTag(leagueId),
-    getMatchLineupInfoTag(matchId),
-    getMatchResultsTag(matchId),
-    getTacticalModulesTag()
-  );
+  cacheTag(getMatchStartersLineupTag(matchId), getTeamsTag());
 
-  const result = await db.query.leagueMatches.findFirst({
-    columns: {},
-    with: {
-      homeTeam: {
-        columns: {
-          id: true,
-          name: true,
-          imageUrl: true,
-        },
+  const results = await db
+    .select({
+      lineupPlayerId: leagueMatchLineupPlayers.id,
+      playerId: leagueMatchLineupPlayers.playerId,
+      role: playerRoles,
+      team: {
+        displayName: teams.displayName,
       },
-      awayTeam: {
-        columns: {
-          id: true,
-          name: true,
-          imageUrl: true,
-        },
+      positionId: leagueMatchLineupPlayers.positionId,
+      positionOrder: leagueMatchLineupPlayers.positionOrder,
+      vote: matchdayVotes.vote,
+      bonusMaluses: {
+        id: matchdayBonusMalus.bonusMalusTypeId,
+        count: matchdayBonusMalus.count,
+        imageUrl: bonusMalusTypes.imageUrl,
       },
-      lineups: {
-        columns: {
-          leagueMemberTeamId: true,
-        },
-        with: {
-          tacticalModule: true,
-        },
-      },
-      matchResults: {
-        columns: {
-          teamId: true,
-          goals: true,
-          totalScore: true,
-        },
-      },
-    },
-    where: (match, { and, eq }) =>
-      and(eq(match.leagueId, leagueId), eq(match.id, matchId)),
-  });
+    })
+    .from(leagueMatchLineupPlayers)
+    .innerJoin(
+      leagueMatchTeamLineup,
+      eq(leagueMatchTeamLineup.id, leagueMatchLineupPlayers.lineupId)
+    )
+    .innerJoin(
+      leagueMatches,
+      eq(leagueMatches.id, leagueMatchTeamLineup.matchId)
+    )
+    .innerJoin(players, eq(players.id, leagueMatchLineupPlayers.playerId))
+    .innerJoin(teams, eq(teams.id, players.teamId))
+    .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
+    .innerJoin(
+      matchdayVotes,
+      and(
+        eq(matchdayVotes.playerId, players.id),
+        eq(matchdayVotes.matchdayId, leagueMatches.splitMatchdayId)
+      )
+    )
+    .innerJoin(
+      matchdayBonusMalus,
+      and(
+        eq(matchdayBonusMalus.playerId, players.id),
+        eq(matchdayBonusMalus.matchdayId, leagueMatches.splitMatchdayId)
+      )
+    )
+    .innerJoin(
+      bonusMalusTypes,
+      eq(bonusMalusTypes.id, matchdayBonusMalus.bonusMalusTypeId)
+    )
+    .where(
+      and(
+        eq(leagueMatches.id, matchId),
+        eq(leagueMatches.splitMatchdayId, currentMatchdayId)
+      )
+    );
 
-  return result;
+  return results;
 }
-
-export type LineupInfo = Awaited<ReturnType<typeof getMatchLineupInfo>>;
