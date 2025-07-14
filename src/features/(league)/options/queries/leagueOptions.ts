@@ -6,6 +6,8 @@ import {
   getLeagueGeneralOptionsTag,
   getLeagueOptionsTag,
 } from "../db/cache/leagueOption";
+import { leagueOptions } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export async function getTacticalModules() {
   "use cache";
@@ -41,12 +43,10 @@ export async function getBonusMalusesOptions(leagueId: string) {
     getLeagueBonusMalusOptionsTag(leagueId)
   );
 
-  const bonusMalusOptions = await db.query.leagueOptions.findFirst({
-    columns: {
-      customBonusMalus: true,
-    },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
-  });
+  const [result] = await db
+    .select({ bonusMalusOptions: leagueOptions.customBonusMalus })
+    .from(leagueOptions)
+    .where(eq(leagueOptions.leagueId, leagueId));
 
-  return bonusMalusOptions;
+  return result;
 }

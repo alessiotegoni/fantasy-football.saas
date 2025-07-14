@@ -8,8 +8,8 @@ import {
   getMatchResultsTag,
 } from "@/features/(league)/matches/db/cache/match";
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
+import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
 import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { validateUUIds } from "@/schema/helpers";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound } from "next/navigation";
@@ -22,7 +22,10 @@ export default async function MatchPage({
   const { success, leagueId, matchId } = validateUUIds(await params);
   if (!success) notFound();
 
-  const matchInfo = await getMatchInfo(leagueId, matchId);
+  const [matchInfo, { bonusMalusOptions }] = await Promise.all([
+    getMatchInfo(leagueId, matchId),
+    getBonusMalusesOptions(leagueId),
+  ]);
   if (!matchInfo) notFound();
 
   console.log(matchInfo);
@@ -37,7 +40,6 @@ export default async function MatchPage({
         isLink={false}
         {...matchInfo}
       />
-      <Suspe
     </Container>
   );
 }
@@ -51,14 +53,6 @@ async function getMatchInfo(leagueId: string, matchId: string) {
       isBye: true,
     },
     with: {
-      splitMatchday: {
-        columns: {
-          id: true,
-          splitId: true,
-          status: true,
-          number: true,
-        },
-      },
       homeTeam: {
         columns: {
           id: true,
@@ -101,7 +95,6 @@ async function getMatchInfo(leagueId: string, matchId: string) {
       ...result,
       leagueId,
       matchId,
-      splitId: result.splitMatchday.splitId,
     })
   );
 
@@ -139,20 +132,17 @@ function getMatchInfoTags({
   awayTeam,
   leagueId,
   matchId,
-  splitId,
 }: {
   homeTeam: Team;
   awayTeam: Team;
   leagueId: string;
   matchId: string;
-  splitId: number;
 }) {
   const tags = [
     getMatchInfoTag(matchId),
     getMatchResultsTag(matchId),
     getTacticalModulesTag(),
     getLeagueOptionsTag(leagueId),
-    getSplitMatchdaysIdTag(splitId),
   ];
 
   if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));
