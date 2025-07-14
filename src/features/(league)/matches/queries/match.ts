@@ -14,10 +14,82 @@ import {
   matchdayVotes,
   playerRoles,
   players,
+  RolePosition,
   teams,
 } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
-import { getTeamsTag } from "@/cache/global";
+import { getTacticalModulesTag, getTeamsTag } from "@/cache/global";
+import {
+  getMatchInfoTag,
+  getMatchResultsTag,
+} from "@/features/(league)/matches/db/cache/match";
+import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
+import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
+
+type Team = { id: string; name: string; imageUrl: string | null } | null;
+
+export async function getMatchInfo(leagueId: string, matchId: string) {
+  "use cache";
+
+  const result = await db.query.leagueMatches.findFirst({
+    columns: {
+      id: true,
+      isBye: true,
+    },
+    with: {
+      homeTeam: {
+        columns: {
+          id: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+      awayTeam: {
+        columns: {
+          id: true,
+          name: true,
+          imageUrl: true,
+        },
+      },
+      lineups: {
+        columns: {
+          id: true,
+          teamId: true,
+        },
+        with: {
+          tacticalModule: true,
+        },
+      },
+      matchResults: {
+        columns: {
+          teamId: true,
+          goals: true,
+          totalScore: true,
+        },
+      },
+    },
+    where: (match, { and, eq }) =>
+      and(eq(match.leagueId, leagueId), eq(match.id, matchId)),
+  });
+
+  if (!result) return undefined;
+
+  cacheTag(
+    ...getMatchInfoTags({
+      ...result,
+      leagueId,
+      matchId,
+    })
+  );
+
+  const { homeTeam, awayTeam, lineups, ...matchInfo } = result;
+
+  return {
+    homeTeam: formatTeamData(homeTeam, lineups),
+    awayTeam: formatTeamData(awayTeam, lineups),
+    ...matchInfo,
+  };
+}
 
 export async function getStarterLineups(
   matchId: string,
@@ -100,4 +172,46 @@ async function getLineup(
     );
 
   return results;
+}
+
+function formatTeamData(
+  team: Team,
+  lineups: {
+    id: string;
+    teamId: string;
+    tacticalModule: { id: number; layout: RolePosition[]; name: string };
+  }[]
+) {
+  if (!team) return null;
+
+  const lineup = lineups.find((l) => l.teamId === team.id) ?? null;
+
+  return {
+    ...team,
+    lineup,
+  };
+}
+
+function getMatchInfoTags({
+  homeTeam,
+  awayTeam,
+  leagueId,
+  matchId,
+}: {
+  homeTeam: Team;
+  awayTeam: Team;
+  leagueId: string;
+  matchId: string;
+}) {
+  const tags = [
+    getMatchInfoTag(matchId),
+    getMatchResultsTag(matchId),
+    getTacticalModulesTag(),
+    getLeagueOptionsTag(leagueId),
+  ];
+
+  if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));
+  if (awayTeam) tags.push(getTeamIdTag(awayTeam.id));
+
+  return tags;
 }
