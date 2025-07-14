@@ -1,3 +1,4 @@
+import Disclaimer from "@/components/Disclaimer";
 import Image from "next/image";
 
 export default function FootballFieldBg({
@@ -21,6 +22,7 @@ export default function FootballFieldBg({
         className="sm:hidden"
       />
       {children}
+      <Disclaimer />
     </div>
   );
 }
