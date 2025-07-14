@@ -1,5 +1,6 @@
 import { RolePosition } from "@/drizzle/schema";
 import { LineupPlayer } from "../queries/match";
+import PositionSlot from "./PositionSlot";
 
 type Props = {
   role: RolePosition;

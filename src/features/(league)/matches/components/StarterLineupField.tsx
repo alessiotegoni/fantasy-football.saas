@@ -1,5 +1,6 @@
 import { TacticalModule } from "@/drizzle/schema";
 import { LineupPlayer } from "../queries/match";
+import RoleRow from "./RoleRow";
 
 type Props = {
   matchId: string;

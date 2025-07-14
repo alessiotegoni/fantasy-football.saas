@@ -58,7 +58,7 @@ export default async function StarterLineupsWrapper({
           homeTacticalModule={homeTeam?.lineup?.tacticalModule}
           awayTacticalModule={awayTeam?.lineup?.tacticalModule}
           canEditHome={canEditLineup && homeTeam?.id === myTeam?.id}
-          canEditAway={canEditLineup && homeTeam?.id === myTeam?.id}
+          canEditAway={canEditLineup && awayTeam?.id === myTeam?.id}
         />
       ) : (
         <>
