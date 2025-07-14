@@ -25,6 +25,7 @@ import {
 } from "@/features/(league)/matches/db/cache/match";
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
+import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 
 type Team = { id: string; name: string; imageUrl: string | null } | null;
 
@@ -37,6 +38,17 @@ export async function getMatchInfo(leagueId: string, matchId: string) {
       isBye: true,
     },
     with: {
+      league: {
+        columns: {},
+        with: {
+          options: {
+            columns: {
+              customBonusMalus: true,
+            },
+          },
+        },
+      },
+      splitMatchday: true,
       homeTeam: {
         columns: {
           id: true,
@@ -73,20 +85,22 @@ export async function getMatchInfo(leagueId: string, matchId: string) {
   });
 
   if (!result) return undefined;
-
   cacheTag(
     ...getMatchInfoTags({
       ...result,
       leagueId,
       matchId,
+      splitId: result.splitMatchday.splitId,
     })
   );
 
-  const { homeTeam, awayTeam, lineups, ...matchInfo } = result;
+  const { homeTeam, awayTeam, lineups, league, ...matchInfo } = result;
 
   return {
     homeTeam: formatTeamData(homeTeam, lineups),
     awayTeam: formatTeamData(awayTeam, lineups),
+    leagueCustomBonusMalus: league.options[0].customBonusMalus,
+    ...matchInfo,
     ...matchInfo,
   };
 }
@@ -197,17 +211,20 @@ function getMatchInfoTags({
   awayTeam,
   leagueId,
   matchId,
+  splitId,
 }: {
   homeTeam: Team;
   awayTeam: Team;
   leagueId: string;
   matchId: string;
+  splitId: number;
 }) {
   const tags = [
     getMatchInfoTag(matchId),
     getMatchResultsTag(matchId),
     getTacticalModulesTag(),
     getLeagueOptionsTag(leagueId),
+    getSplitMatchdaysIdTag(splitId),
   ];
 
   if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));

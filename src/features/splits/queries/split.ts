@@ -60,6 +60,7 @@ async function getNextMatchday(matchdays: SplitMatchday[]) {
   );
 
   if (lastEndedMatchday === -1) return matchdays[0];
+  if (lastEndedMatchday === matchdays.length - 1) return undefined;
 
   return matchdays[lastEndedMatchday + 1];
 }
