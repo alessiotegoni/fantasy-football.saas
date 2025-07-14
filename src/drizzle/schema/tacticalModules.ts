@@ -14,3 +14,5 @@ export const tacticalModules = pgTable("tactical_modules", {
   name: text("name").notNull(),
   layout: jsonb("layout").notNull().$type<RolePosition[]>(),
 });
+
+export type TacticalModule = typeof tacticalModules.$inferSelect;

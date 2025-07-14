@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import MyLineupProvider from "@/contexts/MyLineupProvider";
 import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
 import FootballFieldBg from "@/features/(league)/matches/components/FootballFieldBg";
 import StarterLineupsWrapper from "@/features/(league)/matches/components/StarterLineupsWrapper";
@@ -22,19 +23,21 @@ export default async function MatchPage({
 
   return (
     <Container headerLabel="Partita" leagueId={leagueId}>
-      <CalendarMatchCard
-        className="!rounded-4xl sm:-mt-4"
-        leagueId={leagueId}
-        homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
-        awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
-        isLink={false}
-        {...matchInfo}
-      />
-      <FootballFieldBg>
-        <Suspense>
-          <StarterLineupsWrapper leagueId={leagueId} {...matchInfo} />
-        </Suspense>
-      </FootballFieldBg>
+      <MyLineupProvider>
+        <CalendarMatchCard
+          className="!rounded-4xl sm:-mt-4"
+          leagueId={leagueId}
+          homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
+          awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
+          isLink={false}
+          {...matchInfo}
+        />
+        <FootballFieldBg>
+          <Suspense>
+            <StarterLineupsWrapper leagueId={leagueId} {...matchInfo} />
+          </Suspense>
+        </FootballFieldBg>
+      </MyLineupProvider>
     </Container>
   );
 }

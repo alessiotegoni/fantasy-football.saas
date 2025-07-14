@@ -1,5 +1,6 @@
 "use client";
 
+import { TacticalModule } from "@/drizzle/schema";
 import { createContext, useCallback, useState } from "react";
 
 type LineupPlayer = {
@@ -13,6 +14,7 @@ type LineupPlayer = {
 
 type MyLineup = {
   id: string;
+  tacticalModule: TacticalModule;
   benchPlayers: LineupPlayer[];
   starterPlayers: LineupPlayer[];
 } | null;
@@ -30,14 +32,18 @@ export default function MyLineupProvider({
   children: React.ReactNode;
 }) {
   const [myLineup, setMyLineup] = useState<MyLineup>(null);
-
   const handleSetLineup = useCallback(
     (lineup: MyLineup) => setMyLineup(lineup),
     []
   );
 
   return (
-    <MyLineupContext.Provider value={{ myLineup, handleSetLineup }}>
+    <MyLineupContext.Provider
+      value={{
+        myLineup,
+        handleSetLineup,
+      }}
+    >
       {children}
     </MyLineupContext.Provider>
   );
