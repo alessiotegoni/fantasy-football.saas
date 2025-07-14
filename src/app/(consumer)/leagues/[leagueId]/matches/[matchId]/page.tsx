@@ -33,7 +33,7 @@ export default async function MatchPage({
   return (
     <Container headerLabel="Partita" leagueId={leagueId}>
       <CalendarMatchCard
-        className="!rounded-4xl -mt-4"
+        className="!rounded-4xl sm:-mt-4"
         leagueId={leagueId}
         homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
         awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}

@@ -1,11 +1,15 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getMatchStartersLineupTag } from "../db/cache/match";
+import {
+  getMatchBenchsLineupTag,
+  getMatchStartersLineupTag,
+} from "../db/cache/match";
 import { db } from "@/drizzle/db";
 import {
   bonusMalusTypes,
   leagueMatches,
   leagueMatchLineupPlayers,
   leagueMatchTeamLineup,
+  LineupPlayerType,
   matchdayBonusMalus,
   matchdayVotes,
   playerRoles,
@@ -22,6 +26,24 @@ export async function getStarterLineups(
   "use cache";
   cacheTag(getMatchStartersLineupTag(matchId), getTeamsTag());
 
+  return getLineup(matchId, currentMatchdayId, "starter");
+}
+
+export async function getBenchLineups(
+  matchId: string,
+  currentMatchdayId: number
+) {
+  "use cache";
+  cacheTag(getMatchBenchsLineupTag(matchId), getTeamsTag());
+
+  return getLineup(matchId, currentMatchdayId, "bench");
+}
+
+async function getLineup(
+  matchId: string,
+  currentMatchdayId: number,
+  lineupType: LineupPlayerType
+) {
   const results = await db
     .select({
       lineupPlayerId: leagueMatchLineupPlayers.id,
@@ -72,7 +94,8 @@ export async function getStarterLineups(
     .where(
       and(
         eq(leagueMatches.id, matchId),
-        eq(leagueMatches.splitMatchdayId, currentMatchdayId)
+        eq(leagueMatches.splitMatchdayId, currentMatchdayId),
+        eq(leagueMatchLineupPlayers.playerType, lineupType)
       )
     );
 
