@@ -1,4 +1,4 @@
-import { pgTable, uuid, smallint, pgEnum, integer } from "drizzle-orm/pg-core";
+import { pgTable, uuid, smallint, pgEnum, integer, text } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueMatchTeamLineup } from "./leagueMatchTeamLineup";
 import { players } from "./players";
@@ -16,7 +16,7 @@ export const leagueMatchLineupPlayers = pgTable("league_match_lineup_players", {
   lineupId: uuid("lineup_id")
     .notNull()
     .references(() => leagueMatchTeamLineup.id, { onDelete: "cascade" }),
-  positionId: smallint("position_id").notNull(),
+  positionId: text("position_id").notNull(),
   playerId: integer("player_id")
     .notNull()
     .references(() => players.id, { onDelete: "cascade" }),
