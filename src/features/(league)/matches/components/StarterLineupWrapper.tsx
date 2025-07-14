@@ -2,7 +2,6 @@ import { CustomBonusMalus } from "@/drizzle/schema";
 import { getCurrentMatchday } from "@/features/splits/queries/split";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
-import Image from "next/image";
 import { formatTeamData } from "../queries/match";
 
 type Team = ReturnType<typeof formatTeamData>;
@@ -36,12 +35,12 @@ export default async function StarterLineupWrapper({
   ]);
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === userTeamId);
 
-  const  = [
+  const canPutLineup = [
     !!myTeam,
     !isBye,
     splitMatchday.id === currentMatchday?.id,
     currentMatchday?.status === "upcoming",
-  ].every(Boolean);canPutLineup
+  ].every(Boolean);
 
   return (
     <></>

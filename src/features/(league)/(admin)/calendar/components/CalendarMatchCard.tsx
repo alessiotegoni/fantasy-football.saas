@@ -82,7 +82,7 @@ export default function CalendarMatchCard({
     </div>
   );
 
-  return isBye && !isLink ? (
+  return isBye || !isLink ? (
     <div className="group">{content}</div>
   ) : (
     <Link href={`/leagues/${leagueId}/matches/${id}`} className="group">
