@@ -28,13 +28,12 @@ export default async function MatchPage({
   console.log(matchInfo);
 
   return (
-    <Container headerLabel="Partita" leagueId={leagueId}>
+    <Container headerLabel="Partita" leagueId={leagueId} className="mb-4">
       <CalendarMatchCard
-        className="rounded-3xl"
+        className="!rounded-4xl"
         leagueId={leagueId}
-        homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name}
-        awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name}
-        isDetailView
+        homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
+        awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
         {...matchInfo}
       />
     </Container>
@@ -104,9 +103,6 @@ async function getMatchInfo(leagueId: string, matchId: string) {
   });
 
   if (!result) return undefined;
-
-  if (result.homeTeam) cacheTag(getTeamIdTag(result.homeTeam.id));
-  if (result.awayTeam) cacheTag(getTeamIdTag(result.awayTeam.id));
 
   cacheTag(
     ...getMatchInfoTags({

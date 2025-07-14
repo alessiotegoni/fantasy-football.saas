@@ -7,9 +7,8 @@ import { cn } from "@/lib/utils";
 
 type Props = Match & {
   leagueId: string;
-  isDetailView?: boolean;
-  homeModule?: string;
-  awayModule?: string;
+  homeModule?: string | null;
+  awayModule?: string | null;
   className?: string;
 };
 
