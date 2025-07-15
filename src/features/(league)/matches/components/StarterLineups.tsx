@@ -31,16 +31,10 @@ export default async function StarterLineups({
       ? await getStarterLineups(matchId, matchMatchday.id)
       : undefined;
 
-  console.log(homeTeam, awayTeam, isMatchdayClosed);
-
   return (
     <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px] xl:min-h-[500px]">
       {[homeTeam, awayTeam].map((team, i) => {
         if (!team) return null;
-
-        console.log(
-          !isMatchdayClosed && !team.lineup && team.id !== myTeam?.id
-        );
 
         if (
           (isMatchdayClosed && !team.lineup) ||

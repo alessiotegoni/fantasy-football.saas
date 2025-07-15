@@ -14,26 +14,37 @@ type LineupPlayer = {
 
 type MyLineup = {
   id: string;
-  tacticalModule: TacticalModule;
   benchPlayers: LineupPlayer[];
   starterPlayers: LineupPlayer[];
 } | null;
 
 type MyLineupContext = {
   myLineup: MyLineup;
+  tacticalModule: TacticalModule | null;
   handleSetLineup: (lineup: MyLineup) => void;
+  handleSetModule: (module: TacticalModule) => void;
 };
 
 const MyLineupContext = createContext<MyLineupContext | null>(null);
 
 export default function MyLineupProvider({
   children,
+  defaultTacticalModule,
 }: {
   children: React.ReactNode;
+  defaultTacticalModule: TacticalModule | undefined;
 }) {
   const [myLineup, setMyLineup] = useState<MyLineup>(null);
+  const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
+    defaultTacticalModule ?? null
+  );
+
   const handleSetLineup = useCallback(
     (lineup: MyLineup) => setMyLineup(lineup),
+    []
+  );
+  const handleSetModule = useCallback(
+    (module: TacticalModule) => setTacticalModule(module),
     []
   );
 
@@ -41,7 +52,9 @@ export default function MyLineupProvider({
     <MyLineupContext.Provider
       value={{
         myLineup,
+        tacticalModule,
         handleSetLineup,
+        handleSetModule,
       }}
     >
       {children}

@@ -34,7 +34,7 @@ export default function MatchWrapper({
     currentMatchday?.status !== "upcoming";
 
   return (
-    <MyLineupProvider>
+    <MyLineupProvider defaultTacticalModule={myTeam?.lineup?.tacticalModule}>
       <Container
         {...ids}
         headerLabel="Partita"
