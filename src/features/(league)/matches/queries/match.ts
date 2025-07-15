@@ -18,7 +18,11 @@ import {
 } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
 import { getPlayerRolesTag, getPlayersTag, getTeamsTag } from "@/cache/global";
-import { formatTeamData, getMatchInfoTags } from "../utils/match";
+import {
+  formatTeamData,
+  getLineupsPlayersTags,
+  getMatchInfoTags,
+} from "../utils/match";
 
 export async function getMatchInfo({
   leagueId,
@@ -108,14 +112,18 @@ export async function getStarterLineups(
   currentMatchdayId: number
 ) {
   "use cache";
+
+  const players = await getLineupPlayers(matchId, currentMatchdayId, "starter");
+
   cacheTag(
     getMatchStartersLineupTag(matchId),
-    getPlayersTag(),
-    getPlayerRolesTag(),
-    getTeamsTag()
+    ...getLineupsPlayersTags({
+      currentMatchdayId,
+      players,
+    })
   );
 
-  return getLineup(matchId, currentMatchdayId, "starter");
+  return players;
 }
 
 export async function getBenchLineups(
@@ -123,24 +131,28 @@ export async function getBenchLineups(
   currentMatchdayId: number
 ) {
   "use cache";
+
+  const players = await getLineupPlayers(matchId, currentMatchdayId, "bench");
+
   cacheTag(
     getMatchBenchsLineupTag(matchId),
-    getPlayersTag(),
-    getPlayerRolesTag(),
-    getTeamsTag()
+    ...getLineupsPlayersTags({
+      currentMatchdayId,
+      players,
+    })
   );
 
-  return getLineup(matchId, currentMatchdayId, "bench");
+  return players;
 }
 
-async function getLineup(
+async function getLineupPlayers(
   matchId: string,
   currentMatchdayId: number,
   lineupType: LineupPlayerType
 ) {
   const results = await db
     .select({
-      lineupPlayerId: leagueMatchLineupPlayers.id,
+      id: leagueMatchLineupPlayers.id,
       playerId: leagueMatchLineupPlayers.playerId,
       leagueTeamId: leagueMatchTeamLineup.teamId,
       role: playerRoles,
@@ -197,4 +209,4 @@ async function getLineup(
   return results;
 }
 
-export type LineupPlayer = Awaited<ReturnType<typeof getLineup>>[0];
+export type LineupPlayer = Awaited<ReturnType<typeof getLineupPlayers>>[0];

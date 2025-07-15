@@ -1,13 +1,21 @@
 import { RolePosition } from "@/drizzle/schema";
-import { getTacticalModulesTag } from "@/cache/global";
 import {
+  getPlayerRolesTag,
+  getPlayersTag,
+  getTacticalModulesTag,
+  getTeamsTag,
+} from "@/cache/global";
+import {
+  getMatchBenchsLineupTag,
   getMatchInfoTag,
   getMatchResultsTag,
+  getMatchStartersLineupTag,
 } from "@/features/(league)/matches/db/cache/match";
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
-import { MatchInfo } from "../queries/match";
+import { LineupPlayer } from "../queries/match";
+import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 
 type Team = { id: string; name: string; imageUrl: string | null } | null;
 
@@ -58,4 +66,20 @@ export function getMatchInfoTags({
   if (awayTeam) tags.push(getTeamIdTag(awayTeam.id));
 
   return tags;
+}
+
+export function getLineupsPlayersTags({
+  currentMatchdayId,
+  players,
+}: {
+  players: LineupPlayer[];
+  currentMatchdayId: number;
+}) {
+  const tags = [getPlayersTag(), getPlayerRolesTag(), getTeamsTag()];
+
+  const playersMatchdayVotesTags = players.map((player) =>
+    getPlayerMatchdayVoteTag(player.playerId, currentMatchdayId)
+  );
+
+  return [...tags, ...playersMatchdayVotesTags];
 }
