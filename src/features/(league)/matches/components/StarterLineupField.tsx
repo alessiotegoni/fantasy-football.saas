@@ -22,3 +22,10 @@ export default function StarterLineupField({ team, canEdit, players }: Props) {
     </div>
   );
 }
+
+// TODO: aggiornare componente LeagueModules e farlo diventare client aggiungendo onModuleChange e facendo modifiche
+// TODO: modificare i props dei componenti che lo utilizzano
+// TODO: mostralo solo se isMatchClosed e' false
+// TODO: al trigger di onModuleChange setta nel context di MyLineupProvider il modulo
+// TODO:  
+// TODO: al trigger di onModuleChange setta nel context di MyLineupProvider il modulo
