@@ -2,6 +2,7 @@ import Container from "@/components/Container";
 import MyLineupProvider from "@/contexts/MyLineupProvider";
 import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
 import FootballFieldBg from "@/features/(league)/matches/components/FootballFieldBg";
+import MatchWrapper from "@/features/(league)/matches/components/MatchWrapper";
 import StarterLineupsWrapper from "@/features/(league)/matches/components/StarterLineupsWrapper";
 import {
   formatTeamData,

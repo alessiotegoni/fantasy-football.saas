@@ -220,6 +220,8 @@ export function formatTeamData(
   };
 }
 
+export type LineupTeam = ReturnType<typeof formatTeamData>;
+
 function getMatchInfoTags({
   homeTeam,
   awayTeam,
