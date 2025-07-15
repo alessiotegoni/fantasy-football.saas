@@ -35,30 +35,66 @@ export default function MatchWrapper({
       <Container
         {...ids}
         headerLabel="Partita"
-        className="xl:max-w-[900px]"
-        renderHeaderRight={() => canEditLineup && null /* ModuleSelect */}
+        showHeader={false}
+        className="xl:max-w-[800px] 2xl:max-w-[1100px]"
       >
-        <div className="grid xl:grid-cols-[150px_1fr_150px]">
-          {showLineups && <Suspense>{/* Home bech lineup */}</Suspense>}
-          <div></div>
-          <CalendarMatchCard
-            className="!rounded-4xl sm:-mt-4"
-            homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
-            awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
-            isLink={false}
-            {...ids}
-            {...matchInfo}
-          />
-          <div></div>
-          {showLineups && <Suspense>{/* Away bech lineup */}</Suspense>}
+        <div className="2xl:grid gap-5 xl:grid-cols-[150px_1fr_150px]">
+          <div>
+            {/*Se canEidtLineup=true metter ModulesSelect insieme al possibilie switch (feature futura), mentre se e' false metter statistiche da scegliere piu avanti*/}
+          </div>
+          <div>
+            <CalendarMatchCard
+              className="!rounded-4xl"
+              homeModule={
+                matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null
+              }
+              awayModule={
+                matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null
+              }
+              isLink={false}
+              {...ids}
+              {...matchInfo}
+            />
+          </div>
+          <div>
+            {/*Se canEidtLineup=true metter ModulesSelect insieme al possibilie switch (feature futura), mentre se e' false metter statistiche da scegliere piu avanti*/}
+          </div>
         </div>
-        <FootballFieldBg>
+        <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
           {showLineups && (
             <Suspense>
-              <StarterLineupsWrapper {...ids} {...matchInfo} />
+              <div
+                className="bg-input/30 rounded-3xl min-h-[500px]
+              2xl:border-l border-border"
+              >
+               
+              </div>
             </Suspense>
           )}
-        </FootballFieldBg>
+          <FootballFieldBg>
+            {showLineups && currentMatchday && (
+              <Suspense>
+                <StarterLineupsWrapper
+                  {...ids}
+                  {...matchInfo}
+                  myTeam={myTeam}
+                  canEditLineup={canEditLineup ?? false}
+                  currentMatchday={currentMatchday}
+                />
+              </Suspense>
+            )}
+          </FootballFieldBg>
+          {showLineups && (
+            <Suspense>
+              <div
+                className="bg-input/30 rounded-3xl min-h-[500px]
+              2xl:border-r border-border"
+              >
+
+              </div>
+            </Suspense>
+          )}
+        </div>
       </Container>
     </MyLineupProvider>
   );

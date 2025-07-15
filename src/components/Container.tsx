@@ -6,6 +6,7 @@ import { PropsWithChildren } from "react";
 type Props = {
   leagueId: string;
   headerLabel: string;
+  showHeader?: boolean;
   renderHeaderRight?: () => React.ReactNode;
   className?: string;
 };
@@ -14,21 +15,26 @@ export default function Container({
   leagueId,
   headerLabel,
   className,
+  showHeader = true,
   renderHeaderRight,
   children,
 }: PropsWithChildren<Props>) {
   return (
     <div className={cn("max-w-[700px] mx-auto md:p-4", className)}>
-      <div className="flex justify-between items-center gap-2 mb-4 md:mb-8">
-        <div className="flex items-center md:hidden">
-          <Link href={`/leagues/${leagueId}`} className="mr-3">
-            <ArrowLeft className="size-5" />
-          </Link>
-          <h2 className="text-2xl font-heading">{headerLabel}</h2>
-        </div>
-        <h2 className="hidden md:block text-3xl font-heading">{headerLabel}</h2>
-        {renderHeaderRight?.()}
-      </div>
+      {showHeader && (
+        <header className="flex justify-between items-center gap-2 mb-4 md:mb-8">
+          <div className="flex items-center md:hidden">
+            <Link href={`/leagues/${leagueId}`} className="mr-3">
+              <ArrowLeft className="size-5" />
+            </Link>
+            <h2 className="text-2xl font-heading">{headerLabel}</h2>
+          </div>
+          <h2 className="hidden md:block text-3xl font-heading">
+            {headerLabel}
+          </h2>
+          {renderHeaderRight?.()}
+        </header>
+      )}
       {children}
     </div>
   );
