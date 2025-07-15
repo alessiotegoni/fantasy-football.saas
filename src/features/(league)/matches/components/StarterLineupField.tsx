@@ -1,29 +1,21 @@
-import { TacticalModule } from "@/drizzle/schema";
 import { LineupPlayer } from "../queries/match";
 import RoleRow from "./RoleRow";
+import { LineupTeam } from "../utils/match";
 
 type Props = {
-  matchId: string;
-  currentMatchdayId: number;
-  tacticalModule: TacticalModule | undefined;
+  team: NonNullable<LineupTeam>;
   canEdit: boolean;
-  starterPlayers: LineupPlayer[]
+  players: LineupPlayer[];
 };
 
-export default function StarterLineupField({
-  matchId,
-  currentMatchdayId,
-  tacticalModule,
-  canEdit,
-  starterPlayers,
-}: Props) {
+export default function StarterLineupField({ team, canEdit, players }: Props) {
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6">
-      {tacticalModule?.layout?.map((role) => (
+      {team.lineup?.tacticalModule?.layout?.map((role) => (
         <RoleRow
           key={role.roleId}
           role={role}
-          players={starterPlayers}
+          players={players}
           canEdit={canEdit}
         />
       ))}

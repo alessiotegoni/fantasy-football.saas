@@ -49,19 +49,12 @@ async function SuspenseBoundary({
     (team) => team?.id === userTeamId
   );
 
-  const canEditLineup =
-    !!myTeam &&
-    !matchInfo.isBye &&
-    matchInfo.splitMatchday.id === currentMatchday?.id &&
-    currentMatchday?.status === "upcoming";
-
   return (
     <MatchWrapper
       matchInfo={matchInfo}
       {...ids}
       myTeam={myTeam}
       currentMatchday={currentMatchday}
-      canEditLineup={canEditLineup}
       showLineups
     />
   );

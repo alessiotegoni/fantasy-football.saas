@@ -6,10 +6,8 @@ import {
   getTeamsTag,
 } from "@/cache/global";
 import {
-  getMatchBenchsLineupTag,
   getMatchInfoTag,
   getMatchResultsTag,
-  getMatchStartersLineupTag,
 } from "@/features/(league)/matches/db/cache/match";
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";

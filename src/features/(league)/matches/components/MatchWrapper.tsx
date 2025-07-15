@@ -5,7 +5,7 @@ import MyLineupProvider from "@/contexts/MyLineupProvider";
 import { Suspense } from "react";
 import CalendarMatchCard from "../../(admin)/calendar/components/CalendarMatchCard";
 import FootballFieldBg from "./FootballFieldBg";
-import StarterLineupsWrapper from "./StarterLineupsWrapper";
+import StarterLineups from "./StarterLineups";
 import BenchLineup from "./BenchLineup";
 import { LineupTeam } from "../utils/match";
 
@@ -15,7 +15,6 @@ type Props = {
   matchId: string;
   myTeam?: LineupTeam;
   currentMatchday?: SplitMatchday;
-  canEditLineup?: boolean;
   showLineups?: boolean;
 };
 
@@ -23,14 +22,16 @@ export default function MatchWrapper({
   matchInfo,
   myTeam,
   currentMatchday,
-  canEditLineup,
   showLineups = false,
   ...ids
 }: Props) {
-  const benchLineupsPromise =
-    showLineups && currentMatchday
-      ? getBenchLineups(ids.matchId, currentMatchday.id)
-      : undefined;
+  const benchLineupsPromise = showLineups
+    ? getBenchLineups(ids.matchId, matchInfo.splitMatchday.id)
+    : undefined;
+
+  const isMatchdayClosed =
+    matchInfo.splitMatchday.id !== currentMatchday?.id ||
+    currentMatchday?.status !== "upcoming";
 
   return (
     <MyLineupProvider>
@@ -69,7 +70,7 @@ export default function MatchWrapper({
                 benchLineupsPromise={benchLineupsPromise}
                 team={matchInfo.homeTeam}
                 canEditLineup={
-                  (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
+                  //   (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
                   false
                 }
                 className="2xl:border-r"
@@ -77,14 +78,13 @@ export default function MatchWrapper({
             </Suspense>
           )}
           <FootballFieldBg>
-            {showLineups && currentMatchday && (
+            {showLineups && (
               <Suspense>
-                <StarterLineupsWrapper
-                  {...ids}
-                  {...matchInfo}
+                <StarterLineups
+                  match={matchInfo}
                   myTeam={myTeam}
-                  canEditLineup={canEditLineup ?? false}
                   currentMatchday={currentMatchday}
+                  isMatchdayClosed={isMatchdayClosed}
                 />
               </Suspense>
             )}
@@ -95,7 +95,7 @@ export default function MatchWrapper({
                 benchLineupsPromise={benchLineupsPromise}
                 team={matchInfo.awayTeam}
                 canEditLineup={
-                  (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
+                  //   (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
                   false
                 }
                 className="2xl:border-l"

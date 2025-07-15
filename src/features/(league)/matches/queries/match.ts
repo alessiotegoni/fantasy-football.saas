@@ -17,7 +17,6 @@ import {
   teams,
 } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
-import { getPlayerRolesTag, getPlayersTag, getTeamsTag } from "@/cache/global";
 import {
   formatTeamData,
   getLineupsPlayersTags,
