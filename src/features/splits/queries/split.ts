@@ -34,7 +34,7 @@ export async function getLiveSplit() {
 
 export async function getSplitMatchdays(splitId: number) {
   "use cache";
-  cacheTag(getSplitsMatchdaysTag(), getSplitMatchdaysIdTag(splitId));
+  cacheTag(getSplitsMatchdaysTag());
 
   return db
     .select()

@@ -11,8 +11,8 @@ import { eq, and, asc, sql } from "drizzle-orm";
 import { getLeagueTeamsTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { db } from "@/drizzle/db";
 import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache/league";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { alias } from "drizzle-orm/pg-core";
+import { getSplitsMatchdaysTag } from "@/cache/global";
 
 type MatchResult = {
   teamId: string;
@@ -26,7 +26,7 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
     getLeagueCalendarTag(leagueId),
     getLeagueTeamsTag(leagueId),
     getLeagueMatchesResultsTag(leagueId),
-    getSplitMatchdaysIdTag(splitId)
+    getSplitsMatchdaysTag()
   );
 
   const homeTeam = alias(leagueMemberTeams, "homeTeam");

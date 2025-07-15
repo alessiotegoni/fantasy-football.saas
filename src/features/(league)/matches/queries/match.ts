@@ -87,7 +87,6 @@ export async function getMatchInfo({
       ...result,
       leagueId,
       matchId,
-      splitId: result.splitMatchday.splitId,
     })
   );
 

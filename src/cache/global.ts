@@ -4,7 +4,7 @@ export type GLOBAL_TAG =
   | "leagues"
   | "seasons"
   | "splits"
-  | "split-matchdays"
+  | "splits-matchdays"
   | "player-roles"
   | "player-votes"
   | "players"
@@ -15,7 +15,7 @@ export type GLOBAL_TAG =
 export const getLeagueGlobalTag = () => getGlobalTag("leagues");
 export const getSeasonsTag = () => getGlobalTag("seasons");
 export const getSplitsTag = () => getGlobalTag("splits");
-export const getSplitsMatchdaysTag = () => getGlobalTag("split-matchdays");
+export const getSplitsMatchdaysTag = () => getGlobalTag("splits-matchdays");
 export const getPlayerRolesTag = () => getGlobalTag("player-roles");
 export const getPlayerVotesTag = () => getGlobalTag("player-votes");
 export const getPlayersTag = () => getGlobalTag("players");

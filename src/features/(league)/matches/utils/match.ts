@@ -7,6 +7,7 @@ import {
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
+import { MatchInfo } from "../queries/match";
 
 type Team = { id: string; name: string; imageUrl: string | null } | null;
 
@@ -35,20 +36,22 @@ export function getMatchInfoTags({
   awayTeam,
   leagueId,
   matchId,
-  splitId,
+  splitMatchday,
 }: {
   homeTeam: Team;
   awayTeam: Team;
+  splitMatchday: {
+    id: number;
+  };
   leagueId: string;
   matchId: string;
-  splitId: number;
 }) {
   const tags = [
     getMatchInfoTag(matchId),
     getMatchResultsTag(matchId),
     getTacticalModulesTag(),
     getLeagueOptionsTag(leagueId),
-    getSplitMatchdaysIdTag(splitId),
+    getSplitMatchdaysIdTag(splitMatchday.id),
   ];
 
   if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));
