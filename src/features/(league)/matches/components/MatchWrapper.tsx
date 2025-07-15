@@ -71,6 +71,7 @@ export default function MatchWrapper({
                   (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
                   false
                 }
+                className="2xl:border-r"
               />
             </Suspense>
           )}
@@ -96,6 +97,7 @@ export default function MatchWrapper({
                   (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
                   false
                 }
+                className="2xl:border-l"
               />
             </Suspense>
           )}

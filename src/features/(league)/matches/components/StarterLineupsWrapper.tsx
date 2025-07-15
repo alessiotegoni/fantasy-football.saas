@@ -20,10 +20,9 @@ export default async function StarterLineupsWrapper({
   myTeam,
   canEditLineup,
 }: Props) {
-  const starterPlayers = await getStarterLineups(matchId, currentMatchday.id);
-
+  
   const showLineupFields =
-    canEditLineup && !isBye && (!homeTeam?.lineup || !awayTeam?.lineup);
+    canEditLineup && (!homeTeam?.lineup || !awayTeam?.lineup);
 
   return (
     <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px] xl:min-h-[500px]">
