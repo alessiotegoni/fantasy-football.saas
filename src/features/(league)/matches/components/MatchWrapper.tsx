@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import CalendarMatchCard from "../../(admin)/calendar/components/CalendarMatchCard";
 import FootballFieldBg from "./FootballFieldBg";
 import StarterLineupsWrapper from "./StarterLineupsWrapper";
+import BenchLineup from "./BenchLineup";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -61,14 +62,16 @@ export default function MatchWrapper({
           </div>
         </div>
         <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
-          {showLineups && (
+          {showLineups && benchLineupsPromise && (
             <Suspense>
-              <div
-                className="bg-input/30 rounded-3xl min-h-[500px]
-              2xl:border-l border-border"
-              >
-               
-              </div>
+              <BenchLineup
+                benchLineupsPromise={benchLineupsPromise}
+                team={matchInfo.homeTeam}
+                canEditLineup={
+                  (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
+                  false
+                }
+              />
             </Suspense>
           )}
           <FootballFieldBg>
@@ -84,14 +87,16 @@ export default function MatchWrapper({
               </Suspense>
             )}
           </FootballFieldBg>
-          {showLineups && (
+          {showLineups && benchLineupsPromise && (
             <Suspense>
-              <div
-                className="bg-input/30 rounded-3xl min-h-[500px]
-              2xl:border-r border-border"
-              >
-
-              </div>
+              <BenchLineup
+                benchLineupsPromise={benchLineupsPromise}
+                team={matchInfo.awayTeam}
+                canEditLineup={
+                  (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
+                  false
+                }
+              />
             </Suspense>
           )}
         </div>
