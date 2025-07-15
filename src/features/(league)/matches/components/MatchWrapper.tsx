@@ -1,5 +1,5 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
-import { getBenchLineups, LineupTeam, MatchInfo } from "../queries/match";
+import { getBenchLineups, MatchInfo } from "../queries/match";
 import Container from "@/components/Container";
 import MyLineupProvider from "@/contexts/MyLineupProvider";
 import { Suspense } from "react";
@@ -7,6 +7,7 @@ import CalendarMatchCard from "../../(admin)/calendar/components/CalendarMatchCa
 import FootballFieldBg from "./FootballFieldBg";
 import StarterLineupsWrapper from "./StarterLineupsWrapper";
 import BenchLineup from "./BenchLineup";
+import { LineupTeam } from "../utils/match";
 
 type Props = {
   matchInfo: MatchInfo;

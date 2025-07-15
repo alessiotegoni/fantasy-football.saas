@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import { LineupPlayer, LineupTeam } from "../queries/match";
+import { LineupPlayer } from "../queries/match";
+import { LineupTeam } from "../utils/match";
 
 type Props = {
   team: LineupTeam;

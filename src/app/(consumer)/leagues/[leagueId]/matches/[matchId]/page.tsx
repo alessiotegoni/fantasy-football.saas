@@ -1,19 +1,9 @@
-import Container from "@/components/Container";
-import MyLineupProvider from "@/contexts/MyLineupProvider";
-import CalendarMatchCard from "@/features/(league)/(admin)/calendar/components/CalendarMatchCard";
-import FootballFieldBg from "@/features/(league)/matches/components/FootballFieldBg";
 import MatchWrapper from "@/features/(league)/matches/components/MatchWrapper";
-import StarterLineupsWrapper from "@/features/(league)/matches/components/StarterLineupsWrapper";
 import {
-  formatTeamData,
-  getBenchLineups,
   getMatchInfo,
   MatchInfo,
 } from "@/features/(league)/matches/queries/match";
-import {
-  getCurrentMatchday,
-  SplitMatchday,
-} from "@/features/splits/queries/split";
+import { getCurrentMatchday } from "@/features/splits/queries/split";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { validateUUIds } from "@/schema/helpers";

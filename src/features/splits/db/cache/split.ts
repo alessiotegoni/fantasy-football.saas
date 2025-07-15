@@ -2,12 +2,18 @@ import { getSplitsMatchdaysTag, getSplitsTag } from "@/cache/global";
 import { getIdTag } from "@/cache/helpers";
 import { revalidateTag } from "next/cache";
 
-export const getSplitMatchdaysIdTag = (splitId: number) =>
-  getIdTag("split-matchdays", splitId.toString());
+export const getSplitIdTag = (splitId: number) =>
+  getIdTag("splits", splitId.toString());
 
-export const revalidateSplitsCache = () => revalidateTag(getSplitsTag());
+export const getSplitMatchdaysIdTag = (matchdayId: number) =>
+  getIdTag("split-matchdays", matchdayId.toString());
 
-export const revalidateSplitMatchdaysCache = (splitId: number) => {
+export const revalidateSplitsCache = (splitId: number) => {
+  revalidateTag(getSplitsTag());
+  revalidateTag(getSplitIdTag(splitId));
+};
+
+export const revalidateSplitMatchdaysCache = (matchdayId: number) => {
   revalidateTag(getSplitsMatchdaysTag());
-  revalidateTag(getSplitMatchdaysIdTag(splitId));
+  revalidateTag(getSplitMatchdaysIdTag(matchdayId));
 };

@@ -1,3 +1,4 @@
+import { getPlayersTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
 import {
   leagueMemberTeamPlayers,
@@ -45,7 +46,7 @@ export default async function LeaguePlayersListPage({
 
 async function getLeagueAvailablePlayers(leagueId: string) {
   "use cache";
-  cacheTag(getLeagueAvailablePlayersTag(leagueId));
+  cacheTag(getPlayersTag(), getLeagueAvailablePlayersTag(leagueId));
 
   const takenPlayersSubquery = await db
     .select({
