@@ -10,13 +10,13 @@ type Props = {
 };
 
 export default function PositionSlot({ positionId, player, canEdit }: Props) {
-  const { setNodeRef } = useDroppable({
-    id: positionId,
-    data: {
-      type: "starter-slot",
-      positionId,
-    },
-  });
+//   const { setNodeRef } = useDroppable({
+//     id: positionId,
+//     data: {
+//       type: "starter-slot",
+//       positionId,
+//     },
+//   });
 
   return (
     <div

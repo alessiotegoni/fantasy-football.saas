@@ -115,6 +115,8 @@ export async function getMatchInfo({
   };
 }
 
+export type MatchInfo = NonNullable<Awaited<ReturnType<typeof getMatchInfo>>>;
+
 export async function getStarterLineups(
   matchId: string,
   currentMatchdayId: number

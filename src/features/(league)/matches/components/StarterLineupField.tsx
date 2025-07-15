@@ -5,7 +5,7 @@ import RoleRow from "./RoleRow";
 type Props = {
   matchId: string;
   currentMatchdayId: number;
-  tacticalModule: TacticalModule;
+  tacticalModule: TacticalModule | undefined;
   canEdit: boolean;
   starterPlayers: LineupPlayer[]
 };
@@ -19,7 +19,7 @@ export default function StarterLineupField({
 }: Props) {
   return (
     <div className="flex flex-col gap-4 p-4 sm:p-6">
-      {tacticalModule.layout.map((role) => (
+      {tacticalModule?.layout?.map((role) => (
         <RoleRow
           key={role.roleId}
           role={role}
