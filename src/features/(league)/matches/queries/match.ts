@@ -14,24 +14,14 @@ import {
   matchdayVotes,
   playerRoles,
   players,
-  RolePosition,
   teams,
 } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
 import {
   getPlayersTag,
-  getTacticalModulesTag,
   getTeamsTag,
 } from "@/cache/global";
-import {
-  getMatchInfoTag,
-  getMatchResultsTag,
-} from "@/features/(league)/matches/db/cache/match";
-import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
-import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
-
-type Team = { id: string; name: string; imageUrl: string | null } | null;
+import { formatTeamData, getMatchInfoTags } from "../utils/match";
 
 export async function getMatchInfo({
   leagueId,
@@ -146,6 +136,7 @@ async function getLineup(
     .select({
       lineupPlayerId: leagueMatchLineupPlayers.id,
       playerId: leagueMatchLineupPlayers.playerId,
+      leagueTeamId: leagueMatchTeamLineup.teamId,
       role: playerRoles,
       team: {
         displayName: teams.displayName,
@@ -201,50 +192,3 @@ async function getLineup(
 }
 
 export type LineupPlayer = Awaited<ReturnType<typeof getLineup>>[0];
-
-export function formatTeamData(
-  team: Team,
-  lineups: {
-    id: string;
-    teamId: string;
-    tacticalModule: { id: number; layout: RolePosition[]; name: string };
-  }[]
-) {
-  if (!team) return null;
-
-  const lineup = lineups.find((l) => l.teamId === team.id) ?? null;
-
-  return {
-    ...team,
-    lineup,
-  };
-}
-
-export type LineupTeam = ReturnType<typeof formatTeamData>;
-
-function getMatchInfoTags({
-  homeTeam,
-  awayTeam,
-  leagueId,
-  matchId,
-  splitId,
-}: {
-  homeTeam: Team;
-  awayTeam: Team;
-  leagueId: string;
-  matchId: string;
-  splitId: number;
-}) {
-  const tags = [
-    getMatchInfoTag(matchId),
-    getMatchResultsTag(matchId),
-    getTacticalModulesTag(),
-    getLeagueOptionsTag(leagueId),
-    getSplitMatchdaysIdTag(splitId),
-  ];
-
-  if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));
-  if (awayTeam) tags.push(getTeamIdTag(awayTeam.id));
-
-  return tags;
-}
