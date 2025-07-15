@@ -6,7 +6,7 @@ export const getSplitIdTag = (splitId: number) =>
   getIdTag("splits", splitId.toString());
 
 export const getSplitMatchdaysIdTag = (matchdayId: number) =>
-  getIdTag("split-matchdays", matchdayId.toString());
+  getIdTag("splits-matchdays", matchdayId.toString());
 
 export const revalidateSplitsCache = (splitId: number) => {
   revalidateTag(getSplitsTag());
