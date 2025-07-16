@@ -31,6 +31,7 @@ export default function StarterLineupFieldMobile({
             role={role}
             players={players}
             canEdit={canEdit}
+            className="justify-evenly gap-4"
           />
         ))}
     </div>

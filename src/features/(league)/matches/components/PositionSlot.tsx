@@ -21,7 +21,7 @@ export default function PositionSlot({ positionId, player, canEdit }: Props) {
   return (
     <div
       // ref={setNodeRef}
-      className="w-16 h-16 sm:w-20 sm:h-20 bg-muted border border-border rounded-lg flex items-center justify-center"
+      className="size-14 sm:size-16 xl:size-18 bg-muted border border-border rounded-2xl flex items-center justify-center"
     >
       {player ? (
         <>{player.playerId}</>

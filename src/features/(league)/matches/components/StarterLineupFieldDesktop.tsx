@@ -23,7 +23,7 @@ export default function StarterLineupFieldDesktop({
     : team.lineup?.tacticalModule ?? null;
 
   return (
-    <div className="ml-3 flex items-center gap-3">
+    <div className="ml-3 flex items-center gap-3 md:gap-4">
       {tacticalModule &&
         tacticalModule.layout.map((role) => (
           <RoleColumn
@@ -31,6 +31,7 @@ export default function StarterLineupFieldDesktop({
             role={role}
             players={players}
             canEdit={canEdit}
+            className="flex-col justify-evenly h-full"
           />
         ))}
     </div>
