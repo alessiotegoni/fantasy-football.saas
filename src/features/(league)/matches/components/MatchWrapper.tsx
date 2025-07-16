@@ -8,6 +8,10 @@ import FootballFieldBg from "./FootballFieldBg";
 import StarterLineups from "./StarterLineups";
 import BenchLineup from "./BenchLineup";
 import { LineupTeam } from "../utils/match";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
+import ModulesSelect from "./ModulesSelect";
+import { getTacticalModules } from "../../options/queries/leagueOptions";
+import { getLeagueModules } from "../../leagues/queries/league";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -42,9 +46,7 @@ export default function MatchWrapper({
         className="xl:max-w-[800px] 2xl:max-w-[1100px]"
       >
         <div className="2xl:grid gap-5 xl:grid-cols-[150px_1fr_150px]">
-          <div>
-            {/*Se canEidtLineup=true metter ModulesSelect insieme al possibilie switch (feature futura), mentre se e' false metter statistiche da scegliere piu avanti*/}
-          </div>
+          <div>{/*Presidente home*/}</div>
           <CalendarMatchCard
             className="!rounded-4xl"
             homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
@@ -53,9 +55,7 @@ export default function MatchWrapper({
             {...ids}
             {...matchInfo}
           />
-          <div>
-            {/*Se canEidtLineup=true metter ModulesSelect insieme al possibilie switch (feature futura), mentre se e' false metter statistiche da scegliere piu avanti*/}
-          </div>
+          <div>{/*Presidente away*/}</div>
         </div>
         <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
           {showLineups && benchLineupsPromise && (
@@ -72,6 +72,15 @@ export default function MatchWrapper({
             </Suspense>
           )}
           <FootballFieldBg>
+            {!isMatchdayClosed && myTeam && (
+              <MobileButtonsContainer
+              className="sm:absolute sm:-translate-1/2 sm:bottom-auto sm:top-5">
+                <ModulesSelect
+                  allowedModulesPromise={getLeagueModules(ids.leagueId)}
+                  tacticalModulesPromise={getTacticalModules()}
+                />
+              </MobileButtonsContainer>
+            )}
             {showLineups && (
               <Suspense>
                 <StarterLineups

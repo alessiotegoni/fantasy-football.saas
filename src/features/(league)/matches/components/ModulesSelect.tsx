@@ -41,7 +41,10 @@ export default function ModulesSelect(
     return (
       <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>
-          <Button variant="outline">
+          <Button
+            variant="outline"
+            className="!bg-input !p-3.5 text-sm sm:rounded-t-none"
+          >
             {tacticalModule ? tacticalModule.name : "Seleziona modulo"}
           </Button>
         </DrawerTrigger>
@@ -52,13 +55,15 @@ export default function ModulesSelect(
               Seleziona il modulo della tua formazione
             </DrawerDescription>
           </DrawerHeader>
-          <Suspense>
-            <LeagueModules
-              {...props}
-              defaultModule={tacticalModule}
-              onModuleChange={handleModuleChange}
-            />
-          </Suspense>
+          <div className="p-6 pt-2">
+            <Suspense>
+              <LeagueModules
+                {...props}
+                defaultModule={tacticalModule}
+                onModuleChange={handleModuleChange}
+              />
+            </Suspense>
+          </div>
         </DrawerContent>
       </Drawer>
     );
@@ -67,7 +72,10 @@ export default function ModulesSelect(
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className="!bg-input !p-3.5 text-sm sm:rounded-t-none"
+        >
           {tacticalModule ? tacticalModule.name : "Seleziona modulo"}
         </Button>
       </DialogTrigger>
@@ -78,14 +86,14 @@ export default function ModulesSelect(
             Seleziona il modulo della tua formazione
           </DialogDescription>
         </DialogHeader>
+        <Suspense>
+          <LeagueModules
+            {...props}
+            defaultModule={tacticalModule}
+            onModuleChange={handleModuleChange}
+          />
+        </Suspense>
       </DialogContent>
-      <Suspense>
-        <LeagueModules
-          {...props}
-          defaultModule={tacticalModule}
-          onModuleChange={handleModuleChange}
-        />
-      </Suspense>
     </Dialog>
   );
 }
