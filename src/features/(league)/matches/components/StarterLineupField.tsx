@@ -1,3 +1,5 @@
+"use client"
+
 import { LineupPlayer } from "../queries/match";
 import { LineupTeam } from "../utils/match";
 import { useIsMobile } from "@/hooks/useMobile";
@@ -11,7 +13,8 @@ type Props = {
 };
 
 export default function StarterLineupField(props: Props) {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile(640);
+
   return isMobile ? (
     <StarterLineupFieldMobile {...props} />
   ) : (

@@ -3,7 +3,7 @@
 import { LineupPlayer } from "../queries/match";
 import { LineupTeam } from "../utils/match";
 import { useMyLineup } from "@/contexts/MyLineupProvider";
-import PositionSlot from "./PositionSlot";
+import { default as RoleColumn } from "./RoleGroup";
 
 type Props = {
   team: NonNullable<LineupTeam>;
@@ -22,23 +22,17 @@ export default function StarterLineupFieldDesktop({
     ? myTacticalModule
     : team.lineup?.tacticalModule ?? null;
 
-  if (!tacticalModule) return null;
-
   return (
-    <div className="grid grid-cols-5 gap-4 justify-center p-6">
-      {tacticalModule.layout.map((role) =>
-        role.positionsIds.map((posId) => {
-          const player = players.find((p) => p.positionId === posId);
-          return (
-            <PositionSlot
-              key={posId}
-              positionId={posId}
-              player={player}
-              canEdit={canEdit}
-            />
-          );
-        })
-      )}
+    <div className="ml-3 flex items-center gap-3">
+      {tacticalModule &&
+        tacticalModule.layout.map((role) => (
+          <RoleColumn
+            key={role.roleId}
+            role={role}
+            players={players}
+            canEdit={canEdit}
+          />
+        ))}
     </div>
   );
 }

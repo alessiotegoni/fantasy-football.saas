@@ -1,9 +1,9 @@
 "use client";
 
 import { LineupPlayer } from "../queries/match";
-import RoleRow from "./RoleRow";
 import { LineupTeam } from "../utils/match";
 import { useMyLineup } from "@/contexts/MyLineupProvider";
+import { default as RoleRow } from "./RoleGroup";
 
 type Props = {
   team: NonNullable<LineupTeam>;
@@ -22,18 +22,17 @@ export default function StarterLineupFieldMobile({
     ? myTacticalModule
     : team.lineup?.tacticalModule ?? null;
 
-  if (!tacticalModule) return null;
-
   return (
     <div className="flex flex-col gap-4 p-4">
-      {tacticalModule.layout.map((role) => (
-        <RoleRow
-          key={role.roleId}
-          role={role}
-          players={players}
-          canEdit={canEdit}
-        />
-      ))}
+      {tacticalModule &&
+        tacticalModule.layout.map((role) => (
+          <RoleRow
+            key={role.roleId}
+            role={role}
+            players={players}
+            canEdit={canEdit}
+          />
+        ))}
     </div>
   );
 }
