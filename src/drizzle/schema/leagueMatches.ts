@@ -23,10 +23,10 @@ export const leagueMatches = pgTable(
       .notNull()
       .references(() => leagues.id, { onDelete: "cascade" }),
     homeTeamId: uuid("home_team_id").references(() => leagueMemberTeams.id, {
-      onDelete: "set null",
+      onDelete: "no action",
     }),
     awayTeamId: uuid("away_team_id").references(() => leagueMemberTeams.id, {
-      onDelete: "set null",
+      onDelete: "no action",
     }),
     isBye: boolean("is_bye").notNull().default(false),
   },

@@ -11,7 +11,7 @@ export const leagueMatchTeamLineup = pgTable("league_match_team_lineup", {
     .references(() => leagueMatches.id, { onDelete: "cascade" }),
   teamId: uuid("team_id")
     .notNull()
-    .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
+    .references(() => leagueMemberTeams.id, { onDelete: "no action" }),
   tacticalModuleId: smallint("tactical_module_id")
     .notNull()
     .references(() => tacticalModules.id, { onDelete: "restrict" }),
