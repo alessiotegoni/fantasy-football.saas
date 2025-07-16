@@ -1,9 +1,9 @@
 import { AlertTriangle } from "lucide-react";
-import { LeagueTeam } from "@/features/(league)/teams/queries/leagueTeam";
 import Avatar from "@/components/Avatar";
+import { LineupTeam } from "../utils/match";
 
 type TeamCardProps = {
-  team: Pick<LeagueTeam, "id" | "name" | "imageUrl"> | null;
+  team: Omit<LineupTeam, "lineup">;
   isBye?: boolean;
   module?: string | null;
   isWinner?: boolean;
@@ -17,7 +17,7 @@ export default function MatchTeam({
   module,
   className = "",
 }: TeamCardProps) {
-  if (isBye && !team) {
+  if (isBye && !team.id) {
     return (
       <div
         className={`flex flex-col items-center justify-center space-y-2 text-center w-full ${className}`}
@@ -34,46 +34,41 @@ export default function MatchTeam({
     );
   }
 
-  if (!team) {
-    return (
-      <div
-        className={`flex flex-col items-center justify-center space-y-2 text-center w-full ${className}`}
-      >
-        <div className="size-12 sm:size-20 rounded-full bg-muted flex items-center justify-center">
-          <AlertTriangle className="size-10 text-destructive" />
-        </div>
-        <div>
-          <p className="text-sm sm:text-lg text-destructive">
-            Team non disponibile
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div
       className={`flex flex-col items-center justify-center text-center w-full ${className}`}
     >
-      <Avatar
-        imageUrl={team.imageUrl}
-        name={team.name}
-        renderFallback={() => null}
-        className="size-12 sm:size-20 mb-2"
-      />
+      {team.name ? (
+        <Avatar
+          imageUrl={team.imageUrl}
+          name={team.name}
+          renderFallback={() => null}
+          className="size-12 sm:size-20 mb-2"
+        />
+      ) : (
+        <div className="size-12 sm:size-20 rounded-full bg-muted flex items-center justify-center">
+          <AlertTriangle className="size-10 text-destructive" />
+        </div>
+      )}
       {module !== undefined && (
         <p className="hidden sm:block text-sm text-muted-foreground">
           {module || "Formazione non inserita"}
         </p>
       )}
       <div>
-        <h3
-          className={`text-sm sm:text-lg ${
-            isWinner ? "font-extrabold" : "font-semibold"
-          } text-white`}
-        >
-          {team.name}
-        </h3>
+        {team.name ? (
+          <h3
+            className={`text-sm sm:text-lg ${
+              isWinner ? "font-extrabold" : "font-semibold"
+            } text-white`}
+          >
+            {team.name}
+          </h3>
+        ) : (
+          <p className="text-sm sm:text-lg text-destructive mt-2">
+            Team non disponibile
+          </p>
+        )}
       </div>
     </div>
   );
