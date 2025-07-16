@@ -45,20 +45,14 @@ export default function MatchWrapper({
           <div>
             {/*Se canEidtLineup=true metter ModulesSelect insieme al possibilie switch (feature futura), mentre se e' false metter statistiche da scegliere piu avanti*/}
           </div>
-          <div>
-            <CalendarMatchCard
-              className="!rounded-4xl"
-              homeModule={
-                matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null
-              }
-              awayModule={
-                matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null
-              }
-              isLink={false}
-              {...ids}
-              {...matchInfo}
-            />
-          </div>
+          <CalendarMatchCard
+            className="!rounded-4xl"
+            homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
+            awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
+            isLink={false}
+            {...ids}
+            {...matchInfo}
+          />
           <div>
             {/*Se canEidtLineup=true metter ModulesSelect insieme al possibilie switch (feature futura), mentre se e' false metter statistiche da scegliere piu avanti*/}
           </div>

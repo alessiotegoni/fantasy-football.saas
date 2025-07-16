@@ -1,7 +1,7 @@
 "use client";
 
 import { TacticalModule } from "@/drizzle/schema";
-import { createContext, useCallback, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 type LineupPlayer = {
   id: string;
@@ -61,3 +61,13 @@ export default function MyLineupProvider({
     </MyLineupContext.Provider>
   );
 }
+
+export function useMyLineup() {
+  const context = useContext(MyLineupContext);
+
+  if (!context) {
+    throw new Error("useMyLineupProvider must be used within MyLineupProvider");
+  }
+
+  return context;
+};
