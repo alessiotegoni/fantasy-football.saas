@@ -45,7 +45,9 @@ export default function ModulesSelect(
             variant="outline"
             className="!bg-input !p-3.5 text-sm sm:rounded-t-none"
           >
-            {tacticalModule ? tacticalModule.name : "Seleziona modulo"}
+            {tacticalModule
+              ? `Modulo: ${tacticalModule.name}`
+              : "Seleziona modulo"}
           </Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -76,7 +78,9 @@ export default function ModulesSelect(
           variant="outline"
           className="!bg-input !p-3.5 text-sm sm:rounded-t-none"
         >
-          {tacticalModule ? tacticalModule.name : "Seleziona modulo"}
+          {tacticalModule
+            ? `Modulo: ${tacticalModule.name}`
+            : "Seleziona modulo"}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

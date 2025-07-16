@@ -28,17 +28,25 @@ export default function LeagueModules({
   );
 
   return (
-    <div className={cn("grid grid-cols-2 xs:grid-cols-3 gap-2", className)}>
-      {leagueModules.map((module) => (
-        <CheckboxCard
-          key={module.id}
-          label={module.name}
-          showCheckbox={false}
-          checked={defaultModule?.id === module.id}
-          onChange={onModuleChange?.bind(null, module)}
-          disabled
-        />
-      ))}
-    </div>
+    <ul className={cn("grid grid-cols-2 xs:grid-cols-3 gap-2", className)}>
+      {leagueModules.map((module) => {
+        const isCurrentModule = defaultModule?.id === module.id;
+
+        return (
+          <li
+            className={cn(
+              "flex items-center p-3 border rounded-xl transition-colors bg-muted/30",
+              onModuleChange && "cursor-pointer",
+              isCurrentModule && "text-primary"
+            )}
+            onClick={onModuleChange?.bind(null, module)}
+          >
+            <p className={cn("font-medium", isCurrentModule && "text-primary")}>
+              {module.name}
+            </p>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
