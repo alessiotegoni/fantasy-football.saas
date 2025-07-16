@@ -44,13 +44,13 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
       },
 
       homeTeam: {
-        id: homeTeam.id,
+        id: leagueMatches.homeTeamId,
         name: homeTeam.name,
         imageUrl: homeTeam.imageUrl,
       },
 
       awayTeam: {
-        id: awayTeam.id,
+        id: leagueMatches.awayTeamId,
         name: awayTeam.name,
         imageUrl: awayTeam.imageUrl,
       },
