@@ -4,7 +4,6 @@ import { LineupPlayer } from "../queries/match";
 import RoleRow from "./RoleRow";
 import { LineupTeam } from "../utils/match";
 import { useMyLineup } from "@/contexts/MyLineupProvider";
-import { useIsMobile } from "@/hooks/useMobile";
 
 type Props = {
   team: NonNullable<LineupTeam>;
@@ -12,19 +11,22 @@ type Props = {
   players: LineupPlayer[];
 };
 
-export default function StarterLineupField({ team, canEdit, players }: Props) {
-
-  const isMobile = useIsMobile()
-
+export default function StarterLineupFieldMobile({
+  team,
+  canEdit,
+  players,
+}: Props) {
   const { tacticalModule: myTacticalModule } = useMyLineup();
 
   const tacticalModule = canEdit
     ? myTacticalModule
     : team.lineup?.tacticalModule ?? null;
 
+  if (!tacticalModule) return null;
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:p-6">
-      {tacticalModule?.layout.map((role) => (
+    <div className="flex flex-col gap-4 p-4">
+      {tacticalModule.layout.map((role) => (
         <RoleRow
           key={role.roleId}
           role={role}
@@ -35,5 +37,3 @@ export default function StarterLineupField({ team, canEdit, players }: Props) {
     </div>
   );
 }
-
-// TODO: creare client componente col drower su mobile e dialog su desktop  che fetchi i giocatori di myTeam solo al click, e che mostri solo i giocatori che non ci sono a seconda del contesto (bench, starter)

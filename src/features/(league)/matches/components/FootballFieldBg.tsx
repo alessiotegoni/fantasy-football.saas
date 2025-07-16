@@ -23,7 +23,6 @@ export default function FootballFieldBg({
         className="sm:hidden"
       />
       {children}
-      <Disclaimer />
     </div>
   );
 }

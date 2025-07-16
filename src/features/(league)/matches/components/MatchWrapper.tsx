@@ -12,6 +12,7 @@ import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import ModulesSelect from "./ModulesSelect";
 import { getTacticalModules } from "../../options/queries/leagueOptions";
 import { getLeagueModules } from "../../leagues/queries/league";
+import Disclaimer from "@/components/Disclaimer";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -106,6 +107,7 @@ export default function MatchWrapper({
             </Suspense>
           )}
         </div>
+        <Disclaimer />
       </Container>
     </MyLineupProvider>
   );

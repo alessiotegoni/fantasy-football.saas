@@ -52,10 +52,10 @@ async function SuspenseBoundary({
   return (
     <MatchWrapper
       matchInfo={matchInfo}
-      {...ids}
       myTeam={myTeam}
       currentMatchday={currentMatchday}
       showLineups
+      {...ids}
     />
   );
 }

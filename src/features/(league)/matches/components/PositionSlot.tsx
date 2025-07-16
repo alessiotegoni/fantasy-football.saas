@@ -10,27 +10,26 @@ type Props = {
 };
 
 export default function PositionSlot({ positionId, player, canEdit }: Props) {
-//   const { setNodeRef } = useDroppable({
-//     id: positionId,
-//     data: {
-//       type: "starter-slot",
-//       positionId,
-//     },
-//   });
+  //   const { setNodeRef } = useDroppable({
+  //     id: positionId,
+  //     data: {
+  //       type: "starter-slot",
+  //       positionId,
+  //     },
+  //   });
 
   return (
     <div
-      ref={setNodeRef}
+      // ref={setNodeRef}
       className="w-16 h-16 sm:w-20 sm:h-20 bg-muted border border-border rounded-lg flex items-center justify-center"
     >
       {player ? (
         <>{player.playerId}</>
-        // <PlayerCard player={player} />
-      ) : canEdit ? (
+      ) : // <PlayerCard player={player} />
+      canEdit ? (
         <button
           className="text-muted-foreground hover:text-primary"
-          onClick={() => {
-          }}
+          onClick={() => {}}
         >
           <Plus className="w-6 h-6" />
         </button>

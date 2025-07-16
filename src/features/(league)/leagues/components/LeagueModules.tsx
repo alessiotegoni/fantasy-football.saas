@@ -34,10 +34,12 @@ export default function LeagueModules({
 
         return (
           <li
+            key={module.id}
             className={cn(
               "flex items-center p-3 border rounded-xl transition-colors bg-muted/30",
               onModuleChange && "cursor-pointer",
-              isCurrentModule && "border-1 border-primary bg-primary/10 text-primary"
+              isCurrentModule &&
+                "border-1 border-primary bg-primary/10 text-primary"
             )}
             onClick={onModuleChange?.bind(null, module)}
           >
