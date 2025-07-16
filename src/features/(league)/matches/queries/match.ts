@@ -36,6 +36,8 @@ export async function getMatchInfo({
     columns: {
       id: true,
       isBye: true,
+      homeTeamId: true,
+      awayTeamId: true,
     },
     with: {
       league: {
@@ -51,14 +53,12 @@ export async function getMatchInfo({
       splitMatchday: true,
       homeTeam: {
         columns: {
-          id: true,
           name: true,
           imageUrl: true,
         },
       },
       awayTeam: {
         columns: {
-          id: true,
           name: true,
           imageUrl: true,
         },
@@ -85,6 +85,9 @@ export async function getMatchInfo({
   });
 
   if (!result) return undefined;
+
+  const homeTeam = formatTeamData(result.homeTeamId, result.homeTeam, result.lineups)
+
   cacheTag(
     ...getMatchInfoTags({
       ...result,

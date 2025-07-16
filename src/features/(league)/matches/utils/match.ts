@@ -14,10 +14,12 @@ import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { LineupPlayer } from "../queries/match";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
+import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
-type Team = { id: string; name: string; imageUrl: string | null } | null;
+type Team = Pick<LeagueTeam, "name" | "imageUrl"> | null;
 
 export function formatTeamData(
+  teamId: string | null,
   team: Team,
   lineups: {
     id: string;

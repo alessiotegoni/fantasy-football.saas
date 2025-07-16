@@ -24,7 +24,7 @@ export const leagueMembers = pgTable(
       .references(() => leagues.id, { onDelete: "cascade" }),
     userId: uuid("user_id")
       .notNull()
-      .references(() => authUsers.id, { onDelete: "cascade" }),
+      .references(() => authUsers.id, { onDelete: "set null" }),
     role: leagueMemberRoleEnum("role").notNull().default("member"),
     joinedAt: timestamp("joined_at", { withTimezone: true })
       .notNull()
