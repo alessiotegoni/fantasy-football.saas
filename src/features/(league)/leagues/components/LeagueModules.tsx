@@ -1,50 +1,44 @@
+"use client";
+
 import CheckboxCard from "@/components/ui/checkbox-card";
-import { db } from "@/drizzle/db";
-import { getLeagueModulesTag } from "@/features/(league)/options/db/cache/leagueOption";
-import { getTacticalModules } from "@/features/(league)/options/queries/leagueOptions";
+import { TacticalModule } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { use } from "react";
 
 type Props = {
-  leagueId: string;
+  allowedModulesPromise: Promise<number[]>;
+  tacticalModulesPromise: Promise<TacticalModule[]>;
+  defaultModule?: TacticalModule | null;
+  onModuleChange?: (module: TacticalModule) => void;
   className?: string;
 };
 
-export default async function LeagueModules({ leagueId, className }: Props) {
-  const [modules, availableModules] = await Promise.all([
-    getLeagueModules(leagueId),
-    getTacticalModules(),
-  ]);
+export default function LeagueModules({
+  allowedModulesPromise,
+  tacticalModulesPromise,
+  defaultModule,
+  onModuleChange,
+  className,
+}: Props) {
+  const tacticalModules = use(tacticalModulesPromise);
+  const allowedModulesIds = use(allowedModulesPromise);
 
-  const leagueModules = availableModules.filter((module) =>
-    modules.includes(module.id)
+  const leagueModules = tacticalModules.filter((module) =>
+    allowedModulesIds.includes(module.id)
   );
 
   return (
     <div className={cn("grid grid-cols-2 xs:grid-cols-3 gap-2", className)}>
-      {leagueModules.map((mod) => (
+      {leagueModules.map((module) => (
         <CheckboxCard
-          key={mod.id}
-          label={mod.name}
+          key={module.id}
+          label={module.name}
           showCheckbox={false}
-          checked={true}
+          checked={defaultModule?.id === module.id}
+          onChange={onModuleChange?.bind(null, module)}
           disabled
         />
       ))}
     </div>
   );
-}
-
-async function getLeagueModules(leagueId: string) {
-  "use cache";
-  cacheTag(getLeagueModulesTag(leagueId));
-
-  return db.query.leagueOptions
-    .findFirst({
-      columns: {
-        tacticalModules: true,
-      },
-      where: (options, { eq }) => eq(options.leagueId, leagueId),
-    })
-    .then((res) => res!.tacticalModules);
 }

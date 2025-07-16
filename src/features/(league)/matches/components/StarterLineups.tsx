@@ -1,5 +1,4 @@
-import { getStarterLineups, LineupPlayer, MatchInfo } from "../queries/match";
-import { WarningTriangle } from "iconoir-react";
+import { getStarterLineups, MatchInfo } from "../queries/match";
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupTeam } from "../utils/match";
 import StarterLineupField from "./StarterLineupField";

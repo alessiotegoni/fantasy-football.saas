@@ -17,6 +17,8 @@ import { Trophy } from "iconoir-react";
 import Avatar from "@/components/Avatar";
 import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
 import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMember";
+import { getLeagueModules } from "@/features/(league)/leagues/queries/league";
+import { getTacticalModules } from "@/features/(league)/options/queries/leagueOptions";
 
 export default async function LeagueDetailPage({
   params,
@@ -99,7 +101,10 @@ async function SuspenseBoundary({
               <div className="bg-background rounded-2xl border border-border p-4 md:p-6">
                 <h3 className="font-heading text-lg mb-3">Moduli tattici</h3>
                 <Suspense>
-                  <LeagueModules leagueId={leagueId} />
+                  <LeagueModules
+                    allowedModulesPromise={getLeagueModules(leagueId)}
+                    tacticalModulesPromise={getTacticalModules()}
+                  />
                 </Suspense>
               </div>
             </div>

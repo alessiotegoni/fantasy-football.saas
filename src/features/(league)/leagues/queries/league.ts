@@ -7,6 +7,7 @@ import {
 import { isPremiumUnlocked } from "../permissions/league";
 import {
   getLeagueGeneralOptionsTag,
+  getLeagueModulesTag,
   getLeaguePlayersPerRoleTag,
 } from "@/features/(league)/options/db/cache/leagueOption";
 import { db } from "@/drizzle/db";
@@ -57,4 +58,18 @@ export async function getLeaguePlayersPerRole(leagueId: string) {
       where: (options, { eq }) => eq(options.leagueId, leagueId),
     })
     .then((res) => res!.playersPerRole);
+}
+
+export async function getLeagueModules(leagueId: string) {
+  "use cache";
+  cacheTag(getLeagueModulesTag(leagueId));
+
+  return db.query.leagueOptions
+    .findFirst({
+      columns: {
+        tacticalModules: true,
+      },
+      where: (options, { eq }) => eq(options.leagueId, leagueId),
+    })
+    .then((res) => res!.tacticalModules);
 }
