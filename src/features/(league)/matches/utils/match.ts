@@ -28,10 +28,8 @@ export function formatTeamData(
   const lineup = lineups.find((l) => l.teamId === teamId) ?? null;
 
   return {
-    team: {
-      id: teamId,
-      ...team,
-    },
+    id: teamId,
+    ...team,
     lineup,
   };
 }
