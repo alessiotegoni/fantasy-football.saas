@@ -86,24 +86,29 @@ export async function getMatchInfo({
 
   if (!result) return undefined;
 
-  const homeTeam = formatTeamData(result.homeTeamId, result.homeTeam, result.lineups)
-
   cacheTag(
     ...getMatchInfoTags({
-      ...result,
       leagueId,
       matchId,
+      ...result,
     })
   );
 
-  const { homeTeam, awayTeam, lineups, league, ...matchInfo } = result;
+  const {
+    homeTeamId,
+    homeTeam,
+    awayTeamId,
+    awayTeam,
+    lineups,
+    league,
+    ...match
+  } = result;
 
   return {
-    homeTeam: formatTeamData(homeTeam, lineups),
-    awayTeam: formatTeamData(awayTeam, lineups),
+    homeTeam: formatTeamData(homeTeamId, homeTeam, lineups),
+    awayTeam: formatTeamData(awayTeamId, awayTeam, lineups),
     leagueCustomBonusMalus: league.options[0].customBonusMalus,
-    ...matchInfo,
-    ...matchInfo,
+    ...match,
   };
 }
 

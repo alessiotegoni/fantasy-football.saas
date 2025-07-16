@@ -16,23 +16,22 @@ import { LineupPlayer } from "../queries/match";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
-type Team = Pick<LeagueTeam, "name" | "imageUrl"> | null;
-
 export function formatTeamData(
   teamId: string | null,
-  team: Team,
+  team: Pick<LeagueTeam, "name" | "imageUrl"> | null,
   lineups: {
     id: string;
     teamId: string;
     tacticalModule: { id: number; layout: RolePosition[]; name: string };
   }[]
 ) {
-  if (!team) return null;
-
-  const lineup = lineups.find((l) => l.teamId === team.id) ?? null;
+  const lineup = lineups.find((l) => l.teamId === teamId) ?? null;
 
   return {
-    ...team,
+    team: {
+      id: teamId,
+      ...team,
+    },
     lineup,
   };
 }
@@ -40,14 +39,14 @@ export function formatTeamData(
 export type LineupTeam = ReturnType<typeof formatTeamData>;
 
 export function getMatchInfoTags({
-  homeTeam,
-  awayTeam,
+  homeTeamId,
+  awayTeamId,
   leagueId,
   matchId,
   splitMatchday,
 }: {
-  homeTeam: Team;
-  awayTeam: Team;
+  homeTeamId: string | null;
+  awayTeamId: string | null;
   splitMatchday: {
     id: number;
   };
@@ -62,8 +61,8 @@ export function getMatchInfoTags({
     getSplitMatchdaysIdTag(splitMatchday.id),
   ];
 
-  if (homeTeam) tags.push(getTeamIdTag(homeTeam.id));
-  if (awayTeam) tags.push(getTeamIdTag(awayTeam.id));
+  if (homeTeamId) tags.push(getTeamIdTag(homeTeamId));
+  if (awayTeamId) tags.push(getTeamIdTag(awayTeamId));
 
   return tags;
 }
