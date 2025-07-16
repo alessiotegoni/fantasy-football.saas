@@ -1,10 +1,8 @@
-"use client";
-
 import { LineupPlayer } from "../queries/match";
-import RoleRow from "./RoleRow";
 import { LineupTeam } from "../utils/match";
-import { useMyLineup } from "@/contexts/MyLineupProvider";
 import { useIsMobile } from "@/hooks/useMobile";
+import StarterLineupFieldMobile from "./StarterLineupFieldMobile";
+import StarterLineupFieldDesktop from "./StarterLineupFieldDesktop";
 
 type Props = {
   team: NonNullable<LineupTeam>;
@@ -12,27 +10,12 @@ type Props = {
   players: LineupPlayer[];
 };
 
-export default function StarterLineupField({ team, canEdit, players }: Props) {
-
-  const isMobile = useIsMobile()
-
-  const { tacticalModule: myTacticalModule } = useMyLineup();
-
-  const tacticalModule = canEdit
-    ? myTacticalModule
-    : team.lineup?.tacticalModule ?? null;
-
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:p-6">
-      {tacticalModule?.layout.map((role) => (
-        <RoleRow
-          key={role.roleId}
-          role={role}
-          players={players}
-          canEdit={canEdit}
-        />
-      ))}
-    </div>
+export default function StarterLineupField(props: Props) {
+  const isMobile = useIsMobile();
+  return isMobile ? (
+    <StarterLineupFieldMobile {...props} />
+  ) : (
+    <StarterLineupFieldDesktop {...props} />
   );
 }
 
