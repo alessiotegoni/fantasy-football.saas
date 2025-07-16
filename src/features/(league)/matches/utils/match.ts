@@ -18,7 +18,7 @@ import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
 export function formatTeamData(
   teamId: string | null,
-  team: Pick<LeagueTeam, "name" | "imageUrl"> | null,
+  teamData: Pick<LeagueTeam, "name" | "imageUrl"> | null,
   lineups: {
     id: string;
     teamId: string;
@@ -29,7 +29,8 @@ export function formatTeamData(
 
   return {
     id: teamId,
-    ...team,
+    name: teamData?.name ?? null,
+    imageUrl: teamData?.imageUrl ?? null,
     lineup,
   };
 }
