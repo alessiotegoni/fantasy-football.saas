@@ -13,6 +13,8 @@ import ModulesSelect from "./ModulesSelect";
 import { getTacticalModules } from "../../options/queries/leagueOptions";
 import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
+import PlayersSelect from "./PlayersSelect";
+import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -58,7 +60,11 @@ export default function MatchWrapper({
           />
           <div>{/*Presidente away*/}</div>
         </div>
-        {/* {showLineups && myTeam && /**PlayersSelect */}
+        {showLineups && myTeam?.id && (
+          <Suspense>
+            <PlayersSelect playersPromise={getTeamsPlayers([myTeam.id])} />
+          </Suspense>
+        )}
         <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
           {showLineups && benchLineupsPromise && (
             <Suspense>
@@ -75,8 +81,7 @@ export default function MatchWrapper({
           )}
           <FootballFieldBg>
             {!isMatchdayClosed && myTeam && (
-              <MobileButtonsContainer
-              className="sm:absolute sm:-translate-1/2 sm:bottom-auto sm:top-5">
+              <MobileButtonsContainer className="sm:absolute sm:-translate-1/2 sm:bottom-auto sm:top-5">
                 <ModulesSelect
                   allowedModulesPromise={getLeagueModules(ids.leagueId)}
                   tacticalModulesPromise={getTacticalModules()}

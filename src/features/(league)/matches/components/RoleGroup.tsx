@@ -17,6 +17,8 @@ type Props = {
 export default function RoleGroup(props: Props) {
   const { tacticalModule: myTacticalModule } = useMyLineup();
 
+  const troia = useCa
+
   const tacticalModule = props.canEdit
     ? myTacticalModule
     : props.team.lineup!.tacticalModule;
