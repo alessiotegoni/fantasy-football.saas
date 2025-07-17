@@ -26,6 +26,7 @@ export default async function TradeProposalWrapper(props: Props) {
     <TradePlayersProvider
       proposerTeamId={proposerTeamId}
       receiverTeamId={receiverTeamId}
+      teamsPlayers={teamsPlayers}
     >
       <TradeProposalForm {...props} />
     </TradePlayersProvider>

@@ -14,13 +14,13 @@ import { CreateTradeProposalSchema } from "../schema/trade";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { useCallback, useState } from "react";
 import { NavArrowDown, Check } from "iconoir-react";
-import { EnrichedPlayer } from "@/contexts/PlayersProvider";
 import SearchBar from "@/components/SearchBar";
 import { useFilter } from "@/hooks/useFilter";
+import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 type Props = {
   offeredByProposer?: boolean;
-  players: EnrichedPlayer[];
+  players: TeamPlayer[];
   onPlayerSelect: (
     player: CreateTradeProposalSchema["players"][number]
   ) => void;
@@ -38,7 +38,7 @@ export default function TradePlayersDialog({
   const [search, setSearch] = useState("");
   const form = useFormContext<CreateTradeProposalSchema>();
 
-  const { filteredItems: filteredPlayers, handleFilter } = useFilter(players, {
+  const { filteredItems: filteredPlayers } = useFilter(players, {
     defaultFilters: search,
     filterFn: (player) =>
       player.displayName.toLowerCase().includes(search.toLowerCase()),
@@ -55,11 +55,11 @@ export default function TradePlayersDialog({
   );
 
   const handleSelectPlayer = useCallback(
-    ({ id, roleId }: EnrichedPlayer) => {
+    ({ id, role }: TeamPlayer) => {
       if (!isPlayerSelected(id)) {
         onPlayerSelect({
           id,
-          roleId,
+          roleId: role.id,
           offeredByProposer,
         });
       }

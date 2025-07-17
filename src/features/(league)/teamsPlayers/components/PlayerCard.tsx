@@ -7,14 +7,14 @@ import { memo } from "react";
 import { DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
-import { EnrichedPlayer } from "@/contexts/PlayersProvider";
 import TeamCreditsBadge from "../../teams/components/TeamCreditsBadge";
 import { cn } from "@/lib/utils";
+import { TeamPlayer } from "../queries/teamsPlayer";
 
-type Props = EnrichedPlayer & {
+type Props = TeamPlayer & {
   showSelectButton?: boolean;
   canSelectCard?: boolean;
-  onSelect?: (player: EnrichedPlayer) => void;
+  onSelect?: (player: TeamPlayer) => void;
   className?: string;
   avatarSize?: number;
 };
