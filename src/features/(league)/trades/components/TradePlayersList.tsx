@@ -4,15 +4,10 @@ import { UseFieldArrayRemove } from "react-hook-form";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { Button } from "@/components/ui/button";
 import { Xmark } from "iconoir-react";
-import { usePlayersEnrichment } from "@/contexts/PlayersEnrichmentProvider";
-import { useMemo } from "react";
+import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 interface PlayerCarouselProps {
-  tradePlayers: {
-    index: number;
-    id: number;
-    offeredByProposer: boolean;
-  }[];
+  tradePlayers: (TeamPlayer & { index: number })[];
   onRemovePlayer: UseFieldArrayRemove;
 }
 
@@ -20,23 +15,9 @@ export function TradePlayersList({
   tradePlayers,
   onRemovePlayer,
 }: PlayerCarouselProps) {
-  const { enrichedPlayers } = usePlayersEnrichment();
-
-  const players = useMemo(
-    () =>
-      tradePlayers.map((tradePlayer) => ({
-        ...tradePlayer,
-        ...enrichedPlayers.find(
-          (enrichPlayer) => enrichPlayer.id === tradePlayer.id
-        )!,
-      })),
-
-    [enrichedPlayers, tradePlayers]
-  );
-
   return (
     <div className="flex flex-wrap gap-1.5 mt-4">
-      {players.map(({ purchaseCost, ...player }) => (
+      {tradePlayers.map(({ purchaseCost, ...player }) => (
         <div
           key={player.id}
           className="flex items-center gap-3.5 border border-border rounded-3xl p-2 pr-2.5 py-2 bg-background w-fit"

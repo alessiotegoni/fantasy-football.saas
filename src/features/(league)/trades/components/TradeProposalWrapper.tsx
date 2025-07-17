@@ -1,6 +1,4 @@
-import { PlayersProvider } from "@/contexts/PlayersProvider";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
-import { PlayersEnrichmentProvider } from "@/contexts/PlayersEnrichmentProvider";
 import TradeProposalForm from "./TradeProposalForm";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import TradePlayersProvider from "@/contexts/TradePlayersProvider";

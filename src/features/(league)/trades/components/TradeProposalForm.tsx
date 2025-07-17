@@ -19,6 +19,7 @@ import TradeReceiverTeamSelect from "./TradeReceiverTeamSelect";
 import useActionToast from "@/hooks/useActionToast";
 import { createTrade } from "../actions/trade";
 import TradePlayersDialog from "./TradePlayersDialog";
+import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 type Props = {
   leagueId: string;
@@ -64,10 +65,34 @@ export default function TradeProposalForm({
       ...player,
       index,
     }));
-    return Object.groupBy(playersWithIndexes, (player) =>
-      player.offeredByProposer ? "proposed" : "requested"
-    );
-  }, [tradePlayers]);
+
+    const enrich = (
+      players: typeof playersWithIndexes,
+      sourcePlayers: TeamPlayer[]
+    ) => {
+      return players
+        .map(({ id, index }) => {
+          const fullData = sourcePlayers.find((pl) => pl.id === id);
+          if (!fullData) return;
+          return {
+            ...fullData,
+            index,
+          };
+        })
+        .filter((p) => !!p);
+    };
+
+    return {
+      proposed: enrich(
+        playersWithIndexes.filter((p) => p.offeredByProposer),
+        proposerTeamPlayers
+      ),
+      requested: enrich(
+        playersWithIndexes.filter((p) => !p.offeredByProposer),
+        receiverTeamPlayers
+      ),
+    };
+  }, [tradePlayers, proposerTeamPlayers, receiverTeamPlayers]);
 
   async function onSubmit(values: CreateTradeProposalSchema) {
     const res = await createTrade(values);

@@ -2,16 +2,13 @@ import { UseFieldArrayRemove } from "react-hook-form";
 import LeagueTeamCard from "../../teams/components/LeagueTeamCard";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { TradePlayersList } from "./TradePlayersList";
+import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 type Props = {
   leagueId: string;
   team: LeagueTeam;
   isProposer?: boolean;
-  players?: {
-    index: number;
-    id: number;
-    offeredByProposer: boolean;
-  }[];
+  players?: (TeamPlayer & { index: number })[]
   removePlayer: UseFieldArrayRemove;
   renderCreditsSlider: () => React.ReactNode;
   renderDialog: () => React.ReactNode;
