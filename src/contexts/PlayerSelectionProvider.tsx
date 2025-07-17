@@ -1,16 +1,16 @@
 "use client";
+import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { createContext, useCallback, useContext, useState } from "react";
-import { EnrichedPlayer } from "./PlayersProvider";
 
 type PlayerSelectionContextType = {
   leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
   isDialogOpen: boolean;
   isSelectionMode: boolean;
-  selectedPlayer: EnrichedPlayer | null;
+  selectedPlayer: TeamPlayer | null;
   selectedTeamId: string | null;
   startSelectionMode: () => void;
   stopSelectionMode: () => void;
-  toggleSelectPlayer: (player: EnrichedPlayer | null) => void;
+  toggleSelectPlayer: (player: TeamPlayer | null) => void;
   toggleSelectTeam: (teamId: string | null) => void;
   toggleSelectDialog: (open: boolean) => void;
 };
@@ -28,9 +28,7 @@ export function PlayerSelectionProvider({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
 
-  const [selectedPlayer, setSelectedPlayer] = useState<EnrichedPlayer | null>(
-    null
-  );
+  const [selectedPlayer, setSelectedPlayer] = useState<TeamPlayer | null>(null);
   const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
 
   const startSelectionMode = useCallback(() => setIsSelectionMode(true), []);

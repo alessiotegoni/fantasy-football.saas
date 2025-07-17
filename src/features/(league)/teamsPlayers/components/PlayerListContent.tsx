@@ -19,7 +19,6 @@ export default function PlayersListContent({
 }: PlayersListContentProps) {
   const { filteredPlayers } = usePlayersFilters();
 
-  // const selectionContext = useContext(PlayerSelectionContext);
   const { isDialogOpen, toggleSelectDialog } = usePlayerSelection();
 
   const content = filteredPlayers.length ? (

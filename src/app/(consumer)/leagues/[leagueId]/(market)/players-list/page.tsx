@@ -3,7 +3,9 @@ import { db } from "@/drizzle/db";
 import {
   leagueMemberTeamPlayers,
   leagueMemberTeams,
+  playerRoles,
   players,
+  teams,
 } from "@/drizzle/schema";
 import { getLeagueAvailablePlayersTag } from "@/features/(league)/leagues/db/cache/league";
 import InsertPlayerDialog from "@/features/(league)/teamsPlayers/components/InsertPlayerDialog.tsx";
@@ -63,11 +65,13 @@ async function getLeagueAvailablePlayers(leagueId: string) {
     .select({
       id: players.id,
       displayName: players.displayName,
-      roleId: players.roleId,
-      teamId: players.teamId,
       avatarUrl: players.avatarUrl,
+      role: playerRoles,
+      team: teams,
     })
     .from(players)
+    .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
+    .innerJoin(teams, eq(teams.id, players.teamId))
     .where(
       notInArray(
         players.id,
