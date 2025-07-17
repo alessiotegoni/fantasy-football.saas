@@ -12,7 +12,7 @@ import ReleasePlayerDialog from "@/features/(league)/teamsPlayers/components/Rel
 import {
   getPlayersRoles,
   getTeamPlayerPerRoles,
-  getTeamPlayers,
+  getTeamsPlayers,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
 import { cn } from "@/lib/utils";
@@ -96,7 +96,7 @@ async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
 }
 
 async function SuspendedPlayersList({ leagueId, teamId }: Props) {
-  const teamPlayers = await getTeamPlayers([teamId]);
+  const teamPlayers = await getTeamsPlayers([teamId]);
 
   return (
     <PlayersList

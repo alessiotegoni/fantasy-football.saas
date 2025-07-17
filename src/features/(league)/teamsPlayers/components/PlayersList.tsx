@@ -1,9 +1,7 @@
-import { BasePlayer, PlayersProvider } from "@/contexts/PlayersProvider";
 import { PlayersFiltersProvider } from "@/contexts/PlayersFiltersProvider";
 import { PlayerSelectionProvider } from "@/contexts/PlayerSelectionProvider";
 import { getTeams } from "@/features/teams/queries/team";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { PlayersEnrichmentProvider } from "@/contexts/PlayersEnrichmentProvider";
+import { getPlayersRoles, TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import PlayersListContent from "./PlayerListContent";
 import { Suspense } from "react";
 import { default as PlayerSelectionButton } from "./PlayerSelection";
@@ -12,7 +10,7 @@ import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 type FilterType = "search" | "teams" | "roles";
 
 interface PlayersListProps {
-  players: BasePlayer[];
+  players: TeamPlayer[];
   leagueId: string;
   title?: string;
   enabledFilters?: FilterType[];
@@ -34,37 +32,34 @@ export default function PlayersList({
   emptyState,
 }: PlayersListProps) {
   return (
-    <PlayersProvider players={players}>
-      <PlayersEnrichmentProvider>
-        <PlayersFiltersProvider
-          enabledFilters={enabledFilters}
-          teamsPromise={getTeams()}
-          rolesPromise={getPlayersRoles()}
-        >
-          <PlayerSelectionProvider
-            leagueTeamsPromise={getLeagueTeams(leagueId).then((team) =>
-              team.map(({ id, name }) => ({ id, name }))
+    <PlayersFiltersProvider
+      players={players}
+      enabledFilters={enabledFilters}
+      teamsPromise={getTeams()}
+      rolesPromise={getPlayersRoles()}
+    >
+      <PlayerSelectionProvider
+        leagueTeamsPromise={getLeagueTeams(leagueId).then((team) =>
+          team.map(({ id, name }) => ({ id, name }))
+        )}
+      >
+        <div>
+          <div className="flex items-center mb-3.5">
+            <h2 className="text-xl grow">{title}</h2>
+            {showSelectionButton && (
+              <Suspense>
+                <PlayerSelectionButton leagueId={leagueId} />
+              </Suspense>
             )}
-          >
-            <div>
-              <div className="flex items-center mb-3.5">
-                <h2 className="text-xl grow">{title}</h2>
-                {showSelectionButton && (
-                  <Suspense>
-                    <PlayerSelectionButton leagueId={leagueId} />
-                  </Suspense>
-                )}
-              </div>
+          </div>
 
-              <PlayersListContent
-                virtualized={virtualized}
-                actionsDialog={actionsDialog}
-                emptyState={emptyState}
-              />
-            </div>{" "}
-          </PlayerSelectionProvider>
-        </PlayersFiltersProvider>
-      </PlayersEnrichmentProvider>
-    </PlayersProvider>
+          <PlayersListContent
+            virtualized={virtualized}
+            actionsDialog={actionsDialog}
+            emptyState={emptyState}
+          />
+        </div>
+      </PlayerSelectionProvider>
+    </PlayersFiltersProvider>
   );
 }

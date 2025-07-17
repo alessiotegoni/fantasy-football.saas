@@ -8,13 +8,14 @@ import {
   useState,
 } from "react";
 import { getTeams } from "@/features/teams/queries/team";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import {
+  getPlayersRoles,
+  TeamPlayer,
+} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { useFilter } from "@/hooks/useFilter";
-import { EnrichedPlayer } from "./PlayersProvider";
 import PlayersListSearchBar from "@/features/(league)/teamsPlayers/components/PlayersListSearchBar";
 import TeamsFilters from "@/features/teams/components/TeamsFilters";
 import PlayersRolesFilters from "@/features/(league)/teamsPlayers/components/PlayersRolesFilters";
-import { usePlayersEnrichment } from "./PlayersEnrichmentProvider";
 
 type Filters = {
   search: string;
@@ -26,7 +27,7 @@ type FilterType = "search" | "teams" | "roles";
 
 interface PlayersFiltersContextType {
   isFilterEnabled: (filteR: FilterType) => boolean;
-  filteredPlayers: EnrichedPlayer[];
+  filteredPlayers: TeamPlayer[];
   filters: Filters;
   handleSetFilters: (filter: Partial<Filters>) => void;
   handleResetFilters: () => void;
@@ -36,19 +37,21 @@ const PlayersFiltersContext = createContext<PlayersFiltersContextType | null>(
   null
 );
 
-export function PlayersFiltersProvider({
-  children,
-  enabledFilters = ["search", "teams", "roles"],
-  teamsPromise,
-  rolesPromise,
-}: {
+type Props = {
   children: React.ReactNode;
+  players: TeamPlayer[];
   enabledFilters?: FilterType[];
   teamsPromise: ReturnType<typeof getTeams>;
   rolesPromise: ReturnType<typeof getPlayersRoles>;
-}) {
-  const { enrichedPlayers } = usePlayersEnrichment();
+};
 
+export function PlayersFiltersProvider({
+  children,
+  players,
+  enabledFilters = ["search", "teams", "roles"],
+  teamsPromise,
+  rolesPromise,
+}: Props) {
   const [filters, setFilters] = useState<Filters>({
     search: "",
     teams: [],
@@ -66,7 +69,7 @@ export function PlayersFiltersProvider({
     []
   );
 
-  const { filteredItems: filteredPlayers } = useFilter(enrichedPlayers, {
+  const { filteredItems: filteredPlayers } = useFilter(players, {
     defaultFilters: filters,
     filterFn,
   });
@@ -102,14 +105,14 @@ export function PlayersFiltersProvider({
   );
 }
 
-function filterFn(player: EnrichedPlayer, filters: Filters) {
+function filterFn(player: TeamPlayer, filters: Filters) {
   const matchesSearch = player.displayName
     .toLowerCase()
     .includes(filters.search.toLowerCase());
   const matchesTeam =
-    filters.teams.length === 0 || filters.teams.includes(player.teamId);
+    filters.teams.length === 0 || filters.teams.includes(player.team.id);
   const matchesRole =
-    filters.roles.length === 0 || filters.roles.includes(player.roleId);
+    filters.roles.length === 0 || filters.roles.includes(player.role.id);
 
   return matchesSearch && matchesTeam && matchesRole;
 }

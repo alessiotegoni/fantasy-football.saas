@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import {
   getPlayersRoles,
   getTeamCredits,
-  getTeamPlayers,
+  getTeamsPlayers,
 } from "../../teamsPlayers/queries/teamsPlayer";
 import { isLeagueMember } from "../../members/permissions/leagueMember";
 import { getUserTeamId } from "@/features/users/queries/user";
@@ -204,7 +204,7 @@ export async function getInvalidPlayersIds({
   receiverTeamId,
   players,
 }: Omit<TradePermissionParams, "userId">) {
-  const teamsPlayers = await getTeamPlayers([proposerTeamId, receiverTeamId]);
+  const teamsPlayers = await getTeamsPlayers([proposerTeamId, receiverTeamId]);
 
   const groupedPlayers = groupTradePlayers(players);
 
@@ -226,7 +226,7 @@ export async function getInvalidPlayersIds({
 
 function getTeamInvalidPlayersIds(
   tradePlayers: ReturnType<typeof groupTradePlayers>,
-  teamsPlayers: Awaited<ReturnType<typeof getTeamPlayers>>,
+  teamsPlayers: Awaited<ReturnType<typeof getTeamsPlayers>>,
   teamId: string,
   playersType: "proposed" | "requested"
 ) {
