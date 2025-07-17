@@ -27,7 +27,7 @@ export async function getTeamsPlayers(teamsIds: string[]) {
 
   return db
     .select({
-      playerId: players.id,
+      id: players.id,
       displayName: players.displayName,
       avatarUrl: players.avatarUrl,
       role: playerRoles,

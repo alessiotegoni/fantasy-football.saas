@@ -1,40 +1,40 @@
-"use client"
+"use client";
 
 import { createContext, useContext, useMemo } from "react";
-import { EnrichedPlayer } from "./PlayersProvider";
-import { usePlayersEnrichment } from "./PlayersEnrichmentProvider";
+import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import useSortPlayers from "@/hooks/useSortPlayers";
 
 interface TradePlayersContextType {
-  proposerTeamPlayers: EnrichedPlayer[];
-  receiverTeamPlayers: EnrichedPlayer[];
+  proposerTeamPlayers: TeamPlayer[];
+  receiverTeamPlayers: TeamPlayer[];
 }
 
 const TradePlayersContext = createContext<TradePlayersContextType | null>(null);
+
+type Props = {
+  children: React.ReactNode;
+  proposerTeamId: string | undefined;
+  receiverTeamId: string | undefined;
+  teamsPlayers: TeamPlayer[];
+};
 
 export default function TradePlayersProvider({
   children,
   proposerTeamId,
   receiverTeamId,
-}: {
-  children: React.ReactNode;
-  proposerTeamId: string | undefined;
-  receiverTeamId: string | undefined;
-}) {
-  const { enrichedPlayers } = usePlayersEnrichment();
+  teamsPlayers,
+}: Props) {
+  const players = useSortPlayers(teamsPlayers);
 
   const proposerTeamPlayers = useMemo(() => {
     if (!proposerTeamId) return [];
-    return enrichedPlayers.filter(
-      (player) => player.leagueTeamId === proposerTeamId
-    );
-  }, [enrichedPlayers, proposerTeamId]);
+    return players.filter((player) => player.leagueTeamId === proposerTeamId);
+  }, [players, proposerTeamId]);
 
   const receiverTeamPlayers = useMemo(() => {
     if (!receiverTeamId) return [];
-    return enrichedPlayers.filter(
-      (player) => player.leagueTeamId === receiverTeamId
-    );
-  }, [enrichedPlayers, receiverTeamId]);
+    return players.filter((player) => player.leagueTeamId === receiverTeamId);
+  }, [players, receiverTeamId]);
 
   return (
     <TradePlayersContext.Provider

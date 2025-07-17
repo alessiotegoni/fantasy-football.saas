@@ -1,7 +1,5 @@
 import { PlayersProvider } from "@/contexts/PlayersProvider";
-import {
-  getTeamPlayers,
-} from "../../teamsPlayers/queries/teamsPlayer";
+import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { PlayersEnrichmentProvider } from "@/contexts/PlayersEnrichmentProvider";
 import TradeProposalForm from "./TradeProposalForm";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
@@ -21,19 +19,15 @@ export default async function TradeProposalWrapper(props: Props) {
   const teamsIds = [proposerTeamId, receiverTeamId];
 
   const teamsPlayers = teamsIds.every((teamId) => typeof teamId === "string")
-    ? await getTeamPlayers(teamsIds)
+    ? await getTeamsPlayers(teamsIds)
     : [];
 
   return (
-    <PlayersProvider players={leagueTeamsPlayers ?? []}>
-      <PlayersEnrichmentProvider defaultTeams={teams} defaultRoles={roles}>
-        <TradePlayersProvider
-          proposerTeamId={proposerTeamId}
-          receiverTeamId={receiverTeamId}
-        >
-          <TradeProposalForm {...props} />
-        </TradePlayersProvider>
-      </PlayersEnrichmentProvider>
-    </PlayersProvider>
+    <TradePlayersProvider
+      proposerTeamId={proposerTeamId}
+      receiverTeamId={receiverTeamId}
+    >
+      <TradeProposalForm {...props} />
+    </TradePlayersProvider>
   );
 }
