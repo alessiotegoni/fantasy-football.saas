@@ -11,7 +11,7 @@ import NumberInput from "@/components/ui/number-input";
 import { useParams } from "next/navigation";
 import { releaseTeamPlayer } from "../actions/teamsPlayer";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
-import { use, useMemo } from "react";
+import { use } from "react";
 
 export default function ReleasePlayerDialog({
   releasePercentagePromise,
@@ -25,12 +25,8 @@ export default function ReleasePlayerDialog({
   const { selectedPlayer } = usePlayerSelection();
 
   const releasePercentage = use(releasePercentagePromise);
-  const releaseCost = useMemo(
-    () =>
-      Math.floor(
-        ((selectedPlayer?.purchaseCost ?? 0) * releasePercentage) / 100
-      ),
-    [selectedPlayer]
+  const releaseCost = Math.floor(
+    ((selectedPlayer?.purchaseCost ?? 0) * releasePercentage) / 100
   );
 
   return (

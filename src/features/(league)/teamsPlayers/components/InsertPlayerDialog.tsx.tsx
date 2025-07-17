@@ -29,7 +29,7 @@ export default function InsertPlayerDialog() {
         player: selectedPlayer
           ? {
               id: selectedPlayer.id,
-              roleId: selectedPlayer.roleId,
+              roleId: selectedPlayer.role.id,
             }
           : undefined,
         purchaseCost: 200,
