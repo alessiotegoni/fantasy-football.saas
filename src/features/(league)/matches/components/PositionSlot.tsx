@@ -5,7 +5,7 @@ import { PositionId } from "@/drizzle/schema";
 
 type Props = {
   positionId: PositionId;
-  player?: LineupPlayer;
+  player: LineupPlayer | undefined;
   canEdit: boolean;
 };
 
