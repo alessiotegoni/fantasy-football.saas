@@ -1,7 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueOptions } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";

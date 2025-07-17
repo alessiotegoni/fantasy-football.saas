@@ -1,9 +1,7 @@
 import { PlayersProvider } from "@/contexts/PlayersProvider";
 import {
-  getPlayersRoles,
   getTeamPlayers,
 } from "../../teamsPlayers/queries/teamsPlayer";
-import { getTeams } from "@/features/teams/queries/team";
 import { PlayersEnrichmentProvider } from "@/contexts/PlayersEnrichmentProvider";
 import TradeProposalForm from "./TradeProposalForm";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
@@ -20,13 +18,11 @@ export default async function TradeProposalWrapper(props: Props) {
   const proposerTeamId = props.proposerTeam?.id;
   const receiverTeamId = props.receiverTeam?.id;
 
-  const teamsIds = [proposerTeamId ?? "", receiverTeamId ?? ""];
+  const teamsIds = [proposerTeamId, receiverTeamId];
 
-  const [leagueTeamsPlayers, teams, roles] = await Promise.all(
-    teamsIds.every(Boolean)
-      ? [getTeamPlayers(teamsIds), getTeams(), getPlayersRoles()]
-      : []
-  );
+  const teamsPlayers = teamsIds.every((teamId) => typeof teamId === "string")
+    ? await getTeamPlayers(teamsIds)
+    : [];
 
   return (
     <PlayersProvider players={leagueTeamsPlayers ?? []}>

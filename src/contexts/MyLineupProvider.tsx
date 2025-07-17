@@ -4,7 +4,6 @@ import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
 import {
   createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -16,7 +15,6 @@ type LineupPlayer = {
   roleId: number;
   positionId: string;
   positionOrder: number;
-  totalVote: number;
 };
 
 type MyLineup = {

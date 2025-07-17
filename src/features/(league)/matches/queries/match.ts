@@ -161,8 +161,11 @@ async function getLineupPlayers(
     .select({
       id: leagueMatchLineupPlayers.id,
       playerId: leagueMatchLineupPlayers.playerId,
-      leagueTeamId: leagueMatchTeamLineup.teamId,
+      displayName: players.displayName,
+      avatarUrl: players.avatarUrl,
       role: playerRoles,
+      team: teams,
+      leagueTeamId: leagueMatchTeamLineup.teamId,
       positionId: leagueMatchLineupPlayers.positionId,
       positionOrder: leagueMatchLineupPlayers.positionOrder,
       vote: matchdayVotes.vote,
@@ -183,6 +186,7 @@ async function getLineupPlayers(
     )
     .innerJoin(players, eq(players.id, leagueMatchLineupPlayers.playerId))
     .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
+    .innerJoin(teams, eq(teams.id, players.teamId))
     .innerJoin(
       matchdayVotes,
       and(
