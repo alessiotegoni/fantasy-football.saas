@@ -83,8 +83,10 @@ export function PlayersFiltersProvider({
     <div className="space-y-2">
       {isFilterEnabled("search") && <PlayersListSearchBar />}
       <Suspense>
+        {isFilterEnabled("teams") && (
+
         <TeamsFilters teamsPromise={teamsPromise} />
-        <PlayersRolesFilters playersRolesPromise={rolesPromise} />
+        )}
       </Suspense>
     </div>
   );

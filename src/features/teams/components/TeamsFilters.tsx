@@ -5,13 +5,12 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { use, useCallback, useEffect } from "react";
+import { use, useCallback } from "react";
 import { getTeams } from "@/features/teams/queries/team";
 import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
-import { usePlayersEnrichment } from "@/contexts/PlayersEnrichmentProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Team } from "@/contexts/PlayersProvider";
+import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 
 export default function TeamsFilters({
   teamsPromise,
@@ -19,17 +18,10 @@ export default function TeamsFilters({
   teamsPromise: ReturnType<typeof getTeams>;
 }) {
   const teams = use(teamsPromise);
-  const { setTeams } = usePlayersEnrichment();
-  const { filters, handleSetFilters, isFilterEnabled } = usePlayersFilters();
-
-  useEffect(() => {
-    setTeams(teams);
-  }, [teams, setTeams]);
-
-  if (!isFilterEnabled("teams")) return null
+  const { filters, handleSetFilters } = usePlayersFilters();
 
   const handleTeamsFilter = useCallback(
-    ({ id }: Team) => {
+    ({ id }: TeamPlayer["team"]) => {
       const currentTeams = filters.teams;
       const updatedTeams = currentTeams.includes(id)
         ? currentTeams.filter((teamId) => teamId !== id)
