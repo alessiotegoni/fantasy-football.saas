@@ -5,10 +5,7 @@ import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import { Button } from "@/components/ui/button";
 import { db } from "@/drizzle/db";
 import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
-import {
-  generateCalendar,
-  regenerateCalendar,
-} from "@/features/(league)/(admin)/calendar/actions/calendar";
+import { regenerateCalendar } from "@/features/(league)/(admin)/calendar/actions/calendar";
 import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
 import { and, count, eq } from "drizzle-orm";

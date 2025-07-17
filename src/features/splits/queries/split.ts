@@ -2,7 +2,6 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { db } from "@/drizzle/db";
 import { splitMatchdays, splits } from "@/drizzle/schema";
 import { getSplitsMatchdaysTag, getSplitsTag } from "@/cache/global";
-import { getSplitMatchdaysIdTag } from "../db/cache/split";
 import { asc, eq } from "drizzle-orm";
 
 export async function getSplits() {
