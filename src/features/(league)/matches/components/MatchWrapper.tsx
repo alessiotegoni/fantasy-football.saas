@@ -58,7 +58,7 @@ export default function MatchWrapper({
           />
           <div>{/*Presidente away*/}</div>
         </div>
-        {showLineups && myTeam && /**PlayersSelect */}
+        {/* {showLineups && myTeam && /**PlayersSelect */}
         <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
           {showLineups && benchLineupsPromise && (
             <Suspense>

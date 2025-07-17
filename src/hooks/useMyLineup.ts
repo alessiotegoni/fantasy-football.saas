@@ -5,7 +5,7 @@ import { getTeamPlayers } from "@/features/(league)/teamsPlayers/queries/teamsPl
 import { useContext } from "react";
 
 export default function useMyLineup(
-  players: Awaited<ReturnType<typeof getTeamPlayers>>
+  players?: Awaited<ReturnType<typeof getTeamPlayers>>
 ) {
   const context = useContext(MyLineupContext);
 

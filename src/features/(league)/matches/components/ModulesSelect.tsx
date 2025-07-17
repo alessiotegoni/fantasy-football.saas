@@ -20,8 +20,8 @@ import {
 import { useIsMobile } from "@/hooks/useMobile";
 import LeagueModules from "../../leagues/components/LeagueModules";
 import { ComponentProps, Suspense, useState } from "react";
-import { useMyLineup } from "@/contexts/MyLineupProvider";
 import { TacticalModule } from "@/drizzle/schema";
+import useMyLineup from "@/hooks/useMyLineup";
 
 export default function ModulesSelect(
   props: ComponentProps<typeof LeagueModules>
