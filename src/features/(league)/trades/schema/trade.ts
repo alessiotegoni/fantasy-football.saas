@@ -49,6 +49,9 @@ export const createTradeProposalSchema = z
     }
   });
 
+  // TODO: Non permettere di mandare la proposta se
+  // ci sono solo giocatori proposti e non richiesti e viceversa senza crediti
+
 export const updateTradeProposalSchema = z.object({
   tradeId: getUUIdSchema("Id dello scambio invalido"),
   leagueId: getUUIdSchema("Id della lega invalido"),

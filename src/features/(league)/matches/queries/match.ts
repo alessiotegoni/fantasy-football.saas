@@ -159,8 +159,8 @@ async function getLineupPlayers(
 ) {
   const results = await db
     .select({
-      id: leagueMatchLineupPlayers.id,
-      playerId: leagueMatchLineupPlayers.playerId,
+      id: players.id,
+      lineupPlayerId: leagueMatchLineupPlayers.id,
       displayName: players.displayName,
       avatarUrl: players.avatarUrl,
       role: playerRoles,

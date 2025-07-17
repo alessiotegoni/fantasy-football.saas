@@ -28,6 +28,7 @@ export default function PlayersSelect({
 
   const players = use(playersPromise);
   const {
+    availablePlayers,
     playersDialog: { open, type },
     handleSetPlayersDialog,
   } = useMyLineup(players);
