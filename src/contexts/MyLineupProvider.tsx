@@ -1,7 +1,14 @@
 "use client";
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type LineupPlayer = {
   id: string;
@@ -32,6 +39,8 @@ type MyLineupContext = {
   handleSetPlayersDialog: (dialog: PlayersDialog) => void;
 };
 
+const LOCAL_STORAGE_KEY = "tacticalModule";
+
 export const MyLineupContext = createContext<MyLineupContext | null>(null);
 
 export default function MyLineupProvider({
@@ -39,42 +48,75 @@ export default function MyLineupProvider({
   defaultTacticalModule,
 }: {
   children: React.ReactNode;
-  defaultTacticalModule: TacticalModule | undefined;
+  defaultTacticalModule?: TacticalModule;
 }) {
   const [myLineup, setMyLineup] = useState<MyLineup>(null);
   const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
-    defaultTacticalModule ?? null
+    getInitialTacticalModule(defaultTacticalModule)
   );
   const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
     open: false,
     type: null,
   });
 
+  useEffect(() => {
+    if (tacticalModule) {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tacticalModule));
+      } catch {}
+    }
+  }, [tacticalModule]);
+
   const handleSetLineup = useCallback(
     (lineup: MyLineup) => setMyLineup(lineup),
     []
   );
+
   const handleSetModule = useCallback(
     (module: TacticalModule) => setTacticalModule(module),
     []
   );
+
   const handleSetPlayersDialog = useCallback(
     (dialog: PlayersDialog) => setPlayersDialog(dialog),
     []
   );
 
+  const value = useMemo<MyLineupContext>(
+    () => ({
+      myLineup,
+      tacticalModule,
+      playersDialog,
+      handleSetLineup,
+      handleSetModule,
+      handleSetPlayersDialog,
+    }),
+    [
+      myLineup,
+      tacticalModule,
+      playersDialog,
+      handleSetLineup,
+      handleSetModule,
+      handleSetPlayersDialog,
+    ]
+  );
+
   return (
-    <MyLineupContext.Provider
-      value={{
-        myLineup,
-        tacticalModule,
-        playersDialog,
-        handleSetLineup,
-        handleSetModule,
-        handleSetPlayersDialog,
-      }}
-    >
+    <MyLineupContext.Provider value={value}>
       {children}
     </MyLineupContext.Provider>
   );
+}
+
+function getInitialTacticalModule(
+  defaultTacticalModule: TacticalModule | undefined
+) {
+  if (defaultTacticalModule) return defaultTacticalModule;
+
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
 }
