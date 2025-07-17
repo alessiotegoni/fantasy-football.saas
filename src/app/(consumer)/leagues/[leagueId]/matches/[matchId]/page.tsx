@@ -21,8 +21,6 @@ export default async function MatchPage({
   const matchInfo = await getMatchInfo(ids);
   if (!matchInfo) notFound();
 
-  console.log(matchInfo);
-
   return (
     <Suspense fallback={<MatchWrapper matchInfo={matchInfo} {...ids} />}>
       <SuspenseBoundary matchInfo={matchInfo} {...ids} />
