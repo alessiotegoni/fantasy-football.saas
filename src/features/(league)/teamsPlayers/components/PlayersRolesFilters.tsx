@@ -5,13 +5,14 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { use, useCallback, useEffect } from "react";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { use, useCallback } from "react";
+import {
+  getPlayersRoles,
+  TeamPlayer,
+} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { usePlayersEnrichment } from "@/contexts/PlayersEnrichmentProvider";
-import { Role } from "@/contexts/PlayersProvider";
 
 export default function PlayersRolesFilters({
   playersRolesPromise,
@@ -19,17 +20,10 @@ export default function PlayersRolesFilters({
   playersRolesPromise: ReturnType<typeof getPlayersRoles>;
 }) {
   const roles = use(playersRolesPromise);
-  const { setRoles } = usePlayersEnrichment();
-  const { filters, handleSetFilters, isFilterEnabled } = usePlayersFilters();
-
-  useEffect(() => {
-    setRoles(roles);
-  }, [roles, setRoles]);
-
-  if (!isFilterEnabled("roles")) return null;
+  const { filters, handleSetFilters } = usePlayersFilters();
 
   const handleRolesFilter = useCallback(
-    ({ id }: Role) => {
+    ({ id }: TeamPlayer["role"]) => {
       const currentRoles = filters.roles;
       const updatedRoles = currentRoles.includes(id)
         ? currentRoles.filter((roleId) => roleId !== id)

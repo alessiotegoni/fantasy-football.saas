@@ -26,7 +26,6 @@ type Filters = {
 type FilterType = "search" | "teams" | "roles";
 
 interface PlayersFiltersContextType {
-  isFilterEnabled: (filteR: FilterType) => boolean;
   filteredPlayers: TeamPlayer[];
   filters: Filters;
   handleSetFilters: (filter: Partial<Filters>) => void;
@@ -84,8 +83,10 @@ export function PlayersFiltersProvider({
       {isFilterEnabled("search") && <PlayersListSearchBar />}
       <Suspense>
         {isFilterEnabled("teams") && (
-
-        <TeamsFilters teamsPromise={teamsPromise} />
+          <TeamsFilters teamsPromise={teamsPromise} />
+        )}
+        {isFilterEnabled("roles") && (
+          <PlayersRolesFilters playersRolesPromise={rolesPromise} />
         )}
       </Suspense>
     </div>
@@ -94,7 +95,6 @@ export function PlayersFiltersProvider({
   return (
     <PlayersFiltersContext.Provider
       value={{
-        isFilterEnabled,
         filteredPlayers,
         filters,
         handleSetFilters,
