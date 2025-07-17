@@ -32,7 +32,7 @@ type MyLineupContext = {
   handleSetPlayersDialog: (dialog: PlayersDialog) => void;
 };
 
-const MyLineupContext = createContext<MyLineupContext | null>(null);
+export const MyLineupContext = createContext<MyLineupContext | null>(null);
 
 export default function MyLineupProvider({
   children,
