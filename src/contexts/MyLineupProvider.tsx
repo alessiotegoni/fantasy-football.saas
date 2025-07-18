@@ -1,20 +1,14 @@
 "use client";
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
-import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
-export type LineupPlayerWithoutVotes = TeamPlayer &
-  Pick<LineupPlayer, "positionId" | "positionOrder"> & {
-    lineupPlayerId: string | null;
-  };
+export type LineupPlayerWithoutVotes = TeamPlayer & {
+  positionId: string;
+  positionOrder: number | null;
+  lineupPlayerId: string | null;
+};
 
 type MyLineup = {
   id: string;
@@ -22,18 +16,13 @@ type MyLineup = {
   starterPlayers: LineupPlayerWithoutVotes[];
 } | null;
 
-type PlayersDialog = {
-  open: boolean;
-  type: LineupPlayerType | null;
-};
-
 export type MyLineupContext = {
   myLineup: MyLineup;
   tacticalModule: TacticalModule | null;
-  playersDialog: PlayersDialog;
+  dialogOpen: boolean;
   handleSetLineup: (lineup: MyLineup) => void;
   handleSetModule: (module: TacticalModule) => void;
-  handleSetPlayersDialog: (dialog: PlayersDialog) => void;
+  handleSetDialogOpen: (open: boolean) => void;
 };
 
 const LOCAL_STORAGE_KEY = "tacticalModule";
@@ -51,10 +40,7 @@ export default function MyLineupProvider({
   const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
     getInitialTacticalModule(defaultTacticalModule)
   );
-  const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
-    open: false,
-    type: null,
-  });
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     if (tacticalModule) {
@@ -74,32 +60,22 @@ export default function MyLineupProvider({
     []
   );
 
-  const handleSetPlayersDialog = useCallback(
-    (dialog: PlayersDialog) => setPlayersDialog(dialog),
+  const handleSetDialogOpen = useCallback(
+    (open: boolean) => setDialogOpen(open),
     []
   );
 
-  const value = useMemo<MyLineupContext>(
-    () => ({
-      myLineup,
-      tacticalModule,
-      playersDialog,
-      handleSetLineup,
-      handleSetModule,
-      handleSetPlayersDialog,
-    }),
-    [
-      myLineup,
-      tacticalModule,
-      playersDialog,
-      handleSetLineup,
-      handleSetModule,
-      handleSetPlayersDialog,
-    ]
-  );
-
   return (
-    <MyLineupContext.Provider value={value}>
+    <MyLineupContext.Provider
+      value={{
+        myLineup,
+        tacticalModule,
+        dialogOpen,
+        handleSetLineup,
+        handleSetModule,
+        handleSetDialogOpen,
+      }}
+    >
       {children}
     </MyLineupContext.Provider>
   );

@@ -27,25 +27,16 @@ export default function PlayersSelect({
   const isMobile = useIsMobile();
 
   const players = use(playersPromise);
-  const {
-    availablePlayers,
-    playersDialog: { open, type },
-    handleSetPlayersDialog,
-  } = useMyLineup(players);
+  const { availablePlayers, dialogOpen, handleSetDialogOpen } =
+    useMyLineup(players);
 
   if (isMobile) {
     return (
-      <Drawer
-        open={open}
-        onOpenChange={(open) => handleSetPlayersDialog({ type, open })}
-      >
+      <Drawer open={dialogOpen} onOpenChange={handleSetDialogOpen}>
         <DrawerContent>
           <DrawerHeader className="text-left">
             <DrawerTitle>Giocatori</DrawerTitle>
-            <DrawerDescription>
-              Seleziona il giocatore
-              {type === "bench" ? "panchinaro" : "titolare"}
-            </DrawerDescription>
+            <DrawerDescription>Seleziona il giocatore</DrawerDescription>
           </DrawerHeader>
           <div className="p-6 pt-2"></div>
         </DrawerContent>
@@ -54,17 +45,11 @@ export default function PlayersSelect({
   }
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(open) => handleSetPlayersDialog({ type, open })}
-    >
+    <Dialog open={dialogOpen} onOpenChange={handleSetDialogOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Giocatori</DialogTitle>
-          <DialogDescription>
-            Seleziona il giocatore
-            {type === "bench" ? "panchinaro" : "titolare"}
-          </DialogDescription>
+          <DialogDescription>Seleziona il giocatore</DialogDescription>
         </DialogHeader>
       </DialogContent>
     </Dialog>
