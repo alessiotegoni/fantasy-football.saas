@@ -19,6 +19,7 @@ type MyLineup = {
 type PlayersDialog = {
   open: boolean;
   type: LineupPlayerType | null;
+  roleId: number | null
 };
 
 export type MyLineupContext = {
@@ -48,6 +49,7 @@ export default function MyLineupProvider({
   const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
     open: false,
     type: null,
+    roleId: null
   });
 
   useEffect(() => {

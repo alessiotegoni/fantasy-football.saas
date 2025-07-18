@@ -14,10 +14,16 @@ export default function useMyLineup(players?: TeamPlayer[]) {
     throw new Error("useMyLineupProvider must be used within MyLineupProvider");
   }
 
-  const availablePlayers = useMemo(
-    () => (players ? getAvailablePlayers(players, context) : null),
-    [players, context.myLineup]
-  ) as TeamPlayer[] | LineupPlayerWithoutVotes[] ;
+  const roleId = context.playersDialog.roleId;
+
+  const availablePlayers: TeamPlayer[] | LineupPlayerWithoutVotes[] =
+    useMemo(() => {
+      if (!players) return [];
+
+      const avlbPlayers = getAvailablePlayers(players, context);
+
+      return roleId ? getPlayersByRoleId(avlbPlayers, roleId) : avlbPlayers;
+    }, [players, context.myLineup, roleId]);
 
   return { ...context, availablePlayers };
 }
@@ -25,7 +31,7 @@ export default function useMyLineup(players?: TeamPlayer[]) {
 export function getAvailablePlayers(
   teamPlayers: TeamPlayer[],
   { myLineup, playersDialog: { type } }: MyLineupContext
-){
+) {
   const benchPlayers = myLineup?.benchPlayers ?? [];
   const starterPlayers = myLineup?.starterPlayers ?? [];
 
@@ -45,4 +51,11 @@ export function getAvailablePlayers(
   }
 
   return teamPlayers;
+}
+
+function getPlayersByRoleId(
+  players: TeamPlayer[] | LineupPlayerWithoutVotes[],
+  roleId: number
+) {
+  return players.filter((player) => player.role.id === roleId);
 }

@@ -17,9 +17,6 @@ export default function StarterLineupField(props: Props) {
   return isMobile ? <MobileField {...props} /> : <DesktopField {...props} />;
 }
 
-
-// TODO: creare client componente col drower su mobile e dialog su desktop  che fetchi i giocatori di myTeam solo al click, e che mostri solo i giocatori che non ci sono a seconda del contesto (bench, starter)
-
 function MobileField(props: Props) {
   return (
     <div className="flex flex-col gap-4 p-4">
