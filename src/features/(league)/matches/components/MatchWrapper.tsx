@@ -41,7 +41,7 @@ export default function MatchWrapper({
     currentMatchday?.status !== "upcoming";
 
   return (
-    <MyLineupProvider defaultTacticalModule={myTeam?.lineup?.tacticalModule}>
+    <MyLineupProvider myTeam={myTeam}>
       <Container
         {...ids}
         headerLabel="Partita"
@@ -62,7 +62,14 @@ export default function MatchWrapper({
         </div>
         {showLineups && myTeam?.id && (
           <Suspense>
-            <PlayersSelect playersPromise={getTeamsPlayers([myTeam.id])} />
+            <PlayersSelect
+              myLineupId={myTeam.lineup?.id ?? null}
+              playersPromise={getTeamsPlayers([myTeam.id]).then((players) =>
+                players.map(
+                  ({ purchaseCost, leagueTeamId, ...player }) => player
+                )
+              )}
+            />
           </Suspense>
         )}
         <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">

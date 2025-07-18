@@ -18,10 +18,14 @@ import { use } from "react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import { useIsMobile } from "@/hooks/useMobile";
+import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
+import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 
 export default function PlayersSelect({
+  myLineupId,
   playersPromise,
 }: {
+  myLineupId: string | null
   playersPromise: Promise<TeamPlayer[]>;
 }) {
   const isMobile = useIsMobile();
@@ -61,7 +65,9 @@ export default function PlayersSelect({
               </>
             )}
           </DrawerHeader>
-          <div className="p-6 pt-2"></div>
+          <div className="p-6 pt-2">
+            <PlayersList players={availablePlayers} />
+          </div>
         </DrawerContent>
       </Drawer>
     );
@@ -81,6 +87,7 @@ export default function PlayersSelect({
                 Seleziona il giocatore{" "}
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
+              <PlayersList players={availablePlayers} />
             </>
           ) : (
             <>
@@ -94,5 +101,27 @@ export default function PlayersSelect({
         </DialogHeader>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function PlayersList({
+  players,
+}: {
+  players: TeamPlayer[] | LineupPlayerWithoutVotes[];
+}) {
+  const { playersDialog: { type }, handleSetPlayersDialog } = useMyLineup();
+
+  const handleSelectPlayer = (player: TeamPlayer) => {};
+
+  return (
+    <div className="mt-2">
+      {players.map((player) => (
+        <PlayerCard
+          {...player}
+          showSelectButton={false}
+          onSelect={handleSelectPlayer}
+        />
+      ))}
+    </div>
   );
 }

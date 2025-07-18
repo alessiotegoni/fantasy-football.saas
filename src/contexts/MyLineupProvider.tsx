@@ -1,6 +1,7 @@
 "use client";
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
+import { LineupTeam } from "@/features/(league)/matches/utils/match";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { createContext, useCallback, useEffect, useState } from "react";
 
@@ -37,10 +38,10 @@ export const MyLineupContext = createContext<MyLineupContext | null>(null);
 
 export default function MyLineupProvider({
   children,
-  defaultTacticalModule,
+  myTeam,
 }: {
   children: React.ReactNode;
-  defaultTacticalModule?: TacticalModule;
+  myTeam: LineupTeam
 }) {
   const [myLineup, setMyLineup] = useState<MyLineup>(null);
   const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
