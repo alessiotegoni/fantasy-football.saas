@@ -2,12 +2,7 @@
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useState } from "react";
 
 export type LineupPlayerWithoutVotes = TeamPlayer & {
   positionId: string;
@@ -32,7 +27,7 @@ export type MyLineupContext = {
   playersDialog: PlayersDialog;
   handleSetLineup: (lineup: MyLineup) => void;
   handleSetModule: (module: TacticalModule) => void;
-  handleSetPlayersDialog: (dialog: PlayersDialog) => void;
+  handleSetPlayersDialog: (dialog: Partial<PlayersDialog>) => void;
 };
 
 const LOCAL_STORAGE_KEY = "tacticalModule";
@@ -74,19 +69,22 @@ export default function MyLineupProvider({
   );
 
   const handleSetPlayersDialog = useCallback(
-    (dialog: PlayersDialog) => setPlayersDialog(dialog),
+    (dialog: Partial<PlayersDialog>) =>
+      setPlayersDialog({ ...playersDialog, ...dialog }),
     []
   );
 
   return (
-    <MyLineupContext.Provider value={{
-      myLineup,
-      tacticalModule,
-      playersDialog,
-      handleSetLineup,
-      handleSetModule,
-      handleSetPlayersDialog,
-    }}>
+    <MyLineupContext.Provider
+      value={{
+        myLineup,
+        tacticalModule,
+        playersDialog,
+        handleSetLineup,
+        handleSetModule,
+        handleSetPlayersDialog,
+      }}
+    >
       {children}
     </MyLineupContext.Provider>
   );

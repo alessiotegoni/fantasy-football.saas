@@ -39,7 +39,7 @@ export default function PlayersSelect({
     return (
       <Drawer
         open={open}
-        onOpenChange={(open) => handleSetPlayersDialog({ type, open })}
+        onOpenChange={(open) => handleSetPlayersDialog({ open })}
       >
         <DrawerContent>
           <DrawerHeader className="text-left">
@@ -70,7 +70,7 @@ export default function PlayersSelect({
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => handleSetPlayersDialog({ type, open })}
+      onOpenChange={(open) => handleSetPlayersDialog({ open })}
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
