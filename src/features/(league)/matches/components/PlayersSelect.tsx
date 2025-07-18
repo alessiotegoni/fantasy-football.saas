@@ -27,16 +27,39 @@ export default function PlayersSelect({
   const isMobile = useIsMobile();
 
   const players = use(playersPromise);
-  const { availablePlayers, dialogOpen, handleSetDialogOpen } =
-    useMyLineup(players);
+  const {
+    availablePlayers,
+    playersDialog: { open, type },
+    handleSetPlayersDialog,
+  } = useMyLineup(players);
+
+  console.log(availablePlayers);
 
   if (isMobile) {
     return (
-      <Drawer open={dialogOpen} onOpenChange={handleSetDialogOpen}>
+      <Drawer
+        open={open}
+        onOpenChange={(open) => handleSetPlayersDialog({ type, open })}
+      >
         <DrawerContent>
           <DrawerHeader className="text-left">
-            <DrawerTitle>Giocatori</DrawerTitle>
-            <DrawerDescription>Seleziona il giocatore</DrawerDescription>
+            {availablePlayers.length ? (
+              <>
+                <DrawerTitle>Giocatori</DrawerTitle>
+                <DrawerDescription>
+                  Seleziona il giocatore{" "}
+                  {type === "bench" ? "panchinaro" : "titolare"}
+                </DrawerDescription>
+              </>
+            ) : (
+              <>
+                <DrawerTitle>Nessun giocatore disponibile</DrawerTitle>
+                <DrawerDescription>
+                  I giocatori che hai acquistato dovrebbero apparire qui, se non
+                  ci sono contatta gli admin della lega per farteli aggiungere
+                </DrawerDescription>
+              </>
+            )}
           </DrawerHeader>
           <div className="p-6 pt-2"></div>
         </DrawerContent>
@@ -45,11 +68,29 @@ export default function PlayersSelect({
   }
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={handleSetDialogOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => handleSetPlayersDialog({ type, open })}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Giocatori</DialogTitle>
-          <DialogDescription>Seleziona il giocatore</DialogDescription>
+          {availablePlayers.length ? (
+            <>
+              <DialogTitle>Giocatori</DialogTitle>
+              <DialogDescription>
+                Seleziona il giocatore{" "}
+                {type === "bench" ? "panchinaro" : "titolare"}
+              </DialogDescription>
+            </>
+          ) : (
+            <>
+              <DialogTitle>Nessun giocatore disponibile</DialogTitle>
+              <DialogDescription>
+                I giocatori che hai acquistato dovrebbero apparire qui, se non
+                ci sono contatta gli admin della lega per farteli aggiungere
+              </DialogDescription>
+            </>
+          )}
         </DialogHeader>
       </DialogContent>
     </Dialog>

@@ -1,7 +1,7 @@
-import { useDroppable } from "@dnd-kit/core";
 import { Plus } from "lucide-react";
 import { LineupPlayer } from "../queries/match";
 import { PositionId } from "@/drizzle/schema";
+import PlayersSelectTrigger from "./PlayersSelectTrigger";
 
 type Props = {
   positionId: PositionId;
@@ -10,30 +10,24 @@ type Props = {
 };
 
 export default function PositionSlot({ positionId, player, canEdit }: Props) {
-  //   const { setNodeRef } = useDroppable({
-  //     id: positionId,
-  //     data: {
-  //       type: "starter-slot",
-  //       positionId,
-  //     },
-  //   });
+  if (!player && !canEdit) return null;
 
   return (
-    <div
-      // ref={setNodeRef}
-      className="size-14 sm:size-16 xl:size-18 bg-muted border border-border rounded-2xl flex items-center justify-center"
-    >
-      {player ? (
-        <>{player.playerId}</>
-      ) : // <PlayerCard player={player} />
-      canEdit ? (
-        <button
-          className="text-muted-foreground hover:text-primary"
-          onClick={() => {}}
+    <>
+      {player && player.id}
+      {player && canEdit && (
+        <PlayersSelectTrigger lineupType="starter">
+          {player.id}
+        </PlayersSelectTrigger>
+      )}
+      {!player && canEdit && (
+        <PlayersSelectTrigger
+          lineupType="starter"
+          className="size-14 sm:size-16 xl:size-18 bg-muted border border-border rounded-2xl flex items-center justify-center text-muted-foreground cursor-pointer"
         >
-          <Plus className="w-6 h-6" />
-        </button>
-      ) : null}
-    </div>
+          <Plus className="size-6" />
+        </PlayersSelectTrigger>
+      )}
+    </>
   );
 }

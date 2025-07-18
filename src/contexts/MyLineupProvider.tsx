@@ -2,7 +2,12 @@
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { createContext, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 
 export type LineupPlayerWithoutVotes = TeamPlayer & {
   positionId: string;
@@ -16,13 +21,18 @@ type MyLineup = {
   starterPlayers: LineupPlayerWithoutVotes[];
 } | null;
 
+type PlayersDialog = {
+  open: boolean;
+  type: LineupPlayerType | null;
+};
+
 export type MyLineupContext = {
   myLineup: MyLineup;
   tacticalModule: TacticalModule | null;
-  dialogOpen: boolean;
+  playersDialog: PlayersDialog;
   handleSetLineup: (lineup: MyLineup) => void;
   handleSetModule: (module: TacticalModule) => void;
-  handleSetDialogOpen: (open: boolean) => void;
+  handleSetPlayersDialog: (dialog: PlayersDialog) => void;
 };
 
 const LOCAL_STORAGE_KEY = "tacticalModule";
@@ -40,7 +50,10 @@ export default function MyLineupProvider({
   const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
     getInitialTacticalModule(defaultTacticalModule)
   );
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
+    open: false,
+    type: null,
+  });
 
   useEffect(() => {
     if (tacticalModule) {
@@ -60,22 +73,20 @@ export default function MyLineupProvider({
     []
   );
 
-  const handleSetDialogOpen = useCallback(
-    (open: boolean) => setDialogOpen(open),
+  const handleSetPlayersDialog = useCallback(
+    (dialog: PlayersDialog) => setPlayersDialog(dialog),
     []
   );
 
   return (
-    <MyLineupContext.Provider
-      value={{
-        myLineup,
-        tacticalModule,
-        dialogOpen,
-        handleSetLineup,
-        handleSetModule,
-        handleSetDialogOpen,
-      }}
-    >
+    <MyLineupContext.Provider value={{
+      myLineup,
+      tacticalModule,
+      playersDialog,
+      handleSetLineup,
+      handleSetModule,
+      handleSetPlayersDialog,
+    }}>
       {children}
     </MyLineupContext.Provider>
   );

@@ -4,14 +4,10 @@ import {
   LineupPlayerWithoutVotes,
   MyLineupContext,
 } from "@/contexts/MyLineupProvider";
-import { LineupPlayerType } from "@/drizzle/schema";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { useContext, useMemo } from "react";
 
-export default function useMyLineup(
-  players?: TeamPlayer[],
-  lineupType?: LineupPlayerType
-) {
+export default function useMyLineup(players?: TeamPlayer[]) {
   const context = useContext(MyLineupContext);
 
   if (!context) {
@@ -19,21 +15,17 @@ export default function useMyLineup(
   }
 
   const availablePlayers = useMemo(
-    () =>
-      players && lineupType
-        ? getAvailablePlayers(players, context.myLineup, lineupType)
-        : null,
+    () => (players ? getAvailablePlayers(players, context) : null),
     [players, context.myLineup]
-  ) as TeamPlayer[] | LineupPlayerWithoutVotes[];
+  ) as TeamPlayer[] | LineupPlayerWithoutVotes[] ;
 
   return { ...context, availablePlayers };
 }
 
 export function getAvailablePlayers(
   teamPlayers: TeamPlayer[],
-  myLineup: MyLineupContext["myLineup"],
-  lineupType: LineupPlayerType
-) {
+  { myLineup, playersDialog: { type } }: MyLineupContext
+){
   const benchPlayers = myLineup?.benchPlayers ?? [];
   const starterPlayers = myLineup?.starterPlayers ?? [];
 
@@ -44,11 +36,11 @@ export function getAvailablePlayers(
     (p) => !lineupPlayersIds.has(p.id)
   );
 
-  if (lineupType === "starter") {
+  if (type === "starter") {
     return [...availablePlayers, ...benchPlayers];
   }
 
-  if (lineupType === "bench") {
+  if (type === "bench") {
     return [...availablePlayers, ...starterPlayers];
   }
 
