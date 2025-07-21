@@ -21,12 +21,11 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 
-type Props = {
-  matchId: string;
+export default function PlayersSelect({
+  playersPromise,
+}: {
   playersPromise: Promise<TeamPlayer[]>;
-};
-
-export default function PlayersSelect({ matchId, playersPromise }: Props) {
+}) {
   const isMobile = useIsMobile();
 
   const players = use(playersPromise);
@@ -35,8 +34,6 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
     playersDialog: { open, type },
     handleSetPlayersDialog,
   } = useMyLineup(players);
-
-  console.log(open, type);
 
   if (isMobile) {
     return (
@@ -67,7 +64,7 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
             )}
           </DrawerHeader>
           <div className="p-6 pt-0 space-y-2">
-            <PlayersList players={availablePlayers} matchId={matchId} />
+            <PlayersList players={availablePlayers} />
           </div>
         </DrawerContent>
       </Drawer>
@@ -91,7 +88,7 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
               <div className="mt-2 space-y-2">
-                <PlayersList players={availablePlayers} matchId={matchId} />
+                <PlayersList players={availablePlayers} />
               </div>
             </>
           ) : (
@@ -110,26 +107,25 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
 }
 
 function PlayersList({
-  matchId,
   players,
 }: {
-  matchId: string;
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
   const { addPlayerToLineup, handleSetPlayersDialog } = useMyLineup();
 
   async function handleSelectPlayer(player: TeamPlayer) {
-    addPlayerToLineup(player);
     handleSetPlayersDialog({ open: false });
+    addPlayerToLineup(player);
   }
 
   return players.map((player) => (
     <PlayerCard
       key={player.id}
-      {...player}
+      className="cursor-pointer"
       showSelectButton={false}
       onSelect={handleSelectPlayer}
-      className="cursor-pointer"
+      canSelectCard
+      {...player}
     />
   ));
 }

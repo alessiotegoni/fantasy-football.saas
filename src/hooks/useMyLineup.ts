@@ -6,7 +6,10 @@ import {
   LineupPlayerWithoutVotes,
 } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { getNextAvailablePosition, reorderBench } from "@/features/(league)/matches/utils/match";
+import {
+  getNextAvailablePosition,
+  reorderBench,
+} from "@/features/(league)/matches/utils/match";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -16,6 +19,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const { myLineup, playersDialog, handleSetLineup } = context;
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
   const { roleId, type } = playersDialog;
+
+  console.log(starterPlayers, benchPlayers);
 
   function addPlayerToLineup(player: TeamPlayer) {
     if (!tacticalModule || !type) return;
