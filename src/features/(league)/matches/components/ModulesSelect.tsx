@@ -28,7 +28,10 @@ export default function ModulesSelect(
 ) {
   const isMobile = useIsMobile();
 
-  const { tacticalModule, handleSetModule } = useMyLineup();
+  const {
+    myLineup: { tacticalModule },
+    handleSetModule,
+  } = useMyLineup();
 
   const [open, setOpen] = useState(false);
 
