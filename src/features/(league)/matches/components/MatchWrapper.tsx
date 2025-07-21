@@ -20,8 +20,7 @@ type Props = {
   matchInfo: MatchInfo;
   leagueId: string;
   matchId: string;
-  myTeam?: LineupTeam;
-  lineups?: LineupPlayer[]
+  lineupsPlayers?: LineupPlayer[];
   currentMatchday?: SplitMatchday;
   showLineups?: boolean;
 };
@@ -29,9 +28,8 @@ type Props = {
 export default function MatchWrapper({
   matchInfo,
   matchId,
-  myTeam,
   currentMatchday,
-  lineups,
+  lineupsPlayers,
   showLineups,
   ...ids
 }: Props) {
@@ -40,86 +38,82 @@ export default function MatchWrapper({
     currentMatchday?.status !== "upcoming";
 
   return (
-    <MyLineupProvider myTeam={myTeam}>
-      <Container
-        {...ids}
-        headerLabel="Partita"
-        showHeader={false}
-        className="xl:max-w-[800px] 2xl:max-w-[1100px]"
-      >
-        <div className="2xl:grid gap-5 xl:grid-cols-[150px_1fr_150px]">
-          <div>{/*Presidente home*/}</div>
-          <CalendarMatchCard
-            className="!rounded-4xl"
-            homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
-            awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
-            isLink={false}
-            {...ids}
-            {...matchInfo}
+    <Container
+      {...ids}
+      headerLabel="Partita"
+      showHeader={false}
+      className="xl:max-w-[800px] 2xl:max-w-[1100px]"
+    >
+      <div className="2xl:grid gap-5 xl:grid-cols-[150px_1fr_150px]">
+        <div>{/*Presidente home*/}</div>
+        <CalendarMatchCard
+          className="!rounded-4xl"
+          homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
+          awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
+          isLink={false}
+          {...ids}
+          {...matchInfo}
+        />
+        <div>{/*Presidente away*/}</div>
+      </div>
+      {showLineups && myTeam?.id && (
+        <Suspense>
+          <PlayersSelect
+            matchId={matchId}
+            myTeam={myTeam}
+            playersPromise={getTeamsPlayers([myTeam.id]).then((players) =>
+              players.map(({ purchaseCost, leagueTeamId, ...player }) => player)
+            )}
           />
-          <div>{/*Presidente away*/}</div>
-        </div>
-        {showLineups && myTeam?.id && (
+        </Suspense>
+      )}
+      <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
+        {showLineups && (
           <Suspense>
-            <PlayersSelect
-              matchId={matchId}
-              myTeam={myTeam}
-              playersPromise={getTeamsPlayers([myTeam.id]).then((players) =>
-                players.map(
-                  ({ purchaseCost, leagueTeamId, ...player }) => player
-                )
-              )}
+            <BenchLineup
+              team={matchInfo.homeTeam}
+              canEditLineup={
+                //   (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
+                false
+              }
+              className="2xl:border-r"
             />
           </Suspense>
         )}
-        <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
+        <FootballFieldBg>
+          {!isMatchdayClosed && myTeam && (
+            <MobileButtonsContainer className="sm:absolute sm:-translate-1/2 sm:bottom-auto sm:top-5">
+              <ModulesSelect
+                allowedModulesPromise={getLeagueModules(ids.leagueId)}
+                tacticalModulesPromise={getTacticalModules()}
+              />
+            </MobileButtonsContainer>
+          )}
           {showLineups && (
             <Suspense>
-              <BenchLineup
-                team={matchInfo.homeTeam}
-                canEditLineup={
-                  //   (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
-                  false
-                }
-                className="2xl:border-r"
+              <StarterLineups
+                match={matchInfo}
+                myTeam={myTeam}
+                currentMatchday={currentMatchday}
+                isMatchdayClosed={isMatchdayClosed}
               />
             </Suspense>
           )}
-          <FootballFieldBg>
-            {!isMatchdayClosed && myTeam && (
-              <MobileButtonsContainer className="sm:absolute sm:-translate-1/2 sm:bottom-auto sm:top-5">
-                <ModulesSelect
-                  allowedModulesPromise={getLeagueModules(ids.leagueId)}
-                  tacticalModulesPromise={getTacticalModules()}
-                />
-              </MobileButtonsContainer>
-            )}
-            {showLineups && (
-              <Suspense>
-                <StarterLineups
-                  match={matchInfo}
-                  myTeam={myTeam}
-                  currentMatchday={currentMatchday}
-                  isMatchdayClosed={isMatchdayClosed}
-                />
-              </Suspense>
-            )}
-          </FootballFieldBg>
-          {showLineups && (
-            <Suspense>
-              <BenchLineup
-                team={matchInfo.awayTeam}
-                canEditLineup={
-                  //   (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
-                  false
-                }
-                className="2xl:border-l"
-              />
-            </Suspense>
-          )}
-        </div>
-        <Disclaimer />
-      </Container>
-    </MyLineupProvider>
+        </FootballFieldBg>
+        {showLineups && (
+          <Suspense>
+            <BenchLineup
+              team={matchInfo.awayTeam}
+              canEditLineup={
+                //   (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
+                false
+              }
+              className="2xl:border-l"
+            />
+          </Suspense>
+        )}
+      </div>
+      <Disclaimer />
+    </Container>
   );
 }

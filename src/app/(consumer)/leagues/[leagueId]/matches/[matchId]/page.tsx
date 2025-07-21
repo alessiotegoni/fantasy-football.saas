@@ -1,15 +1,17 @@
+import MyLineupProvider from "@/contexts/MyLineupProvider";
 import MatchWrapper from "@/features/(league)/matches/components/MatchWrapper";
 import {
   getLineupsPlayers,
   getMatchInfo,
+  LineupPlayer,
   MatchInfo,
 } from "@/features/(league)/matches/queries/match";
+import { getMyTeam } from "@/features/(league)/matches/utils/match";
 import { getCurrentMatchday } from "@/features/splits/queries/split";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
-import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { Suspense } from "react";
 
 export default async function MatchPage({
@@ -41,24 +43,23 @@ async function SuspenseBoundary({
   const userId = await getUserId();
   if (!userId) return;
 
-  const [userTeamId, currentMatchday, lineups] = await Promise.all([
+  const [myTeamId, currentMatchday, lineupsPlayers] = await Promise.all([
     getUserTeamId(userId, ids.leagueId),
     getCurrentMatchday(matchInfo.splitMatchday.splitId),
     getLineupsPlayers(ids.matchId, matchInfo.splitMatchday.id),
   ]);
-  const myTeam = [matchInfo.homeTeam, matchInfo.awayTeam].find(
-    (team) => team?.id === userTeamId
-  );
-  const myTeamLineup = myTeam ? lineups.filter(lineup => lineup.)
+
+  const myTeam = getMyTeam(myTeamId, matchInfo, lineupsPlayers);
 
   return (
-    <MatchWrapper
-      matchInfo={matchInfo}
-      myTeam={myTeam}
-      currentMatchday={currentMatchday}
-      lineups={lineups}
-      showLineups
-      {...ids}
-    />
+    <MyLineupProvider myTeam={myTeam}>
+      <MatchWrapper
+        matchInfo={matchInfo}
+        currentMatchday={currentMatchday}
+        lineupsPlayers={lineupsPlayers}
+        showLineups
+        {...ids}
+      />
+    </MyLineupProvider>
   );
 }
