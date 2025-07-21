@@ -42,7 +42,13 @@ export default function RoleGroup(props: Props) {
 function PositionsList(
   props: Omit<Props, "className"> & { roleId: number; positionId: PositionId }
 ) {
-  const player = props.players.find((p) => p.positionId === props.positionId);
+  const {
+    myLineup: { starterPlayers },
+  } = useMyLineup();
+
+  const players = props.canEdit ? starterPlayers : props.players;
+
+  const player = players.find((p) => p.positionId === props.positionId);
 
   return <PositionSlot player={player} {...props} />;
 }

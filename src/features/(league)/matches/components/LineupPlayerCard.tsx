@@ -4,9 +4,10 @@ import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
 import { X } from "lucide-react";
 import Image from "next/image";
+import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 
 type Props = {
-  player: LineupPlayer;
+  player: LineupPlayer | LineupPlayerWithoutVotes;
   type: LineupPlayerType;
   className?: string;
   canEdit?: boolean;

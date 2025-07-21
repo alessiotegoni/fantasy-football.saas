@@ -20,7 +20,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
   const { roleId, type } = playersDialog;
 
-  console.log(starterPlayers, benchPlayers);
+  // console.log(starterPlayers, benchPlayers);
 
   function addPlayerToLineup(player: TeamPlayer) {
     if (!tacticalModule || !type) return;

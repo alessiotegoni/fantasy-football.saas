@@ -3,9 +3,10 @@ import { LineupPlayer } from "../queries/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import useMyLineup from "@/hooks/useMyLineup";
 import LineupPlayerCard from "./LineupPlayerCard";
+import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 
 type Props = {
-  player: LineupPlayer | undefined;
+  player: LineupPlayer | LineupPlayerWithoutVotes | undefined;
   roleId: number;
   canEdit: boolean;
 };
@@ -17,6 +18,9 @@ export default function PositionSlot({
 }: Props) {
   const { removePlayerFromLineup } = useMyLineup();
   if (!player && !canEdit) return null;
+
+  console.log(player);
+
 
   return (
     <>
