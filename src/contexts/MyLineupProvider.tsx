@@ -10,6 +10,7 @@ import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer
 import { createContext, useCallback, useEffect, useState } from "react";
 
 export type LineupPlayerWithoutVotes = TeamPlayer & {
+  lineupPlayerType: LineupPlayerType;
   positionId: string;
   positionOrder: number | null;
   lineupPlayerId: string | null;
@@ -48,7 +49,7 @@ export default function MyLineupProvider({
   children: React.ReactNode;
   myTeam: MyTeam;
 }) {
-  const [myLineup, setMyLineup] = useState(getInitialLineup(myTeam));
+  const [myLineup, setMyLineup] = useState<MyLineup>(getInitialLineup(myTeam));
 
   const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
     open: false,
@@ -95,8 +96,6 @@ export default function MyLineupProvider({
         handleSetLineup,
         handleSetPlayersDialog,
         handleSetModule,
-        addPlayerToLineup: () => {},
-        removePlayerFromLineup: () => {},
       }}
     >
       {children}

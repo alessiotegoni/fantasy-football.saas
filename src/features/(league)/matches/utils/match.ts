@@ -16,6 +16,7 @@ import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { LineupPlayer, MatchInfo } from "../queries/match";
+import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 
 export function formatTeamData(
   teamId: string | null,
@@ -46,9 +47,9 @@ export function getMyTeam(
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === myTeamId);
   if (!myTeam) return undefined;
 
-  const players = lineupsPlayers.filter(
-    (player) => player.leagueTeamId === myTeam.id
-  );
+  const players = lineupsPlayers
+    .filter((player) => player.leagueTeamId === myTeam.id)
+    .map(({ vote, bonusMaluses, ...player }) => player);
 
   return {
     ...myTeam,
@@ -61,7 +62,9 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
-export function groupLineupsPlayers(players: LineupPlayer[]) {
+export function groupLineupsPlayers<
+  T extends LineupPlayer | LineupPlayerWithoutVotes
+>(players: T[]) {
   return Object.groupBy(players, (player) => player.lineupPlayerType);
 }
 

@@ -1,4 +1,3 @@
-import Disclaimer from "@/components/Disclaimer";
 import Image from "next/image";
 
 export default function FootballFieldBg({

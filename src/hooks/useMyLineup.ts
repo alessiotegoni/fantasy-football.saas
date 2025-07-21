@@ -4,6 +4,7 @@ import {
   MyLineupContext,
   LineupPlayerWithoutVotes,
 } from "@/contexts/MyLineupProvider";
+import { RolePosition } from "@/drizzle/schema";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { useContext, useMemo } from "react";
 
@@ -73,7 +74,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   const getNextAvailablePosition = (
     starterPlayers: LineupPlayerWithoutVotes[],
-    layout: any[],
+    layout: RolePosition[],
     roleId: number | null
   ) => {
     if (roleId === null) return null;
