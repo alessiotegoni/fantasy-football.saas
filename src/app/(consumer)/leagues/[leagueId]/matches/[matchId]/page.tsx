@@ -3,7 +3,6 @@ import MatchWrapper from "@/features/(league)/matches/components/MatchWrapper";
 import {
   getLineupsPlayers,
   getMatchInfo,
-  LineupPlayer,
   MatchInfo,
 } from "@/features/(league)/matches/queries/match";
 import { getMyTeam } from "@/features/(league)/matches/utils/match";

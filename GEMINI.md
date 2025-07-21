@@ -47,19 +47,6 @@ Quando un utente seleziona un giocatore (di tipo TeamPlayer), quel giocatore dev
     *   È un giocatore normale, ma se titolare deve avere positionId = "PR-1" e positionOrder = 1
 
 
-### 🚨 Problemi attuali da risolvere:
-
-*   ❌ Il codice attuale mostra solo la lineup salvata nel DB.
-
-*   ❌ Se un utente salva parte della formazione, esce e poi rientra, i giocatori già salvati **non vengono reinseriti nello stato** di MyLineupProvider, causando inconsistenza tra frontend e backend.
-
-*   ❌ Manca un meccanismo per distinguere tra:
-
-    *   Giocatori **già salvati nel DB** (lineupPlayerId presente)
-
-    *   Giocatori **nuovi/non salvati** (lineupPlayerId = null)
-
-
 ### ✅ Cosa ti chiedo di costruire:
 
 *   Un componente (o hook o funzione) che:
@@ -70,10 +57,4 @@ Quando un utente seleziona un giocatore (di tipo TeamPlayer), quel giocatore dev
 
     *   Inserisca correttamente il LineupPlayer nello stato (MyLineupProvider)
 
-    *   Supporti sia giocatori nuovi che già salvati
-
-*   Una logica che:
-
-    *   All’apertura del match, **inizializzi MyLineupProvider con i giocatori già salvati nel DB**
-
-    *   Mantenga allineato lo stato con ciò che è stato già salvato o modificato
+    *   Permetta di eliminare il player dalla lineup

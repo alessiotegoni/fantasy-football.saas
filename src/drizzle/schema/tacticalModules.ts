@@ -1,6 +1,6 @@
 import { pgTable, text, smallint, jsonb } from "drizzle-orm/pg-core";
 
-type Position = "GK" | "FB" | "MF" | "ST";
+type Position = "PR" | "GK" | "FB" | "MF" | "ST";
 export type PositionId = `${Position}-${number}`;
 
 export type RolePosition = {
