@@ -45,9 +45,9 @@ export default function MatchWrapper({
       {...ids}
       headerLabel="Partita"
       showHeader={false}
-      className="xl:max-w-[800px] 2xl:max-w-[1100px]"
+      className="xl:max-w-[800px] 2xl:max-w-[1200px]"
     >
-      <div className="2xl:grid gap-5 xl:grid-cols-[150px_1fr_150px]">
+      <div className="2xl:grid gap-5 xl:grid-cols-[180px_1fr_180px]">
         {showLineups && (
           <div className="flex flex-col justify-between gap-5">
             <div className="size-full bg-input/30 rounded-4xl">
