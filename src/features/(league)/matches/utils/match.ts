@@ -13,9 +13,9 @@ import {
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
-import { LineupPlayer[] } from "../queries/match";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
+import { LineupPlayer } from "../queries/match";
 
 export function formatTeamData(
   teamId: string | null,
@@ -67,7 +67,7 @@ export function getMatchInfoTags({
   return tags;
 }
 
-export function getMatchLineupsTags({
+export function getLineupsPlayersTags({
   matchId,
   currentMatchdayId,
   players,

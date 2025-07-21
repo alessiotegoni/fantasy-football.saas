@@ -14,8 +14,8 @@ import {
 import { and, eq } from "drizzle-orm";
 import {
   formatTeamData,
+  getLineupsPlayersTags,
   getMatchInfoTags,
-  getMatchLineupsTags,
 } from "../utils/match";
 
 export async function getMatchInfo({
@@ -109,7 +109,7 @@ export async function getMatchInfo({
 
 export type MatchInfo = NonNullable<Awaited<ReturnType<typeof getMatchInfo>>>;
 
-export async function getMatchLineups(
+export async function getLineupsPlayers(
   matchId: string,
   currentMatchdayId: number
 ) {
@@ -167,17 +167,11 @@ export async function getMatchLineups(
     .where(eq(leagueMatches.id, matchId));
 
   cacheTag(
-    ...getMatchLineupsTags({ matchId, currentMatchdayId, players: results })
+    ...getLineupsPlayersTags({ matchId, currentMatchdayId, players: results })
   );
 
-  const groupedPlayers = Object.groupBy(
-    results,
-    (player) => player.lineupPlayerType
-  );
-
-  return {
-    starter: groupedPlayers["starter"] ?? [],
-    bench: groupedPlayers["bench"] ?? [],
-  };
+  return results;
 }
-export type LineupPlayer = Awaited<ReturnType<typeof getMatchLineups>>["bench"];
+export type LineupPlayer = Awaited<
+  ReturnType<typeof getLineupsPlayers>
+>[number];

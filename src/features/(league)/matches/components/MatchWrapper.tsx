@@ -21,8 +21,7 @@ type Props = {
   leagueId: string;
   matchId: string;
   myTeam?: LineupTeam;
-  starters?: LineupPlayer[];
-  bench?: LineupPlayer[];
+  lineups?: LineupPlayer[]
   currentMatchday?: SplitMatchday;
   showLineups?: boolean;
 };
@@ -32,12 +31,10 @@ export default function MatchWrapper({
   matchId,
   myTeam,
   currentMatchday,
-  starters,
-  bench,
+  lineups,
+  showLineups,
   ...ids
 }: Props) {
-  
-
   const isMatchdayClosed =
     matchInfo.splitMatchday.id !== currentMatchday?.id ||
     currentMatchday?.status !== "upcoming";
@@ -76,10 +73,9 @@ export default function MatchWrapper({
           </Suspense>
         )}
         <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[150px_1fr_150px] mt-5">
-          {showLineups && benchLineupsPromise && (
+          {showLineups && (
             <Suspense>
               <BenchLineup
-                benchLineupsPromise={benchLineupsPromise}
                 team={matchInfo.homeTeam}
                 canEditLineup={
                   //   (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
@@ -109,10 +105,9 @@ export default function MatchWrapper({
               </Suspense>
             )}
           </FootballFieldBg>
-          {showLineups && benchLineupsPromise && (
+          {showLineups && (
             <Suspense>
               <BenchLineup
-                benchLineupsPromise={benchLineupsPromise}
                 team={matchInfo.awayTeam}
                 canEditLineup={
                   //   (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
