@@ -24,15 +24,10 @@ import { LineupTeam } from "../utils/match";
 
 type Props = {
   matchId: string;
-  myTeam: LineupTeam;
   playersPromise: Promise<TeamPlayer[]>;
 };
 
-export default function PlayersSelect({
-  matchId,
-  myTeam,
-  playersPromise,
-}: Props) {
+export default function PlayersSelect({ matchId, playersPromise }: Props) {
   const isMobile = useIsMobile();
 
   const players = use(playersPromise);
@@ -71,11 +66,7 @@ export default function PlayersSelect({
             )}
           </DrawerHeader>
           <div className="p-6 pt-0 space-y-2">
-            <PlayersList
-              players={availablePlayers}
-              myTeam={myTeam}
-              matchId={matchId}
-            />
+            <PlayersList players={availablePlayers} matchId={matchId} />
           </div>
         </DrawerContent>
       </Drawer>
@@ -97,11 +88,7 @@ export default function PlayersSelect({
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
               <div className="mt-2 space-y-2">
-                <PlayersList
-                  players={availablePlayers}
-                  myTeam={myTeam}
-                  matchId={matchId}
-                />
+                <PlayersList players={availablePlayers} matchId={matchId} />
               </div>
             </>
           ) : (
@@ -125,7 +112,6 @@ function PlayersList({
   players,
 }: {
   matchId: string;
-  myTeam: LineupTeam;
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
   const {
