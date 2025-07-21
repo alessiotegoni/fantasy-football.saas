@@ -47,6 +47,31 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
+export function getNextAvailablePosition(
+  starterPlayers: LineupPlayerWithoutVotes[],
+  layout: RolePosition[],
+  roleId: number | null
+) {
+  const role = layout.find((r) => r.roleId === roleId);
+  if (!role) return null;
+
+  for (const posId of role.positionsIds) {
+    const occupied = starterPlayers.some((p) => p.positionId === posId);
+    if (!occupied) {
+      return {
+        positionId: posId,
+        positionOrder: parseInt(posId.split("-")[1], 10),
+      };
+    }
+  }
+
+  return null;
+}
+
+export function reorderBench(players: LineupPlayerWithoutVotes[]) {
+  return players.map((p, i) => ({ ...p, positionOrder: i + 1 }));
+}
+
 export function groupLineupsPlayers<
   T extends LineupPlayer | LineupPlayerWithoutVotes
 >(players: T[]) {

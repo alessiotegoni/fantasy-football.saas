@@ -1,32 +1,26 @@
 "use client";
 
+import { useContext, useMemo } from "react";
 import {
   MyLineupContext,
   LineupPlayerWithoutVotes,
 } from "@/contexts/MyLineupProvider";
-import { RolePosition } from "@/drizzle/schema";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { useContext, useMemo } from "react";
+import { getNextAvailablePosition, reorderBench } from "@/features/(league)/matches/utils/match";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
-
-  if (!context) {
+  if (!context)
     throw new Error("useMyLineup must be used within a MyLineupProvider");
-  }
 
   const { myLineup, playersDialog, handleSetLineup } = context;
+  const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
   const { roleId, type } = playersDialog;
 
   function addPlayerToLineup(player: TeamPlayer) {
-    if (!myLineup.tacticalModule || !type) {
-      return;
-    }
+    if (!tacticalModule || !type) return;
 
-    const { starterPlayers, benchPlayers } = myLineup;
-    const playerType = playersDialog.type;
-
-    const newLineupPlayer: LineupPlayerWithoutVotes = {
+    const newPlayer: LineupPlayerWithoutVotes = {
       ...player,
       lineupPlayerType: type,
       positionId: null,
@@ -34,153 +28,101 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       lineupPlayerId: null,
     };
 
-    if (playerType === "starter") {
-      const { roleId } = playersDialog;
+    if (type === "starter") {
       if (roleId === 1) {
-        // Presidente role
-        newLineupPlayer.positionId = "PR-1";
-        newLineupPlayer.positionOrder = 1;
+        newPlayer.positionId = "PR-1";
+        newPlayer.positionOrder = 1;
       } else {
         const position = getNextAvailablePosition(
           starterPlayers,
-          myLineup.tacticalModule.layout,
+          tacticalModule.layout,
           roleId
         );
-
-        if (position) {
-          newLineupPlayer.positionId = position.positionId;
-          newLineupPlayer.positionOrder = position.positionOrder;
-        }
+        if (!position) return;
+        newPlayer.positionId = position.positionId;
+        newPlayer.positionOrder = position.positionOrder;
       }
       handleSetLineup({
         ...myLineup,
-        starterPlayers: [...starterPlayers, newLineupPlayer],
+        starterPlayers: [...starterPlayers, newPlayer],
       });
-    } else if (playerType === "bench") {
-      newLineupPlayer.positionOrder = benchPlayers.length + 1;
+    }
+
+    if (type === "bench") {
+      newPlayer.positionOrder = benchPlayers.length + 1;
       handleSetLineup({
         ...myLineup,
-        benchPlayers: [...benchPlayers, newLineupPlayer],
+        benchPlayers: [...benchPlayers, newPlayer],
       });
     }
   }
 
   function removePlayerFromLineup(playerId: number) {
-    const { starterPlayers, benchPlayers } = myLineup;
-
-    const newStarterPlayers = starterPlayers.filter((p) => p.id !== playerId);
-    const newBenchPlayers = benchPlayers.filter((p) => p.id !== playerId);
-
+    const updatedStarter = starterPlayers.filter((p) => p.id !== playerId);
+    const updatedBench = benchPlayers.filter((p) => p.id !== playerId);
     handleSetLineup({
       ...myLineup,
-      starterPlayers: newStarterPlayers,
-      benchPlayers: newBenchPlayers,
+      starterPlayers: updatedStarter,
+      benchPlayers: updatedBench,
     });
   }
 
-  function getNextAvailablePosition(
-    starterPlayers: LineupPlayerWithoutVotes[],
-    layout: RolePosition[],
-    roleId: number | null
+  function movePlayer(
+    source: LineupPlayerWithoutVotes,
+    target: LineupPlayerWithoutVotes
   ) {
-    if (!roleId) return null;
+    const filteredStarters = starterPlayers.filter(
+      (p) => p.id !== source.id && p.id !== target.id
+    );
+    const filteredBench = benchPlayers.filter(
+      (p) => p.id !== source.id && p.id !== target.id
+    );
 
-    const roleLayout = layout.find((r) => r.roleId === roleId);
-    if (!roleLayout) return null;
+    if (target.lineupPlayerType === "starter") {
+      source.lineupPlayerType = "starter";
+      source.positionId = target.positionId;
+      source.positionOrder = target.positionOrder;
+      filteredStarters.push(source);
 
-    for (const positionId of roleLayout.positionsIds) {
-      const isOccupied = starterPlayers.some(
-        (p) => p.positionId === positionId
-      );
-      if (!isOccupied) {
-        const positionOrder = parseInt(positionId.split("-")[1]);
-        return { positionId, positionOrder };
-      }
+      target.lineupPlayerType = "bench";
+      target.positionId = null;
+      target.positionOrder = null;
+      filteredBench.push(target);
+    } else {
+      source.lineupPlayerType = "bench";
+      source.positionId = null;
+      source.positionOrder = null;
+      filteredBench.push(source);
+
+      target.lineupPlayerType = "starter";
+      target.positionId = source.positionId;
+      target.positionOrder = source.positionOrder;
+      filteredStarters.push(target);
     }
 
-    return null;
+    handleSetLineup({
+      ...myLineup,
+      starterPlayers: filteredStarters,
+      benchPlayers: reorderBench(filteredBench),
+    });
   }
 
   const availablePlayers = useMemo(() => {
-    const { starterPlayers, benchPlayers } = myLineup;
-
-    // Players already in the lineup
-    const lineupPlayerIds = new Set(
+    const inLineupIds = new Set(
       [...starterPlayers, ...benchPlayers].map((p) => p.id)
     );
+    const baseAvailable = teamPlayers.filter((p) => !inLineupIds.has(p.id));
 
-    // Base available players (not in lineup yet)
-    const baseAvailable = teamPlayers.filter((p) => !lineupPlayerIds.has(p.id));
+    const swappable =
+      type === "starter"
+        ? benchPlayers
+        : type === "bench"
+        ? starterPlayers
+        : [];
+    const fullList = [...baseAvailable, ...swappable];
 
-    let swappablePlayers: LineupPlayerWithoutVotes[] = [];
-    if (type === "starter") {
-      swappablePlayers = benchPlayers;
-    } else if (type === "bench") {
-      swappablePlayers = starterPlayers;
-    }
-
-    const allAvailable = [...baseAvailable, ...swappablePlayers];
-
-    return roleId
-      ? allAvailable.filter((p) => p.role.id === roleId)
-      : allAvailable;
-  }, [teamPlayers, myLineup, roleId, type]);
-
-  function movePlayer(
-    playerToMove: LineupPlayerWithoutVotes,
-    playerToSwapWith: LineupPlayerWithoutVotes
-  ) {
-    const { starterPlayers, benchPlayers } = myLineup;
-
-    // Remove both players from their current lineups
-    const newStarterPlayers = starterPlayers.filter(
-      (p) => p.id !== playerToMove.id && p.id !== playerToSwapWith.id
-    );
-    const newBenchPlayers = benchPlayers.filter(
-      (p) => p.id !== playerToMove.id && p.id !== playerToSwapWith.id
-    );
-
-    // Assign new positions and orders based on swap
-    if (playerToSwapWith.lineupPlayerType === "starter") {
-      // playerToMove becomes a starter
-      playerToMove.lineupPlayerType = "starter";
-      playerToMove.positionId = playerToSwapWith.positionId;
-      playerToMove.positionOrder = playerToSwapWith.positionOrder;
-      newStarterPlayers.push(playerToMove);
-
-      // playerToSwapWith becomes a bench player
-      playerToSwapWith.lineupPlayerType = "bench";
-      playerToSwapWith.positionId = null;
-      playerToSwapWith.positionOrder = null; // Will be reordered later
-      newBenchPlayers.push(playerToSwapWith);
-    } else if (playerToSwapWith.lineupPlayerType === "bench") {
-      // playerToMove becomes a bench player
-      playerToMove.lineupPlayerType = "bench";
-      playerToMove.positionId = null;
-      playerToMove.positionOrder = null; // Will be reordered later
-      newBenchPlayers.push(playerToMove);
-
-      // playerToSwapWith becomes a starter
-      playerToSwapWith.lineupPlayerType = "starter";
-      playerToSwapWith.positionId = playerToMove.positionId; // Inherit from playerToMove's original starter position
-      playerToSwapWith.positionOrder = playerToMove.positionOrder;
-      newStarterPlayers.push(playerToSwapWith);
-    }
-
-    // Reorder bench players
-    newBenchPlayers.sort(
-      (a, b) => (a.positionOrder ?? 0) - (b.positionOrder ?? 0)
-    );
-
-    handleSetLineup({
-      ...myLineup,
-      starterPlayers: newStarterPlayers,
-      benchPlayers: newBenchPlayers.map((player, index) => ({
-        ...player,
-        positionOrder: index + 1,
-      })),
-    });
-  }
+    return roleId ? fullList.filter((p) => p.role.id === roleId) : fullList;
+  }, [teamPlayers, starterPlayers, benchPlayers, type, roleId]);
 
   return {
     ...context,
