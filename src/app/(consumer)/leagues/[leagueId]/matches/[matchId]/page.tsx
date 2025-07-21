@@ -56,6 +56,7 @@ async function SuspenseBoundary({
         matchInfo={matchInfo}
         currentMatchday={currentMatchday}
         lineupsPlayers={lineupsPlayers}
+        myTeamId={myTeam?.id ?? null}
         showLineups
         {...ids}
       />

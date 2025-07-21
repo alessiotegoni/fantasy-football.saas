@@ -1,6 +1,7 @@
 import { WarningTriangle } from "iconoir-react";
 import { LineupTeam } from "../utils/match";
 import { SplitMatchday } from "@/features/splits/queries/split";
+import useMyLineup from "@/hooks/useMyLineup";
 
 export default function LineupEmptyState({
   team,
@@ -9,7 +10,10 @@ export default function LineupEmptyState({
   team: NonNullable<LineupTeam>;
   matchMatchday: SplitMatchday;
 }) {
+  const { myTeam } = useMyLineup();
+
   const isMatchdayEnded = matchMatchday.status === "ended";
+
   const text =
     myTeam?.id !== team.id
       ? "Formazione non inserita"

@@ -4,17 +4,12 @@ import { LineupTeam } from "../utils/match";
 
 type Props = {
   team: LineupTeam;
-  players: LineupPlayer[]
+  players: LineupPlayer[];
   canEditLineup: boolean;
   className?: string;
 };
 
-export default function BenchLineup({
-  team,
-  canEditLineup,
-  className,
-}: Props) {
-
+export default function BenchLineup({ team, canEditLineup, className }: Props) {
   return (
     <div
       className={cn(

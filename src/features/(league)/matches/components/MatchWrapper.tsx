@@ -19,7 +19,7 @@ type Props = {
   matchInfo: MatchInfo;
   leagueId: string;
   matchId: string;
-  myTeamId?: string;
+  myTeamId?: string | null;
   lineupsPlayers?: LineupPlayer[];
   currentMatchday?: SplitMatchday;
   showLineups?: boolean;
@@ -49,8 +49,10 @@ export default function MatchWrapper({
     >
       <div className="2xl:grid gap-5 xl:grid-cols-[150px_1fr_150px]">
         {showLineups && (
-          <div>
-            <div>{/*Presidente home*/}</div>
+          <div className="flex flex-col justify-between gap-5">
+            <div className="size-full bg-input/30 rounded-4xl">
+              {/*Presidente home*/}
+            </div>
             <BenchLineup
               players={groupedPlayers["bench"] ?? []}
               team={matchInfo.homeTeam}
@@ -91,8 +93,10 @@ export default function MatchWrapper({
             )}
           </FootballFieldBg>
         </div>
-        <div>
-          <div>{/*Presidente away*/}</div>
+        <div className="flex flex-col justify-between gap-5">
+          <div className="size-full bg-input/30 rounded-4xl">
+            {/*Presidente away*/}
+          </div>
           {showLineups && (
             <Suspense>
               <BenchLineup

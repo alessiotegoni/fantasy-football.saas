@@ -36,11 +36,15 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
     handleSetPlayersDialog,
   } = useMyLineup(players);
 
+  console.log(open, type);
+
   if (isMobile) {
     return (
       <Drawer
         open={open}
-        onOpenChange={(open) => handleSetPlayersDialog({ open })}
+        onOpenChange={(open) =>
+          handleSetPlayersDialog({ open, type: open ? type : null })
+        }
       >
         <DrawerContent>
           <DrawerHeader className="text-left">
@@ -73,7 +77,9 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
   return (
     <Dialog
       open={open}
-      onOpenChange={(open) => handleSetPlayersDialog({ open })}
+      onOpenChange={(open) =>
+        handleSetPlayersDialog({ open, type: open ? type : null })
+      }
     >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -119,6 +125,7 @@ function PlayersList({
 
   return players.map((player) => (
     <PlayerCard
+      key={player.id}
       {...player}
       showSelectButton={false}
       onSelect={handleSelectPlayer}
