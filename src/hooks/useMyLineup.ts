@@ -18,9 +18,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const { myLineup, playersDialog, handleSetLineup } = context;
   const { roleId, type } = playersDialog;
 
-  const addPlayerToLineup = (player: TeamPlayer) => {
-    if (!myLineup.tacticalModule) {
-      // Handle error: tactical module not selected
+  function addPlayerToLineup(player: TeamPlayer) {
+    if (!myLineup.tacticalModule || !type) {
       return;
     }
 
@@ -29,27 +28,34 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
     const newLineupPlayer: LineupPlayerWithoutVotes = {
       ...player,
-      positionId: "",
+      lineupPlayerType: type,
+      positionId: null,
       positionOrder: null,
       lineupPlayerId: null,
     };
 
     if (playerType === "starter") {
       const { roleId } = playersDialog;
-      const position = getNextAvailablePosition(
-        starterPlayers,
-        myLineup.tacticalModule.layout,
-        roleId
-      );
+      if (roleId === 1) {
+        // Presidente role
+        newLineupPlayer.positionId = "PR-1";
+        newLineupPlayer.positionOrder = 1;
+      } else {
+        const position = getNextAvailablePosition(
+          starterPlayers,
+          myLineup.tacticalModule.layout,
+          roleId
+        );
 
-      if (position) {
-        newLineupPlayer.positionId = position.positionId;
-        newLineupPlayer.positionOrder = position.positionOrder;
-        handleSetLineup({
-          ...myLineup,
-          starterPlayers: [...starterPlayers, newLineupPlayer],
-        });
+        if (position) {
+          newLineupPlayer.positionId = position.positionId;
+          newLineupPlayer.positionOrder = position.positionOrder;
+        }
       }
+      handleSetLineup({
+        ...myLineup,
+        starterPlayers: [...starterPlayers, newLineupPlayer],
+      });
     } else if (playerType === "bench") {
       newLineupPlayer.positionOrder = benchPlayers.length + 1;
       handleSetLineup({
@@ -57,9 +63,9 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
         benchPlayers: [...benchPlayers, newLineupPlayer],
       });
     }
-  };
+  }
 
-  const removePlayerFromLineup = (playerId: number) => {
+  function removePlayerFromLineup(playerId: number) {
     const { starterPlayers, benchPlayers } = myLineup;
 
     const newStarterPlayers = starterPlayers.filter((p) => p.id !== playerId);
@@ -70,14 +76,14 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       starterPlayers: newStarterPlayers,
       benchPlayers: newBenchPlayers,
     });
-  };
+  }
 
-  const getNextAvailablePosition = (
+  function getNextAvailablePosition(
     starterPlayers: LineupPlayerWithoutVotes[],
     layout: RolePosition[],
     roleId: number | null
-  ) => {
-    if (roleId === null) return null;
+  ) {
+    if (!roleId) return null;
 
     const roleLayout = layout.find((r) => r.roleId === roleId);
     if (!roleLayout) return null;
@@ -93,7 +99,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     }
 
     return null;
-  };
+  }
 
   const availablePlayers = useMemo(() => {
     const { starterPlayers, benchPlayers } = myLineup;
@@ -120,10 +126,67 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       : allAvailable;
   }, [teamPlayers, myLineup, roleId, type]);
 
+  function movePlayer(
+    playerToMove: LineupPlayerWithoutVotes,
+    playerToSwapWith: LineupPlayerWithoutVotes
+  ) {
+    const { starterPlayers, benchPlayers } = myLineup;
+
+    // Remove both players from their current lineups
+    const newStarterPlayers = starterPlayers.filter(
+      (p) => p.id !== playerToMove.id && p.id !== playerToSwapWith.id
+    );
+    const newBenchPlayers = benchPlayers.filter(
+      (p) => p.id !== playerToMove.id && p.id !== playerToSwapWith.id
+    );
+
+    // Assign new positions and orders based on swap
+    if (playerToSwapWith.lineupPlayerType === "starter") {
+      // playerToMove becomes a starter
+      playerToMove.lineupPlayerType = "starter";
+      playerToMove.positionId = playerToSwapWith.positionId;
+      playerToMove.positionOrder = playerToSwapWith.positionOrder;
+      newStarterPlayers.push(playerToMove);
+
+      // playerToSwapWith becomes a bench player
+      playerToSwapWith.lineupPlayerType = "bench";
+      playerToSwapWith.positionId = null;
+      playerToSwapWith.positionOrder = null; // Will be reordered later
+      newBenchPlayers.push(playerToSwapWith);
+    } else if (playerToSwapWith.lineupPlayerType === "bench") {
+      // playerToMove becomes a bench player
+      playerToMove.lineupPlayerType = "bench";
+      playerToMove.positionId = null;
+      playerToMove.positionOrder = null; // Will be reordered later
+      newBenchPlayers.push(playerToMove);
+
+      // playerToSwapWith becomes a starter
+      playerToSwapWith.lineupPlayerType = "starter";
+      playerToSwapWith.positionId = playerToMove.positionId; // Inherit from playerToMove's original starter position
+      playerToSwapWith.positionOrder = playerToMove.positionOrder;
+      newStarterPlayers.push(playerToSwapWith);
+    }
+
+    // Reorder bench players
+    newBenchPlayers.sort(
+      (a, b) => (a.positionOrder ?? 0) - (b.positionOrder ?? 0)
+    );
+
+    handleSetLineup({
+      ...myLineup,
+      starterPlayers: newStarterPlayers,
+      benchPlayers: newBenchPlayers.map((player, index) => ({
+        ...player,
+        positionOrder: index + 1,
+      })),
+    });
+  }
+
   return {
     ...context,
     availablePlayers,
     addPlayerToLineup,
     removePlayerFromLineup,
+    movePlayer,
   };
 }

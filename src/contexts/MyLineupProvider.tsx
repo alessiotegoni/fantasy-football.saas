@@ -11,7 +11,7 @@ import { createContext, useCallback, useEffect, useState } from "react";
 
 export type LineupPlayerWithoutVotes = TeamPlayer & {
   lineupPlayerType: LineupPlayerType;
-  positionId: string;
+  positionId: string | null;
   positionOrder: number | null;
   lineupPlayerId: string | null;
 };

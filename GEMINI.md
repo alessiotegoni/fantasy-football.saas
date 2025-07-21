@@ -1,60 +1,40 @@
-Sto sviluppando una feature per permettere all’utente di compilare la sua **formazione (lineup)** per una partita.
+# 💡 Prompt per Gemini – Refactor `MyLineupProvider`
 
-Hai accesso completo al mio progetto, quindi puoi fare riferimento a file, tipi e componenti come TeamPlayer, LineupPlayer, TacticalModule, PositionSlot, MyLineupProvider, ecc.
+## Contesto
 
-### 🧠 Obiettivo:
+Attualmente, all'interno della mia applicazione sto utilizzando un context chiamato `MyLineupProvider` che si occupa di:
 
-Costruisci la logica per permettere all’utente di:
+1. **Gestione dello stato della formazione dell’utente**
+   (starterPlayers, benchPlayers, modulo tattico, ecc.)
 
-1.  Aprire la UI della partita (cliccando su un match)
+2. **Gestione dello stato del dialog/modal per la selezione giocatori**
+   (apertura/chiusura, tipo: starter o bench)
 
-2.  Cliccare su PlayerSelectTrigger, che apre il PlayerSelectDialog
+Queste due logiche — seppur collegate — hanno scopi distinti e, nel tempo, stanno rendendo il provider più complesso e difficile da mantenere.
 
-3.  Cliccare su una PlayerCard per aggiungerla alla lineup
+---
 
+## ❓ Domanda per Gemini
 
-Quando un utente seleziona un giocatore (di tipo TeamPlayer), quel giocatore deve essere **convertito in LineupPlayer** aggiungendo solo i seguenti campi:
+Secondo te, ha senso **separare queste due responsabilità** in due context distinti?
 
-*   positionId
+Ad esempio:
 
-*   positionOrder
+- `MyLineupProvider`: si occupa esclusivamente della logica legata alla formazione (modulo, titolari, panchinari, ecc.)
+- `LineupDialogProvider` (o simile): si occupa unicamente della gestione del dialog, del tipo di selezione e della UI
 
-*   lineupPlayerId (se esiste già, lo mantiene, altrimenti rimane null)
+Questa separazione migliorerebbe la **leggibilità**, la **scalabilità** e la **manutenibilità** del codice.
 
+---
 
-❗ Non generare UUID temporanei.
+## ✨ Obiettivi richiesti
 
-### ⚙️ Regole:
+Se ritieni che la separazione sia una buona scelta architetturale:
 
-*   ✅ **Starter lineup**:
+- 📦 Proponi una struttura più modulare e chiara per la gestione del contesto
+- 🧼 Refactora l’hook `useMyLineup` in modo che esponga un’interfaccia coerente, pulita e semplice da usare (non utilizzare arrow functions e vedi te se utilizzare useCallback)
+- 💬 Eventualmente, suggerisci una divisione del file o separazione in hook specializzati
 
-    *   Deve essere filtrata per roleId coerente con PositionSlot
+> ✳️ NOTA: voglio mantenere compatibilità con l’architettura attuale e **non voglio nessuna logica API**, mi serve solo l’architettura e la struttura dei componenti e hook.
 
-    *   positionId viene da PositionSlot, es: "Position-1"
-
-    *   positionOrder è il numero dopo il trattino → 1
-
-*   ✅ **Bench lineup**:
-
-    *   Non ha restrizioni di roleId
-
-    *   positionId = null
-
-    *   positionOrder è incrementale: 1, 2, 3...
-
-*   ✅ **Giocatore con ruolo da presidente**:
-
-    *   È un giocatore normale, ma se titolare deve avere positionId = "PR-1" e positionOrder = 1
-
-
-### ✅ Cosa ti chiedo di costruire:
-
-*   Un componente (o hook o funzione) che:
-
-    *   Gestisca l'aggiunta di un TeamPlayer alla lineup
-
-    *   Calcoli positionId e positionOrder in base al tipo di slot (starter o bench)
-
-    *   Inserisca correttamente il LineupPlayer nello stato (MyLineupProvider)
-
-    *   Permetta di eliminare il player dalla lineup
+Grazie! 🙏
