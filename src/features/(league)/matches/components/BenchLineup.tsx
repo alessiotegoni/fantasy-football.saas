@@ -9,7 +9,7 @@ type Props = {
   className?: string;
 };
 
-export default async function BenchLineup({
+export default function BenchLineup({
   team,
   canEditLineup,
   className,

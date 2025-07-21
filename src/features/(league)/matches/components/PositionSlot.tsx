@@ -2,6 +2,7 @@ import { Plus } from "lucide-react";
 import { LineupPlayer } from "../queries/match";
 import { PositionId } from "@/drizzle/schema";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
+import useMyLineup from "@/hooks/useMyLineup";
 
 type Props = {
   player: LineupPlayer | undefined;

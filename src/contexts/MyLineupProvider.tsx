@@ -95,6 +95,8 @@ export default function MyLineupProvider({
         handleSetLineup,
         handleSetPlayersDialog,
         handleSetModule,
+        addPlayerToLineup: () => {},
+        removePlayerFromLineup: () => {},
       }}
     >
       {children}

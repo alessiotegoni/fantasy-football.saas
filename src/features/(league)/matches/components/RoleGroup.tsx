@@ -15,15 +15,17 @@ type Props = {
 };
 
 export default function RoleGroup(props: Props) {
-  const { tacticalModule: myTacticalModule } = useMyLineup();
+  const {
+    myLineup: { tacticalModule },
+  } = useMyLineup();
 
-  const tacticalModule = props.canEdit
-    ? myTacticalModule
+  const currentModule = props.canEdit
+    ? tacticalModule
     : props.team.lineup!.tacticalModule;
 
-  if (!tacticalModule) return null;
+  if (!currentModule) return null;
 
-  return tacticalModule?.layout.map((role) => (
+  return currentModule?.layout.map((role) => (
     <div className={cn("flex", props.className)} key={role.roleId}>
       {role.positionsIds.map((posId) => (
         <PositionsList
