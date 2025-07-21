@@ -28,7 +28,16 @@ export default function BenchLineup({
         className
       )}
     >
-     
+      {players.map((player) => (
+        <LineupPlayerCard
+          key={player.id}
+          player={player}
+          type="bench"
+          canEdit={canEditLineup}
+          onRemove={removePlayerFromLineup}
+          className="w-full text-left"
+        />
+      ))}
     </div>
   );
 }
