@@ -1,19 +1,4 @@
 import { RolePosition } from "@/drizzle/schema";
-import {
-  getPlayerRolesTag,
-  getPlayersTag,
-  getTacticalModulesTag,
-  getTeamsTag,
-} from "@/cache/global";
-import {
-  getMatchInfoTag,
-  getMatchLineupsTag,
-  getMatchResultsTag,
-} from "@/features/(league)/matches/db/cache/match";
-import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
-import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
-import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
@@ -66,56 +51,4 @@ export function groupLineupsPlayers<
   T extends LineupPlayer | LineupPlayerWithoutVotes
 >(players: T[]) {
   return Object.groupBy(players, (player) => player.lineupPlayerType);
-}
-
-export function getMatchInfoTags({
-  homeTeamId,
-  awayTeamId,
-  leagueId,
-  matchId,
-  splitMatchday,
-}: {
-  homeTeamId: string | null;
-  awayTeamId: string | null;
-  splitMatchday: {
-    id: number;
-  };
-  leagueId: string;
-  matchId: string;
-}) {
-  const tags = [
-    getMatchInfoTag(matchId),
-    getMatchResultsTag(matchId),
-    getTacticalModulesTag(),
-    getLeagueOptionsTag(leagueId),
-    getSplitMatchdaysIdTag(splitMatchday.id),
-  ];
-
-  if (homeTeamId) tags.push(getTeamIdTag(homeTeamId));
-  if (awayTeamId) tags.push(getTeamIdTag(awayTeamId));
-
-  return tags;
-}
-
-export function getLineupsPlayersTags({
-  matchId,
-  currentMatchdayId,
-  players,
-}: {
-  matchId: string;
-  players: LineupPlayer[];
-  currentMatchdayId: number;
-}) {
-  const tags = [
-    getMatchLineupsTag(matchId),
-    getPlayersTag(),
-    getPlayerRolesTag(),
-    getTeamsTag(),
-  ];
-
-  const playersMatchdayVotesTags = players.map((player) =>
-    getPlayerMatchdayVoteTag(player.id, currentMatchdayId)
-  );
-
-  return [...tags, ...playersMatchdayVotesTags];
 }
