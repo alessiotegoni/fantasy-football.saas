@@ -13,6 +13,7 @@ import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
 import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
+import { groupLineupsPlayers } from "../utils/match";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -37,10 +38,7 @@ export default function MatchWrapper({
     matchInfo.splitMatchday.id !== currentMatchday?.id ||
     currentMatchday?.status !== "upcoming";
 
-  const groupedPlayers = Object.groupBy(
-    lineupsPlayers,
-    (player) => player.lineupPlayerType
-  );
+  const groupedPlayers = groupLineupsPlayers(lineupsPlayers);
 
   return (
     <Container

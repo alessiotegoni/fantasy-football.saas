@@ -61,6 +61,10 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
+export function groupLineupsPlayers(players: LineupPlayer[]) {
+  return Object.groupBy(players, (player) => player.lineupPlayerType);
+}
+
 export function getMatchInfoTags({
   homeTeamId,
   awayTeamId,

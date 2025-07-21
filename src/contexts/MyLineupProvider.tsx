@@ -1,7 +1,11 @@
 "use client";
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
-import { LineupTeam, MyTeam } from "@/features/(league)/matches/utils/match";
+import {
+  groupLineupsPlayers,
+  LineupTeam,
+  MyTeam,
+} from "@/features/(league)/matches/utils/match";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { createContext, useCallback, useEffect, useState } from "react";
 
@@ -63,7 +67,10 @@ export default function MyLineupProvider({
     }
   }, [myLineup.tacticalModule]);
 
-  const handleSetLineup = useCallback((lineup: MyLineup) => setMyLineup(lineup), []);
+  const handleSetLineup = useCallback(
+    (lineup: MyLineup) => setMyLineup(lineup),
+    []
+  );
 
   const handleSetModule = useCallback((tacticalModule: TacticalModule) => {
     setMyLineup((prev) => ({ ...prev, tacticalModule }));
@@ -96,11 +103,13 @@ export default function MyLineupProvider({
 }
 
 function getInitialLineup(myTeam: MyTeam) {
+  const groupedPlayers = groupLineupsPlayers(myTeam?.lineup.players ?? []);
+
   return {
     id: myTeam?.lineup?.id ?? null,
     tacticalModule: getInitialTacticalModule(myTeam?.lineup.tacticalModule),
-    benchPlayers: myTeam?.lineup.players["bench"] ?? [],
-    starterPlayers: myTeam?.lineup.players["starter"] ?? [],
+    benchPlayers: groupedPlayers["bench"] ?? [],
+    starterPlayers: groupedPlayers["starter"] ?? [],
   };
 }
 
@@ -116,4 +125,3 @@ function getInitialTacticalModule(
     return null;
   }
 }
-
