@@ -114,7 +114,6 @@ export default function MatchWrapper({
       {showLineups && myTeamId && (
         <Suspense>
           <PlayersSelect
-            matchId={matchId}
             playersPromise={getTeamsPlayers([myTeamId]).then((players) =>
               players.map(({ purchaseCost, leagueTeamId, ...player }) => player)
             )}

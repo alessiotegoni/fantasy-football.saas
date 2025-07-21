@@ -1,18 +1,16 @@
 import { Plus } from "lucide-react";
 import { LineupPlayer } from "../queries/match";
-import { PositionId } from "@/drizzle/schema";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import useMyLineup from "@/hooks/useMyLineup";
+import LineupPlayerCard from "./LineupPlayerCard";
 
 type Props = {
   player: LineupPlayer | undefined;
   roleId: number;
-  positionId: PositionId;
   canEdit: boolean;
 };
 
 export default function PositionSlot({
-  positionId,
   roleId,
   player,
   canEdit,
@@ -22,11 +20,14 @@ export default function PositionSlot({
 
   return (
     <>
-      {player && !canEdit && player.id}
-      {player && canEdit && (
-        <button onClick={() => removePlayerFromLineup(player.id)}>
-          {player.id}
-        </button>
+      {player && (
+        <LineupPlayerCard
+          player={player}
+          type="starter"
+          canEdit={canEdit}
+          onRemove={removePlayerFromLineup}
+          className="size-14 sm:size-16 xl:size-18 flex items-center justify-center"
+        />
       )}
       {!player && canEdit && (
         <PlayersSelectTrigger

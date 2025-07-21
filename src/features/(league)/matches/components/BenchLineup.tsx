@@ -1,6 +1,10 @@
+"use client"
+
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupTeam } from "../utils/match";
+import LineupPlayerCard from "./LineupPlayerCard";
+import useMyLineup from "@/hooks/useMyLineup";
 
 type Props = {
   team: LineupTeam;
@@ -9,13 +13,22 @@ type Props = {
   className?: string;
 };
 
-export default function BenchLineup({ team, canEditLineup, className }: Props) {
+export default function BenchLineup({
+  team,
+  players,
+  canEditLineup,
+  className,
+}: Props) {
+  const { removePlayerFromLineup } = useMyLineup();
+
   return (
     <div
       className={cn(
-        `bg-input/30 rounded-3xl min-h-[500px] border-border`,
+        `bg-input/30 rounded-3xl min-h-[500px] border-border p-4 space-y-2`,
         className
       )}
-    ></div>
+    >
+     
+    </div>
   );
 }
