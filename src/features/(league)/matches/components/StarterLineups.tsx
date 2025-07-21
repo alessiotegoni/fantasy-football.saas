@@ -1,3 +1,5 @@
+"use client"
+
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import { SplitMatchday } from "@/features/splits/queries/split";
 import StarterLineupField from "./StarterLineupField";

@@ -46,20 +46,15 @@ export function getMyTeam(
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === myTeamId);
   if (!myTeam) return undefined;
 
-  const lineupPlayers = lineupsPlayers.filter(
+  const players = lineupsPlayers.filter(
     (player) => player.leagueTeamId === myTeam.id
-  );
-
-  const groupedPlayers = Object.groupBy(
-    lineupPlayers,
-    (player) => player.lineupPlayerType
   );
 
   return {
     ...myTeam,
     lineup: {
       ...myTeam.lineup,
-      players: groupedPlayers,
+      players,
     },
   };
 }
