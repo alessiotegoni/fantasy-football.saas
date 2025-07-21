@@ -5,6 +5,7 @@ import { LineupPlayerType } from "@/drizzle/schema";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   player: LineupPlayer | LineupPlayerWithoutVotes;
@@ -13,6 +14,12 @@ type Props = {
   canEdit?: boolean;
   onRemove?: (playerId: number) => void;
 };
+
+// FIXME: quando lo slot vuoto viene cliccato al player non viene dato il positionId preso
+// dallo slot ma viene generato casualmente e quindi quando il giocatore quando viene aggiunto
+// si mette a caso
+// FIXME: UI LineupPlayerCard
+// TODO: Button to add bench players
 
 export default function LineupPlayerCard({
   player,
@@ -74,13 +81,15 @@ export default function LineupPlayerCard({
         )}
       </div>
       {canEdit && onRemove && (
-        <button
+        <Button
+          variant="destructive"
+          size="icon"
           onClick={() => onRemove(player.id)}
-          className="hidden group-hover:block absolute
-          top-1 right-1 p-1 rounded-full bg-red-500 text-white hover:bg-red-600"
+          className="group-hover:flex absolute
+          top-1 right-1 p-1 rounded-full size-7"
         >
-          <X className="size-3" />
-        </button>
+          <X className="size-4" />
+        </Button>
       )}
     </div>
   );
