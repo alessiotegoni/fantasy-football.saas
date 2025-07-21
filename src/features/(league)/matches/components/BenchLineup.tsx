@@ -4,21 +4,16 @@ import { LineupTeam } from "../utils/match";
 
 type Props = {
   team: LineupTeam;
+  players: LineupPlayer[]
   canEditLineup: boolean;
-  benchLineupsPromise: Promise<LineupPlayer[]>;
   className?: string;
 };
 
 export default async function BenchLineup({
   team,
   canEditLineup,
-  benchLineupsPromise,
   className,
 }: Props) {
-  const benchLineups = await benchLineupsPromise;
-  const teamLineupPlayers = benchLineups.filter(
-    (player) => player.leagueTeamId === team?.id
-  );
 
   return (
     <div

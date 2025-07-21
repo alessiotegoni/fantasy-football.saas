@@ -16,15 +16,16 @@ export default function PositionSlot({
   player,
   canEdit,
 }: Props) {
+  const { removePlayerFromLineup } = useMyLineup();
   if (!player && !canEdit) return null;
 
   return (
     <>
       {player && !canEdit && player.id}
       {player && canEdit && (
-        <PlayersSelectTrigger roleId={roleId} lineupType="starter">
+        <button onClick={() => removePlayerFromLineup(player.id)}>
           {player.id}
-        </PlayersSelectTrigger>
+        </button>
       )}
       {!player && canEdit && (
         <PlayersSelectTrigger

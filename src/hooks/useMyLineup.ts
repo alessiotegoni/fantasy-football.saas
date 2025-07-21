@@ -40,5 +40,5 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     return roleId ? allAvailable.filter(p => p.role.id === roleId) : allAvailable;
   }, [teamPlayers, myLineup, roleId, type]);
 
-  return { ...context, availablePlayers };
+  return { ...context, availablePlayers, addPlayerToLineup, removePlayerFromLineup };
 }

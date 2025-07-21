@@ -63,10 +63,7 @@ export default function MyLineupProvider({
     }
   }, [myLineup.tacticalModule]);
 
-  // const handleSetLineup = useCallback(
-  //   (lineup: MyLineup) => setMyLineup(lineup),
-  //   []
-  // );
+  const handleSetLineup = useCallback((lineup: MyLineup) => setMyLineup(lineup), []);
 
   const handleSetModule = useCallback((tacticalModule: TacticalModule) => {
     setMyLineup((prev) => ({ ...prev, tacticalModule }));
@@ -88,7 +85,7 @@ export default function MyLineupProvider({
         },
         myLineup,
         playersDialog,
-        // handleSetLineup,
+        handleSetLineup,
         handleSetPlayersDialog,
         handleSetModule,
       }}
@@ -119,3 +116,4 @@ function getInitialTacticalModule(
     return null;
   }
 }
+

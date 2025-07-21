@@ -29,13 +29,18 @@ export default function MatchWrapper({
   matchId,
   myTeamId,
   currentMatchday,
-  lineupsPlayers,
+  lineupsPlayers = [],
   showLineups,
   ...ids
 }: Props) {
   const isMatchdayClosed =
     matchInfo.splitMatchday.id !== currentMatchday?.id ||
     currentMatchday?.status !== "upcoming";
+
+  const groupedPlayers = Object.groupBy(
+    lineupsPlayers,
+    (player) => player.lineupPlayerType
+  );
 
   return (
     <Container
@@ -49,10 +54,10 @@ export default function MatchWrapper({
           <div>
             <div>{/*Presidente home*/}</div>
             <BenchLineup
+              players={groupedPlayers["bench"] ?? []}
               team={matchInfo.homeTeam}
               canEditLineup={
-                //   (matchInfo.homeTeam?.id === myTeam?.id && canEditLineup) ??
-                false
+                !isMatchdayClosed && matchInfo.homeTeam.id === myTeamId
               }
               className="2xl:border-r"
             />
@@ -79,6 +84,7 @@ export default function MatchWrapper({
             {showLineups && (
               <Suspense>
                 <StarterLineups
+                  players={groupedPlayers["starter"] ?? []}
                   match={matchInfo}
                   currentMatchday={currentMatchday}
                   isMatchdayClosed={isMatchdayClosed}
@@ -88,19 +94,19 @@ export default function MatchWrapper({
           </FootballFieldBg>
         </div>
         <div>
+          <div>{/*Presidente away*/}</div>
           {showLineups && (
             <Suspense>
               <BenchLineup
+                players={groupedPlayers["bench"] ?? []}
                 team={matchInfo.awayTeam}
                 canEditLineup={
-                  //   (matchInfo.awayTeam?.id === myTeam?.id && canEditLineup) ??
-                  false
+                  !isMatchdayClosed && matchInfo.awayTeam.id === myTeamId
                 }
                 className="2xl:border-l"
               />
             </Suspense>
           )}
-          <div>{/*Presidente away*/}</div>
         </div>
       </div>
       {showLineups && myTeamId && (

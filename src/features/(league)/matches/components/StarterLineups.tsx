@@ -1,17 +1,17 @@
-import { getStarterLineups, MatchInfo } from "../queries/match";
+import { LineupPlayer, MatchInfo } from "../queries/match";
 import { SplitMatchday } from "@/features/splits/queries/split";
-import { LineupTeam } from "../utils/match";
 import StarterLineupField from "./StarterLineupField";
 import LineupEmptyState from "./LineupEmptyState";
+import useMyLineup from "@/hooks/useMyLineup";
 
 type Props = {
   match: MatchInfo;
-  myTeam?: LineupTeam;
+  players: LineupPlayer[];
   currentMatchday?: SplitMatchday;
   isMatchdayClosed: boolean;
 };
 
-export default async function StarterLineups({
+export default function StarterLineups({
   match: {
     id: matchId,
     isBye,
@@ -20,16 +20,13 @@ export default async function StarterLineups({
     leagueCustomBonusMalus,
     splitMatchday: matchMatchday,
   },
+  players,
   currentMatchday,
-  myTeam,
   isMatchdayClosed,
 }: Props) {
   if (isBye) return null;
 
-  const starterPlayers =
-    homeTeam?.lineup || awayTeam?.lineup
-      ? await getStarterLineups(matchId, matchMatchday.id)
-      : undefined;
+  const { myTeam } = useMyLineup();
 
   return (
     <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px] xl:min-h-[500px]">
@@ -44,14 +41,13 @@ export default async function StarterLineups({
             <LineupEmptyState
               key={i}
               team={team}
-              myTeam={myTeam}
               matchMatchday={matchMatchday}
             />
           );
         }
 
         if (!isMatchdayClosed) {
-          const teamPlayers = starterPlayers?.filter(
+          const teamPlayers = players.filter(
             (player) => player.leagueTeamId === team.id
           );
 

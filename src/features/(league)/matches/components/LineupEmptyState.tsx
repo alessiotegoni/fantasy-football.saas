@@ -3,12 +3,10 @@ import { LineupTeam } from "../utils/match";
 import { SplitMatchday } from "@/features/splits/queries/split";
 
 export default function LineupEmptyState({
-  myTeam,
   team,
   matchMatchday,
 }: {
   team: NonNullable<LineupTeam>;
-  myTeam: LineupTeam | undefined;
   matchMatchday: SplitMatchday;
 }) {
   const isMatchdayEnded = matchMatchday.status === "ended";

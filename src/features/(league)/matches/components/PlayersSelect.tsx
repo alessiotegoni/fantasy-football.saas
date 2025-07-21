@@ -27,7 +27,7 @@ type Props = {
   playersPromise: Promise<TeamPlayer[]>;
 };
 
-export default function PlayersSelect({ matchId, playersPromise }: Props) {
+export default function PlayersSelect({ matchId, myTeam, playersPromise }: Props) {
   const isMobile = useIsMobile();
 
   const players = use(playersPromise);
@@ -66,7 +66,11 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
             )}
           </DrawerHeader>
           <div className="p-6 pt-0 space-y-2">
-            <PlayersList players={availablePlayers} matchId={matchId} />
+            <PlayersList
+              players={availablePlayers}
+              myTeam={myTeam}
+              matchId={matchId}
+            />
           </div>
         </DrawerContent>
       </Drawer>
@@ -88,7 +92,11 @@ export default function PlayersSelect({ matchId, playersPromise }: Props) {
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
               <div className="mt-2 space-y-2">
-                <PlayersList players={availablePlayers} matchId={matchId} />
+                <PlayersList
+              players={availablePlayers}
+              myTeam={myTeam}
+              matchId={matchId}
+            />
               </div>
             </>
           ) : (
@@ -112,14 +120,15 @@ function PlayersList({
   players,
 }: {
   matchId: string;
+  myTeam: LineupTeam;
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
-  const {
-    playersDialog: { type },
-    handleSetPlayersDialog,
-  } = useMyLineup();
+  const { addPlayerToLineup, handleSetPlayersDialog } = useMyLineup();
 
-  async function handleSelectPlayer(player: TeamPlayer) {}
+  async function handleSelectPlayer(player: TeamPlayer) {
+    addPlayerToLineup(player);
+    handleSetPlayersDialog({ open: false });
+  }
 
   return players.map((player) => (
     <PlayerCard
