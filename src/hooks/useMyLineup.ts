@@ -1,61 +1,44 @@
 "use client";
 
 import {
-  LineupPlayerWithoutVotes,
   MyLineupContext,
+  LineupPlayerWithoutVotes,
 } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { useContext, useMemo } from "react";
 
-export default function useMyLineup(players?: TeamPlayer[]) {
+export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
 
   if (!context) {
-    throw new Error("useMyLineupProvider must be used within MyLineupProvider");
+    throw new Error("useMyLineup must be used within a MyLineupProvider");
   }
 
-  const roleId = context.playersDialog.roleId;
+  const { myLineup, playersDialog } = context;
+  const { roleId, type } = playersDialog;
 
-  const availablePlayers: TeamPlayer[] | LineupPlayerWithoutVotes[] =
-    useMemo(() => {
-      if (!players) return [];
+  const availablePlayers = useMemo(() => {
+    const { starterPlayers, benchPlayers } = myLineup;
 
-      const avlbPlayers = getAvailablePlayers(players, context);
+    // Players already in the lineup
+    const lineupPlayerIds = new Set(
+      [...starterPlayers, ...benchPlayers].map(p => p.id)
+    );
 
-      return roleId ? getPlayersByRoleId(avlbPlayers, roleId) : avlbPlayers;
-    }, [players, context.myLineup, roleId]);
+    // Base available players (not in lineup yet)
+    const baseAvailable = teamPlayers.filter(p => !lineupPlayerIds.has(p.id));
+
+    let swappablePlayers: LineupPlayerWithoutVotes[] = [];
+    if (type === 'starter') {
+      swappablePlayers = benchPlayers;
+    } else if (type === 'bench') {
+      swappablePlayers = starterPlayers;
+    }
+
+    const allAvailable = [...baseAvailable, ...swappablePlayers];
+
+    return roleId ? allAvailable.filter(p => p.role.id === roleId) : allAvailable;
+  }, [teamPlayers, myLineup, roleId, type]);
 
   return { ...context, availablePlayers };
-}
-
-export function getAvailablePlayers(
-  teamPlayers: TeamPlayer[],
-  { myLineup, playersDialog: { type } }: MyLineupContext
-) {
-  const benchPlayers = myLineup?.benchPlayers ?? [];
-  const starterPlayers = myLineup?.starterPlayers ?? [];
-
-  const lineupPlayersIds = new Set(
-    [...benchPlayers, ...starterPlayers].map((p) => p.id)
-  );
-  const availablePlayers = teamPlayers.filter(
-    (p) => !lineupPlayersIds.has(p.id)
-  );
-
-  if (type === "starter") {
-    return [...availablePlayers, ...benchPlayers];
-  }
-
-  if (type === "bench") {
-    return [...availablePlayers, ...starterPlayers];
-  }
-
-  return teamPlayers;
-}
-
-function getPlayersByRoleId(
-  players: TeamPlayer[] | LineupPlayerWithoutVotes[],
-  roleId: number
-) {
-  return players.filter((player) => player.role.id === roleId);
 }

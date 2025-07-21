@@ -1,5 +1,5 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
-import { getBenchLineups, MatchInfo } from "../queries/match";
+import { LineupPlayer, MatchInfo } from "../queries/match";
 import Container from "@/components/Container";
 import MyLineupProvider from "@/contexts/MyLineupProvider";
 import { Suspense } from "react";
@@ -21,20 +21,22 @@ type Props = {
   leagueId: string;
   matchId: string;
   myTeam?: LineupTeam;
+  starters?: LineupPlayer[];
+  bench?: LineupPlayer[];
   currentMatchday?: SplitMatchday;
   showLineups?: boolean;
 };
 
 export default function MatchWrapper({
   matchInfo,
+  matchId,
   myTeam,
   currentMatchday,
-  showLineups = false,
+  starters,
+  bench,
   ...ids
 }: Props) {
-  const benchLineupsPromise = showLineups
-    ? getBenchLineups(ids.matchId, matchInfo.splitMatchday.id)
-    : undefined;
+  
 
   const isMatchdayClosed =
     matchInfo.splitMatchday.id !== currentMatchday?.id ||
@@ -63,7 +65,8 @@ export default function MatchWrapper({
         {showLineups && myTeam?.id && (
           <Suspense>
             <PlayersSelect
-              myLineupId={myTeam.lineup?.id ?? null}
+              matchId={matchId}
+              myTeam={myTeam}
               playersPromise={getTeamsPlayers([myTeam.id]).then((players) =>
                 players.map(
                   ({ purchaseCost, leagueTeamId, ...player }) => player

@@ -8,6 +8,7 @@ import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
+import { getMatchLineups } from "@/features/(league)/matches/queries/match";
 import { Suspense } from "react";
 
 export default async function MatchPage({
@@ -39,9 +40,10 @@ async function SuspenseBoundary({
   const userId = await getUserId();
   if (!userId) return;
 
-  const [userTeamId, currentMatchday] = await Promise.all([
+  const [userTeamId, currentMatchday, lineups] = await Promise.all([
     getUserTeamId(userId, ids.leagueId),
     getCurrentMatchday(matchInfo.splitMatchday.splitId),
+    getMatchLineups(ids.matchId, matchInfo.splitMatchday.id),
   ]);
   const myTeam = [matchInfo.homeTeam, matchInfo.awayTeam].find(
     (team) => team?.id === userTeamId
@@ -53,6 +55,7 @@ async function SuspenseBoundary({
       myTeam={myTeam}
       currentMatchday={currentMatchday}
       showLineups
+      {...lineups}
       {...ids}
     />
   );

@@ -1,15 +1,10 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import {
-  getMatchBenchsLineupTag,
-  getMatchStartersLineupTag,
-} from "../db/cache/match";
 import { db } from "@/drizzle/db";
 import {
   bonusMalusTypes,
   leagueMatches,
   leagueMatchLineupPlayers,
   leagueMatchTeamLineup,
-  LineupPlayerType,
   matchdayBonusMalus,
   matchdayVotes,
   playerRoles,
@@ -19,8 +14,8 @@ import {
 import { and, eq } from "drizzle-orm";
 import {
   formatTeamData,
-  getLineupsPlayersTags,
   getMatchInfoTags,
+  getMatchLineupsTags,
 } from "../utils/match";
 
 export async function getMatchInfo({
@@ -114,49 +109,12 @@ export async function getMatchInfo({
 
 export type MatchInfo = NonNullable<Awaited<ReturnType<typeof getMatchInfo>>>;
 
-export async function getStarterLineups(
+export async function getMatchLineups(
   matchId: string,
   currentMatchdayId: number
 ) {
   "use cache";
 
-  const players = await getLineupPlayers(matchId, currentMatchdayId, "starter");
-
-  cacheTag(
-    getMatchStartersLineupTag(matchId),
-    ...getLineupsPlayersTags({
-      currentMatchdayId,
-      players,
-    })
-  );
-
-  return players;
-}
-
-export async function getBenchLineups(
-  matchId: string,
-  currentMatchdayId: number
-) {
-  "use cache";
-
-  const players = await getLineupPlayers(matchId, currentMatchdayId, "bench");
-
-  cacheTag(
-    getMatchBenchsLineupTag(matchId),
-    ...getLineupsPlayersTags({
-      currentMatchdayId,
-      players,
-    })
-  );
-
-  return players;
-}
-
-async function getLineupPlayers(
-  matchId: string,
-  currentMatchdayId: number,
-  lineupType: LineupPlayerType
-) {
   const results = await db
     .select({
       id: players.id,
@@ -169,6 +127,7 @@ async function getLineupPlayers(
       positionId: leagueMatchLineupPlayers.positionId,
       positionOrder: leagueMatchLineupPlayers.positionOrder,
       vote: matchdayVotes.vote,
+      lineupPlayerType: leagueMatchLineupPlayers.playerType,
       bonusMaluses: {
         id: matchdayBonusMalus.bonusMalusTypeId,
         count: matchdayBonusMalus.count,
@@ -205,15 +164,20 @@ async function getLineupPlayers(
       bonusMalusTypes,
       eq(bonusMalusTypes.id, matchdayBonusMalus.bonusMalusTypeId)
     )
-    .where(
-      and(
-        eq(leagueMatches.id, matchId),
-        eq(leagueMatches.splitMatchdayId, currentMatchdayId),
-        eq(leagueMatchLineupPlayers.playerType, lineupType)
-      )
-    );
+    .where(eq(leagueMatches.id, matchId));
 
-  return results;
+  cacheTag(
+    ...getMatchLineupsTags({ matchId, currentMatchdayId, players: results })
+  );
+
+  const groupedPlayers = Object.groupBy(
+    results,
+    (player) => player.lineupPlayerType
+  );
+
+  return {
+    starter: groupedPlayers["starter"] ?? [],
+    bench: groupedPlayers["bench"] ?? [],
+  };
 }
-
-export type LineupPlayer = Awaited<ReturnType<typeof getLineupPlayers>>[0];
+export type LineupPlayer = Awaited<ReturnType<typeof getMatchLineups>>["bench"];

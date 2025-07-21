@@ -20,14 +20,19 @@ import useMyLineup from "@/hooks/useMyLineup";
 import { useIsMobile } from "@/hooks/useMobile";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
+import { LineupTeam } from "../utils/match";
+
+type Props = {
+  matchId: string;
+  myTeam: LineupTeam;
+  playersPromise: Promise<TeamPlayer[]>;
+};
 
 export default function PlayersSelect({
-  myLineupId,
+  matchId,
+  myTeam,
   playersPromise,
-}: {
-  myLineupId: string | null
-  playersPromise: Promise<TeamPlayer[]>;
-}) {
+}: Props) {
   const isMobile = useIsMobile();
 
   const players = use(playersPromise);
@@ -65,8 +70,12 @@ export default function PlayersSelect({
               </>
             )}
           </DrawerHeader>
-          <div className="p-6 pt-2">
-            <PlayersList players={availablePlayers} />
+          <div className="p-6 pt-0 space-y-2">
+            <PlayersList
+              players={availablePlayers}
+              myTeam={myTeam}
+              matchId={matchId}
+            />
           </div>
         </DrawerContent>
       </Drawer>
@@ -87,7 +96,13 @@ export default function PlayersSelect({
                 Seleziona il giocatore{" "}
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
-              <PlayersList players={availablePlayers} />
+              <div className="mt-2 space-y-2">
+                <PlayersList
+                  players={availablePlayers}
+                  myTeam={myTeam}
+                  matchId={matchId}
+                />
+              </div>
             </>
           ) : (
             <>
@@ -105,23 +120,27 @@ export default function PlayersSelect({
 }
 
 function PlayersList({
+  matchId,
+  myTeam,
   players,
 }: {
+  matchId: string;
+  myTeam: LineupTeam;
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
-  const { playersDialog: { type }, handleSetPlayersDialog } = useMyLineup();
+  const {
+    playersDialog: { type },
+    handleSetPlayersDialog,
+  } = useMyLineup();
 
-  const handleSelectPlayer = (player: TeamPlayer) => {};
+  async function handleSelectPlayer(player: TeamPlayer) {}
 
-  return (
-    <div className="mt-2">
-      {players.map((player) => (
-        <PlayerCard
-          {...player}
-          showSelectButton={false}
-          onSelect={handleSelectPlayer}
-        />
-      ))}
-    </div>
-  );
+  return players.map((player) => (
+    <PlayerCard
+      {...player}
+      showSelectButton={false}
+      onSelect={handleSelectPlayer}
+      className="cursor-pointer"
+    />
+  ));
 }

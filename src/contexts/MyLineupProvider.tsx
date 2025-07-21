@@ -12,15 +12,15 @@ export type LineupPlayerWithoutVotes = TeamPlayer & {
 };
 
 type MyLineup = {
-  id: string;
+  id: string | null;
   benchPlayers: LineupPlayerWithoutVotes[];
   starterPlayers: LineupPlayerWithoutVotes[];
-} | null;
+};
 
 type PlayersDialog = {
   open: boolean;
   type: LineupPlayerType | null;
-  roleId: number | null
+  roleId: number | null;
 };
 
 export type MyLineupContext = {
@@ -41,16 +41,20 @@ export default function MyLineupProvider({
   myTeam,
 }: {
   children: React.ReactNode;
-  myTeam: LineupTeam
+  myTeam: LineupTeam | undefined;
 }) {
-  const [myLineup, setMyLineup] = useState<MyLineup>(null);
+  const [myLineup, setMyLineup] = useState<MyLineup>({
+    id: myTeam?.lineup?.id ?? null,
+    benchPlayers: [],
+    starterPlayers: [],
+  });
   const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
-    getInitialTacticalModule(defaultTacticalModule)
+    getInitialTacticalModule(myTeam?.lineup?.tacticalModule)
   );
   const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
     open: false,
     type: null,
-    roleId: null
+    roleId: null,
   });
 
   useEffect(() => {
@@ -73,7 +77,7 @@ export default function MyLineupProvider({
 
   const handleSetPlayersDialog = useCallback(
     (dialog: Partial<PlayersDialog>) =>
-      setPlayersDialog({ ...playersDialog, ...dialog }),
+      setPlayersDialog(prev => ({ ...prev, ...dialog })),
     []
   );
 

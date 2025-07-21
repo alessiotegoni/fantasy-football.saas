@@ -7,12 +7,13 @@ import {
 } from "@/cache/global";
 import {
   getMatchInfoTag,
+  getMatchLineupsTag,
   getMatchResultsTag,
 } from "@/features/(league)/matches/db/cache/match";
 import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
-import { LineupPlayer } from "../queries/match";
+import { LineupPlayer[] } from "../queries/match";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
@@ -66,17 +67,24 @@ export function getMatchInfoTags({
   return tags;
 }
 
-export function getLineupsPlayersTags({
+export function getMatchLineupsTags({
+  matchId,
   currentMatchdayId,
   players,
 }: {
+  matchId: string;
   players: LineupPlayer[];
   currentMatchdayId: number;
 }) {
-  const tags = [getPlayersTag(), getPlayerRolesTag(), getTeamsTag()];
+  const tags = [
+    getMatchLineupsTag(matchId),
+    getPlayersTag(),
+    getPlayerRolesTag(),
+    getTeamsTag(),
+  ];
 
   const playersMatchdayVotesTags = players.map((player) =>
-    getPlayerMatchdayVoteTag(player.playerId, currentMatchdayId)
+    getPlayerMatchdayVoteTag(player.id, currentMatchdayId)
   );
 
   return [...tags, ...playersMatchdayVotesTags];
