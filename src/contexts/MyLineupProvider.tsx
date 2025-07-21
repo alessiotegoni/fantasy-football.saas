@@ -51,11 +51,9 @@ export default function MyLineupProvider({
 }) {
   const [myLineup, setMyLineup] = useState<MyLineup>(getInitialLineup(myTeam));
 
-  const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
-    open: false,
-    type: null,
-    roleId: null,
-  });
+  const [playersDialog, setPlayersDialog] = useState<PlayersDialog>(
+    getInitialDialog()
+  );
 
   useEffect(() => {
     if (myLineup.tacticalModule) {
@@ -101,6 +99,14 @@ export default function MyLineupProvider({
       {children}
     </MyLineupContext.Provider>
   );
+}
+
+function getInitialDialog() {
+  return {
+    open: false,
+    type: null,
+    roleId: null,
+  };
 }
 
 function getInitialLineup(myTeam: MyTeam) {

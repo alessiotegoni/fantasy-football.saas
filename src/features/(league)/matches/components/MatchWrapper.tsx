@@ -65,7 +65,7 @@ export default function MatchWrapper({
         )}
         <div>
           <CalendarMatchCard
-            className="!rounded-4xl"
+            className="!rounded-4xl border-b border-border"
             homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
             awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
             isLink={false}
