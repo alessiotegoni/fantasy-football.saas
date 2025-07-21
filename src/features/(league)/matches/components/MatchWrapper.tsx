@@ -1,13 +1,11 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import Container from "@/components/Container";
-import MyLineupProvider from "@/contexts/MyLineupProvider";
 import { Suspense } from "react";
 import CalendarMatchCard from "../../(admin)/calendar/components/CalendarMatchCard";
 import FootballFieldBg from "./FootballFieldBg";
 import StarterLineups from "./StarterLineups";
 import BenchLineup from "./BenchLineup";
-import { LineupTeam } from "../utils/match";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import ModulesSelect from "./ModulesSelect";
 import { getTacticalModules } from "../../options/queries/leagueOptions";

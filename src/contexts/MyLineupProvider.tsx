@@ -1,7 +1,7 @@
 "use client";
 
 import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
-import { LineupTeam } from "@/features/(league)/matches/utils/match";
+import { LineupTeam, MyTeam } from "@/features/(league)/matches/utils/match";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { createContext, useCallback, useEffect, useState } from "react";
 
@@ -13,6 +13,7 @@ export type LineupPlayerWithoutVotes = TeamPlayer & {
 
 type MyLineup = {
   id: string | null;
+  tacticalModule: TacticalModule | null;
   benchPlayers: LineupPlayerWithoutVotes[];
   starterPlayers: LineupPlayerWithoutVotes[];
 };
@@ -24,12 +25,12 @@ type PlayersDialog = {
 };
 
 export type MyLineupContext = {
+  myTeam: Omit<LineupTeam, "lineup">;
   myLineup: MyLineup;
-  tacticalModule: TacticalModule | null;
   playersDialog: PlayersDialog;
   handleSetLineup: (lineup: MyLineup) => void;
-  handleSetModule: (module: TacticalModule) => void;
   handleSetPlayersDialog: (dialog: Partial<PlayersDialog>) => void;
+  handleSetModule: (module: TacticalModule) => void;
 };
 
 const LOCAL_STORAGE_KEY = "tacticalModule";
@@ -41,16 +42,10 @@ export default function MyLineupProvider({
   myTeam,
 }: {
   children: React.ReactNode;
-  myTeam: LineupTeam | undefined;
+  myTeam: MyTeam;
 }) {
-  const [myLineup, setMyLineup] = useState<MyLineup>({
-    id: myTeam?.lineup?.id ?? null,
-    benchPlayers: [],
-    starterPlayers: [],
-  });
-  const [tacticalModule, setTacticalModule] = useState<TacticalModule | null>(
-    getInitialTacticalModule(myTeam?.lineup?.tacticalModule)
-  );
+  const [myLineup, setMyLineup] = useState(getInitialLineup(myTeam));
+
   const [playersDialog, setPlayersDialog] = useState<PlayersDialog>({
     open: false,
     type: null,
@@ -58,38 +53,44 @@ export default function MyLineupProvider({
   });
 
   useEffect(() => {
-    if (tacticalModule) {
+    if (myLineup.tacticalModule) {
       try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tacticalModule));
+        localStorage.setItem(
+          LOCAL_STORAGE_KEY,
+          JSON.stringify(myLineup.tacticalModule)
+        );
       } catch {}
     }
-  }, [tacticalModule]);
+  }, [myLineup.tacticalModule]);
 
-  const handleSetLineup = useCallback(
-    (lineup: MyLineup) => setMyLineup(lineup),
-    []
-  );
+  // const handleSetLineup = useCallback(
+  //   (lineup: MyLineup) => setMyLineup(lineup),
+  //   []
+  // );
 
-  const handleSetModule = useCallback(
-    (module: TacticalModule) => setTacticalModule(module),
-    []
-  );
+  const handleSetModule = useCallback((tacticalModule: TacticalModule) => {
+    setMyLineup((prev) => ({ ...prev, tacticalModule }));
+  }, []);
 
   const handleSetPlayersDialog = useCallback(
     (dialog: Partial<PlayersDialog>) =>
-      setPlayersDialog(prev => ({ ...prev, ...dialog })),
+      setPlayersDialog((prev) => ({ ...prev, ...dialog })),
     []
   );
 
   return (
     <MyLineupContext.Provider
       value={{
+        myTeam: {
+          id: myTeam?.id ?? null,
+          imageUrl: myTeam?.imageUrl ?? null,
+          name: myTeam?.name ?? null,
+        },
         myLineup,
-        tacticalModule,
         playersDialog,
-        handleSetLineup,
-        handleSetModule,
+        // handleSetLineup,
         handleSetPlayersDialog,
+        handleSetModule,
       }}
     >
       {children}
@@ -97,9 +98,18 @@ export default function MyLineupProvider({
   );
 }
 
+function getInitialLineup(myTeam: MyTeam) {
+  return {
+    id: myTeam?.lineup?.id ?? null,
+    tacticalModule: getInitialTacticalModule(myTeam?.lineup.tacticalModule),
+    benchPlayers: myTeam?.lineup.players["bench"] ?? [],
+    starterPlayers: myTeam?.lineup.players["starter"] ?? [],
+  };
+}
+
 function getInitialTacticalModule(
   defaultTacticalModule: TacticalModule | undefined
-) {
+): TacticalModule | null {
   if (defaultTacticalModule) return defaultTacticalModule;
 
   try {
