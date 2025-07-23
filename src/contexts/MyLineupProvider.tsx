@@ -1,6 +1,7 @@
 "use client";
 
 import { LineupPlayerType, PositionId, TacticalModule } from "@/drizzle/schema";
+import { tacticalModuleSchema } from "@/features/(league)/matches/schema/matchTacticalModule";
 import {
   groupLineupsPlayers,
   LineupTeam,
@@ -129,7 +130,11 @@ function getInitialTacticalModule(
 
   try {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : null;
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return tacticalModuleSchema.parse(parsed);
+    }
+    return null;
   } catch {
     return null;
   }

@@ -27,9 +27,9 @@ export default function RoleGroup({ className, ...props }: Props) {
 
   return currentModule?.layout.map((role) => (
     <div className={cn("flex", className)} key={role.roleId}>
-      {role.positionsIds.map((posId) => (
+      {role.positionsIds.map((posId, i) => (
         <PositionsList
-          key={posId}
+          key={`${posId}-${i}`}
           roleId={role.roleId}
           positionId={posId}
           {...props}
