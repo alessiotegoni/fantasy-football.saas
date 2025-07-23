@@ -8,7 +8,13 @@ import {
   MyTeam,
 } from "@/features/(league)/matches/utils/match";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { createContext, useCallback, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 export type LineupPlayerWithoutVotes = TeamPlayer & {
   lineupPlayerType: LineupPlayerType;
@@ -17,7 +23,7 @@ export type LineupPlayerWithoutVotes = TeamPlayer & {
   lineupPlayerId: string | null;
 };
 
-type MyLineup = {
+export type MyLineup = {
   id: string | null;
   tacticalModule: TacticalModule | null;
   benchPlayers: LineupPlayerWithoutVotes[];
@@ -35,6 +41,7 @@ export type MyLineupContext = {
   myTeam: Omit<LineupTeam, "lineup">;
   myLineup: MyLineup;
   playersDialog: PlayersDialog;
+  isLineupDirty: boolean;
   handleSetLineup: (lineup: MyLineup) => void;
   handleSetPlayersDialog: (dialog: Partial<PlayersDialog>) => void;
   handleSetModule: (module: TacticalModule) => void;
@@ -51,7 +58,12 @@ export default function MyLineupProvider({
   children: React.ReactNode;
   myTeam: MyTeam;
 }) {
-  const [myLineup, setMyLineup] = useState<MyLineup>(getInitialLineup(myTeam));
+  const [initialLineup] = useState<MyLineup>(
+    getInitialLineup.bind(null, myTeam)
+  );
+  const [myLineup, setMyLineup] = useState<MyLineup>(
+    getInitialLineup.bind(null, myTeam)
+  );
 
   const [playersDialog, setPlayersDialog] = useState<PlayersDialog>(
     getInitialDialog()
@@ -83,6 +95,28 @@ export default function MyLineupProvider({
     []
   );
 
+  const isLineupDirty = useMemo(() => {
+    if (myLineup.tacticalModule?.id !== initialLineup.tacticalModule?.id) {
+      return true;
+    }
+
+    const starterIds = myLineup.starterPlayers.map((p) => p.id);
+    const initialStarterIds = initialLineup.starterPlayers.map((p) => p.id);
+
+    if (JSON.stringify(starterIds) !== JSON.stringify(initialStarterIds)) {
+      return true;
+    }
+
+    const benchIds = myLineup.benchPlayers.map((p) => p.id);
+    const initialBenchIds = initialLineup.benchPlayers.map((p) => p.id);
+
+    if (JSON.stringify(benchIds) !== JSON.stringify(initialBenchIds)) {
+      return true;
+    }
+
+    return false;
+  }, [myLineup, initialLineup]);
+
   return (
     <MyLineupContext.Provider
       value={{
@@ -93,6 +127,7 @@ export default function MyLineupProvider({
         },
         myLineup,
         playersDialog,
+        isLineupDirty,
         handleSetLineup,
         handleSetPlayersDialog,
         handleSetModule,

@@ -14,6 +14,7 @@ import Disclaimer from "@/components/Disclaimer";
 import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { groupLineupsPlayers } from "../utils/match";
+import SaveLineupButton from "./SaveLineupButton";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -27,7 +28,6 @@ type Props = {
 
 export default function MatchWrapper({
   matchInfo,
-  matchId,
   myTeamId,
   currentMatchday,
   lineupsPlayers = [],
@@ -78,6 +78,7 @@ export default function MatchWrapper({
                   allowedModulesPromise={getLeagueModules(ids.leagueId)}
                   tacticalModulesPromise={getTacticalModules()}
                 />
+                <SaveLineupButton {...ids} myTeamId={myTeamId} />
               </MobileButtonsContainer>
             )}
             {showLineups && (
