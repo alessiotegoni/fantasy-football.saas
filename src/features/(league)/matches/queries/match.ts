@@ -190,7 +190,7 @@ export async function getLineupsPlayers(
 }
 export type LineupPlayer = Awaited<
   ReturnType<typeof getLineupsPlayers>
->[number];
+>[number] & { purchaseCost: number };
 
 function getMatchInfoTags({
   homeTeamId,
@@ -227,7 +227,7 @@ function getLineupsPlayersTags({
   players,
 }: {
   matchId: string;
-  players: LineupPlayer[];
+  players: Omit<LineupPlayer, "purchaseCost">[];
   currentMatchdayId: number;
 }) {
   const tags = [
