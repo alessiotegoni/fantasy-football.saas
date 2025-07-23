@@ -1,12 +1,13 @@
 "use client";
 
-import { LineupPlayerType } from "@/drizzle/schema";
+import { LineupPlayerType, PositionId } from "@/drizzle/schema";
 import useMyLineup from "@/hooks/useMyLineup";
 
 type Props = {
   children: React.ReactNode;
   lineupType: LineupPlayerType;
   roleId?: number;
+  positionId?: PositionId;
   className?: string;
 };
 
@@ -14,6 +15,7 @@ export default function PlayersSelectTrigger({
   children,
   lineupType,
   roleId,
+  positionId,
   className = "",
 }: Props) {
   const { handleSetPlayersDialog } = useMyLineup();
@@ -25,6 +27,7 @@ export default function PlayersSelectTrigger({
         open: true,
         type: lineupType,
         roleId: roleId ?? null,
+        positionId: positionId ?? null,
       })}
     >
       {children}
