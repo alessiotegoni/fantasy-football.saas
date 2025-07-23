@@ -52,21 +52,10 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
-export function getNextPositionOrder(
-  modouleLayout: RolePosition[],
-  roleId: number,
-  positionId: PositionId
-) {
-  const positionSlot = modouleLayout.find((r) => r.roleId === roleId);
-  if (!positionSlot) return null;
-
+export function getPositionOrder(positionId: PositionId) {
   const [, id] = positionId.split("-");
 
-  const newPositionOrder = parseInt(id) + 1;
-
-  if (newPositionOrder > positionSlot.count) return null;
-
-  return newPositionOrder;
+  return parseInt(id);
 }
 
 export function isValidPositionId(
