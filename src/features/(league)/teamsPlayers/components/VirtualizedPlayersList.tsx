@@ -13,7 +13,7 @@ export default function VirtualizedPlayersList({
   actionsDialog: React.ReactNode;
 }) {
   const { filteredPlayers } = usePlayersFilters();
-  const sortedPlayers = useSortPlayers(filteredPlayers)
+  const { sortedPlayers } = useSortPlayers(filteredPlayers);
 
   const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection();
 

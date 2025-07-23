@@ -24,17 +24,21 @@ export default function TradePlayersProvider({
   receiverTeamId,
   teamsPlayers,
 }: Props) {
-  const players = useSortPlayers(teamsPlayers);
+  const { sortedPlayers } = useSortPlayers(teamsPlayers);
 
   const proposerTeamPlayers = useMemo(() => {
     if (!proposerTeamId) return [];
-    return players.filter((player) => player.leagueTeamId === proposerTeamId);
-  }, [players, proposerTeamId]);
+    return sortedPlayers.filter(
+      (player) => player.leagueTeamId === proposerTeamId
+    );
+  }, [sortedPlayers, proposerTeamId]);
 
   const receiverTeamPlayers = useMemo(() => {
     if (!receiverTeamId) return [];
-    return players.filter((player) => player.leagueTeamId === receiverTeamId);
-  }, [players, receiverTeamId]);
+    return sortedPlayers.filter(
+      (player) => player.leagueTeamId === receiverTeamId
+    );
+  }, [sortedPlayers, receiverTeamId]);
 
   return (
     <TradePlayersContext.Provider

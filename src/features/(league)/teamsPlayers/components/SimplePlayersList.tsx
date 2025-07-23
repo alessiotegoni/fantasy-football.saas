@@ -14,7 +14,7 @@ export default function SimplePlayersList({
   actionsDialog,
 }: SimplePlayersListProps) {
   const { filteredPlayers } = usePlayersFilters();
-  const sortedPlayers = useSortPlayers(filteredPlayers);
+  const { sortedPlayers } = useSortPlayers(filteredPlayers);
 
   const { isSelectionMode, toggleSelectPlayer } = usePlayerSelection();
 
