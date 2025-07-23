@@ -11,6 +11,7 @@ import {
   isValidPositionId,
   reorderBench,
 } from "@/features/(league)/matches/utils/match";
+import useSortPlayers from "./useSortPlayers";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -21,7 +22,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
   const { roleId, positionId, type } = playersDialog;
 
-  
+  const { sortPlayers } = useSortPlayers();
 
   // console.log(starterPlayers, benchPlayers);
 
@@ -121,7 +122,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
         : type === "bench"
         ? starterPlayers
         : [];
-    const fullList = [...baseAvailable, ...swappable];
+
+    const fullList = sortPlayers([...baseAvailable, ...swappable]);
 
     return roleId ? fullList.filter((p) => p.role.id === roleId) : fullList;
   }, [teamPlayers, starterPlayers, benchPlayers, type, roleId]);

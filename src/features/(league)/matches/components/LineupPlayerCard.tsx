@@ -15,6 +15,7 @@ type Props = {
   onRemove?: (playerId: number) => void;
 };
 
+// TODO: aggiungere il ruolo del giocatore (<PlayerRoleBadge />) insieme al team se non ci sono bonusMalus
 // FIXME: UI LineupPlayerCard
 
 export default function LineupPlayerCard({

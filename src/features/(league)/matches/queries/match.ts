@@ -11,7 +11,7 @@ import {
   players,
   teams,
 } from "@/drizzle/schema";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import {
   getPlayerRolesTag,
   getPlayersTag,
@@ -175,7 +175,8 @@ export async function getLineupsPlayers(
       bonusMalusTypes,
       eq(bonusMalusTypes.id, matchdayBonusMalus.bonusMalusTypeId)
     )
-    .where(eq(leagueMatches.id, matchId));
+    .where(eq(leagueMatches.id, matchId))
+    .orderBy(asc(leagueMatchLineupPlayers.positionOrder));
 
   cacheTag(
     ...getLineupsPlayersTags({ matchId, currentMatchdayId, players: results })
