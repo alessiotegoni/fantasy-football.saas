@@ -46,7 +46,7 @@ export default function LineupPlayerCard({
         className={cn(isStarter ? "size-12" : "size-10")}
         renderFallback={() => null}
       />
-      <div className={cn(isStarter ? "text-xs" : "text-sm")}>
+      <div className={cn(isStarter ? "text-xs" : "text-xs")}>
         <p className="font-semibold">{player.displayName}</p>
         {player.vote !== undefined && (
           <div className="flex items-center gap-1">
@@ -80,11 +80,11 @@ export default function LineupPlayerCard({
         <Button
           variant="destructive"
           size="icon"
-          onClick={() => onRemove(player.id)}
-          className="group-hover:flex absolute
-          top-1 right-1 p-1 rounded-full size-7"
+          onClick={onRemove.bind(null, player.id)}
+          className="hidden group-hover:flex absolute
+          top-1 right-1 p-1 rounded-full size-5"
         >
-          <X className="size-4" />
+          <X className="size-3" />
         </Button>
       )}
     </div>

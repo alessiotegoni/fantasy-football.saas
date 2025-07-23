@@ -21,6 +21,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
   const { roleId, positionId, type } = playersDialog;
 
+  
+
   // console.log(starterPlayers, benchPlayers);
 
   function addPlayerToLineup(player: TeamPlayer) {
