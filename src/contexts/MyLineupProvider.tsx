@@ -1,6 +1,6 @@
 "use client";
 
-import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
+import { LineupPlayerType, PositionId, TacticalModule } from "@/drizzle/schema";
 import {
   groupLineupsPlayers,
   LineupTeam,
@@ -27,6 +27,7 @@ type PlayersDialog = {
   open: boolean;
   type: LineupPlayerType | null;
   roleId: number | null;
+  positionId: PositionId | null;
 };
 
 export type MyLineupContext = {
@@ -106,6 +107,7 @@ function getInitialDialog() {
     open: false,
     type: null,
     roleId: null,
+    positionId: null,
   };
 }
 
