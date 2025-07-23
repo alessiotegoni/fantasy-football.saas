@@ -8,7 +8,8 @@ import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  player: LineupPlayer | LineupPlayerWithoutVotes;
+  player: LineupPlayerWithoutVotes &
+    Partial<Pick<LineupPlayer, "vote" | "bonusMaluses">>;
   type: LineupPlayerType;
   className?: string;
   canEdit?: boolean;
