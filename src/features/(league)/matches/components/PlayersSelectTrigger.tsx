@@ -2,6 +2,7 @@
 
 import { LineupPlayerType, PositionId } from "@/drizzle/schema";
 import useMyLineup from "@/hooks/useMyLineup";
+import { cn } from "@/lib/utils";
 
 type Props = {
   children: React.ReactNode;
@@ -16,13 +17,16 @@ export default function PlayersSelectTrigger({
   lineupType,
   roleId,
   positionId,
-  className = "",
+  className,
 }: Props) {
   const { handleSetPlayersDialog } = useMyLineup();
 
   return (
     <button
-      className={className}
+      className={cn(
+        "flex items-center justify-center text-muted-foreground transition-colors hover:text-white cursor-pointer",
+        className
+      )}
       onClick={handleSetPlayersDialog.bind(null, {
         open: true,
         type: lineupType,

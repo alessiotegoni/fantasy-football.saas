@@ -31,7 +31,7 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
       {!player && canEdit && (
         <PlayersSelectTrigger
           lineupType="starter"
-          className="size-14 sm:size-16 xl:size-18 bg-muted border border-border rounded-2xl flex items-center justify-center text-muted-foreground transition-colors hover:text-white cursor-pointer"
+          className="size-14 sm:size-16 xl:size-18 bg-muted border border-border rounded-2xl"
           {...ids}
         >
           <Plus className="size-6" />

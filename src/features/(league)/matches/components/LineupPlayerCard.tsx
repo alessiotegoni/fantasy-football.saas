@@ -16,7 +16,6 @@ type Props = {
 };
 
 // FIXME: UI LineupPlayerCard
-// TODO: Button to add bench players
 
 export default function LineupPlayerCard({
   player,
