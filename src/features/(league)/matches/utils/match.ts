@@ -3,6 +3,7 @@ import {
   Position,
   PositionId,
   positions,
+  PRESIDENT_ROLE_ID,
   RolePosition,
 } from "@/drizzle/schema";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
@@ -52,6 +53,18 @@ export function getMyTeam(
 }
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
+
+export function getPresident(
+  players: LineupPlayer[] | LineupPlayerWithoutVotes[],
+  teamId: string | null
+) {
+  const president = players.find(
+    (player) =>
+      player.role.id === PRESIDENT_ROLE_ID && player.leagueTeamId === teamId
+  );
+
+  return president;
+}
 
 export function getPositionOrder(
   type: LineupPlayerType,

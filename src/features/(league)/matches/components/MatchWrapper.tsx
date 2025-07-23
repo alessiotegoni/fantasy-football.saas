@@ -13,10 +13,9 @@ import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
 import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
-import { groupLineupsPlayers, LineupTeam } from "../utils/match";
+import { getPresident, groupLineupsPlayers, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
-import PresidentSlot, { getPresident } from "./PresidentSlot";
-import { LineupPlayerType, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
+import PresidentSlot from "./PresidentSlot";
 
 type Props = {
   matchInfo: MatchInfo;
