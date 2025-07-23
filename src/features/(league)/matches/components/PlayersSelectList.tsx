@@ -10,11 +10,7 @@ export default function PlayersSelectList({
 }: {
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
-  const {
-    playersDialog: { positionId },
-    addPlayerToLineup,
-    handleSetPlayersDialog,
-  } = useMyLineup();
+  const { addPlayerToLineup, handleSetPlayersDialog } = useMyLineup();
 
   async function handleSelectPlayer(player: TeamPlayer) {
     const isLastPlayer = players.length - 1 <= 0;

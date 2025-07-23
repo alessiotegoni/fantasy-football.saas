@@ -15,7 +15,7 @@ import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { groupLineupsPlayers, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
-import PresidentSlot from "./PresidentSlot";
+import PresidentSlot, { getPresident } from "./PresidentSlot";
 import { LineupPlayerType, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 
 type Props = {
@@ -47,12 +47,6 @@ export default function MatchWrapper({
     return !isMatchdayClosed && team.id === myTeamId;
   }
 
-  function getPresident(type: LineupPlayerType) {
-    return groupedPlayers[type]?.find(
-      (player) => player.role.id === PRESIDENT_ROLE_ID
-    );
-  }
-
   return (
     <Container
       {...ids}
@@ -64,7 +58,10 @@ export default function MatchWrapper({
         {showLineups && (
           <div className="flex flex-col justify-between gap-5">
             <PresidentSlot
-              president={getPresident("bench")}
+              starterPresident={getPresident(
+                groupedPlayers["starter"] ?? [],
+                matchInfo.homeTeam.id
+              )}
               canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
             />
             <BenchLineup
@@ -106,10 +103,13 @@ export default function MatchWrapper({
           </FootballFieldBg>
         </div>
         <div className="flex flex-col justify-between gap-5">
-           <PresidentSlot
-              president={getPresident("starter")}
-              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-            />
+          <PresidentSlot
+            starterPresident={getPresident(
+              groupedPlayers["starter"] ?? [],
+              matchInfo.awayTeam.id
+            )}
+            canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+          />
           {showLineups && (
             <Suspense>
               <BenchLineup
@@ -123,11 +123,7 @@ export default function MatchWrapper({
       </div>
       {showLineups && myTeamId && (
         <Suspense>
-          <PlayersSelect
-            playersPromise={getTeamsPlayers([myTeamId]).then((players) =>
-              players.map(({ purchaseCost, leagueTeamId, ...player }) => player)
-            )}
-          />
+          <PlayersSelect playersPromise={getTeamsPlayers([myTeamId])} />
         </Suspense>
       )}
       <Disclaimer />

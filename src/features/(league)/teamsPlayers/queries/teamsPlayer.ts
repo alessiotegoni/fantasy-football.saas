@@ -42,15 +42,7 @@ export async function getTeamsPlayers(teamsIds: string[]) {
     .where(inArray(leagueMemberTeamPlayers.memberTeamId, teamsIds));
 }
 
-export type TeamPlayer = {
-  id: number;
-  displayName: string;
-  avatarUrl: string | null;
-  role: typeof playerRoles.$inferSelect;
-  team: typeof teams.$inferSelect;
-  leagueTeamId?: string;
-  purchaseCost?: number;
-};
+export type TeamPlayer = Awaited<ReturnType<typeof getTeamsPlayers>>[number];
 
 export async function getTeamPlayerPerRoles(teamId: string) {
   "use cache";

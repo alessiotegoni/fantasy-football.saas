@@ -20,7 +20,6 @@ export type LineupPlayerWithoutVotes = TeamPlayer & {
   lineupPlayerType: LineupPlayerType;
   positionId: PositionId | null;
   positionOrder: number | null;
-  lineupPlayerId: string | null;
 };
 
 export type MyLineup = {

@@ -130,7 +130,6 @@ export async function getLineupsPlayers(
   const results = await db
     .select({
       id: players.id,
-      lineupPlayerId: leagueMatchLineupPlayers.id,
       displayName: players.displayName,
       avatarUrl: players.avatarUrl,
       role: playerRoles,

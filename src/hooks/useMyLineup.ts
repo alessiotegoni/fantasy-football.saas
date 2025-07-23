@@ -38,7 +38,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
         moduleLayout: tacticalModule.layout,
       }),
       positionOrder: getPositionOrder(type, positionId, benchPlayers),
-      lineupPlayerId: null,
     };
 
     if (type === "starter" && positionId) {
