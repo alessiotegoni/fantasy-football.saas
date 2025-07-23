@@ -9,7 +9,6 @@ import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer
 import {
   getPositionId,
   getPositionOrder,
-  isValidPositionId,
   reorderBench,
 } from "@/features/(league)/matches/utils/match";
 import useSortPlayers from "./useSortPlayers";
@@ -42,7 +41,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       lineupPlayerId: null,
     };
 
-    if (type === "starter") {
+    if (type === "starter" && positionId) {
       handleSetLineup({
         ...myLineup,
         starterPlayers: [...starterPlayers, newPlayer],
