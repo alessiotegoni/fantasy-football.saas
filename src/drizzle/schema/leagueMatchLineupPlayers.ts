@@ -2,6 +2,7 @@ import { pgTable, uuid, smallint, pgEnum, integer, text } from "drizzle-orm/pg-c
 import { relations } from "drizzle-orm";
 import { leagueMatchTeamLineup } from "./leagueMatchTeamLineup";
 import { players } from "./players";
+import { PositionId } from "./tacticalModules";
 
 export const lineupPlayerTypes = ["starter", "bench"] as const;
 export type LineupPlayerType = (typeof lineupPlayerTypes)[number];
@@ -16,7 +17,7 @@ export const leagueMatchLineupPlayers = pgTable("league_match_lineup_players", {
   lineupId: uuid("lineup_id")
     .notNull()
     .references(() => leagueMatchTeamLineup.id, { onDelete: "cascade" }),
-  positionId: text("position_id").notNull(),
+  positionId: text("position_id").notNull().$type<PositionId>(),
   playerId: integer("player_id")
     .notNull()
     .references(() => players.id, { onDelete: "cascade" }),

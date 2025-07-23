@@ -7,6 +7,7 @@ import {
 } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import {
+  getPositionId,
   getPositionOrder,
   isValidPositionId,
   reorderBench,
@@ -30,17 +31,18 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     const newPlayer: LineupPlayerWithoutVotes = {
       ...player,
       lineupPlayerType: type,
-      positionId,
+      positionId: getPositionId({
+        type,
+        positionId,
+        starterPlayers,
+        roleId,
+        moduleLayout: tacticalModule.layout,
+      }),
       positionOrder: getPositionOrder(type, positionId, benchPlayers),
       lineupPlayerId: null,
     };
 
-    if (
-      type === "starter" &&
-      roleId &&
-      positionId &&
-      isValidPositionId(positionId, roleId, tacticalModule.layout)
-    ) {
+    if (type === "starter") {
       handleSetLineup({
         ...myLineup,
         starterPlayers: [...starterPlayers, newPlayer],

@@ -36,7 +36,7 @@ export function getMyTeam(
   lineupsPlayers: LineupPlayer[]
 ) {
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === myTeamId);
-  if (!myTeam) return undefined;
+  if (!myTeam) return;
 
   const players = lineupsPlayers
     .filter((player) => player.leagueTeamId === myTeam.id)
@@ -60,18 +60,49 @@ export function getPositionOrder(
 ) {
   if (type === "starter") {
     if (!positionId) return null;
-    
+
     const [, id] = positionId.split("-");
 
     return parseInt(id);
   } else return benchPlayers.length + 1;
 }
 
-export function isValidPositionId(
-  positionId: PositionId,
-  roleId: number,
-  moduleLayout: RolePosition[]
-) {
+export function getPositionId({
+  type,
+  positionId,
+  starterPlayers,
+  roleId,
+  moduleLayout,
+}: {
+  type: LineupPlayerType;
+  positionId: PositionId | null;
+  roleId: number | null;
+  starterPlayers: LineupPlayerWithoutVotes[];
+  moduleLayout: RolePosition[];
+}) {
+  if (
+    type === "starter" &&
+    roleId &&
+    Number.isInteger(roleId) &&
+    isValidPositionId({ positionId, roleId, moduleLayout })
+  ) {
+    const isPositionOccupied = starterPlayers.some(player => player.positionId)
+  }
+
+  return null;
+}
+
+export function isValidPositionId({
+  positionId,
+  roleId,
+  moduleLayout,
+}: {
+  positionId: PositionId | null;
+  roleId: number;
+  moduleLayout: RolePosition[];
+}) {
+  if (typeof positionId !== "string") return false;
+
   const [position, id] = positionId.split("-");
 
   if (!positions.includes(position as Position)) return false;

@@ -9,6 +9,7 @@ import {
   matchdayVotes,
   playerRoles,
   players,
+  PositionId,
   teams,
 } from "@/drizzle/schema";
 import { and, asc, eq } from "drizzle-orm";
@@ -179,7 +180,11 @@ export async function getLineupsPlayers(
     .orderBy(asc(leagueMatchLineupPlayers.positionOrder));
 
   cacheTag(
-    ...getLineupsPlayersTags({ matchId, currentMatchdayId, players: results })
+    ...getLineupsPlayersTags({
+      matchId,
+      currentMatchdayId,
+      players: results,
+    })
   );
 
   return results;
