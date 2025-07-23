@@ -52,47 +52,39 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
-export function getNextAvailablePosition(
-  starterPlayers: LineupPlayerWithoutVotes[],
-  layout: RolePosition[],
-  roleId: number
+export function getNextPositionOrder(
+  modouleLayout: RolePosition[],
+  roleId: number,
+  positionId: PositionId
 ) {
-  const role = layout.find((r) => r.roleId === roleId);
-  if (!role) return null;
+  const positionSlot = modouleLayout.find((r) => r.roleId === roleId);
+  if (!positionSlot) return null;
 
-  for (const posId of role.positionsIds) {
-    const occupied = starterPlayers.some((p) => p.positionId === posId);
-    if (!occupied) {
-      return {
-        positionId: posId,
-        positionOrder: parseInt(posId.split("-")[1], 10),
-      };
-    }
-  }
+  const [, id] = positionId.split("-");
 
-  return null;
+  const newPositionOrder = parseInt(id) + 1;
+
+  if (newPositionOrder > positionSlot.count) return null;
+
+  return newPositionOrder;
 }
 
 export function isValidPositionId(
-  positionId: PositionId | null,
-  roleId: number | null,
+  positionId: PositionId,
+  roleId: number,
   moduleLayout: RolePosition[]
 ) {
-  if (!positionId || !roleId) return false;
-
   const [position, id] = positionId.split("-");
 
   if (!positions.includes(position as Position)) return false;
 
-  const layoutPosition = moduleLayout.find(
-    (layout) => layout.roleId === roleId
-  );
-  if (!layoutPosition) return false;
+  const positionSlot = moduleLayout.find((layout) => layout.roleId === roleId);
+  if (!positionSlot) return false;
 
   const parsedId = parseInt(id);
   if (isNaN(parsedId)) return false;
 
-  return parsedId > 0 && parsedId <= layoutPosition.count;
+  return parsedId > 0 && parsedId <= positionSlot.count;
 }
 
 export function reorderBench(players: LineupPlayerWithoutVotes[]) {

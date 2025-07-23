@@ -20,9 +20,6 @@ export default function PlayersSelectTrigger({
 }: Props) {
   const { handleSetPlayersDialog } = useMyLineup();
 
-  console.log(className);
-  
-
   return (
     <button
       className={className}
