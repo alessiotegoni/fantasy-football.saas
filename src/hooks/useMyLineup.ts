@@ -20,7 +20,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   const { myLineup, playersDialog, handleSetLineup } = context;
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
-  const { roleId, positionId, type } = playersDialog;
+  const { open, roleId, positionId, type } = playersDialog;
 
   const { sortPlayers } = useSortPlayers();
 

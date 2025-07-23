@@ -18,8 +18,7 @@ import { use } from "react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
-import PlayerCard from "../../teamsPlayers/components/PlayerCard";
+import PlayersSelectList from "./PlayersSelectList";
 
 export default function PlayersSelect({
   playersPromise,
@@ -34,6 +33,8 @@ export default function PlayersSelect({
     playersDialog: { open, type },
     handleSetPlayersDialog,
   } = useMyLineup(players);
+
+  console.log(availablePlayers);
 
   if (isMobile) {
     return (
@@ -64,7 +65,7 @@ export default function PlayersSelect({
             )}
           </DrawerHeader>
           <div className="p-6 pt-0 space-y-2">
-            <PlayersList players={availablePlayers} />
+            <PlayersSelectList players={availablePlayers} />
           </div>
         </DrawerContent>
       </Drawer>
@@ -88,7 +89,7 @@ export default function PlayersSelect({
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
               <div className="mt-2 space-y-2">
-                <PlayersList players={availablePlayers} />
+                <PlayersSelectList players={availablePlayers} />
               </div>
             </>
           ) : (
@@ -104,28 +105,4 @@ export default function PlayersSelect({
       </DialogContent>
     </Dialog>
   );
-}
-
-function PlayersList({
-  players,
-}: {
-  players: TeamPlayer[] | LineupPlayerWithoutVotes[];
-}) {
-  const { addPlayerToLineup, handleSetPlayersDialog } = useMyLineup();
-
-  async function handleSelectPlayer(player: TeamPlayer) {
-    handleSetPlayersDialog({ open: false });
-    addPlayerToLineup(player);
-  }
-
-  return players.map((player) => (
-    <PlayerCard
-      key={player.id}
-      className="cursor-pointer"
-      showSelectButton={false}
-      onSelect={handleSelectPlayer}
-      canSelectCard
-      {...player}
-    />
-  ));
 }
