@@ -45,6 +45,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       handleSetLineup({
         ...myLineup,
         starterPlayers: [...starterPlayers, newPlayer],
+        benchPlayers: benchPlayers.filter((p) => p.id !== player.id),
       });
     }
 
@@ -52,6 +53,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       handleSetLineup({
         ...myLineup,
         benchPlayers: [...benchPlayers, newPlayer],
+        starterPlayers: starterPlayers.filter((p) => p.id !== player.id),
       });
     }
   }
