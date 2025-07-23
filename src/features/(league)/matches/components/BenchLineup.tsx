@@ -9,19 +9,22 @@ import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import { Plus } from "iconoir-react";
 
 type Props = {
-  team: LineupTeam;
   players: LineupPlayer[];
   canEditLineup: boolean;
   className?: string;
 };
 
 export default function BenchLineup({
-  team,
-  players,
+  players: lineupPlayers,
   canEditLineup,
   className,
 }: Props) {
-  const { removePlayerFromLineup } = useMyLineup();
+  const {
+    myLineup: { benchPlayers },
+    removePlayerFromLineup,
+  } = useMyLineup();
+
+  const players = canEditLineup ? benchPlayers : lineupPlayers;
 
   return (
     <div

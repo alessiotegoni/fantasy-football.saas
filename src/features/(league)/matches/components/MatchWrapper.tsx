@@ -55,7 +55,6 @@ export default function MatchWrapper({
             </div>
             <BenchLineup
               players={groupedPlayers["bench"] ?? []}
-              team={matchInfo.homeTeam}
               canEditLineup={
                 !isMatchdayClosed && matchInfo.homeTeam.id === myTeamId
               }
@@ -101,7 +100,6 @@ export default function MatchWrapper({
             <Suspense>
               <BenchLineup
                 players={groupedPlayers["bench"] ?? []}
-                team={matchInfo.awayTeam}
                 canEditLineup={
                   !isMatchdayClosed && matchInfo.awayTeam.id === myTeamId
                 }
