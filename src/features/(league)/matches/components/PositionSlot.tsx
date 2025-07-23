@@ -4,23 +4,18 @@ import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import useMyLineup from "@/hooks/useMyLineup";
 import LineupPlayerCard from "./LineupPlayerCard";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
+import { PositionId } from "@/drizzle/schema";
 
 type Props = {
   player: LineupPlayer | LineupPlayerWithoutVotes | undefined;
   roleId: number;
+  positionId: PositionId;
   canEdit: boolean;
 };
 
-export default function PositionSlot({
-  roleId,
-  player,
-  canEdit,
-}: Props) {
+export default function PositionSlot({ player, canEdit, ...ids }: Props) {
   const { removePlayerFromLineup } = useMyLineup();
   if (!player && !canEdit) return null;
-
-  console.log(player);
-
 
   return (
     <>
@@ -35,9 +30,9 @@ export default function PositionSlot({
       )}
       {!player && canEdit && (
         <PlayersSelectTrigger
-          roleId={roleId}
           lineupType="starter"
           className="size-14 sm:size-16 xl:size-18 bg-muted border border-border rounded-2xl flex items-center justify-center text-muted-foreground transition-colors hover:text-white cursor-pointer"
+          {...ids}
         >
           <Plus className="size-6" />
         </PlayersSelectTrigger>
