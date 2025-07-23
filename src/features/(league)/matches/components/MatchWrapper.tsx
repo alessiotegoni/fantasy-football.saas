@@ -15,6 +15,8 @@ import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { groupLineupsPlayers, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
+import PresidentSlot from "./PresidentSlot";
+import { LineupPlayerType, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -45,6 +47,12 @@ export default function MatchWrapper({
     return !isMatchdayClosed && team.id === myTeamId;
   }
 
+  function getPresident(type: LineupPlayerType) {
+    return groupedPlayers[type]?.find(
+      (player) => player.role.id === PRESIDENT_ROLE_ID
+    );
+  }
+
   return (
     <Container
       {...ids}
@@ -55,9 +63,10 @@ export default function MatchWrapper({
       <div className="2xl:grid gap-5 xl:grid-cols-[180px_1fr_180px]">
         {showLineups && (
           <div className="flex flex-col justify-between gap-5">
-            <div className="size-full bg-input/30 rounded-4xl">
-              {/*Presidente home*/}
-            </div>
+            <PresidentSlot
+              president={getPresident("bench")}
+              canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
+            />
             <BenchLineup
               players={groupedPlayers["bench"] ?? []}
               canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
@@ -97,9 +106,10 @@ export default function MatchWrapper({
           </FootballFieldBg>
         </div>
         <div className="flex flex-col justify-between gap-5">
-          <div className="size-full bg-input/30 rounded-4xl">
-            {/*Presidente away*/}
-          </div>
+           <PresidentSlot
+              president={getPresident("starter")}
+              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+            />
           {showLineups && (
             <Suspense>
               <BenchLineup
