@@ -10,6 +10,7 @@ import {
   getNextAvailablePosition,
   reorderBench,
 } from "@/features/(league)/matches/utils/match";
+import { PositionId } from "@/drizzle/schema";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -18,7 +19,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   const { myLineup, playersDialog, handleSetLineup } = context;
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
-  const { roleId, type } = playersDialog;
+  const { roleId, positionId, type } = playersDialog;
 
   // console.log(starterPlayers, benchPlayers);
 
@@ -34,19 +35,15 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     };
 
     if (type === "starter") {
-      if (roleId === 1) {
-        newPlayer.positionId = "PR-1";
-        newPlayer.positionOrder = 1;
-      } else {
-        const position = getNextAvailablePosition(
-          starterPlayers,
-          tacticalModule.layout,
-          roleId
-        );
-        if (!position) return;
-        newPlayer.positionId = position.positionId;
-        newPlayer.positionOrder = position.positionOrder;
-      }
+      const position = getNextAvailablePosition(
+        starterPlayers,
+        tacticalModule.layout,
+        roleId
+      );
+      if (!position) return;
+
+      newPlayer.positionId = position.positionId;
+      newPlayer.positionOrder = position.positionOrder;
       handleSetLineup({
         ...myLineup,
         starterPlayers: [...starterPlayers, newPlayer],
@@ -136,4 +133,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     removePlayerFromLineup,
     movePlayer,
   };
+}
+
+function isValidPositionId(positionId: PositionId) {
+    
 }
