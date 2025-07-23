@@ -8,9 +8,9 @@ import {
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import {
   getNextAvailablePosition,
+  isValidPositionId,
   reorderBench,
 } from "@/features/(league)/matches/utils/match";
-import { PositionId } from "@/drizzle/schema";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -34,7 +34,11 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       lineupPlayerId: null,
     };
 
-    if (type === "starter") {
+    if (
+      type === "starter" &&
+      roleId &&
+      isValidPositionId(positionId, roleId, tacticalModule.layout)
+    ) {
       const position = getNextAvailablePosition(
         starterPlayers,
         tacticalModule.layout,
@@ -133,8 +137,4 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     removePlayerFromLineup,
     movePlayer,
   };
-}
-
-function isValidPositionId(positionId: PositionId) {
-    
 }

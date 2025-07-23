@@ -2,7 +2,7 @@ import { pgTable, text, smallint, jsonb } from "drizzle-orm/pg-core";
 
 export const positions = ["PR", "GK", "FB", "MF", "ST"] as const;
 
-type Position = (typeof positions)[number];
+export type Position = (typeof positions)[number];
 export type PositionId = `${Position}-${number}`;
 
 export type RolePosition = {

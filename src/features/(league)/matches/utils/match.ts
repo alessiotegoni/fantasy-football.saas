@@ -1,4 +1,9 @@
-import { RolePosition } from "@/drizzle/schema";
+import {
+  Position,
+  PositionId,
+  positions,
+  RolePosition,
+} from "@/drizzle/schema";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
@@ -50,7 +55,7 @@ export type MyTeam = ReturnType<typeof getMyTeam>;
 export function getNextAvailablePosition(
   starterPlayers: LineupPlayerWithoutVotes[],
   layout: RolePosition[],
-  roleId: number | null
+  roleId: number
 ) {
   const role = layout.find((r) => r.roleId === roleId);
   if (!role) return null;
@@ -66,6 +71,28 @@ export function getNextAvailablePosition(
   }
 
   return null;
+}
+
+export function isValidPositionId(
+  positionId: PositionId | null,
+  roleId: number | null,
+  moduleLayout: RolePosition[]
+) {
+  if (!positionId || !roleId) return false;
+
+  const [position, id] = positionId.split("-");
+
+  if (!positions.includes(position as Position)) return false;
+
+  const layoutPosition = moduleLayout.find(
+    (layout) => layout.roleId === roleId
+  );
+  if (!layoutPosition) return false;
+
+  const parsedId = parseInt(id);
+  if (isNaN(parsedId)) return false;
+
+  return parsedId > 0 && parsedId <= layoutPosition.count;
 }
 
 export function reorderBench(players: LineupPlayerWithoutVotes[]) {

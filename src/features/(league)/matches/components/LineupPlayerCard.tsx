@@ -15,9 +15,6 @@ type Props = {
   onRemove?: (playerId: number) => void;
 };
 
-// FIXME: quando lo slot vuoto viene cliccato al player non viene dato il positionId preso
-// dallo slot ma viene generato casualmente e quindi quando il giocatore quando viene aggiunto
-// si mette a caso
 // FIXME: UI LineupPlayerCard
 // TODO: Button to add bench players
 
