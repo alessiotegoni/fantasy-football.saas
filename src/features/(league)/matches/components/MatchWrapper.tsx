@@ -46,6 +46,11 @@ export default function MatchWrapper({
     return !isMatchdayClosed && team.id === myTeamId;
   }
 
+  function getBenchPlayers(teamId: string | null) {
+    const players = groupedPlayers["bench"] ?? [];
+    return players.filter((player) => player.leagueTeamId === teamId);
+  }
+
   return (
     <Container
       {...ids}
@@ -64,7 +69,7 @@ export default function MatchWrapper({
               canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
             />
             <BenchLineup
-              players={groupedPlayers["bench"] ?? []}
+              players={getBenchPlayers(matchInfo.homeTeam.id)}
               canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
               className="2xl:border-r"
             />
@@ -112,7 +117,7 @@ export default function MatchWrapper({
           {showLineups && (
             <Suspense>
               <BenchLineup
-                players={groupedPlayers["bench"] ?? []}
+                players={getBenchPlayers(matchInfo.awayTeam.id)}
                 canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
                 className="2xl:border-l"
               />
