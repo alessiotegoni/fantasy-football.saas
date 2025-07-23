@@ -14,7 +14,7 @@ type Props = {
   className?: string;
 };
 
-export default function RoleGroup(props: Props) {
+export default function RoleGroup({ className, ...props }: Props) {
   const {
     myLineup: { tacticalModule },
   } = useMyLineup();
@@ -26,7 +26,7 @@ export default function RoleGroup(props: Props) {
   if (!currentModule) return null;
 
   return currentModule?.layout.map((role) => (
-    <div className={cn("flex", props.className)} key={role.roleId}>
+    <div className={cn("flex", className)} key={role.roleId}>
       {role.positionsIds.map((posId) => (
         <PositionsList
           key={posId}
