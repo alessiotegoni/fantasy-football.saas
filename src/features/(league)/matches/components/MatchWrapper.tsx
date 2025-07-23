@@ -73,7 +73,7 @@ export default function MatchWrapper({
           />
           <FootballFieldBg>
             {!isMatchdayClosed && myTeamId && (
-              <MobileButtonsContainer className="sm:absolute sm:-translate-1/2 sm:bottom-auto sm:top-5">
+              <MobileButtonsContainer className="sm:size-0">
                 <ModulesSelect
                   allowedModulesPromise={getLeagueModules(ids.leagueId)}
                   tacticalModulesPromise={getTacticalModules()}

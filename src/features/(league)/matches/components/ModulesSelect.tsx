@@ -46,7 +46,7 @@ export default function ModulesSelect(
         <DrawerTrigger asChild>
           <Button
             variant="outline"
-            className="!bg-input !p-3.5 text-sm sm:rounded-t-none"
+            className="!bg-input !p-3.5 text-sm sm:rounded-t-none sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-0 sm:z-50 sm:h-10 xl:h-11 sm:w-32"
           >
             {tacticalModule
               ? `Modulo: ${tacticalModule.name}`
@@ -79,7 +79,8 @@ export default function ModulesSelect(
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="!bg-input !p-3.5 text-sm sm:rounded-t-none"
+          className="!bg-input !p-3.5 text-xs xl:text-sm sm:rounded-t-none
+          absolute left-1/2 -translate-x-1/2 top-0 z-50 h-10 xl:h-11 w-32"
         >
           {tacticalModule
             ? `Modulo: ${tacticalModule.name}`

@@ -100,15 +100,17 @@ export default function MyLineupProvider({
       return true;
     }
 
-    const starterIds = myLineup.starterPlayers.map((p) => p.id);
-    const initialStarterIds = initialLineup.starterPlayers.map((p) => p.id);
+    const starterIds = myLineup.starterPlayers.map((p) => p.id).sort();
+    const initialStarterIds = initialLineup.starterPlayers
+      .map((p) => p.id)
+      .sort();
 
     if (JSON.stringify(starterIds) !== JSON.stringify(initialStarterIds)) {
       return true;
     }
 
-    const benchIds = myLineup.benchPlayers.map((p) => p.id);
-    const initialBenchIds = initialLineup.benchPlayers.map((p) => p.id);
+    const benchIds = myLineup.benchPlayers.map((p) => p.id).sort();
+    const initialBenchIds = initialLineup.benchPlayers.map((p) => p.id).sort();
 
     if (JSON.stringify(benchIds) !== JSON.stringify(initialBenchIds)) {
       return true;
