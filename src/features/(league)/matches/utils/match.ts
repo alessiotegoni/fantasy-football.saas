@@ -1,4 +1,5 @@
 import {
+  LineupPlayerType,
   Position,
   PositionId,
   positions,
@@ -52,10 +53,18 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
-export function getPositionOrder(positionId: PositionId) {
-  const [, id] = positionId.split("-");
+export function getPositionOrder(
+  type: LineupPlayerType,
+  positionId: PositionId | null,
+  benchPlayers: LineupPlayerWithoutVotes[]
+) {
+  if (type === "starter") {
+    if (!positionId) return null;
+    
+    const [, id] = positionId.split("-");
 
-  return parseInt(id);
+    return parseInt(id);
+  } else return benchPlayers.length + 1;
 }
 
 export function isValidPositionId(

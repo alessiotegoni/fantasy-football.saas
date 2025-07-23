@@ -3,7 +3,6 @@
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
-import { useCallback } from "react";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 
 export default function PlayersSelectList({
@@ -11,18 +10,16 @@ export default function PlayersSelectList({
 }: {
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
-  const { addPlayerToLineup, handleSetPlayersDialog } = useMyLineup();
-
-  const isLastPlayer = useCallback(
-    ({ id: selectedPlayerId }: TeamPlayer) =>
-      players.filter((player) => player.id !== selectedPlayerId).length <= 0,
-    [players]
-  );
+  const {
+    playersDialog: { positionId },
+    addPlayerToLineup,
+    handleSetPlayersDialog,
+  } = useMyLineup();
 
   async function handleSelectPlayer(player: TeamPlayer) {
-    if (isLastPlayer(player)) {
-      handleSetPlayersDialog({ open: false });
-    }
+    const isLastPlayer = players.length - 1 <= 0;
+    if (isLastPlayer) handleSetPlayersDialog({ open: false });
+
     addPlayerToLineup(player);
   }
 

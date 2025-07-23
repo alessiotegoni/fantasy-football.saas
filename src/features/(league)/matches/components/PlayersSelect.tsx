@@ -34,8 +34,6 @@ export default function PlayersSelect({
     handleSetPlayersDialog,
   } = useMyLineup(players);
 
-  console.log(availablePlayers);
-
   if (isMobile) {
     return (
       <Drawer

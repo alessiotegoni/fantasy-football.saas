@@ -20,11 +20,9 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   const { myLineup, playersDialog, handleSetLineup } = context;
   const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
-  const { open, roleId, positionId, type } = playersDialog;
+  const { roleId, positionId, type } = playersDialog;
 
   const { sortPlayers } = useSortPlayers();
-
-  // console.log(starterPlayers, benchPlayers);
 
   function addPlayerToLineup(player: TeamPlayer) {
     if (!tacticalModule || !type) return;
@@ -32,8 +30,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     const newPlayer: LineupPlayerWithoutVotes = {
       ...player,
       lineupPlayerType: type,
-      positionId: null,
-      positionOrder: null,
+      positionId,
+      positionOrder: getPositionOrder(type, positionId, benchPlayers),
       lineupPlayerId: null,
     };
 
@@ -43,8 +41,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       positionId &&
       isValidPositionId(positionId, roleId, tacticalModule.layout)
     ) {
-      newPlayer.positionId = positionId;
-      newPlayer.positionOrder = getPositionOrder(positionId);
       handleSetLineup({
         ...myLineup,
         starterPlayers: [...starterPlayers, newPlayer],
@@ -52,7 +48,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     }
 
     if (type === "bench") {
-      newPlayer.positionOrder = benchPlayers.length + 1;
       handleSetLineup({
         ...myLineup,
         benchPlayers: [...benchPlayers, newPlayer],
