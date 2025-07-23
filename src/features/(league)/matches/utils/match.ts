@@ -88,27 +88,23 @@ export function getPositionId({
     positionSlot &&
     isValidPositionId(positionId, positionSlot)
   ) {
-    const playerPositionsIds = new Set(starterPlayers
-      .filter((player) => !!player.positionId && player.role.id === roleId)
-      .map((player) => player.positionId));
+    const playerPositionsIds = new Set(
+      starterPlayers
+        .filter((player) => !!player.positionId && player.role.id === roleId)
+        .map((player) => player.positionId)
+    );
 
-    const freePositionsIds = positionSlot.positionsIds.filter(posId => !playerPositionsIds.has(posId))
-      if (!freePositionsIds.length) return null
+    const freePositionsIds = positionSlot.positionsIds.filter(
+      (posId) => !playerPositionsIds.has(posId)
+    );
+    if (!freePositionsIds.length) return null;
 
-    const isPositionFree = positionId && freePositionsIds.includes(positionId)
+    const isPositionFree = positionId && freePositionsIds.includes(positionId);
 
-    return isPositionFree
-      ? positionId
-      : getNextPositionId(freePositionsIds);
+    return isPositionFree ? positionId : freePositionsIds[0];
   }
 
   return null;
-}
-
-function getNextPositionId(
-  freePositionsIds: PositionId[]
-) {
- return freePositionsIds[0]
 }
 
 export function isValidPositionId(
