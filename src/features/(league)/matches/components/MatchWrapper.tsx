@@ -13,7 +13,7 @@ import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
 import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
-import { groupLineupsPlayers } from "../utils/match";
+import { groupLineupsPlayers, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
 
 type Props = {
@@ -40,6 +40,11 @@ export default function MatchWrapper({
 
   const groupedPlayers = groupLineupsPlayers(lineupsPlayers);
 
+  function getCanEditLineup(team: LineupTeam) {
+    if (!myTeamId) return false;
+    return !isMatchdayClosed && team.id === myTeamId;
+  }
+
   return (
     <Container
       {...ids}
@@ -55,9 +60,7 @@ export default function MatchWrapper({
             </div>
             <BenchLineup
               players={groupedPlayers["bench"] ?? []}
-              canEditLineup={
-                !isMatchdayClosed && matchInfo.homeTeam.id === myTeamId
-              }
+              canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
               className="2xl:border-r"
             />
           </div>
@@ -101,9 +104,7 @@ export default function MatchWrapper({
             <Suspense>
               <BenchLineup
                 players={groupedPlayers["bench"] ?? []}
-                canEditLineup={
-                  !isMatchdayClosed && matchInfo.awayTeam.id === myTeamId
-                }
+                canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
                 className="2xl:border-l"
               />
             </Suspense>
