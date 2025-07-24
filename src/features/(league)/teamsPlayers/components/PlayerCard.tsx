@@ -13,6 +13,7 @@ import { TeamPlayer } from "../queries/teamsPlayer";
 
 type Props = TeamPlayer & {
   showSelectButton?: boolean;
+  showPurchaseCost?: boolean;
   canSelectCard?: boolean;
   onSelect?: (player: TeamPlayer) => void;
   className?: string;
@@ -21,6 +22,7 @@ type Props = TeamPlayer & {
 
 export default memo(function PlayerCard({
   showSelectButton = true,
+  showPurchaseCost = true,
   className,
   avatarSize = 12,
   canSelectCard = false,
@@ -67,7 +69,7 @@ export default memo(function PlayerCard({
       </div>
 
       <div className="flex gap-2 items-center">
-        {player.purchaseCost !== undefined && (
+        {player.purchaseCost && showPurchaseCost && (
           <TeamCreditsBadge credits={player.purchaseCost} />
         )}
         {showSelectButton && (

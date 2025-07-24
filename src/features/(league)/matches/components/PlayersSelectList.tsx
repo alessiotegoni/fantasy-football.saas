@@ -24,6 +24,7 @@ export default function PlayersSelectList({
       key={player.id}
       className="cursor-pointer"
       showSelectButton={false}
+      showPurchaseCost={false}
       onSelect={handleSelectPlayer}
       canSelectCard
       {...player}
