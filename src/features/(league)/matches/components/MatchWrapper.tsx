@@ -91,7 +91,7 @@ export default function MatchWrapper({
                   allowedModulesPromise={getLeagueModules(ids.leagueId)}
                   tacticalModulesPromise={getTacticalModules()}
                 />
-                <SaveLineupButton {...ids} myTeamId={myTeamId} />
+                <SaveLineupButton {...ids} />
               </MobileButtonsContainer>
             )}
             {showLineups && (

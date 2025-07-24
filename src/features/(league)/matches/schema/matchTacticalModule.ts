@@ -2,7 +2,7 @@ import { z } from "zod";
 import { Position, PositionId, positions } from "@/drizzle/schema";
 import { getSerialIdSchema } from "@/schema/helpers";
 
-const positionIdSchema = z.custom<PositionId>(
+export const positionIdSchema = z.custom<PositionId>(
   (val) => {
     if (typeof val !== "string") return false;
     const parts = val.split("-");
@@ -14,8 +14,7 @@ const positionIdSchema = z.custom<PositionId>(
 );
 
 const rolePositionSchema = z.object({
-  count: z.number().min(1).max(4),
-  roleId: z.number().positive(),
+  roleId: z.number().int().positive(),
   positionsIds: z.array(positionIdSchema).min(1).max(4),
 });
 

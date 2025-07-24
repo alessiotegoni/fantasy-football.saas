@@ -1,16 +1,9 @@
 "use client";
 
 import ActionButton from "@/components/ActionButton";
-import { MyLineup } from "@/contexts/MyLineupProvider";
 import useMyLineup from "@/hooks/useMyLineup";
 
-type Props = {
-  matchId: string;
-  leagueId: string;
-  myTeamId: string;
-};
-
-export default function SaveLineupButton(props: Props) {
+export default function SaveLineupButton({ matchId }: { matchId: string }) {
   const { isLineupDirty } = useMyLineup();
 
   return (
