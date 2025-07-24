@@ -37,9 +37,9 @@ export default function BenchLineup({
         {canEditLineup && (
           <PlayersSelectTrigger
             lineupType="bench"
-            className="bg-primary text-primary-foreground size-7 xs:size-fit rounded-full xs:rounded-xl xs:p-2 xs:px-3 gap-1.5 2xl:p-0 2xl:rounded-full 2xl:size-7"
+            className="bg-primary text-primary-foreground size-7 xs:size-fit rounded-full xs:rounded-xl xs:p-2 xs:px-3 gap-1.5 2xl:p-0 2xl:rounded-full 2xl:size-6"
           >
-            <Plus className="size-5 xs:size-6 2xl:size-5" />
+            <Plus className="size-5 xs:size-6 2xl:size-5 font-semibold" />
             <p className="hidden xs:block 2xl:hidden text-sm font-medium">
               Aggiungi giocatore
             </p>
