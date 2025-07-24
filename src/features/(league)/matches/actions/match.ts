@@ -1,15 +1,10 @@
 "use server";
 
-import { validateSchema } from "@/schema/helpers";
+import { createSuccess } from "@/lib/helpers";
 import { matchLineupSchema, MatchLineupSchema } from "../schema/match";
 
 export async function saveLineup(values: MatchLineupSchema) {
-  const { isValid, error, data } = validateSchema<MatchLineupSchema>(
-    matchLineupSchema,
-    values
-  );
-  if (!isValid) return error;
-
-  
-
+  const { success, data } = await matchLineupSchema.safeParseAsync(values)
+    console.log(data);
+    return createSuccess("", null)
 }

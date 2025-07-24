@@ -4,7 +4,13 @@ import ActionButton from "@/components/ActionButton";
 import useMyLineup from "@/hooks/useMyLineup";
 import { saveLineup } from "../actions/match";
 
-export default function SaveLineupButton({ matchId }: { matchId: string }) {
+export default function SaveLineupButton({
+  leagueId,
+  matchId,
+}: {
+  leagueId: string;
+  matchId: string;
+}) {
   const {
     myLineup: { id: lineupId, starterPlayers, benchPlayers, tacticalModule },
     isLineupDirty,
@@ -16,6 +22,7 @@ export default function SaveLineupButton({ matchId }: { matchId: string }) {
 
     return saveLineup({
       lineupId,
+      leagueId,
       matchId,
       lineupPlayers,
       tacticalModuleId: tacticalModule.id,
