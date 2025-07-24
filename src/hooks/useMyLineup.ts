@@ -24,7 +24,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   function addBenchPlayer(
     newPlayer: Omit<LineupPlayerWithoutVotes, "positionId">
   ) {
-    editLineup({
+    addLineupPlayers({
       benchPlayers: [...benchPlayers, { ...newPlayer, positionId: null }],
       starterPlayers: starterPlayers.filter((p) => p.id !== newPlayer.id),
     });
@@ -35,13 +35,13 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       positionId: PositionId;
     }
   ) {
-    editLineup({
+    addLineupPlayers({
       starterPlayers: [...starterPlayers, newPlayer],
       benchPlayers: benchPlayers.filter((p) => p.id !== newPlayer.id),
     });
   }
 
-  function editLineup({
+  function addLineupPlayers({
     starterPlayers,
     benchPlayers,
   }: {
