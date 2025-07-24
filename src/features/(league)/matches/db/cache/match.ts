@@ -13,8 +13,10 @@ export const getMatchLineupsTag = (matchId: string) =>
 export const getMatchResultsTag = (matchId: string) =>
   getMatchTag("match-results", matchId);
 
-export const revalidateMatchLinuepsCache = (matchId: string) =>
+export const revalidateMatchLinuepsCache = (matchId: string) => {
+  revalidateTag(getMatchInfoTag(matchId));
   revalidateTag(getMatchLineupsTag(matchId));
+};
 
 export const revalidateMatchResultsCache = (
   leagueId: string,
