@@ -4,8 +4,9 @@ import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
-import { getNextPositionId } from "../utils/match";
+import { findNextAvailablePositionId } from "../utils/match";
 import { LineupPlayerType } from "@/drizzle/schema";
+import { useEffect } from "react";
 
 export default function PlayersSelectList({
   availablePlayers,
@@ -14,16 +15,11 @@ export default function PlayersSelectList({
 }) {
   const {
     myLineup: { tacticalModule, starterPlayers, benchPlayers },
-    playersDialog: { type, positionId, roleId },
+    playersDialog: { type, roleId },
     addStarterPlayer,
     addBenchPlayer,
     handleSetPlayersDialog,
   } = useMyLineup();
-
-  function handleCloseDialog(open?: boolean) {
-    const isLastPlayer = availablePlayers.length - 1 <= 0;
-    handleSetPlayersDialog({ open: open ?? !isLastPlayer });
-  }
 
   function handleAddPlayer(player: TeamPlayer) {
     if (!type) return;
@@ -42,33 +38,29 @@ export default function PlayersSelectList({
   function handleAddStarterPlayer(
     newPlayer: TeamPlayer & { lineupPlayerType: LineupPlayerType }
   ) {
-    if (!tacticalModule || !positionId || !roleId) return;
+    if (!tacticalModule || !roleId) return;
 
-    const isPositionOccupied = starterPlayers.some(
-      (player) => player.positionId === positionId && player.role.id === roleId
-    );
-    const nextPositionId = getNextPositionId({
-      currentPositionId: positionId,
+    const positionId = findNextAvailablePositionId({
       starterPlayers,
       roleId,
       tacticalModule,
     });
 
-    const playerPosId = !isPositionOccupied ? positionId : nextPositionId;
-    if (!playerPosId) return;
+    if (!positionId) {
+      handleSetPlayersDialog({ open: false });
+      return;
+    }
 
-    const [, id] = playerPosId.split("-");
+    const [, id] = positionId.split("-");
     const positionOrder = parseInt(id);
 
-    addStarterPlayer({
+    const playerToAdd = {
       ...newPlayer,
       positionOrder,
-      positionId: playerPosId,
-    });
+      positionId,
+    };
 
-    console.log(positionId, nextPositionId);
-
-    handleCloseDialog();
+    addStarterPlayer(playerToAdd);
   }
 
   function handleAddBenchPlayer(
@@ -77,8 +69,21 @@ export default function PlayersSelectList({
     const positionOrder = benchPlayers.length + 1;
     addBenchPlayer({ ...newPlayer, positionOrder });
 
-    handleCloseDialog();
+    const isLastPlayer = availablePlayers.length - 1 <= 0;
+    handleSetPlayersDialog({ open: !isLastPlayer });
   }
+
+  useEffect(() => {
+    if (!roleId || !tacticalModule) return;
+
+    const nextAvailableSlot = findNextAvailablePositionId({
+      starterPlayers,
+      roleId,
+      tacticalModule,
+    });
+
+    if (!nextAvailableSlot) handleSetPlayersDialog({ open: false });
+  }, [starterPlayers]);
 
   return availablePlayers.map((player) => (
     <PlayerCard
