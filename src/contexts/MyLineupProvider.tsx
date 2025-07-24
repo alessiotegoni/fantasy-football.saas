@@ -79,12 +79,13 @@ export default function MyLineupProvider({
   }, [myLineup.tacticalModule]);
 
   const handleSetLineup = useCallback(
-    (lineup: Partial<MyLineup>) => setMyLineup({ ...myLineup, ...lineup }),
+    (lineup: Partial<MyLineup>) =>
+      setMyLineup((prev) => ({ ...prev, ...lineup })),
     []
   );
 
   const handleSetModule = useCallback((tacticalModule: TacticalModule) => {
-    setMyLineup((prev) => ({ ...prev, tacticalModule }));
+    handleSetLineup({ tacticalModule });
   }, []);
 
   const handleSetPlayersDialog = useCallback(

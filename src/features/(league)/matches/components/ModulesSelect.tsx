@@ -32,7 +32,7 @@ export default function ModulesSelect(
   const {
     myLineup: { tacticalModule, starterPlayers },
     handleSetModule,
-
+    handleSetLineup,
   } = useMyLineup();
 
   const [open, setOpen] = useState(false);
@@ -41,15 +41,19 @@ export default function ModulesSelect(
     setOpen(false);
     handleSetModule(module);
 
+    if (starterPlayers.length) adjustStarterPlayers(module);
+  }
+
+  function adjustStarterPlayers(module: TacticalModule) {
     const modulePositionsIds = new Set(
       module.layout.flatMap((slot) => slot.positionsIds)
     );
     const newStarterPlayers = starterPlayers.filter(
       (player) => player.positionId && modulePositionsIds.has(player.positionId)
     );
-  }
 
-  
+    handleSetLineup({ starterPlayers: newStarterPlayers });
+  }
 
   if (isMobile) {
     return (
