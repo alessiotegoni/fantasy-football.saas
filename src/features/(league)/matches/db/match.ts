@@ -13,9 +13,10 @@ enum DB_ERROR_MESSAGE {
 }
 
 export async function insertLineup(
-  lineup: typeof leagueMatchTeamLineup.$inferInsert
+  lineup: typeof leagueMatchTeamLineup.$inferInsert,
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await db
+  const [res] = await tx
     .insert(leagueMatchTeamLineup)
     .values(lineup)
     .returning({ lineupId: leagueMatchTeamLineup.id });
@@ -27,6 +28,24 @@ export async function insertLineup(
   revalidateMatchLinuepsCache(lineup.matchId);
 
   return res.lineupId;
+}
+
+export async function updateLineup(
+  lineupId: string,
+  { tacticalModuleId }: typeof leagueMatchTeamLineup.$inferInsert,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [res] = await tx
+    .update(leagueMatchTeamLineup)
+    .set({ tacticalModuleId })
+    .where(eq(leagueMatchTeamLineup.id, lineupId))
+    .returning({ matchId: leagueMatchTeamLineup.matchId });
+
+  if (!res.matchId) {
+    throw new Error(createError(DB_ERROR_MESSAGE.INSERT_LINEUP).message);
+  }
+
+  revalidateMatchLinuepsCache(res.matchId);
 }
 
 export async function insertLineupPlayers(
