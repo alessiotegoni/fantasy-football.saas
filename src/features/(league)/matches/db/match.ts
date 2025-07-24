@@ -5,6 +5,7 @@ import {
 } from "@/drizzle/schema";
 import { createError } from "@/lib/helpers";
 import { revalidateMatchLinuepsCache } from "./cache/match";
+import { eq } from "drizzle-orm";
 
 enum DB_ERROR_MESSAGE {
   INSERT_LINEUP = "Errore nella creazione della formazione",
@@ -30,18 +31,38 @@ export async function insertLineup(
 
 export async function insertLineupPlayers(
   matchId: string,
-  lineupPlayers: (typeof leagueMatchLineupPlayers.$inferInsert)[]
+  lineupPlayers: (typeof leagueMatchLineupPlayers.$inferInsert)[],
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await db
+  const [res] = await tx
     .insert(leagueMatchLineupPlayers)
     .values(lineupPlayers)
-    .returning({ lineupId: leagueMatchLineupPlayers.id });
+    .returning({ playerLineupId: leagueMatchLineupPlayers.id });
 
-  if (!res.lineupId) {
-    throw new Error(createError(DB_ERROR_MESSAGE.INSERT_LINEUP).message);
+  if (!res.playerLineupId) {
+    throw new Error(
+      createError(DB_ERROR_MESSAGE.INSERT_LINEUP_PLAYERS).message
+    );
   }
 
   revalidateMatchLinuepsCache(matchId);
+}
 
-  return res.lineupId;
+export async function deleteLineupPlayers(
+  lineupId: string,
+  matchId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [res] = await tx
+    .delete(leagueMatchLineupPlayers)
+    .where(eq(leagueMatchLineupPlayers.lineupId, lineupId))
+    .returning({ playerLineupId: leagueMatchLineupPlayers.id });
+
+  if (!res.playerLineupId) {
+    throw new Error(
+      createError(DB_ERROR_MESSAGE.INSERT_LINEUP_PLAYERS).message
+    );
+  }
+
+  revalidateMatchLinuepsCache(matchId);
 }
