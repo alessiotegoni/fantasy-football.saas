@@ -3,7 +3,7 @@
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
-import { Crown, Plus, PlusCircle, UserCrown } from "iconoir-react";
+import { Crown, Plus, PlusCircle, UserCrown, UserXmark } from "iconoir-react";
 import { getPresident } from "../utils/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import PresidentCard from "./PresidentCard";
@@ -38,7 +38,7 @@ export default function PresidentSlot({
         hasPresident && "border border-primary"
       )}
     >
-      <div className="flex gap-2">
+      <div className="flex justify-between items-center gap-2">
         <Crown
           className={cn(
             "absolute -top-8.5 left-1/2 -translate-x-1/2 text-3xl",
@@ -47,31 +47,52 @@ export default function PresidentSlot({
           fill={hasPresident ? "var(--primary)" : "currentColor"}
         />
         <h2>Presidente</h2>
+        {!hasPresident && canEditLineup && (
+          <AddPresidentButton>
+            <div className="flex justify-center items-center size-6 bg-primary text-white rounded-full">
+              <Plus className="size-5" />
+            </div>
+          </AddPresidentButton>
+        )}
       </div>
       {!hasPresident && !canEditLineup && (
-        <div className="size-full flex flex-col gap-3 justify-start mt-6.5 items-center">
-          <UserCrown className="size-8 text-muted-foreground" />
+        <div className="size-full flex flex-col gap-2 justify-start mt-6.5 items-center">
+          <UserXmark className="size-8 text-muted-foreground" />
           <p className="text-sm font-medium text-muted-foreground text-center">
             Presidente non inserito
           </p>
         </div>
       )}
       {!hasPresident && canEditLineup && (
-        <PlayersSelectTrigger
-          lineupType="starter"
-          roleId={PRESIDENT_ROLE_ID}
-          positionId="PR-1"
-          className="size-full flex-col gap-2"
-        >
-          <div className="flex justify-center items-center size-8 bg-primary text-white rounded-full">
-            <Plus className="size-5" />
-          </div>
-          <p className="text-sm font-medium text-primary text-center">
+        <AddPresidentButton className="size-full flex-col justify-start gap-2 mt-6.5">
+          <UserCrown className="size-8 text-muted-foreground" />
+          <p className="text-sm font-medium text-muted-foreground text-center">
             Aggiungi <br /> presidente
           </p>
-        </PlayersSelectTrigger>
+        </AddPresidentButton>
       )}
-      {hasPresident && <PresidentCard player={president} canEdit={canEditLineup} />}
+      {hasPresident && (
+        <PresidentCard player={president} canEdit={canEditLineup} />
+      )}
     </div>
+  );
+}
+
+function AddPresidentButton({
+  children,
+  className = "",
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <PlayersSelectTrigger
+      lineupType="starter"
+      roleId={PRESIDENT_ROLE_ID}
+      positionId="PR-1"
+      className={className}
+    >
+      {children}
+    </PlayersSelectTrigger>
   );
 }
