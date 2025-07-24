@@ -66,59 +66,7 @@ export function getPresident(
   return president;
 }
 
-export function getPositionId({
-  positionId,
-  starterPlayers,
-  roleId,
-  moduleLayout,
-}: {
-  positionId: PositionId | null;
-  roleId: number | null;
-  starterPlayers: LineupPlayerWithoutVotes[];
-  moduleLayout: RolePosition[];
-}) {
-  const positionSlot = moduleLayout.find((layout) => layout.roleId === roleId);
 
-  if (
-    Number.isInteger(roleId) &&
-    positionSlot &&
-    isValidPositionId(positionId, positionSlot)
-  ) {
-    const playerPositionsIds = new Set(
-      starterPlayers
-        .filter((player) => !!player.positionId && player.role.id === roleId)
-        .map((player) => player.positionId)
-    );
-
-    const freePositionsIds = positionSlot.positionsIds.filter(
-      (posId) => !playerPositionsIds.has(posId)
-    );
-    if (!freePositionsIds.length) return null;
-
-    const isPositionFree = positionId && freePositionsIds.includes(positionId);
-
-    return isPositionFree ? positionId : freePositionsIds[0];
-  }
-
-  return null;
-}
-
-export function isValidPositionId(
-  positionId: PositionId | null,
-  positionSlot: RolePosition
-) {
-  if (typeof positionId !== "string") return false;
-
-  const [position, id] = positionId.split("-");
-  if (!position || !id || !positions.includes(position as Position)) {
-    return false;
-  }
-
-  const parsedId = parseInt(id);
-  if (isNaN(parsedId)) return false;
-
-  return parsedId > 0 && parsedId <= positionSlot.count;
-}
 
 export function reorderBench(players: LineupPlayerWithoutVotes[]) {
   return players.map((p, i) => ({ ...p, positionOrder: i + 1 }));

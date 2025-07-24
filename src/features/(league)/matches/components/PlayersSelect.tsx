@@ -63,7 +63,7 @@ export default function PlayersSelect({
             )}
           </DrawerHeader>
           <div className="p-6 pt-0 space-y-2">
-            <PlayersSelectList players={availablePlayers} />
+            <PlayersSelectList availablePlayers={availablePlayers} />
           </div>
         </DrawerContent>
       </Drawer>
@@ -87,7 +87,7 @@ export default function PlayersSelect({
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
               <div className="mt-2 space-y-2">
-                <PlayersSelectList players={availablePlayers} />
+                <PlayersSelectList availablePlayers={availablePlayers} />
               </div>
             </>
           ) : (

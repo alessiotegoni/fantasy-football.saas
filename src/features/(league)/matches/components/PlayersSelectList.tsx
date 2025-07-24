@@ -4,12 +4,13 @@ import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
-import { getPositionId } from "../utils/match";
+import { getNextPositionId } from "../utils/match";
+import { LineupPlayerType } from "@/drizzle/schema";
 
 export default function PlayersSelectList({
-  players,
+  availablePlayers,
 }: {
-  players: TeamPlayer[] | LineupPlayerWithoutVotes[];
+  availablePlayers: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
   const {
     myLineup: { tacticalModule, starterPlayers, benchPlayers },
@@ -20,46 +21,66 @@ export default function PlayersSelectList({
   } = useMyLineup();
 
   function handleCloseDialog(open?: boolean) {
-    const isLastPlayer = players.length - 1 <= 0;
-    handleSetPlayersDialog({ open: open ?? isLastPlayer });
+    const isLastPlayer = availablePlayers.length - 1 <= 0;
+    handleSetPlayersDialog({ open: open ?? !isLastPlayer });
   }
 
   function handleAddPlayer(player: TeamPlayer) {
-    if (!type || !tacticalModule) return;
+    if (!type) return;
 
     const newPlayer = {
       ...player,
       lineupPlayerType: type,
     };
 
-    if (type === "starter") {
-      const playerPosId = getPositionId({
-        positionId,
-        starterPlayers,
-        roleId,
-        moduleLayout: tacticalModule.layout,
-      });
-      if (!playerPosId) return handleCloseDialog(false);
+    const addPlayer =
+      type === "starter" ? handleAddStarterPlayer : handleAddBenchPlayer;
 
-      const [, id] = playerPosId.split("-");
-      const positionOrder = parseInt(id);
+    addPlayer(newPlayer);
+  }
 
-      addStarterPlayer({
-        ...newPlayer,
-        positionOrder,
-        positionId: playerPosId,
-      });
-    }
+  function handleAddStarterPlayer(
+    newPlayer: TeamPlayer & { lineupPlayerType: LineupPlayerType }
+  ) {
+    if (!tacticalModule || !positionId || !roleId) return;
 
-    if (type === "bench") {
-      const positionOrder = benchPlayers.length + 1;
-      addBenchPlayer({ ...newPlayer, positionOrder });
-    }
+    const isPositionOccupied = starterPlayers.some(
+      (player) => player.positionId === positionId && player.role.id === roleId
+    );
+    const nextPositionId = getNextPositionId({
+      positionId,
+      starterPlayers,
+      roleId,
+      moduleLayout: tacticalModule.layout,
+    });
+
+    const playerPosId = !isPositionOccupied ? positionId : nextPositionId;
+    if (!playerPosId) return;
+
+    const [, id] = playerPosId.split("-");
+    const positionOrder = parseInt(id);
+
+    addStarterPlayer({
+      ...newPlayer,
+      positionOrder,
+      positionId: playerPosId,
+    });
+
+    console.log(positionId, nextPositionId);
+
+    handleCloseDialog(!!nextPositionId);
+  }
+
+  function handleAddBenchPlayer(
+    newPlayer: TeamPlayer & { lineupPlayerType: LineupPlayerType }
+  ) {
+    const positionOrder = benchPlayers.length + 1;
+    addBenchPlayer({ ...newPlayer, positionOrder });
 
     handleCloseDialog();
   }
 
-  return players.map((player) => (
+  return availablePlayers.map((player) => (
     <PlayerCard
       key={player.id}
       className="cursor-pointer"
