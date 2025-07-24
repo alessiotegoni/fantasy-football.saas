@@ -6,9 +6,8 @@ import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { findNextAvailablePositionId } from "../utils/match";
 import { LineupPlayerType } from "@/drizzle/schema";
-import { useEffect } from "react";
 
-export default function PlayersSelectList({
+export default function PlayersDialogList({
   availablePlayers,
 }: {
   availablePlayers: TeamPlayer[] | LineupPlayerWithoutVotes[];
@@ -72,18 +71,6 @@ export default function PlayersSelectList({
     const isLastPlayer = availablePlayers.length - 1 <= 0;
     handleSetPlayersDialog({ open: !isLastPlayer });
   }
-
-  useEffect(() => {
-    if (!roleId || !tacticalModule) return;
-
-    const nextAvailableSlot = findNextAvailablePositionId({
-      starterPlayers,
-      roleId,
-      tacticalModule,
-    });
-
-    if (!nextAvailableSlot) handleSetPlayersDialog({ open: false });
-  }, [starterPlayers]);
 
   return availablePlayers.map((player) => (
     <PlayerCard

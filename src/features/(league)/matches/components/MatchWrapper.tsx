@@ -11,11 +11,11 @@ import ModulesSelect from "./ModulesSelect";
 import { getTacticalModules } from "../../options/queries/leagueOptions";
 import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
-import PlayersSelect from "./PlayersSelect";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { getPresident, groupLineupsPlayers, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
 import PresidentSlot from "./PresidentSlot";
+import PlayersDialog from "./PlayersDialog";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -125,7 +125,7 @@ export default function MatchWrapper({
       </div>
       {showLineups && myTeamId && (
         <Suspense>
-          <PlayersSelect playersPromise={getTeamsPlayers([myTeamId])} />
+          <PlayersDialog playersPromise={getTeamsPlayers([myTeamId])} />
         </Suspense>
       )}
       <Disclaimer />

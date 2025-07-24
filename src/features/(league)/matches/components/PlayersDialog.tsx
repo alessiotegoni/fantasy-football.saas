@@ -14,13 +14,14 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { use } from "react";
+import { use, useEffect } from "react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import { useIsMobile } from "@/hooks/useMobile";
-import PlayersSelectList from "./PlayersSelectList";
+import PlayersSelectList from "./PlayersDialogList";
+import { findNextAvailablePositionId } from "../utils/match";
 
-export default function PlayersSelect({
+export default function PlayersDialog({
   playersPromise,
 }: {
   playersPromise: Promise<TeamPlayer[]>;
@@ -29,10 +30,23 @@ export default function PlayersSelect({
 
   const players = use(playersPromise);
   const {
+    myLineup: { tacticalModule, starterPlayers },
     availablePlayers,
-    playersDialog: { open, type },
+    playersDialog: { open, type, roleId },
     handleSetPlayersDialog,
   } = useMyLineup(players);
+
+  useEffect(() => {
+    if (!roleId || !tacticalModule) return;
+
+    const nextAvailableSlot = findNextAvailablePositionId({
+      starterPlayers,
+      roleId,
+      tacticalModule,
+    });
+
+    if (!nextAvailableSlot) handleSetPlayersDialog({ open: false });
+  }, [starterPlayers]);
 
   if (isMobile) {
     return (
