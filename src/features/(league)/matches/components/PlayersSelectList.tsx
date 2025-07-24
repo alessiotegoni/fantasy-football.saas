@@ -48,10 +48,10 @@ export default function PlayersSelectList({
       (player) => player.positionId === positionId && player.role.id === roleId
     );
     const nextPositionId = getNextPositionId({
-      positionId,
+      currentPositionId: positionId,
       starterPlayers,
       roleId,
-      moduleLayout: tacticalModule.layout,
+      tacticalModule,
     });
 
     const playerPosId = !isPositionOccupied ? positionId : nextPositionId;
@@ -68,7 +68,7 @@ export default function PlayersSelectList({
 
     console.log(positionId, nextPositionId);
 
-    handleCloseDialog(!!nextPositionId);
+    handleCloseDialog();
   }
 
   function handleAddBenchPlayer(

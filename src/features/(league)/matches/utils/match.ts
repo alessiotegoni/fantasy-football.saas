@@ -1,11 +1,4 @@
-import {
-  LineupPlayerType,
-  Position,
-  PositionId,
-  positions,
-  PRESIDENT_ROLE_ID,
-  RolePosition,
-} from "@/drizzle/schema";
+import { PositionId, PRESIDENT_ROLE_ID, RolePosition, TacticalModule } from "@/drizzle/schema";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
@@ -66,7 +59,38 @@ export function getPresident(
   return president;
 }
 
+export function getNextPositionId({
+  currentPositionId,
+  starterPlayers,
+  roleId,
+  tacticalModule: { layout }
+}: {
+  currentPositionId: PositionId;
+  roleId: number;
+  starterPlayers: LineupPlayerWithoutVotes[];
+  tacticalModule: TacticalModule;
+}) {
+  const positionSlot = layout.find((layout) => layout.roleId === roleId);
+  if (!positionSlot) return null;
 
+  const starterRolePlayers = starterPlayers.filter(
+    (player) => player.positionId && player.role.id === roleId
+  );
+
+  const playerPositionsIds = new Set([
+    ...starterRolePlayers.map((player) => player.positionId),
+    currentPositionId,
+  ]);
+
+  const freePositionsIds = positionSlot.positionsIds.filter(
+    (posId) => !playerPositionsIds.has(posId)
+  );
+  console.log(freePositionsIds);
+
+  if (!freePositionsIds.length) return null;
+
+  return freePositionsIds[0];
+}
 
 export function reorderBench(players: LineupPlayerWithoutVotes[]) {
   return players.map((p, i) => ({ ...p, positionOrder: i + 1 }));
