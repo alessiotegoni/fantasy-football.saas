@@ -19,7 +19,7 @@ import {
 export type LineupPlayerWithoutVotes = TeamPlayer & {
   lineupPlayerType: LineupPlayerType;
   positionId: PositionId | null;
-  positionOrder: number | null;
+  positionOrder: number;
 };
 
 export type MyLineup = {

@@ -6,12 +6,9 @@ import {
   LineupPlayerWithoutVotes,
 } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import {
-  getPositionId,
-  getPositionOrder,
-  reorderBench,
-} from "@/features/(league)/matches/utils/match";
+import { reorderBench } from "@/features/(league)/matches/utils/match";
 import useSortPlayers from "./useSortPlayers";
+import { PositionId } from "@/drizzle/schema";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -19,43 +16,36 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     throw new Error("useMyLineup must be used within a MyLineupProvider");
 
   const { myLineup, playersDialog, handleSetLineup } = context;
-  const { tacticalModule, starterPlayers, benchPlayers } = myLineup;
-  const { roleId, positionId, type } = playersDialog;
+  const { starterPlayers, benchPlayers } = myLineup;
+  const { roleId, type } = playersDialog;
 
   const { sortPlayers } = useSortPlayers();
 
-  function addPlayerToLineup(player: TeamPlayer) {
-    if (!tacticalModule || !type) return;
-
-    const newPlayer: LineupPlayerWithoutVotes = {
-      ...player,
-      lineupPlayerType: type,
-      positionId: getPositionId({
-        type,
-        positionId,
-        starterPlayers,
-        roleId,
-        moduleLayout: tacticalModule.layout,
-      }),
-      positionOrder: getPositionOrder(type, positionId, benchPlayers),
-    };
-
-    if (type === "starter" && positionId) {
-      handleSetLineup({
-        ...myLineup,
-        starterPlayers: [...starterPlayers, newPlayer],
-        benchPlayers: benchPlayers.filter((p) => p.id !== player.id),
-      });
-    }
-
-    if (type === "bench") {
-      handleSetLineup({
-        ...myLineup,
-        benchPlayers: [...benchPlayers, newPlayer],
-        starterPlayers: starterPlayers.filter((p) => p.id !== player.id),
-      });
-    }
+  function addBenchPlayer(
+    newPlayer: Omit<LineupPlayerWithoutVotes, "positionId">
+  ) {
+    handleSetLineup({
+      ...myLineup,
+      benchPlayers: [...benchPlayers, { ...newPlayer, positionId: null }],
+      starterPlayers: starterPlayers.filter((p) => p.id !== newPlayer.id),
+    });
   }
+
+  function addStarterPlayer(
+    newPlayer: Omit<LineupPlayerWithoutVotes, "positionId"> & {
+      positionId: PositionId;
+    }
+  ) {
+    handleSetLineup({
+      ...myLineup,
+      starterPlayers: [...starterPlayers, newPlayer],
+      benchPlayers: benchPlayers.filter((p) => p.id !== newPlayer.id),
+    });
+  }
+
+  function addPlayerToLineup(player: TeamPlayer) {}
+
+  console.log(starterPlayers);
 
   function removePlayerFromLineup(playerId: number) {
     const updatedStarter = starterPlayers.filter((p) => p.id !== playerId);
@@ -86,12 +76,12 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
       target.lineupPlayerType = "bench";
       target.positionId = null;
-      target.positionOrder = null;
+      target.positionOrder = source.positionOrder;
       filteredBench.push(target);
     } else {
       source.lineupPlayerType = "bench";
       source.positionId = null;
-      source.positionOrder = null;
+      source.positionOrder = target.positionOrder;
       filteredBench.push(source);
 
       target.lineupPlayerType = "starter";
@@ -128,6 +118,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   return {
     ...context,
     availablePlayers,
+    addBenchPlayer,
+    addStarterPlayer,
     addPlayerToLineup,
     removePlayerFromLineup,
     movePlayer,

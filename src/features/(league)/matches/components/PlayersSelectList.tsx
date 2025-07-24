@@ -4,19 +4,59 @@ import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
+import { getPositionId } from "../utils/match";
 
 export default function PlayersSelectList({
   players,
 }: {
   players: TeamPlayer[] | LineupPlayerWithoutVotes[];
 }) {
-  const { addPlayerToLineup, handleSetPlayersDialog } = useMyLineup();
+  const {
+    myLineup: { tacticalModule, starterPlayers, benchPlayers },
+    playersDialog: { type, positionId, roleId },
+    addStarterPlayer,
+    addBenchPlayer,
+    handleSetPlayersDialog,
+  } = useMyLineup();
 
-  async function handleSelectPlayer(player: TeamPlayer) {
+  function handleCloseDialog(open?: boolean) {
     const isLastPlayer = players.length - 1 <= 0;
-    if (isLastPlayer) handleSetPlayersDialog({ open: false });
+    handleSetPlayersDialog({ open: open ?? isLastPlayer });
+  }
 
-    addPlayerToLineup(player);
+  function handleAddPlayer(player: TeamPlayer) {
+    if (!type || !tacticalModule) return;
+
+    const newPlayer = {
+      ...player,
+      lineupPlayerType: type,
+    };
+
+    if (type === "starter") {
+      const playerPosId = getPositionId({
+        positionId,
+        starterPlayers,
+        roleId,
+        moduleLayout: tacticalModule.layout,
+      });
+      if (!playerPosId) return handleCloseDialog(false);
+
+      const [, id] = playerPosId.split("-");
+      const positionOrder = parseInt(id);
+
+      addStarterPlayer({
+        ...newPlayer,
+        positionOrder,
+        positionId: playerPosId,
+      });
+    }
+
+    if (type === "bench") {
+      const positionOrder = benchPlayers.length + 1;
+      addBenchPlayer({ ...newPlayer, positionOrder });
+    }
+
+    handleCloseDialog();
   }
 
   return players.map((player) => (
@@ -25,7 +65,7 @@ export default function PlayersSelectList({
       className="cursor-pointer"
       showSelectButton={false}
       showPurchaseCost={false}
-      onSelect={handleSelectPlayer}
+      onSelect={handleAddPlayer}
       canSelectCard
       {...player}
     />

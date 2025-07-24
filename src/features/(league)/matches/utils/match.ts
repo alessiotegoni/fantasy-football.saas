@@ -66,28 +66,12 @@ export function getPresident(
   return president;
 }
 
-export function getPositionOrder(
-  type: LineupPlayerType,
-  positionId: PositionId | null,
-  benchPlayers: LineupPlayerWithoutVotes[]
-) {
-  if (type === "starter") {
-    if (!positionId) return null;
-
-    const [, id] = positionId.split("-");
-
-    return parseInt(id);
-  } else return benchPlayers.length + 1;
-}
-
 export function getPositionId({
-  type,
   positionId,
   starterPlayers,
   roleId,
   moduleLayout,
 }: {
-  type: LineupPlayerType;
   positionId: PositionId | null;
   roleId: number | null;
   starterPlayers: LineupPlayerWithoutVotes[];
@@ -96,7 +80,6 @@ export function getPositionId({
   const positionSlot = moduleLayout.find((layout) => layout.roleId === roleId);
 
   if (
-    type === "starter" &&
     Number.isInteger(roleId) &&
     positionSlot &&
     isValidPositionId(positionId, positionSlot)
