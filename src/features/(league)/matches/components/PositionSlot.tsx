@@ -1,7 +1,6 @@
 import { Plus } from "lucide-react";
 import { LineupPlayer } from "../queries/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
-import useMyLineup from "@/hooks/useMyLineup";
 import LineupPlayerCard from "./LineupPlayerCard";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { PositionId } from "@/drizzle/schema";
@@ -14,7 +13,6 @@ type Props = {
 };
 
 export default function PositionSlot({ player, canEdit, ...ids }: Props) {
-  const { removePlayerFromLineup } = useMyLineup();
   if (!player && !canEdit) return null;
 
   return (
@@ -24,7 +22,6 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
           player={player}
           type="starter"
           canEdit={canEdit}
-          onRemove={removePlayerFromLineup}
           className="size-14 sm:size-16 xl:size-18 flex items-center justify-center"
         />
       )}

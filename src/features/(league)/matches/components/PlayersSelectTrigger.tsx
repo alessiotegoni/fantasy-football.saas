@@ -8,7 +8,6 @@ type Props = {
   children: React.ReactNode;
   lineupType: LineupPlayerType;
   roleId?: number;
-  positionId?: PositionId;
   className?: string;
 };
 
@@ -16,7 +15,6 @@ export default function PlayersSelectTrigger({
   children,
   lineupType,
   roleId,
-  positionId,
   className,
 }: Props) {
   const { handleSetPlayersDialog } = useMyLineup();
@@ -31,7 +29,6 @@ export default function PlayersSelectTrigger({
         open: true,
         type: lineupType,
         roleId: roleId ?? null,
-        positionId: positionId ?? null,
       })}
     >
       {children}

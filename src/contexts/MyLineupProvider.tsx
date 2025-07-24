@@ -33,7 +33,6 @@ type PlayersDialog = {
   open: boolean;
   type: LineupPlayerType | null;
   roleId: number | null;
-  positionId: PositionId | null;
 };
 
 export type MyLineupContext = {
@@ -144,7 +143,6 @@ function getInitialDialog() {
     open: false,
     type: null,
     roleId: null,
-    positionId: null,
   };
 }
 
