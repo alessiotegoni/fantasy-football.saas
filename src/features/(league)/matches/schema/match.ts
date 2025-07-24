@@ -8,13 +8,11 @@ const lineupPlayerSchema = z
     id: getSerialIdSchema(),
     positionId: positionIdSchema.nullable(),
     positionOrder: z.number().int().positive(),
-    type: z.enum(lineupPlayerTypes),
+    lineupPlayerType: z.enum(lineupPlayerTypes),
   })
-  .refine((player) => {
-    if (player.type === "starter" && !player.positionId) return false;
-
-    return true;
-  });
+  .refine((player) =>
+    player.lineupPlayerType === "starter" && !player.positionId ? false : true
+  );
 
 export const matchLineupSchema = z.object({
   lineupId: getUUIdSchema().nullable(),
@@ -22,3 +20,5 @@ export const matchLineupSchema = z.object({
   tacticalModuleId: getSerialIdSchema(),
   lineupPlayers: z.array(lineupPlayerSchema),
 });
+
+export type MatchLineupSchema = z.infer<typeof matchLineupSchema>;
