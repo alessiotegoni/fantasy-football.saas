@@ -22,6 +22,7 @@ import LeagueModules from "../../leagues/components/LeagueModules";
 import { ComponentProps, Suspense, useState } from "react";
 import { TacticalModule } from "@/drizzle/schema";
 import useMyLineup from "@/hooks/useMyLineup";
+import { cn } from "@/lib/utils";
 
 export default function ModulesSelect(
   props: ComponentProps<typeof LeagueModules>
@@ -29,16 +30,26 @@ export default function ModulesSelect(
   const isMobile = useIsMobile();
 
   const {
-    myLineup: { tacticalModule },
+    myLineup: { tacticalModule, starterPlayers },
     handleSetModule,
+
   } = useMyLineup();
 
   const [open, setOpen] = useState(false);
 
-  const handleModuleChange = (module: TacticalModule) => {
+  function handleModuleChange(module: TacticalModule) {
     setOpen(false);
     handleSetModule(module);
-  };
+
+    const modulePositionsIds = new Set(
+      module.layout.flatMap((slot) => slot.positionsIds)
+    );
+    const newStarterPlayers = starterPlayers.filter(
+      (player) => player.positionId && modulePositionsIds.has(player.positionId)
+    );
+  }
+
+  
 
   if (isMobile) {
     return (
@@ -79,8 +90,11 @@ export default function ModulesSelect(
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="!bg-input !p-3.5 text-xs xl:text-sm sm:rounded-t-none
-          absolute left-1/2 -translate-x-1/2 top-0 z-50 h-10 xl:h-11 w-32"
+          className={cn(
+            `!bg-input !p-3.5 text-xs sm:rounded-t-none
+          absolute left-1/2 -translate-x-1/2 top-0 z-50 h-10 xl:h-11 w-32`,
+            tacticalModule && "xl:text-sm"
+          )}
         >
           {tacticalModule
             ? `Modulo: ${tacticalModule.name}`

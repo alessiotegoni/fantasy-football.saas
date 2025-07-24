@@ -40,7 +40,7 @@ export type MyLineupContext = {
   myLineup: MyLineup;
   playersDialog: PlayersDialog;
   isLineupDirty: boolean;
-  handleSetLineup: (lineup: MyLineup) => void;
+  handleSetLineup: (lineup: Partial<MyLineup>) => void;
   handleSetPlayersDialog: (dialog: Partial<PlayersDialog>) => void;
   handleSetModule: (module: TacticalModule) => void;
 };
@@ -79,7 +79,7 @@ export default function MyLineupProvider({
   }, [myLineup.tacticalModule]);
 
   const handleSetLineup = useCallback(
-    (lineup: MyLineup) => setMyLineup(lineup),
+    (lineup: Partial<MyLineup>) => setMyLineup({ ...myLineup, ...lineup }),
     []
   );
 

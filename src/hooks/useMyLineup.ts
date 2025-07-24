@@ -15,9 +15,11 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   if (!context)
     throw new Error("useMyLineup must be used within a MyLineupProvider");
 
-  const { myLineup, playersDialog, handleSetLineup } = context;
-  const { starterPlayers, benchPlayers } = myLineup;
-  const { roleId, type } = playersDialog;
+  const {
+    myLineup: { starterPlayers, benchPlayers },
+    playersDialog: { roleId, type },
+    handleSetLineup,
+  } = context;
 
   const { sortPlayers } = useSortPlayers();
 
@@ -48,7 +50,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     starterPlayers: LineupPlayerWithoutVotes[];
     benchPlayers: LineupPlayerWithoutVotes[];
   }) {
-    handleSetLineup({ ...myLineup, starterPlayers, benchPlayers });
+    handleSetLineup({ starterPlayers, benchPlayers });
   }
 
   console.log(starterPlayers);
@@ -57,7 +59,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     const updatedStarter = starterPlayers.filter((p) => p.id !== playerId);
     const updatedBench = benchPlayers.filter((p) => p.id !== playerId);
     handleSetLineup({
-      ...myLineup,
       starterPlayers: updatedStarter,
       benchPlayers: updatedBench,
     });
@@ -97,7 +98,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     }
 
     handleSetLineup({
-      ...myLineup,
       starterPlayers: filteredStarters,
       benchPlayers: reorderBench(filteredBench),
     });

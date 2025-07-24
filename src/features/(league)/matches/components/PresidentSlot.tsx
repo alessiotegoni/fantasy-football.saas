@@ -3,7 +3,7 @@
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
-import { Crown, Plus, PlusCircle, UserCrown, UserXmark } from "iconoir-react";
+import { Crown, Plus, UserCrown, UserXmark } from "iconoir-react";
 import { getPresident } from "../utils/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import PresidentCard from "./PresidentCard";
