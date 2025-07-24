@@ -3,7 +3,7 @@
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
-import { Crown, Plus, PlusCircle } from "iconoir-react";
+import { Crown, Plus, PlusCircle, UserCrown } from "iconoir-react";
 import { getPresident } from "../utils/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import PresidentCard from "./PresidentCard";
@@ -49,8 +49,9 @@ export default function PresidentSlot({
         <h2>Presidente</h2>
       </div>
       {!hasPresident && !canEditLineup && (
-        <div className="flex items-center justify-center h-full">
-          <p className="text-muted-foreground text-center">
+        <div className="size-full flex flex-col gap-3 justify-start mt-6.5 items-center">
+          <UserCrown className="size-8 text-muted-foreground" />
+          <p className="text-sm font-medium text-muted-foreground text-center">
             Presidente non inserito
           </p>
         </div>
@@ -70,7 +71,7 @@ export default function PresidentSlot({
           </p>
         </PlayersSelectTrigger>
       )}
-      {hasPresident && <PresidentCard player={president} />}
+      {hasPresident && <PresidentCard player={president} canEdit={canEditLineup} />}
     </div>
   );
 }
