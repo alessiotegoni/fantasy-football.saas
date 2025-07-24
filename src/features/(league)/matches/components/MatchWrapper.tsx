@@ -106,24 +106,22 @@ export default function MatchWrapper({
             )}
           </FootballFieldBg>
         </div>
-        <div className="flex flex-col justify-between gap-5">
-          <PresidentSlot
-            starterPresident={getPresident(
-              groupedPlayers["starter"] ?? [],
-              matchInfo.awayTeam.id
-            )}
-            canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-          />
-          {showLineups && (
-            <Suspense>
-              <BenchLineup
-                players={getBenchPlayers(matchInfo.awayTeam.id)}
-                canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-                className="2xl:border-l"
-              />
-            </Suspense>
-          )}
-        </div>
+        {showLineups && (
+          <div className="flex flex-col justify-between gap-5">
+            <PresidentSlot
+              starterPresident={getPresident(
+                groupedPlayers["starter"] ?? [],
+                matchInfo.awayTeam.id
+              )}
+              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+            />
+            <BenchLineup
+              players={getBenchPlayers(matchInfo.awayTeam.id)}
+              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+              className="2xl:border-l"
+            />
+          </div>
+        )}
       </div>
       {showLineups && myTeamId && (
         <Suspense>
