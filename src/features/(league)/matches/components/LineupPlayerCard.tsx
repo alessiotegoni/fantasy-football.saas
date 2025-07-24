@@ -2,10 +2,8 @@ import Avatar from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
-import { X } from "lucide-react";
-import Image from "next/image";
+import RemovePlayerButton from "./RemovePlayerButton";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
-import { Button } from "@/components/ui/button";
 
 type Props = {
   player: LineupPlayerWithoutVotes &
@@ -13,7 +11,6 @@ type Props = {
   type: LineupPlayerType;
   className?: string;
   canEdit?: boolean;
-  onRemove?: (playerId: number) => void;
 };
 
 // TODO: aggiungere il ruolo del giocatore (<PlayerRoleBadge />) insieme al team se non ci sono bonusMalus
@@ -24,7 +21,6 @@ export default function LineupPlayerCard({
   type,
   className,
   canEdit,
-  onRemove,
 }: Props) {
   const isStarter = type === "starter";
 
@@ -78,17 +74,7 @@ export default function LineupPlayerCard({
           <p className="font-bold">Totale: {totalVote}</p>
         )}
       </div>
-      {canEdit && onRemove && (
-        <Button
-          variant="destructive"
-          size="icon"
-          onClick={onRemove.bind(null, player.id)}
-          className="hidden group-hover:flex absolute
-          top-1 right-1 p-1 rounded-full size-5"
-        >
-          <X className="size-3" />
-        </Button>
-      )}
+      {canEdit && <RemovePlayerButton playerId={player.id} />}
     </div>
   );
 }

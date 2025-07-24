@@ -53,7 +53,6 @@ export default function BenchLineup({
             player={player}
             type="bench"
             canEdit={canEditLineup}
-            onRemove={removePlayerFromLineup}
             className="p-0 w-full text-left text-xs"
           />
         ))}

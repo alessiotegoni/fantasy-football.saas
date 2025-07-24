@@ -1,12 +1,7 @@
-
 import Avatar from "@/components/Avatar";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import Image from "next/image";
-import { useIsMobile } from "@/hooks/useMobile";
-import useMyLineup from "@/hooks/useMyLineup";
+import RemovePlayerButton from "./RemovePlayerButton";
 
 type Props = {
   player: LineupPlayer | LineupPlayerWithoutVotes;
@@ -14,9 +9,6 @@ type Props = {
 };
 
 export default function PresidentCard({ player, canEdit }: Props) {
-  const isMobile = useIsMobile();
-  const { removePlayerFromLineup } = useMyLineup();
-
   const totalVote =
     "vote" in player && player.vote !== undefined && player.vote !== null
       ? player.vote +
@@ -61,17 +53,7 @@ export default function PresidentCard({ player, canEdit }: Props) {
       {totalVote !== undefined && (
         <p className="font-bold">Totale: {totalVote}</p>
       )}
-      {canEdit && (
-        <Button
-          variant="destructive"
-          size="icon"
-          onClick={() => removePlayerFromLineup(player.id)}
-          className={`${isMobile ? "absolute" : "hidden group-hover:flex absolute"}
-          top-1 right-1 p-1 rounded-full size-5`}
-        >
-          <X className="size-3" />
-        </Button>
-      )}
+      {canEdit && <RemovePlayerButton playerId={player.id} />}
     </div>
   );
 }
