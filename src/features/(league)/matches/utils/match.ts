@@ -1,4 +1,9 @@
-import { PRESIDENT_ROLE_ID, RolePosition, TacticalModule } from "@/drizzle/schema";
+import {
+  PRESIDENT_POSITION_ID,
+  PRESIDENT_ROLE_ID,
+  RolePosition,
+  TacticalModule,
+} from "@/drizzle/schema";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
@@ -66,15 +71,16 @@ export function findNextAvailablePositionId({
 }: {
   roleId: number;
   starterPlayers: LineupPlayerWithoutVotes[];
-  tacticalModule:  TacticalModule;
+  tacticalModule: TacticalModule;
 }) {
-  const positionSlot = layout.find((layout) => layout.roleId === roleId);
+  const positionSlot = [
+    { roleId: PRESIDENT_ROLE_ID, positionsIds: [PRESIDENT_POSITION_ID] },
+    ...layout,
+  ].find((layout) => layout.roleId === roleId);
   if (!positionSlot) return null;
 
   const occupiedPositions = new Set(
-    starterPlayers
-      .filter((p) => p.role.id === roleId)
-      .map((p) => p.positionId)
+    starterPlayers.filter((p) => p.role.id === roleId).map((p) => p.positionId)
   );
 
   const nextAvailable = positionSlot.positionsIds.find(
