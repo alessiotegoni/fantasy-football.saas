@@ -44,3 +44,7 @@ export async function getPlayersMatchdayBonusMaluses({
 
   return results;
 }
+
+export type PlayerBonusMalus = Awaited<
+  ReturnType<typeof getPlayersMatchdayBonusMaluses>
+>[number];

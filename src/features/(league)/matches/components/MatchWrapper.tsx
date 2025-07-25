@@ -12,10 +12,11 @@ import { getTacticalModules } from "../../options/queries/leagueOptions";
 import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
-import { getPresident, groupLineupsPlayers, LineupTeam } from "../utils/match";
+import { getPresident, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
 import PresidentSlot from "./PresidentSlot";
 import PlayersDialog from "./PlayersDialog";
+import { groupLineupsPlayers } from "../utils/LineupPlayers";
 
 type Props = {
   matchInfo: MatchInfo;

@@ -1,5 +1,4 @@
 import {
-  PRESIDENT_POSITION_ID,
   PRESIDENT_ROLE_ID,
   PRESIDENT_SLOT,
   RolePosition,
@@ -92,10 +91,4 @@ export function findNextAvailablePositionId({
 
 export function reorderBench(players: LineupPlayerWithoutVotes[]) {
   return players.map((p, i) => ({ ...p, positionOrder: i + 1 }));
-}
-
-export function groupLineupsPlayers<
-  T extends LineupPlayer | LineupPlayerWithoutVotes
->(players: T[]) {
-  return Object.groupBy(players, (player) => player.lineupPlayerType);
 }

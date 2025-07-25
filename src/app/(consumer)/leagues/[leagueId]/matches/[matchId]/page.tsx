@@ -6,6 +6,7 @@ import {
   MatchInfo,
 } from "@/features/(league)/matches/queries/match";
 import { getMyTeam } from "@/features/(league)/matches/utils/match";
+import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 import { getCurrentMatchday } from "@/features/splits/queries/split";
 import { getUserTeamId } from "@/features/users/queries/user";
@@ -52,6 +53,12 @@ async function SuspenseBoundary({
   const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
     matchdayId: matchInfo.splitMatchday.id,
     playerIds: lineupsPlayers.map((player) => player.id),
+  });
+
+  const enrichedLineupPlayers = enrichLineupPlayers({
+    lineupsPlayers,
+    playersBonusMaluses,
+    ...matchInfo,
   });
 
   const myTeam = getMyTeam(myTeamId, matchInfo, lineupsPlayers);
