@@ -3,14 +3,20 @@ import { PRESIDENT_ROLE_ID } from "./playerRoles";
 
 export const positions = ["PR", "GK", "FB", "MF", "ST"] as const;
 
-export const PRESIDENT_POSITION_ID = `${positions[0]}-${PRESIDENT_ROLE_ID}` as const;
-
 export type Position = (typeof positions)[number];
 export type PositionId = `${Position}-${number}`;
 
 export type RolePosition = {
   roleId: number;
   positionsIds: PositionId[];
+};
+
+export const PRESIDENT_POSITION_ID =
+  `${positions[0]}-${PRESIDENT_ROLE_ID}` as const;
+
+export const PRESIDENT_SLOT = {
+  roleId: PRESIDENT_ROLE_ID,
+  positionsIds: [PRESIDENT_POSITION_ID],
 };
 
 export const tacticalModules = pgTable("tactical_modules", {

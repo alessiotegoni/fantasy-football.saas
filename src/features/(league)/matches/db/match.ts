@@ -56,9 +56,9 @@ export async function insertLineupPlayers(
   const [res] = await tx
     .insert(leagueMatchLineupPlayers)
     .values(lineupPlayers)
-    .returning({ playerLineupId: leagueMatchLineupPlayers.id });
+    .returning({ lineupId: leagueMatchLineupPlayers.lineupId });
 
-  if (!res.playerLineupId) {
+  if (!res.lineupId) {
     throw new Error(
       createError(DB_ERROR_MESSAGE.INSERT_LINEUP_PLAYERS).message
     );
@@ -72,16 +72,9 @@ export async function deleteLineupPlayers(
   matchId: string,
   tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await tx
+  await tx
     .delete(leagueMatchLineupPlayers)
-    .where(eq(leagueMatchLineupPlayers.lineupId, lineupId))
-    .returning({ playerLineupId: leagueMatchLineupPlayers.id });
-
-  if (!res.playerLineupId) {
-    throw new Error(
-      createError(DB_ERROR_MESSAGE.INSERT_LINEUP_PLAYERS).message
-    );
-  }
+    .where(eq(leagueMatchLineupPlayers.lineupId, lineupId));
 
   revalidateMatchLinuepsCache(matchId);
 }

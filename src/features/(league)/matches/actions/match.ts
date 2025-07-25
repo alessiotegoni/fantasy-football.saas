@@ -14,8 +14,12 @@ import {
 import { leagueMatchLineupPlayers } from "@/drizzle/schema";
 
 export async function saveLineup(values: MatchLineupSchema) {
-  const { success, data } = await matchLineupSchema.safeParseAsync(values);
+  const { success, data, error } = await matchLineupSchema.safeParseAsync(
+    values
+  );
+  console.log(error);
   if (!success) return createError(VALIDATION_ERROR);
+
 
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);

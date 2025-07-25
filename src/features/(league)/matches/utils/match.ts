@@ -1,6 +1,7 @@
 import {
   PRESIDENT_POSITION_ID,
   PRESIDENT_ROLE_ID,
+  PRESIDENT_SLOT,
   RolePosition,
   TacticalModule,
 } from "@/drizzle/schema";
@@ -73,10 +74,9 @@ export function findNextAvailablePositionId({
   starterPlayers: LineupPlayerWithoutVotes[];
   tacticalModule: TacticalModule;
 }) {
-  const positionSlot = [
-    { roleId: PRESIDENT_ROLE_ID, positionsIds: [PRESIDENT_POSITION_ID] },
-    ...layout,
-  ].find((layout) => layout.roleId === roleId);
+  const positionSlot = [PRESIDENT_SLOT, ...layout].find(
+    (layout) => layout.roleId === roleId
+  );
   if (!positionSlot) return null;
 
   const occupiedPositions = new Set(

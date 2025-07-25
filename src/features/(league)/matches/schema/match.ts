@@ -1,7 +1,7 @@
 import { getSerialIdSchema, getUUIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 import { positionIdSchema } from "./matchTacticalModule";
-import { lineupPlayerTypes } from "@/drizzle/schema";
+import { lineupPlayerTypes, PRESIDENT_POSITION_ID } from "@/drizzle/schema";
 import { getTacticalModules } from "../../options/queries/leagueOptions";
 import { getLeagueModules } from "../../leagues/queries/league";
 
@@ -80,9 +80,10 @@ export const matchLineupSchema = z
       return;
     }
 
-    const validPositionIds = new Set(
-      selectedModule.layout.flatMap((role) => role.positionsIds)
-    );
+    const validPositionIds = new Set([
+      ...selectedModule.layout.flatMap((role) => role.positionsIds),
+      PRESIDENT_POSITION_ID,
+    ]);
 
     const hasInvalidPositionId = data.lineupPlayers.some(
       (player) =>
