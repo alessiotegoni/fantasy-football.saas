@@ -12,16 +12,28 @@ const lineupPlayerSchema = z
     positionOrder: z.number().int().positive(),
     lineupPlayerType: z.enum(lineupPlayerTypes),
   })
-  .refine(
-    (player) =>
-      player.lineupPlayerType === "starter" && !player.positionId
-        ? false
-        : true,
-    {
-      message: "Starter player must have a positionId",
-      path: ["positionId"],
+  .superRefine((player, ctx) => {
+    if (player.lineupPlayerType === "starter" && !player.positionId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Starter player must have a positionId",
+        path: ["positionId"],
+      });
+      return;
     }
-  );
+
+    if (player.positionId) {
+      const [, id] = player.positionId.split("-");
+      if (parseInt(id) !== player.positionOrder) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Invalid positionOrder",
+          path: ["positionOrder"],
+        });
+        return
+      }
+    }
+  });
 
 export const matchLineupSchema = z
   .object({
