@@ -11,7 +11,6 @@ import {
   insertLineup,
   insertLineupPlayers,
 } from "../db/match";
-import { leagueMatchLineupPlayers } from "@/drizzle/schema";
 
 export async function saveLineup(values: MatchLineupSchema) {
   const { success, data, error } = await matchLineupSchema.safeParseAsync(
@@ -42,13 +41,13 @@ export async function saveLineup(values: MatchLineupSchema) {
     }
   });
 
-  return createSuccess("", null);
+  return createSuccess("Formazione salvata con successo", null);
 }
 
 function mapLineupPlayers(
   lineupId: string,
   lineupPlayers: MatchLineupSchema["lineupPlayers"]
-): (typeof leagueMatchLineupPlayers.$inferInsert)[] {
+) {
   return lineupPlayers.map(
     ({ id: playerId, lineupPlayerType: playerType, ...positions }) => ({
       lineupId,

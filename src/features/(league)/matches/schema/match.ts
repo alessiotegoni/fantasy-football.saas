@@ -104,6 +104,7 @@ export const matchLineupSchema = z
     const benchPlayers = data.lineupPlayers.filter(
       (player) => player.lineupPlayerType === "bench"
     );
+
     const hasInvalidPositionOrder = benchPlayers.some(
       (player) => player.positionOrder > benchPlayers.length
     );

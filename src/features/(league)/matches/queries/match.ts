@@ -139,11 +139,6 @@ export async function getLineupsPlayers(
       positionOrder: leagueMatchLineupPlayers.positionOrder,
       vote: matchdayVotes.vote,
       lineupPlayerType: leagueMatchLineupPlayers.playerType,
-      bonusMaluses: {
-        id: matchdayBonusMalus.bonusMalusTypeId,
-        count: matchdayBonusMalus.count,
-        imageUrl: bonusMalusTypes.imageUrl,
-      },
     })
     .from(leagueMatchLineupPlayers)
     .innerJoin(
@@ -157,23 +152,12 @@ export async function getLineupsPlayers(
     .innerJoin(players, eq(players.id, leagueMatchLineupPlayers.playerId))
     .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
     .innerJoin(teams, eq(teams.id, players.teamId))
-    .innerJoin(
+    .leftJoin(
       matchdayVotes,
       and(
         eq(matchdayVotes.playerId, players.id),
         eq(matchdayVotes.matchdayId, leagueMatches.splitMatchdayId)
       )
-    )
-    .innerJoin(
-      matchdayBonusMalus,
-      and(
-        eq(matchdayBonusMalus.playerId, players.id),
-        eq(matchdayBonusMalus.matchdayId, leagueMatches.splitMatchdayId)
-      )
-    )
-    .innerJoin(
-      bonusMalusTypes,
-      eq(bonusMalusTypes.id, matchdayBonusMalus.bonusMalusTypeId)
     )
     .where(eq(leagueMatches.id, matchId))
     .orderBy(asc(leagueMatchLineupPlayers.positionOrder));
@@ -186,7 +170,7 @@ export async function getLineupsPlayers(
     })
   );
 
-  return results;
+  return results.map((player) => ({ ...player, purchaseCost: 0 }));
 }
 export type LineupPlayer = Awaited<
   ReturnType<typeof getLineupsPlayers>

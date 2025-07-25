@@ -50,6 +50,7 @@ async function SuspenseBoundary({
 
   const myTeam = getMyTeam(myTeamId, matchInfo, lineupsPlayers);
 
+
   return (
     <MyLineupProvider myTeam={myTeam}>
       <MatchWrapper
