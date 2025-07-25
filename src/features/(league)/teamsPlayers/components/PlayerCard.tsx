@@ -68,25 +68,27 @@ export default memo(function PlayerCard({
         </div>
       </div>
 
-      <div className="flex gap-2 items-center">
-        {player.purchaseCost && showPurchaseCost && (
-          <TeamCreditsBadge credits={player.purchaseCost} />
-        )}
-        {showSelectButton && (
-          <DialogTrigger asChild>
-            <Button
-              className="w-fit rounded-full size-8"
-              onClick={onSelect?.bind(null, player)}
-            >
-              {teamId ? (
-                <Minus className="size-5" />
-              ) : (
-                <Plus className="size-5" />
-              )}
-            </Button>
-          </DialogTrigger>
-        )}
-      </div>
+      {(showPurchaseCost || showSelectButton) && (
+        <div className="flex gap-2 items-center">
+          {!!player.purchaseCost && showPurchaseCost && (
+            <TeamCreditsBadge credits={player.purchaseCost} />
+          )}
+          {showSelectButton && (
+            <DialogTrigger asChild>
+              <Button
+                className="w-fit rounded-full size-8"
+                onClick={onSelect?.bind(null, player)}
+              >
+                {teamId ? (
+                  <Minus className="size-5" />
+                ) : (
+                  <Plus className="size-5" />
+                )}
+              </Button>
+            </DialogTrigger>
+          )}
+        </div>
+      )}
     </div>
   );
 });
