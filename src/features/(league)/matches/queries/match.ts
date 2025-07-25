@@ -12,7 +12,7 @@ import {
   PositionId,
   teams,
 } from "@/drizzle/schema";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import {
   getPlayerRolesTag,
   getPlayersTag,
@@ -121,10 +121,7 @@ export async function getMatchInfo({
 
 export type MatchInfo = NonNullable<Awaited<ReturnType<typeof getMatchInfo>>>;
 
-export async function getLineupsPlayers(
-  matchId: string,
-  currentMatchdayId: number
-) {
+export async function getLineupsPlayers(matchId: string, matchdayId: number) {
   "use cache";
 
   const results = await db
@@ -165,16 +162,17 @@ export async function getLineupsPlayers(
   cacheTag(
     ...getLineupsPlayersTags({
       matchId,
-      currentMatchdayId,
+      matchdayId,
       players: results,
     })
   );
 
   return results.map((player) => ({ ...player, purchaseCost: 0 }));
 }
+
 export type LineupPlayer = Awaited<
   ReturnType<typeof getLineupsPlayers>
->[number] & { purchaseCost: number };
+>[number];
 
 function getMatchInfoTags({
   homeTeamId,
@@ -207,12 +205,12 @@ function getMatchInfoTags({
 
 function getLineupsPlayersTags({
   matchId,
-  currentMatchdayId,
+  matchdayId,
   players,
 }: {
   matchId: string;
-  players: Omit<LineupPlayer, "purchaseCost">[];
-  currentMatchdayId: number;
+  players: { id: number }[];
+  matchdayId: number;
 }) {
   const tags = [
     getMatchLineupsTag(matchId),
@@ -222,7 +220,7 @@ function getLineupsPlayersTags({
   ];
 
   const playersMatchdayVotesTags = players.map((player) =>
-    getPlayerMatchdayVoteTag(player.id, currentMatchdayId)
+    getPlayerMatchdayVoteTag(player.id, matchdayId)
   );
 
   return [...tags, ...playersMatchdayVotesTags];

@@ -48,8 +48,12 @@ async function SuspenseBoundary({
     getLineupsPlayers(ids.matchId, matchInfo.splitMatchday.id),
   ]);
 
-  const myTeam = getMyTeam(myTeamId, matchInfo, lineupsPlayers);
+  const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
+    matchdayId: matchInfo.splitMatchday.id,
+    playerIds: lineupsPlayers.map((player) => player.id),
+  });
 
+  const myTeam = getMyTeam(myTeamId, matchInfo, lineupsPlayers);
 
   return (
     <MyLineupProvider myTeam={myTeam}>
