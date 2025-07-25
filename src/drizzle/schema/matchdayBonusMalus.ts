@@ -19,7 +19,7 @@ export const matchdayBonusMalus = pgTable(
     matchdayId: smallint("matchday_id")
       .notNull()
       .references(() => splitMatchdays.id, { onDelete: "set null" }),
-    count: smallint("count").default(1),
+    count: smallint("count").notNull().default(1),
     bonusMalusTypeId: smallint("bonus_malus_type_id")
       .notNull()
       .references(() => bonusMalusTypes.id, { onDelete: "restrict" }),

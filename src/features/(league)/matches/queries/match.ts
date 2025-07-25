@@ -1,18 +1,15 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { db } from "@/drizzle/db";
 import {
-  bonusMalusTypes,
   leagueMatches,
   leagueMatchLineupPlayers,
   leagueMatchTeamLineup,
-  matchdayBonusMalus,
   matchdayVotes,
   playerRoles,
   players,
-  PositionId,
   teams,
 } from "@/drizzle/schema";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import {
   getPlayerRolesTag,
   getPlayersTag,
