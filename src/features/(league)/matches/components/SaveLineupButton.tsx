@@ -3,6 +3,7 @@
 import ActionButton from "@/components/ActionButton";
 import useMyLineup from "@/hooks/useMyLineup";
 import { saveLineup } from "../actions/match";
+import { createError } from "@/lib/helpers";
 
 export default function SaveLineupButton({
   leagueId,
@@ -16,15 +17,14 @@ export default function SaveLineupButton({
     isLineupDirty,
   } = useMyLineup();
 
-  function handleSaveLineup() {
-    if (!tacticalModule) return;
-    const lineupPlayers = [...starterPlayers, ...benchPlayers];
+  async function handleSaveLineup() {
+    if (!tacticalModule) return createError("Nessun modulo tattico trovato");
 
     return saveLineup({
       lineupId,
       leagueId,
       matchId,
-      lineupPlayers,
+      lineupPlayers: [...starterPlayers, ...benchPlayers],
       tacticalModuleId: tacticalModule.id,
     });
   }
