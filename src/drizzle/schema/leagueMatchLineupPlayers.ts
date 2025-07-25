@@ -5,6 +5,7 @@ import {
   pgEnum,
   integer,
   text,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueMatchTeamLineup } from "./leagueMatchTeamLineup";
@@ -19,18 +20,21 @@ export const lineupPlayerTypeEnum = pgEnum(
   lineupPlayerTypes
 );
 
-export const leagueMatchLineupPlayers = pgTable("league_match_lineup_players", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  lineupId: uuid("lineup_id")
-    .notNull()
-    .references(() => leagueMatchTeamLineup.id, { onDelete: "cascade" }),
-  positionId: text("position_id").$type<PositionId>(),
-  playerId: integer("player_id")
-    .notNull()
-    .references(() => players.id, { onDelete: "cascade" }),
-  playerType: lineupPlayerTypeEnum("player_type").notNull().default("bench"),
-  positionOrder: smallint("position_order").notNull(),
-});
+export const leagueMatchLineupPlayers = pgTable(
+  "league_match_lineup_players",
+  {
+    lineupId: uuid("lineup_id")
+      .notNull()
+      .references(() => leagueMatchTeamLineup.id, { onDelete: "cascade" }),
+    playerId: integer("player_id")
+      .notNull()
+      .references(() => players.id, { onDelete: "cascade" }),
+    positionId: text("position_id").$type<PositionId>(),
+    positionOrder: smallint("position_order").notNull(),
+    playerType: lineupPlayerTypeEnum("player_type").notNull().default("bench"),
+  },
+  (table) => [primaryKey({ columns: [table.lineupId, table.playerId] })]
+);
 
 export const leagueMatchLineupPlayersRelations = relations(
   leagueMatchLineupPlayers,

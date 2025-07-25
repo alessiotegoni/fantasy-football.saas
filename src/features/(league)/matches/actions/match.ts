@@ -35,7 +35,7 @@ export async function saveLineup(values: MatchLineupSchema) {
     await deleteLineupPlayers(lineupId, data.matchId, tx);
     if (data.lineupPlayers.length) {
       const lineupPlayers = mapLineupPlayers(lineupId, data.lineupPlayers);
-      await insertLineupPlayers(data.matchId, lineupPlayers);
+      await insertLineupPlayers(data.matchId, lineupPlayers, tx);
     }
   });
 
