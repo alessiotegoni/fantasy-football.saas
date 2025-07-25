@@ -26,6 +26,7 @@ import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
 import { formatTeamData } from "../utils/match";
+import { PlayerBonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
 
 export async function getMatchInfo({
   leagueId,
@@ -164,7 +165,12 @@ export async function getLineupsPlayers(matchId: string, matchdayId: number) {
     })
   );
 
-  return results.map((player) => ({ ...player, purchaseCost: 0 }));
+  return results.map((player) => ({
+    ...player,
+    bonusMaluses: [] as PlayerBonusMalus[],
+    totalVote: null as string | null,
+    purchaseCost: 0,
+  }));
 }
 
 export type LineupPlayer = Awaited<

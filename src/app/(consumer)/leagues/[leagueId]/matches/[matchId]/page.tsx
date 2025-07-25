@@ -68,7 +68,7 @@ async function SuspenseBoundary({
       <MatchWrapper
         matchInfo={matchInfo}
         currentMatchday={currentMatchday}
-        lineupsPlayers={lineupsPlayers}
+        lineupsPlayers={enrichedLineupPlayers}
         myTeamId={myTeam?.id ?? null}
         showLineups
         {...ids}
