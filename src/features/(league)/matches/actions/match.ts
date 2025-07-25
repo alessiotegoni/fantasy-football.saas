@@ -20,7 +20,6 @@ export async function saveLineup(values: MatchLineupSchema) {
   console.log(error);
   if (!success) return createError(VALIDATION_ERROR);
 
-
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 

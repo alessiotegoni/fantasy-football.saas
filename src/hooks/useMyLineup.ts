@@ -53,14 +53,14 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     handleSetLineup({ starterPlayers, benchPlayers });
   }
 
-  console.log(starterPlayers);
+  console.log(benchPlayers);
 
   function removePlayerFromLineup(playerId: number) {
     const updatedStarter = starterPlayers.filter((p) => p.id !== playerId);
     const updatedBench = benchPlayers.filter((p) => p.id !== playerId);
     handleSetLineup({
       starterPlayers: updatedStarter,
-      benchPlayers: updatedBench,
+      benchPlayers: reorderBench(updatedBench),
     });
   }
 
