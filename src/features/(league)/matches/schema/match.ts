@@ -30,7 +30,7 @@ const lineupPlayerSchema = z
           message: "Invalid positionOrder",
           path: ["positionOrder"],
         });
-        return
+        return;
       }
     }
   });
@@ -77,6 +77,7 @@ export const matchLineupSchema = z
         message: "Tactical module not allowed for this league",
         path: ["tacticalModuleId"],
       });
+      return;
     }
 
     const validPositionIds = new Set(
@@ -94,6 +95,22 @@ export const matchLineupSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `Invalid positionId for the selected tactical module`,
+        path: [`lineupPlayers`],
+      });
+      return;
+    }
+
+    const benchPlayers = data.lineupPlayers.filter(
+      (player) => player.lineupPlayerType === "bench"
+    );
+    const hasInvalidPositionOrder = benchPlayers.some(
+      (player) => player.positionOrder > benchPlayers.length
+    );
+
+    if (hasInvalidPositionOrder) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Invalid bench players positionOrder`,
         path: [`lineupPlayers`],
       });
     }
