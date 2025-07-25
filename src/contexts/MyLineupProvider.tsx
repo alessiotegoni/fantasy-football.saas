@@ -56,9 +56,14 @@ export default function MyLineupProvider({
   children: React.ReactNode;
   myTeam: MyTeam;
 }) {
-  const [initialLineup] = useState<MyLineup>(
+  const [initialLineup, setInitialLineup] = useState<MyLineup>(
     getInitialLineup.bind(null, myTeam)
   );
+
+  useEffect(() => {
+    setInitialLineup(getInitialLineup(myTeam));
+  }, [myTeam]);
+
   const [myLineup, setMyLineup] = useState<MyLineup>(
     getInitialLineup.bind(null, myTeam)
   );

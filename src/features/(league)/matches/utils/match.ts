@@ -31,16 +31,16 @@ export function formatTeamData(
 export type LineupTeam = ReturnType<typeof formatTeamData>;
 
 export function getMyTeam(
-  myTeamId: string,
+  myTeamId: string | null,
   { homeTeam, awayTeam }: MatchInfo,
   lineupsPlayers: LineupPlayer[]
 ) {
   const myTeam = [homeTeam, awayTeam].find((team) => team?.id === myTeamId);
   if (!myTeam) return;
 
-  const players = lineupsPlayers
-    .filter((player) => player.leagueTeamId === myTeam.id)
-    .map(({ vote, bonusMaluses, ...player }) => player);
+  const players = lineupsPlayers.filter(
+    (player) => player.leagueTeamId === myTeam.id
+  );
 
   return {
     ...myTeam,
