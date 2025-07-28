@@ -17,7 +17,7 @@ import PresidentSlot from "./PresidentSlot";
 import PlayersDialog from "./PlayersDialog";
 import { groupLineupsPlayers } from "../utils/LineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
-import BenchSkeleton from "../skeletons/BenchSkeleton";
+import BenchSkeleton from "./skeletons/BenchSkeleton";
 
 type Props = {
   matchInfo: MatchInfo;
