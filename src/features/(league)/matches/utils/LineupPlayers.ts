@@ -101,20 +101,20 @@ function calculateTeamTotalVote(
   const freeSlots = team.tacticalModule.layout.filter((slot) =>
     slot.positionsIds.some((positionId) => !occupiedPositions.has(positionId))
   );
-  if (!freeSlots.length) return calculatePLayersTotalVote(starterPlayers);
+  if (!freeSlots.length) return calculatePlayersTotalVote(starterPlayers);
 
   const benchPlayers = players.filter(
     (player) => player.lineupPlayerType === "bench"
   );
-  if (!benchPlayers.length) return calculatePLayersTotalVote(starterPlayers);
+  if (!benchPlayers.length) return calculatePlayersTotalVote(starterPlayers);
 
   const newPlayers = replacePlayers(starterPlayers, benchPlayers, freeSlots);
 
-  return calculatePLayersTotalVote(newPlayers);
+  return calculatePlayersTotalVote(newPlayers);
 }
 
 
-function calculatePLayersTotalVote(players: { totalVote: string | null }[]) {
+function calculatePlayersTotalVote(players: { totalVote: string | null }[]) {
   return players.reduce((acc, player) => {
     const totalVote = player.totalVote ? parseFloat(player.totalVote) : 0;
 
@@ -122,6 +122,24 @@ function calculatePLayersTotalVote(players: { totalVote: string | null }[]) {
   }, 0);
 }
 
+function replacePlayers(
+  starterPlayers: LineupPlayer[],
+  benchPlayers: LineupPlayer[],
+  freeSlots: RolePosition[]
+) {
+  freeSlots.forEach((slot) =>
+    slot.positionsIds.forEach(() => {
+      const rolePlayer = benchPlayers.find(
+        (player) => player.role.id === slot.roleId
+      );
+      if (!rolePlayer) return;
+
+      starterPlayers.push(rolePlayer);
+    })
+  );
+
+  return starterPlayers;
+}
 
 export function groupLineupsPlayers<
   T extends LineupPlayer | LineupPlayerWithoutVotes
