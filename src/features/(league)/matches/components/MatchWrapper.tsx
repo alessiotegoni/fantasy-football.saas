@@ -17,6 +17,7 @@ import SaveLineupButton from "./SaveLineupButton";
 import PresidentSlot from "./PresidentSlot";
 import PlayersDialog from "./PlayersDialog";
 import { groupLineupsPlayers } from "../utils/LineupPlayers";
+import LineupMatchCard from "./LineupMatchCard";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -77,14 +78,7 @@ export default function MatchWrapper({
           </div>
         )}
         <div>
-          <MatchCard
-            className="!rounded-4xl border-b border-border"
-            homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
-            awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
-            isLink={false}
-            {...ids}
-            {...matchInfo}
-          />
+          <LineupMatchCard players={lineupsPlayers} {...matchInfo} {...ids} />
           <FootballFieldBg>
             {!isMatchdayClosed && myTeamId && (
               <MobileButtonsContainer className="sm:size-0">
