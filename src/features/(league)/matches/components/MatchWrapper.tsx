@@ -2,7 +2,6 @@ import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import Container from "@/components/Container";
 import { Suspense } from "react";
-import MatchCard from "./MatchCard";
 import FootballFieldBg from "./FootballFieldBg";
 import StarterLineups from "./StarterLineups";
 import BenchLineup from "./BenchLineup";
@@ -18,6 +17,7 @@ import PresidentSlot from "./PresidentSlot";
 import PlayersDialog from "./PlayersDialog";
 import { groupLineupsPlayers } from "../utils/LineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
+import BenchSkeleton from "../skeletons/BenchSkeleton";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -61,22 +61,26 @@ export default function MatchWrapper({
       className="xl:max-w-[800px] 2xl:max-w-[1200px]"
     >
       <div className="2xl:grid gap-5 xl:grid-cols-[180px_1fr_180px]">
-        {showLineups && (
-          <div className="flex flex-col justify-between gap-5">
-            <PresidentSlot
-              starterPresident={getPresident(
-                groupedPlayers["starter"] ?? [],
-                matchInfo.homeTeam.id
-              )}
-              canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
-            />
-            <BenchLineup
-              players={getBenchPlayers(matchInfo.homeTeam.id)}
-              canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
-              className="2xl:border-r"
-            />
-          </div>
-        )}
+        <div className="flex flex-col justify-between gap-5">
+          {showLineups ? (
+            <>
+              <PresidentSlot
+                starterPresident={getPresident(
+                  groupedPlayers["starter"] ?? [],
+                  matchInfo.homeTeam.id
+                )}
+                canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
+              />
+              <BenchLineup
+                players={getBenchPlayers(matchInfo.homeTeam.id)}
+                canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
+                className="2xl:border-r"
+              />
+            </>
+          ) : (
+            <BenchSkeleton className="2xl:border-r" />
+          )}
+        </div>
         <div>
           <LineupMatchCard
             players={lineupsPlayers}
@@ -106,22 +110,26 @@ export default function MatchWrapper({
             )}
           </FootballFieldBg>
         </div>
-        {showLineups && (
-          <div className="flex flex-col justify-between gap-5">
-            <PresidentSlot
-              starterPresident={getPresident(
-                groupedPlayers["starter"] ?? [],
-                matchInfo.awayTeam.id
-              )}
-              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-            />
-            <BenchLineup
-              players={getBenchPlayers(matchInfo.awayTeam.id)}
-              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-              className="2xl:border-l"
-            />
-          </div>
-        )}
+        <div className="flex flex-col justify-between gap-5">
+          {showLineups ? (
+            <>
+              <PresidentSlot
+                starterPresident={getPresident(
+                  groupedPlayers["starter"] ?? [],
+                  matchInfo.awayTeam.id
+                )}
+                canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+              />
+              <BenchLineup
+                players={getBenchPlayers(matchInfo.awayTeam.id)}
+                canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+                className="2xl:border-l"
+              />
+            </>
+          ) : (
+            <BenchSkeleton className="2xl:border-l" />
+          )}
+        </div>
       </div>
       {showLineups && myTeamId && (
         <Suspense>

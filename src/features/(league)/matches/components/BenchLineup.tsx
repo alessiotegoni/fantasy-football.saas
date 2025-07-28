@@ -20,7 +20,6 @@ export default function BenchLineup({
 }: Props) {
   const {
     myLineup: { benchPlayers },
-    removePlayerFromLineup,
   } = useMyLineup();
 
   const players = canEditLineup ? benchPlayers : lineupPlayers;
