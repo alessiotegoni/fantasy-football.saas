@@ -78,7 +78,12 @@ export default function MatchWrapper({
           </div>
         )}
         <div>
-          <LineupMatchCard players={lineupsPlayers} {...matchInfo} {...ids} />
+          <LineupMatchCard
+            players={lineupsPlayers}
+            currentMatchday={currentMatchday}
+            {...matchInfo}
+            {...ids}
+          />
           <FootballFieldBg>
             {!isMatchdayClosed && myTeamId && (
               <MobileButtonsContainer className="sm:size-0">

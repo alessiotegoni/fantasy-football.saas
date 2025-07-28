@@ -1,7 +1,9 @@
+import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer } from "../queries/match";
 import { calculateLineupTotalVote } from "../utils/LineupPlayers";
 import { LineupTeam } from "../utils/match";
 import MatchCard from "./MatchCard";
+import LiveMatchScore from "./LiveMatchScore";
 
 type Props = {
   id: string;
@@ -14,6 +16,8 @@ type Props = {
     totalScore: string;
     goals: number;
   }[];
+  splitMatchday: SplitMatchday;
+  currentMatchday?: SplitMatchday;
   players: LineupPlayer[];
 };
 
@@ -41,6 +45,7 @@ export default function LineupMatchCard({
       awayModule={awayModule?.name}
       className="!rounded-4xl border-b border-border"
       isLink={false}
+      matchScore={<LiveMatchScore totalVotes={teamTotalVotes} {...match} />}
       {...match}
     />
   );

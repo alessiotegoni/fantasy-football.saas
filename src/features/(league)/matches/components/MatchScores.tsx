@@ -18,11 +18,11 @@ export default function MatchScores({
   return (
     <div className="text-sm text-muted-foreground">
       <span className={cn(isHomeWinner && "font-medium text-white")}>
-        {homeScore || "-"}
+        {homeScore ?? 0}
       </span>
       <span className="font-semibold mx-2">-</span>
       <span className={cn(isAwayWinner && "font-medium text-white/90")}>
-        {awayScore || "-"}
+        {awayScore ?? 0}
       </span>
     </div>
   );

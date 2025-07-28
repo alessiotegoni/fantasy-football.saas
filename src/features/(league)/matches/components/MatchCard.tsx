@@ -9,6 +9,7 @@ type Props = Omit<Match, "splitMatchday"> & {
   leagueId: string;
   homeModule?: string | null;
   awayModule?: string | null;
+  matchScore?: React.ReactNode;
   isLink?: boolean;
   className?: string;
 };
@@ -24,7 +25,7 @@ export default function MatchCard({
   leagueId,
   isLink = true,
   className,
-  ...teamProps
+  matchScore,
 }: Props) {
   const homeResult = matchResults?.find(
     (result) => result.teamId === homeTeam?.id
@@ -52,7 +53,6 @@ export default function MatchCard({
         isWinner={isHomeWinner}
         className="items-start"
         module={homeModule}
-        {...teamProps}
       />
 
       <div className="shrink-0 text-center">
@@ -63,12 +63,16 @@ export default function MatchCard({
           isHomeWinner={isHomeWinner}
           isAwayWinner={isAwayWinner}
         />
-        <MatchScores
-          homeScore={homeResult?.totalScore}
-          awayScore={awayResult?.totalScore}
-          isHomeWinner={isHomeWinner}
-          isAwayWinner={isAwayWinner}
-        />
+        {matchResults.length ? (
+          <MatchScores
+            homeScore={homeResult?.totalScore}
+            awayScore={awayResult?.totalScore}
+            isHomeWinner={isHomeWinner}
+            isAwayWinner={isAwayWinner}
+          />
+        ) : (
+          matchScore
+        )}
       </div>
 
       <MatchTeam
@@ -77,7 +81,6 @@ export default function MatchCard({
         isWinner={isAwayWinner}
         className="items-end"
         module={awayModule}
-        {...teamProps}
       />
     </div>
   );
