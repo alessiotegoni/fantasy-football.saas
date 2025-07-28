@@ -101,16 +101,25 @@ function calculateTeamTotalVote(
   const freeSlots = team.tacticalModule.layout.filter((slot) =>
     slot.positionsIds.some((positionId) => !occupiedPositions.has(positionId))
   );
-  if (!freeSlots.length) return calculateTotalVote(starterPlayers);
+  if (!freeSlots.length) return calculatePLayersTotalVote(starterPlayers);
 
   const benchPlayers = players.filter(
     (player) => player.lineupPlayerType === "bench"
   );
-  if (!benchPlayers.length) return calculateTotalVote(starterPlayers);
+  if (!benchPlayers.length) return calculatePLayersTotalVote(starterPlayers);
 
   const newPlayers = replacePlayers(starterPlayers, benchPlayers, freeSlots);
 
-  return calculateTotalVote(newPlayers);
+  return calculatePLayersTotalVote(newPlayers);
+}
+
+
+function calculatePLayersTotalVote(players: { totalVote: string | null }[]) {
+  return players.reduce((acc, player) => {
+    const totalVote = player.totalVote ? parseFloat(player.totalVote) : 0;
+
+    return (acc += totalVote);
+  }, 0);
 }
 
 
