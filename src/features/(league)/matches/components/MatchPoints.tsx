@@ -1,5 +1,4 @@
 type Props = {
-  isMatchPlayed: boolean;
   homePoints: number;
   awayPoints: number;
   isHomeWinner: boolean;
@@ -7,16 +6,11 @@ type Props = {
 };
 
 export default function MatchPoints({
-  isMatchPlayed,
   homePoints,
   awayPoints,
   isHomeWinner,
   isAwayWinner,
 }: Props) {
-  if (!isMatchPlayed) {
-    return <div className="w-2 h-1 sm:w-3 sm:h-1.5 bg-primary rounded-full" />;
-  }
-
   return (
     <div
       className="bg-primary/20 rounded-full

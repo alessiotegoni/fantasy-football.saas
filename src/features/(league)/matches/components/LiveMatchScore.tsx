@@ -1,26 +1,27 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { calculateLineupTotalVote } from "../utils/LineupPlayers";
+import ScoresSeparator from "./ScoresSeparator";
+
+type Props = {
+  totalVotes: ReturnType<typeof calculateLineupTotalVote>;
+  currentMatchday?: SplitMatchday;
+  splitMatchday: SplitMatchday;
+  isBye: boolean;
+};
 
 export default function LiveMatchScore({
   totalVotes,
   currentMatchday,
   splitMatchday: matchMatchday,
   isBye,
-}: {
-  totalVotes: ReturnType<typeof calculateLineupTotalVote>;
-  currentMatchday?: SplitMatchday;
-  splitMatchday: SplitMatchday;
-  isBye: boolean;
-}) {
+}: Props) {
   if (
     currentMatchday?.id !== matchMatchday.id ||
     currentMatchday.status === "upcoming" ||
-    !totalVotes
-  )
-    return null;
-
-  if (isBye) {
-    return <div className="w-2 h-1 sm:w-3 sm:h-1.5 bg-primary rounded-full" />;
+    !totalVotes ||
+    isBye
+  ) {
+    return <ScoresSeparator />;
   }
 
   const isHomeWinning = totalVotes.home ?? 0 > (totalVotes.away ?? 0);

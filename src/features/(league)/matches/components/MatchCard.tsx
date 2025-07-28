@@ -4,6 +4,7 @@ import MatchTeam from "./MatchTeam";
 import MatchPoints from "./MatchPoints";
 import MatchScores from "./MatchScores";
 import { cn } from "@/lib/utils";
+import ScoresSeparator from "./ScoresSeparator";
 
 type Props = Omit<Match, "splitMatchday"> & {
   leagueId: string;
@@ -56,22 +57,23 @@ export default function MatchCard({
       />
 
       <div className="shrink-0 text-center">
-        <MatchPoints
-          homePoints={homeGoals}
-          awayPoints={awayGoals}
-          isMatchPlayed={matchResults.length > 0}
-          isHomeWinner={isHomeWinner}
-          isAwayWinner={isAwayWinner}
-        />
         {matchResults.length ? (
-          <MatchScores
-            homeScore={homeResult?.totalScore}
-            awayScore={awayResult?.totalScore}
-            isHomeWinner={isHomeWinner}
-            isAwayWinner={isAwayWinner}
-          />
+          <>
+            <MatchPoints
+              homePoints={homeGoals}
+              awayPoints={awayGoals}
+              isHomeWinner={isHomeWinner}
+              isAwayWinner={isAwayWinner}
+            />
+            <MatchScores
+              homeScore={homeResult?.totalScore}
+              awayScore={awayResult?.totalScore}
+              isHomeWinner={isHomeWinner}
+              isAwayWinner={isAwayWinner}
+            />
+          </>
         ) : (
-          matchScore
+          matchScore ?? <ScoresSeparator />
         )}
       </div>
 
