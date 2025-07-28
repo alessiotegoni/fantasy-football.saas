@@ -33,12 +33,12 @@ export default function PresidentSlot({
   return (
     <div
       className={cn(
-        `relative size-full bg-input/30 rounded-4xl p-4`,
+        `relative min-h-36 2xl:size-full bg-input/30 rounded-4xl p-4`,
         !hasPresident && !canEditLineup && "border-transparent",
         hasPresident && "border border-primary"
       )}
     >
-      <div className="flex justify-between items-center gap-2">
+      <div className="flex justify-between items-center gap-2 h-7">
         <Crown
           className={cn(
             "absolute -top-8.5 left-1/2 -translate-x-1/2 text-3xl",
@@ -46,17 +46,15 @@ export default function PresidentSlot({
           )}
           fill={hasPresident ? "var(--primary)" : "currentColor"}
         />
-        <h2>Presidente</h2>
+        <h2 className="text-sm xs:text-base">Presidente</h2>
         {!hasPresident && canEditLineup && (
-          <AddPresidentButton>
-            <div className="flex justify-center items-center size-6 bg-primary text-white rounded-full">
-              <Plus className="size-5" />
-            </div>
+          <AddPresidentButton className="bg-primary text-primary-foreground size-6 xs:size-7 p-0 rounded-full 2xl:size-6 shrink-0">
+            <Plus className="size-5 font-semibold" />
           </AddPresidentButton>
         )}
       </div>
       {!hasPresident && !canEditLineup && (
-        <div className="size-full flex flex-col gap-2 justify-start mt-6.5 items-center">
+        <div className="mt-2 2xl:size-full flex flex-col gap-2 justify-center 2xl:justify-start 2xl:mt-6.5 items-center">
           <UserXmark className="size-8 text-muted-foreground" />
           <p className="text-sm font-medium text-muted-foreground text-center">
             Presidente non inserito
@@ -64,10 +62,10 @@ export default function PresidentSlot({
         </div>
       )}
       {!hasPresident && canEditLineup && (
-        <AddPresidentButton className="size-full flex-col justify-start gap-2 mt-6.5">
+        <AddPresidentButton className="w-full mt-2 2xl:size-full flex-col justify-center 2xl:justify-start gap-2 2xl:mt-6.5">
           <UserCrown className="size-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-muted-foreground text-center">
-            Aggiungi <br /> presidente
+          <p className="text-sm font-medium text-muted-foreground text-center w-full 2xl:max-w-32">
+            Aggiungi presidente
           </p>
         </AddPresidentButton>
       )}

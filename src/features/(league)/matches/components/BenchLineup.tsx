@@ -32,16 +32,13 @@ export default function BenchLineup({
       )}
     >
       <div className="flex justify-between items-center gap-2 mb-3">
-        <h2>Panchina</h2>
+        <h2 className="text-sm xs:text-base">Panchina</h2>
         {canEditLineup && (
           <PlayersSelectTrigger
             lineupType="bench"
-            className="bg-primary text-primary-foreground size-7 xs:size-fit rounded-full xs:rounded-xl xs:p-2 xs:px-3 gap-1.5 2xl:p-0 2xl:rounded-full 2xl:size-6"
+            className="bg-primary text-primary-foreground size-6 xs:size-7 p-0 rounded-full 2xl:size-6 shrink-0"
           >
-            <Plus className="size-5 xs:size-6 2xl:size-5 font-semibold" />
-            <p className="hidden xs:block 2xl:hidden text-sm font-medium">
-              Aggiungi giocatore
-            </p>
+            <Plus className="size-5 font-semibold" />
           </PlayersSelectTrigger>
         )}
       </div>

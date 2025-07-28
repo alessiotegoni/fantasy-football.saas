@@ -60,8 +60,8 @@ export default function MatchWrapper({
       showHeader={false}
       className="xl:max-w-[800px] 2xl:max-w-[1200px]"
     >
-      <div className="2xl:grid gap-5 xl:grid-cols-[180px_1fr_180px]">
-        <div className="flex flex-col justify-between gap-5">
+      <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[180px_1fr_180px]">
+        <div className="mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-5">
           {showLineups ? (
             <>
               <PresidentSlot
@@ -81,7 +81,7 @@ export default function MatchWrapper({
             <BenchSkeleton className="2xl:border-r" />
           )}
         </div>
-        <div>
+        <div className="col-span-2 2xl:col-auto">
           <LineupMatchCard
             players={lineupsPlayers}
             currentMatchday={currentMatchday}
@@ -110,7 +110,7 @@ export default function MatchWrapper({
             )}
           </FootballFieldBg>
         </div>
-        <div className="flex flex-col justify-between gap-5">
+        <div className="mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-5">
           {showLineups ? (
             <>
               <PresidentSlot
