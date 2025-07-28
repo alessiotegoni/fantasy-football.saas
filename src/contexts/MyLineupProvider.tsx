@@ -2,11 +2,8 @@
 
 import { LineupPlayerType, PositionId, TacticalModule } from "@/drizzle/schema";
 import { tacticalModuleSchema } from "@/features/(league)/matches/schema/matchTacticalModule";
-import {
-  groupLineupsPlayers,
-  LineupTeam,
-  MyTeam,
-} from "@/features/(league)/matches/utils/match";
+import { groupLineupsPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
+import { LineupTeam, MyTeam } from "@/features/(league)/matches/utils/match";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import {
   createContext,

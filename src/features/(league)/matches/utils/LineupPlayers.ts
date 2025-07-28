@@ -1,5 +1,5 @@
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
-import { CustomBonusMalus } from "@/drizzle/schema";
+import { CustomBonusMalus, LineupPlayerType } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { PlayerBonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
 
@@ -24,7 +24,7 @@ export function enrichLineupPlayers({
 
   return lineupsPlayers.map((player) => {
     const playerBonusMaluses = playersBonusMalusesMap.get(player.id) ?? [];
-    const totalVote = calculateTotalVote(
+    const totalVote = calculatePlayerTotalVote(
       player.vote,
       playerBonusMaluses,
       leagueCustomBonusMalus
@@ -38,7 +38,7 @@ export function enrichLineupPlayers({
   });
 }
 
-export function calculateTotalVote(
+export function calculatePlayerTotalVote(
   vote: string | null,
   bonusMaluses: PlayerBonusMalus[],
   leagueCustomBonusMalus: Record<string, number>
@@ -50,6 +50,34 @@ export function calculateTotalVote(
     return total + value * bonusMalus.count;
   }, vote);
 }
+
+export function calculateLineupTotalVote(
+  players: LineupPlayer[],
+  {
+    homeTeamId,
+    awayTeamId,
+    isBye = false,
+  }: { homeTeamId: string | null; awayTeamId: string | null; isBye?: boolean }
+): { home: number | null; away: number | null } | null {
+  if (isBye) return null;
+
+  const homePlayers = players.filter(
+    (player) => player.leagueTeamId === homeTeamId
+  );
+  const awayPlayers = players.filter(
+    (player) => player.leagueTeamId === awayTeamId
+  );
+
+  if (!homePlayers.length && !awayPlayers.length) return null;
+
+  const totalVotes = {
+    home: calculateTeamTotalVote(homePlayers),
+    away: calculateTeamTotalVote(awayPlayers),
+  };
+
+  return totalVotes;
+}
+
 
 export function groupLineupsPlayers<
   T extends LineupPlayer | LineupPlayerWithoutVotes
