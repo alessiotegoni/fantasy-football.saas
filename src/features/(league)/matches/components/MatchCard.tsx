@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Match } from "../queries/calendar";
-import MatchTeam from "../../../matches/components/MatchTeam";
+import { Match } from "../../(admin)/calendar/queries/calendar";
+import MatchTeam from "./MatchTeam";
 import MatchPoints from "./MatchPoints";
 import MatchScores from "./MatchScores";
 import { cn } from "@/lib/utils";
@@ -13,7 +13,7 @@ type Props = Omit<Match, "splitMatchday"> & {
   className?: string;
 };
 
-export default function CalendarMatchCard({
+export default function MatchCard({
   id,
   homeTeam,
   homeModule,

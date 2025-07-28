@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { Match } from "../queries/calendar";
-import CalendarMatchCard from "./CalendarMatchCard";
+import MatchCard from "../../../matches/components/MatchCard";
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { useEffect, useRef } from "react";
 
@@ -42,7 +42,7 @@ export default function MatchdaySection({
       </div>
 
       {matches.map((match) => (
-        <CalendarMatchCard key={match.id} {...match} leagueId={leagueId} />
+        <MatchCard key={match.id} {...match} leagueId={leagueId} />
       ))}
     </div>
   );

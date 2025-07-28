@@ -130,6 +130,7 @@ function replacePlayers(
     const rolePlayers = benchPlayers.filter(
       (player) => player.role.id === slot.roleId
     );
+    if (!rolePlayers.length) return;
 
     slot.positionsIds.forEach(() => {
       const [rolePlayer] = rolePlayers.splice(0, 1);

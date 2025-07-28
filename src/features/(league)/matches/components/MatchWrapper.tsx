@@ -2,7 +2,7 @@ import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import Container from "@/components/Container";
 import { Suspense } from "react";
-import CalendarMatchCard from "../../(admin)/calendar/components/CalendarMatchCard";
+import MatchCard from "./MatchCard";
 import FootballFieldBg from "./FootballFieldBg";
 import StarterLineups from "./StarterLineups";
 import BenchLineup from "./BenchLineup";
@@ -77,7 +77,7 @@ export default function MatchWrapper({
           </div>
         )}
         <div>
-          <CalendarMatchCard
+          <MatchCard
             className="!rounded-4xl border-b border-border"
             homeModule={matchInfo.homeTeam?.lineup?.tacticalModule.name ?? null}
             awayModule={matchInfo.awayTeam?.lineup?.tacticalModule.name ?? null}
