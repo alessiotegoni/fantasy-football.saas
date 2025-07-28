@@ -36,13 +36,13 @@ export function SkeletonText({
   className?: string;
 }) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="w-full flex flex-col gap-1.5">
       <SkeletonArray amount={rows}>
         <div
           className={cn(
-            "bg-secondary animate-pulse w-full rounded-sm",
+            "bg-muted w-full rounded-sm",
             rows > 1 && "last:w-3/4",
-            size === "md" && "h-3",
+            size === "md" && "h-3.5",
             size === "lg" && "h-5",
             className
           )}

@@ -1,4 +1,6 @@
+import { SkeletonArray } from "@/components/Skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import PlayerSkeleton from "@/features/players/components/skeletons/PlayerSkeleton";
 import { cn } from "@/lib/utils";
 
 export default function BenchSkeleton({ className }: { className?: string }) {
@@ -20,23 +22,13 @@ export default function BenchSkeleton({ className }: { className?: string }) {
           className
         )}
       >
-        <h2 className="mb-2">Panchina</h2>
+        <h2 className="mb-3">Panchina</h2>
         <div className="space-y-2">
-          <BenchPlayersSkeletons />
+          <SkeletonArray amount={8}>
+            <PlayerSkeleton />
+          </SkeletonArray>
         </div>
       </Skeleton>
     </>
   );
-}
-
-function BenchPlayersSkeletons() {
-  return Array.from({ length: 8 }).map((_, i) => (
-    <div className="flex gap-2 min-h-11" key={i}>
-      <Skeleton className="bg-muted size-10 rounded-full shrink-0" />
-      <div className="w-full">
-        <Skeleton className="w-full h-4 bg-muted mb-1.5 rounded-sm" />
-        <Skeleton className="w-1/2 h-4 bg-muted rounded-sm" />
-      </div>
-    </div>
-  ));
 }
