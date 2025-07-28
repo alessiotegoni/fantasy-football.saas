@@ -1,5 +1,9 @@
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
-import { CustomBonusMalus, LineupPlayerType } from "@/drizzle/schema";
+import {
+  CustomBonusMalus,
+  RolePosition,
+  TacticalModule,
+} from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { PlayerBonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
 
@@ -54,28 +58,59 @@ export function calculatePlayerTotalVote(
 export function calculateLineupTotalVote(
   players: LineupPlayer[],
   {
-    homeTeamId,
-    awayTeamId,
+    homeTeam,
+    awayTeam,
     isBye = false,
-  }: { homeTeamId: string | null; awayTeamId: string | null; isBye?: boolean }
-): { home: number | null; away: number | null } | null {
-  if (isBye) return null;
+  }: {
+    homeTeam: { id: string | null; tacticalModule: TacticalModule | null };
+    awayTeam: { id: string | null; tacticalModule: TacticalModule | null };
+    isBye?: boolean;
+  }
+) {
+  if (isBye || !players.length || (!homeTeam.id && !awayTeam.id)) return null;
 
-  const homePlayers = players.filter(
-    (player) => player.leagueTeamId === homeTeamId
-  );
-  const awayPlayers = players.filter(
-    (player) => player.leagueTeamId === awayTeamId
-  );
-
-  if (!homePlayers.length && !awayPlayers.length) return null;
+  const playerWithVotes = players.filter((player) => player.totalVote !== null);
 
   const totalVotes = {
-    home: calculateTeamTotalVote(homePlayers),
-    away: calculateTeamTotalVote(awayPlayers),
+    home: calculateTeamTotalVote(playerWithVotes, homeTeam),
+    away: calculateTeamTotalVote(playerWithVotes, awayTeam),
   };
 
   return totalVotes;
+}
+
+function calculateTeamTotalVote(
+  players: LineupPlayer[],
+  team: { id: string | null; tacticalModule: TacticalModule | null }
+) {
+  if (!team.tacticalModule) return null;
+
+  const teamPlayers = players.filter(
+    (player) => player.leagueTeamId === team.id
+  );
+  if (!teamPlayers.length) return null;
+
+  const starterPlayers = teamPlayers.filter(
+    (player) => player.lineupPlayerType === "starter"
+  );
+
+  const occupiedPositions = new Set(
+    starterPlayers.map((player) => player.positionId)
+  );
+
+  const freeSlots = team.tacticalModule.layout.filter((slot) =>
+    slot.positionsIds.some((positionId) => !occupiedPositions.has(positionId))
+  );
+  if (!freeSlots.length) return calculateTotalVote(starterPlayers);
+
+  const benchPlayers = players.filter(
+    (player) => player.lineupPlayerType === "bench"
+  );
+  if (!benchPlayers.length) return calculateTotalVote(starterPlayers);
+
+  const newPlayers = replacePlayers(starterPlayers, benchPlayers, freeSlots);
+
+  return calculateTotalVote(newPlayers);
 }
 
 
