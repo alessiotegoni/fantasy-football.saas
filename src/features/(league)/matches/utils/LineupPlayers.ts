@@ -113,7 +113,6 @@ function calculateTeamTotalVote(
   return calculatePlayersTotalVote(newPlayers);
 }
 
-
 function calculatePlayersTotalVote(players: { totalVote: string | null }[]) {
   return players.reduce((acc, player) => {
     const totalVote = player.totalVote ? parseFloat(player.totalVote) : 0;
@@ -127,16 +126,18 @@ function replacePlayers(
   benchPlayers: LineupPlayer[],
   freeSlots: RolePosition[]
 ) {
-  freeSlots.forEach((slot) =>
+  freeSlots.forEach((slot) => {
+    const rolePlayers = benchPlayers.filter(
+      (player) => player.role.id === slot.roleId
+    );
+
     slot.positionsIds.forEach(() => {
-      const rolePlayer = benchPlayers.find(
-        (player) => player.role.id === slot.roleId
-      );
+      const [rolePlayer] = rolePlayers.splice(0, 1);
       if (!rolePlayer) return;
 
       starterPlayers.push(rolePlayer);
-    })
-  );
+    });
+  });
 
   return starterPlayers;
 }
