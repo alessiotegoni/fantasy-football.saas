@@ -2,11 +2,7 @@ import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
-import { isAlreadyCalculated } from "@/features/(league)/(admin)/calculate-matchday/permissions/calculate-matchday";
-import {
-  getLastEndedMatchday,
-  getLiveSplit,
-} from "@/features/splits/queries/split";
+import { getLiveSplit } from "@/features/splits/queries/split";
 import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
@@ -20,7 +16,7 @@ export default async function CalculateMatchdayPage({
     <Container
       headerLabel="Calcola giornate"
       leagueId={leagueId}
-      className="max-w-[700px]"
+      className="max-w-[800px]"
     >
       {liveSplit ? (
         <>

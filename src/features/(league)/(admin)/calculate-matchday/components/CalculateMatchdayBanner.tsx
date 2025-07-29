@@ -2,7 +2,7 @@ import EmptyState from "@/components/EmptyState";
 import { getLastEndedMatchday } from "@/features/splits/queries/split";
 import { isAlreadyCalculated } from "../permissions/calculate-matchday";
 import BackButton from "@/components/BackButton";
-import { Calculator, Search } from "iconoir-react";
+import { Calculator } from "iconoir-react";
 import ActionButton from "@/components/ActionButton";
 
 export default async function CalculateMatchdayBanner({
@@ -41,8 +41,9 @@ export default async function CalculateMatchdayBanner({
         </div>
       </div>
       <ActionButton
+        loadingText="Calcolo"
         variant="gradient"
-        className="w-fit mt-6 md:mt-0 gap-4 p-2.5 md:py-3.5 md:px-4"
+        className="min-w-30 w-fit max-w-36 mt-6 md:mt-0 gap-4 p-2.5 md:py-3.5 md:px-4 rounded-lg sm:rounded-2xl"
       >
         Calcola
       </ActionButton>

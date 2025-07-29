@@ -11,6 +11,7 @@ import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trade";
 import { CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/calendar";
 import { MATCHDAY_VOTE_TAG } from "@/features/votes/db/cache/vote";
 import { MATCHDAY_BONUS_MALUS_TAG } from "@/features/bonusMaluses/db/cache/bonusMalus";
+import { CALCULATIONS_TAG } from "@/features/(league)/(admin)/calculate-matchday/db/cache/calculate-matchday";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
@@ -25,6 +26,7 @@ export type CACHE_TAG =
   | MATCH_TAG
   | MATCHDAY_VOTE_TAG
   | MATCHDAY_BONUS_MALUS_TAG
+  | CALCULATIONS_TAG
   | AUCTION_TAG
 
 export const getGlobalTag = (tag: CACHE_TAG) => `global:${tag}` as const;
