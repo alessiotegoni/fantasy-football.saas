@@ -29,7 +29,7 @@ export default async function CalculateMatchdayBanner({
     <div className="flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-2xl mb-4 md:mb-8">
       <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
         <div className="size-16 bg-muted rounded-full flex items-center justify-center">
-          <Search className="size-8 text-muted-foreground" />
+          <Calculator className="size-8 text-muted-foreground" />
         </div>
         <div className="text-center md:text-start">
           <h3 className="text-lg md:text-xl font-heading">
@@ -44,7 +44,6 @@ export default async function CalculateMatchdayBanner({
         variant="gradient"
         className="w-fit mt-6 md:mt-0 gap-4 p-2.5 md:py-3.5 md:px-4"
       >
-        <Calculator />
         Calcola
       </ActionButton>
     </div>

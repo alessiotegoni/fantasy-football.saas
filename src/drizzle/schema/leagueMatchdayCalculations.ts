@@ -31,7 +31,7 @@ export const leagueMatchdayCalculations = pgTable(
     calculatedAt: timestamp("calculated_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
-    status: leagueMatchdayCalcStatusEnum("satus").notNull(),
+    status: leagueMatchdayCalcStatusEnum("status").notNull(),
   }
 );
 
