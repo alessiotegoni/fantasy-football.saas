@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
 
 interface Props extends ComponentProps<typeof Button> {
   backTo?: string;
@@ -24,11 +25,11 @@ export default function BackButton({
   );
 
   return backTo ? (
-    <Button variant="link" className={className} asChild>
+    <Button variant="link" className={cn(className)} asChild>
       <Link href={backTo}>{content}</Link>
     </Button>
   ) : (
-    <Button variant="link" className={className} onClick={() => router.back()}>
+    <Button variant="link" className={cn(className)} onClick={() => router.back()}>
       {content}
     </Button>
   );
