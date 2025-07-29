@@ -6,6 +6,7 @@ import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { findNextAvailablePositionId } from "../utils/match";
 import { LineupPlayerType } from "@/drizzle/schema";
+import ScrollArea from "@/components/ui/scroll-area";
 
 export default function PlayersDialogList({
   availablePlayers,
@@ -72,5 +73,19 @@ export default function PlayersDialogList({
     handleSetPlayersDialog({ open: !isLastPlayer });
   }
 
-  return <SrollArea
+  return (
+    <ScrollArea>
+      {availablePlayers.map((player) => (
+        <PlayerCard
+          key={player.id}
+          className="cursor-pointer"
+          showSelectButton={false}
+          showPurchaseCost={false}
+          onSelect={handleAddPlayer}
+          canSelectCard
+          {...player}
+        />
+      ))}
+    </ScrollArea>
+  );
 }

@@ -76,7 +76,7 @@ export default function PlayersDialog({
               </>
             )}
           </DrawerHeader>
-          <div className="p-6 pt-0 space-y-2">
+          <div className="p-6 pt-0">
             <PlayersSelectList availablePlayers={availablePlayers} />
           </div>
         </DrawerContent>
@@ -94,16 +94,14 @@ export default function PlayersDialog({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           {availablePlayers.length ? (
-            <>
+            <div>
               <DialogTitle>Giocatori</DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="mt-1.5">
                 Seleziona il giocatore{" "}
                 {type === "bench" ? "panchinaro" : "titolare"}
               </DialogDescription>
-              <div className="mt-2 space-y-2">
-                <PlayersSelectList availablePlayers={availablePlayers} />
-              </div>
-            </>
+              <PlayersSelectList availablePlayers={availablePlayers} />
+            </div>
           ) : (
             <>
               <DialogTitle>Nessun giocatore disponibile</DialogTitle>
