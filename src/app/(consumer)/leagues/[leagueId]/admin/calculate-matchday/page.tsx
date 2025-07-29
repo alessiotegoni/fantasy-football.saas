@@ -2,7 +2,7 @@ import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
-import { getLiveSplit } from "@/features/splits/queries/split";
+import { getLastEndedMatchday, getLiveSplit } from "@/features/splits/queries/split";
 import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
@@ -36,4 +36,15 @@ export default async function CalculateMatchdayPage({
       )}
     </Container>
   );
+}
+
+async function SuspenseBoundary({
+  leagueId,
+  splitId,
+}: {
+  leagueId: string;
+  splitId: number;
+}) {
+   const matchday = await Promise.all([getLastEndedMatchday(splitId), ]);
+    if (!matchday) return <CalculateEmptyState />;
 }
