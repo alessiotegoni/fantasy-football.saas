@@ -53,7 +53,7 @@ export async function getCurrentMatchday(splitId: number) {
   return liveMatchday || getNextMatchday(matchdays);
 }
 
-async function getNextMatchday(matchdays: SplitMatchday[]) {
+export async function getNextMatchday(matchdays: SplitMatchday[]) {
   const lastEndedMatchday = matchdays.findLastIndex(
     (matchday) => matchday.status === "ended"
   );
