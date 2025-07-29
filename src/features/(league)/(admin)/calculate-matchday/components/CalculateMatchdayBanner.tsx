@@ -1,22 +1,16 @@
 import EmptyState from "@/components/EmptyState";
-import { getLastEndedMatchday } from "@/features/splits/queries/split";
-import { isAlreadyCalculated } from "../permissions/calculate-matchday";
+import { SplitMatchday } from "@/features/splits/queries/split";
 import BackButton from "@/components/BackButton";
 import { Calculator } from "iconoir-react";
 import ActionButton from "@/components/ActionButton";
 
 export default async function CalculateMatchdayBanner({
-  splitId,
+  matchday,
   leagueId,
 }: {
-  splitId: number;
+  matchday: SplitMatchday;
   leagueId: string;
 }) {
-  const matchday = await getLastEndedMatchday(splitId);
-  if (!matchday) return <CalculateEmptyState />;
-
-  if (await isAlreadyCalculated(leagueId, matchday.id)) return null;
-
   const calculableFromDate = new Date(matchday.endAt);
   calculableFromDate.setDate(calculableFromDate.getDate() + 1);
   calculableFromDate.setHours(0, 30, 0, 0);
@@ -51,12 +45,3 @@ export default async function CalculateMatchdayBanner({
   );
 }
 
-function CalculateEmptyState() {
-  return (
-    <EmptyState
-      title="Giornata non ancora calcolabile"
-      description="Potrai calcolare la giornata dopo la mezzanotte e mezza"
-      renderButton={() => <BackButton className="min-w-36" />}
-    />
-  );
-}

@@ -2,7 +2,11 @@ import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
-import { getLastEndedMatchday, getLiveSplit } from "@/features/splits/queries/split";
+import { getCalculations } from "@/features/(league)/(admin)/calculate-matchday/queries/calculate-matchday";
+import {
+  getLastEndedMatchday,
+  getLiveSplit,
+} from "@/features/splits/queries/split";
 import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
@@ -21,10 +25,7 @@ export default async function CalculateMatchdayPage({
       {liveSplit ? (
         <>
           <Suspense>
-            <CalculateMatchdayBanner
-              leagueId={leagueId}
-              splitId={liveSplit.id}
-            />
+            <SuspenseBoundary leagueId={leagueId} splitId={liveSplit.id} />
           </Suspense>
         </>
       ) : (
@@ -45,6 +46,19 @@ async function SuspenseBoundary({
   leagueId: string;
   splitId: number;
 }) {
-   const matchday = await Promise.all([getLastEndedMatchday(splitId), ]);
-    if (!matchday) return <CalculateEmptyState />;
+  const [matchday, matchdayCalcs] = await Promise.all([
+    getLastEndedMatchday(splitId),
+    getCalculations(leagueId, splitId),
+  ]);
+
+  const isAlreadyCalculated = matchdayCalcs.some(
+    (matchdayCalc) => matchdayCalc.matchday.id === matchday?.id
+  );
+
+  return <>
+      <CalculateMatchdayBanner
+              leagueId={leagueId}
+              matchday={matchday}
+            />
+  </>
 }
