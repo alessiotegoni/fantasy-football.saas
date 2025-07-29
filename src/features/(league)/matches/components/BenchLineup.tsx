@@ -24,6 +24,8 @@ export default function BenchLineup({
 
   const players = canEditLineup ? benchPlayers : lineupPlayers;
 
+  // TODO: scroll area on PlayerSelect
+
   return (
     <div
       className={cn(

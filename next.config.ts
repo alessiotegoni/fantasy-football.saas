@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   experimental: {
     dynamicIO: true,
     viewTransition: true,
-    authInterrupts: true,
+    clientSegmentCache: true,
     serverActions: {
       bodySizeLimit: "3mb",
     },

@@ -72,15 +72,5 @@ export default function PlayersDialogList({
     handleSetPlayersDialog({ open: !isLastPlayer });
   }
 
-  return availablePlayers.map((player) => (
-    <PlayerCard
-      key={player.id}
-      className="cursor-pointer"
-      showSelectButton={false}
-      showPurchaseCost={false}
-      onSelect={handleAddPlayer}
-      canSelectCard
-      {...player}
-    />
-  ));
+  return <SrollArea
 }
