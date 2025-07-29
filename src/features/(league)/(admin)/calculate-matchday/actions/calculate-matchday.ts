@@ -1,13 +1,38 @@
-"use server"
+"use server";
 
-export async function calculateMatchday() {
+import { getUUIdSchema, validateSchema } from "@/schema/helpers";
+import {
+  calculateMatchdaySchema,
+  CalculateMatchdaySchema,
+  recalculateMatchdaySchema,
+  RecalculateMatchdaySchema,
+} from "../schema/calculate-matchday";
 
+export async function calculateMatchday(values: CalculateMatchdaySchema) {
+  const { isValid, data, error } = validateSchema<CalculateMatchdaySchema>(
+    calculateMatchdaySchema,
+    values
+  );
+  if (!isValid) return error;
 }
 
-export async function recalculateMatchday() {
-
+export async function recalculateMatchday(
+  calculationId: string,
+  values: CalculateMatchdaySchema
+) {
+  const { isValid, data, error } = validateSchema<RecalculateMatchdaySchema>(
+    recalculateMatchdaySchema,
+    { calculationId, ...values }
+  );
+  if (!isValid) return error;
 }
 
-export async function cancelCalculation() {
+export async function cancelCalculation(id: string) {
+  const {
+    isValid,
+    data: calculationId,
+    error,
+  } = validateSchema<string>(getUUIdSchema(), id);
 
+  if (!isValid) return error;
 }

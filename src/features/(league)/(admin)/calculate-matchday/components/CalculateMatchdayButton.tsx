@@ -1,9 +1,12 @@
-"use client"
+"use client";
 
 import { useParams } from "next/navigation";
 import { PropsWithChildren } from "react";
 import ActionButton from "@/components/ActionButton";
-import { calculateMatchday, recalculateMatchday } from "../actions/calculate-matchday";
+import {
+  calculateMatchday,
+  recalculateMatchday,
+} from "../actions/calculate-matchday";
 
 type Props = {
   matchdayId: number;
@@ -18,11 +21,13 @@ export default function CalculateMatchdayButton({
 }: PropsWithChildren<Props>) {
   const { leagueId } = useParams<{ leagueId: string }>();
 
-  const action = calculationId ? recalculateMatchday : calculateMatchday;
+  const action = calculationId
+    ? recalculateMatchday.bind(null, calculationId)
+    : calculateMatchday;
 
   return (
     <ActionButton
-      action={action.bind(null, { calculationId, leagueId, matchdayId })}
+      action={() => action({ leagueId, matchdayId })}
       loadingText={calculationId ? "Ricalcolo" : "Calcolo"}
       className={className}
     >
