@@ -25,11 +25,9 @@ export default async function CalculateMatchdayPage({
       className="max-w-[800px]"
     >
       {liveSplit ? (
-        <>
-          <Suspense>
-            <SuspenseBoundary leagueId={leagueId} splitId={liveSplit.id} />
-          </Suspense>
-        </>
+        <Suspense>
+          <SuspenseBoundary leagueId={leagueId} splitId={liveSplit.id} />
+        </Suspense>
       ) : (
         <EmptyState
           title="Split non ancora iniziato"
@@ -53,18 +51,25 @@ async function SuspenseBoundary({
     getCalculations(leagueId, splitId),
   ]);
 
+  if (!matchday) {
+    return (
+      <EmptyState
+        title="Giornata non ancora calcolabile"
+        description="Potrai calcolare la giornata dopo la mezzanotte e mezza"
+        renderButton={() => <BackButton className="min-w-36" />}
+      />
+    );
+  }
+
   const isAlreadyCalculated = matchdayCalcs.some(
-    (matchdayCalc) => matchdayCalc.matchday.id === matchday?.id
+    (matchdayCalc) => matchdayCalc.matchday.id === matchday.id
   );
 
   return (
     <>
-      {!isAlreadyCalculated &&
-        (matchday ? (
-          <CalculateMatchdayBanner leagueId={leagueId} matchday={matchday} />
-        ) : (
-          <CalculateEmptyState />
-        ))}
+      {!isAlreadyCalculated && (
+        <CalculateMatchdayBanner leagueId={leagueId} matchday={matchday} />
+      )}
       <div>
         {!isAlreadyCalculated && (
           <h2 className="text-xl font-bold tracking-tight">
@@ -79,8 +84,6 @@ async function SuspenseBoundary({
           </p>
         )}
       </div>
-
-      <CalculationsList leagueId={leagueId} calculations={matchdayCalcs} />
     </>
   );
 }

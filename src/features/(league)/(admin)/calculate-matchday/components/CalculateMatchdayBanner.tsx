@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { SplitMatchday } from "@/features/splits/queries/split";
-import { Calculator } from "iconoir-react";
+import { Calculator, WarningTriangle } from "iconoir-react";
 import ActionButton from "@/components/ActionButton";
 import CalculateEmptyState from "./CalculateEmptyState";
 
@@ -18,7 +18,7 @@ export default function CalculateMatchdayBanner({
 
   const isCalculable = new Date() > calculableFromDate;
 
-  if (!isCalculable) return <CalculateEmptyState />;
+  if (!isCalculable) return <NotCalculable />;
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-2xl mb-4 md:mb-8">
@@ -42,6 +42,27 @@ export default function CalculateMatchdayBanner({
       >
         Calcola
       </ActionButton>
+    </div>
+  );
+}
+
+function NotCalculable() {
+  return (
+    <div
+      className="flex flex-col md:flex-row items-center gap-2 md:gap-4 p-6 md:p-4 bg-muted/30 rounded-2xl
+      mb-4 md:mb-8 border border-destructive"
+    >
+      <div className="size-16 bg-muted rounded-full flex items-center justify-center">
+        <WarningTriangle className="size-8 text-destructive" />
+      </div>
+      <div className="text-center md:text-start">
+        <h3 className="text-lg md:text-xl font-heading">
+          Giornata non calcolabile
+        </h3>
+        <p className="text-sm md:text-base text-muted-foreground">
+          Potrai calcolare la giornata dopo la mezzanotte e mezza
+        </p>
+      </div>
     </div>
   );
 }
