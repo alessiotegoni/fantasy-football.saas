@@ -9,6 +9,7 @@ import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/lib/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
+import { isMatchdayCalculable } from "../utils/calculate-matchday";
 
 enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",

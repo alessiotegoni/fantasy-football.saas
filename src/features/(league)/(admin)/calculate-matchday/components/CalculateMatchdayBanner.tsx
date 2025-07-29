@@ -3,19 +3,14 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { Calculator, WarningTriangle } from "iconoir-react";
 import CalculateMatchdayButton from "./CalculateMatchdayButton";
+import { isMatchdayCalculable } from "../utils/calculate-matchday";
 
 export default function CalculateMatchdayBanner({
   matchday,
 }: {
   matchday: SplitMatchday;
 }) {
-  const calculableFromDate = new Date(matchday.endAt);
-  calculableFromDate.setDate(calculableFromDate.getDate() + 1);
-  calculableFromDate.setHours(0, 30, 0, 0);
-
-  const isCalculable = new Date() > calculableFromDate;
-
-  if (!isCalculable) return <NotCalculable />;
+  if (!isMatchdayCalculable(matchday)) return <NotCalculable />;
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-2xl mb-4 md:mb-8">
