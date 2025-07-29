@@ -1,6 +1,9 @@
+"use client"
+
 import { useParams } from "next/navigation";
 import { PropsWithChildren } from "react";
 import ActionButton from "@/components/ActionButton";
+import { calculateMatchday, recalculateMatchday } from "../actions/calculate-matchday";
 
 type Props = {
   matchdayId: number;

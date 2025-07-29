@@ -1,6 +1,7 @@
 import { Calculation } from "../queries/calculate-matchday";
 import ActionButton from "@/components/ActionButton";
 import CalculateMatchdayButton from "./CalculateMatchdayButton";
+import { cancelCalculation } from "../actions/calculate-matchday";
 
 export default function CalculationsList({
   calculations,
@@ -21,7 +22,11 @@ export default function CalculationsList({
             </p>
           </div>
           {c.status === "calculated" && (
-            <ActionButton variant="destructive" loadingText="Annullo">
+            <ActionButton
+              action={cancelCalculation}
+              variant="destructive"
+              loadingText="Annullo"
+            >
               Annulla
             </ActionButton>
           )}
