@@ -1,10 +1,11 @@
-import EmptyState from "@/components/EmptyState";
+"use client"
+
 import { SplitMatchday } from "@/features/splits/queries/split";
-import BackButton from "@/components/BackButton";
 import { Calculator } from "iconoir-react";
 import ActionButton from "@/components/ActionButton";
+import CalculateEmptyState from "./CalculateEmptyState";
 
-export default async function CalculateMatchdayBanner({
+export default function CalculateMatchdayBanner({
   matchday,
   leagueId,
 }: {
@@ -44,4 +45,3 @@ export default async function CalculateMatchdayBanner({
     </div>
   );
 }
-

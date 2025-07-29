@@ -38,3 +38,5 @@ export async function getCalculations(leagueId: string, splitId: number) {
 
   return results;
 }
+
+export type Calculation = Awaited<ReturnType<typeof getCalculations>>[number];
