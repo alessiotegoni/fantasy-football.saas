@@ -2,7 +2,6 @@
 
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { Calculator, WarningTriangle } from "iconoir-react";
-import ActionButton from "@/components/ActionButton";
 import CalculateMatchdayButton from "./CalculateMatchdayButton";
 
 export default function CalculateMatchdayBanner({
