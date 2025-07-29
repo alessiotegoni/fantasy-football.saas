@@ -6,6 +6,7 @@ import LineupPlayerCard from "./LineupPlayerCard";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import { Plus } from "iconoir-react";
+import ScrollArea from "@/components/ui/scroll-area";
 
 type Props = {
   players: LineupPlayer[];
@@ -24,12 +25,10 @@ export default function BenchLineup({
 
   const players = canEditLineup ? benchPlayers : lineupPlayers;
 
-  // TODO: scroll area on PlayerSelect
-
   return (
     <div
       className={cn(
-        `bg-input/30 rounded-3xl min-h-[500px] border-border p-4`,
+        `bg-input/30 rounded-3xl min-h-[500px] h-[500px] border-border p-3 sm:p-4`,
         className
       )}
     >
@@ -38,13 +37,13 @@ export default function BenchLineup({
         {canEditLineup && (
           <PlayersSelectTrigger
             lineupType="bench"
-            className="bg-primary text-primary-foreground size-6 xs:size-7 p-0 rounded-full 2xl:size-6 shrink-0"
+            className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0"
           >
             <Plus className="size-5 font-semibold" />
           </PlayersSelectTrigger>
         )}
       </div>
-      <div className="space-y-3">
+      <ScrollArea className="space-y-3 max-h-[430px]">
         {players.map((player) => (
           <LineupPlayerCard
             key={player.id}
@@ -54,7 +53,7 @@ export default function BenchLineup({
             className="p-0 w-full text-left text-xs"
           />
         ))}
-      </div>
+      </ScrollArea>
     </div>
   );
 }

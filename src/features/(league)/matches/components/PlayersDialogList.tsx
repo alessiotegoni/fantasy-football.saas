@@ -74,7 +74,7 @@ export default function PlayersDialogList({
   }
 
   return (
-    <ScrollArea>
+    <ScrollArea className="max-h-[40dvh] xl:max-h-96 md:mt-3">
       {availablePlayers.map((player) => (
         <PlayerCard
           key={player.id}

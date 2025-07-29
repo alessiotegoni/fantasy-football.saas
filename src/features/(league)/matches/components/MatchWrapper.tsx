@@ -58,10 +58,10 @@ export default function MatchWrapper({
       {...ids}
       headerLabel="Partita"
       showHeader={false}
-      className="xl:max-w-[800px] 2xl:max-w-[1200px]"
+      className="xl:max-w-[800px] 2xl:max-w-[1200px] pb-24 sm:pb-0"
     >
-      <div className="grid grid-cols-2 gap-5 2xl:grid-cols-[180px_1fr_180px]">
-        <div className="mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-5">
+      <div className="grid grid-cols-2 gap-3 sm:gap-5 2xl:grid-cols-[180px_1fr_180px]">
+        <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
             <>
               <PresidentSlot
@@ -110,7 +110,7 @@ export default function MatchWrapper({
             )}
           </FootballFieldBg>
         </div>
-        <div className="mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-5">
+        <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
             <>
               <PresidentSlot

@@ -144,10 +144,10 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-primary rounded-[10px];
+    @apply bg-muted rounded-[10px];
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-primary/80 cursor-grab;
+    @apply bg-primary cursor-grab;
   }
 }

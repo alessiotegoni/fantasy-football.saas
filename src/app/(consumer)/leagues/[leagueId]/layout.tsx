@@ -23,7 +23,7 @@ export default async function LeagueLayout({ children, params }: Props) {
         leagueNamePromise={leagueNamePromise}
       />
       <Topbar leagueNamePromise={leagueNamePromise} />
-      <div className="relative w-full pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:pt-0">
+      <div className="relative w-full pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:py-0">
         <LeagueNav leagueId={leagueId} lastSplitPromise={getLastSplit()} />
         <main className="p-4 pt-0 lg:pt-[calc(60px+16px)]">{children}</main>
       </div>

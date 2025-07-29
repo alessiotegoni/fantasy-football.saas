@@ -33,12 +33,12 @@ export default function PresidentSlot({
   return (
     <div
       className={cn(
-        `relative min-h-36 2xl:size-full bg-input/30 rounded-4xl p-4`,
+        `relative min-h-36 2xl:size-full bg-input/30 rounded-3xl 2xl:rounded-4xl p-3 sm:p-4`,
         !hasPresident && !canEditLineup && "border-transparent",
         hasPresident && "border border-primary"
       )}
     >
-      <div className="flex justify-between items-center gap-2 h-7">
+      <div className="flex justify-between items-center gap-2 sm:h-7">
         <Crown
           className={cn(
             "absolute -top-8.5 left-1/2 -translate-x-1/2 text-3xl",
@@ -48,15 +48,15 @@ export default function PresidentSlot({
         />
         <h2 className="text-sm xs:text-base">Presidente</h2>
         {!hasPresident && canEditLineup && (
-          <AddPresidentButton className="bg-primary text-primary-foreground size-6 xs:size-7 p-0 rounded-full 2xl:size-6 shrink-0">
+          <AddPresidentButton className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0">
             <Plus className="size-5 font-semibold" />
           </AddPresidentButton>
         )}
       </div>
       {!hasPresident && !canEditLineup && (
-        <div className="mt-2 2xl:size-full flex flex-col gap-2 justify-center 2xl:justify-start 2xl:mt-6.5 items-center">
+        <div className="mt-3 sm:mt-2 2xl:size-full flex flex-col gap-2 justify-center 2xl:justify-start 2xl:mt-6.5 items-center">
           <UserXmark className="size-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-muted-foreground text-center">
+          <p className="max-w-28 sm:max-w-fit text-sm font-medium text-muted-foreground text-center">
             Presidente non inserito
           </p>
         </div>
@@ -64,7 +64,7 @@ export default function PresidentSlot({
       {!hasPresident && canEditLineup && (
         <AddPresidentButton className="w-full mt-2 2xl:size-full flex-col justify-center 2xl:justify-start gap-2 2xl:mt-6.5">
           <UserCrown className="size-8 text-muted-foreground" />
-          <p className="text-sm font-medium text-muted-foreground text-center w-full 2xl:max-w-32">
+          <p className="max-w-28 sm:max-w-fit text-sm font-medium text-muted-foreground text-center w-full 2xl:max-w-32">
             Aggiungi presidente
           </p>
         </AddPresidentButton>
