@@ -3,14 +3,12 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { Calculator, WarningTriangle } from "iconoir-react";
 import ActionButton from "@/components/ActionButton";
-import CalculateEmptyState from "./CalculateEmptyState";
+import CalculateMatchdayButton from "./CalculateMatchdayButton";
 
 export default function CalculateMatchdayBanner({
   matchday,
-  leagueId,
 }: {
   matchday: SplitMatchday;
-  leagueId: string;
 }) {
   const calculableFromDate = new Date(matchday.endAt);
   calculableFromDate.setDate(calculableFromDate.getDate() + 1);
@@ -35,13 +33,13 @@ export default function CalculateMatchdayBanner({
           </p>
         </div>
       </div>
-      <ActionButton
-        loadingText="Calcolo"
+      <CalculateMatchdayButton
+        matchdayId={matchday.id}
         variant="gradient"
         className="min-w-30 w-fit max-w-36 mt-6 md:mt-0 gap-4 p-2.5 md:py-3.5 md:px-4 rounded-lg sm:rounded-2xl"
       >
         Calcola
-      </ActionButton>
+      </CalculateMatchdayButton>
     </div>
   );
 }

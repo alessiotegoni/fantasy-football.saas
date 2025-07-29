@@ -67,9 +67,7 @@ async function SuspenseBoundary({
 
   return (
     <>
-      {!isAlreadyCalculated && (
-        <CalculateMatchdayBanner leagueId={leagueId} matchday={matchday} />
-      )}
+      {!isAlreadyCalculated && <CalculateMatchdayBanner matchday={matchday} />}
       <div>
         {!isAlreadyCalculated && (
           <h2 className="text-xl font-bold tracking-tight">
@@ -77,7 +75,7 @@ async function SuspenseBoundary({
           </h2>
         )}
         {matchdayCalcs.length > 0 ? (
-          <CalculationsList calculations={matchdayCalcs} leagueId={leagueId} />
+          <CalculationsList calculations={matchdayCalcs} />
         ) : (
           <p className="text-muted-foreground mt-2">
             Nessuna giornata è stata ancora calcolata.

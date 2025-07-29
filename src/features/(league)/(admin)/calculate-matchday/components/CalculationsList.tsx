@@ -1,12 +1,10 @@
-import { Button } from "@/components/ui/button";
 import { Calculation } from "../queries/calculate-matchday";
 import ActionButton from "@/components/ActionButton";
+import CalculateMatchdayButton from "./CalculateMatchdayButton";
 
 export default function CalculationsList({
-  leagueId,
   calculations,
 }: {
-  leagueId: string;
   calculations: Calculation[];
 }) {
   return (
@@ -28,7 +26,12 @@ export default function CalculationsList({
             </ActionButton>
           )}
           {c.status === "cancelled" && (
-            <ActionButton loadingText="Ricalcolo">Ricalcola</ActionButton>
+            <CalculateMatchdayButton
+              calculationId={c.id}
+              matchdayId={c.matchday.id}
+            >
+              Ricalcola
+            </CalculateMatchdayButton>
           )}
         </li>
       ))}
