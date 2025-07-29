@@ -53,13 +53,19 @@ export async function getCurrentMatchday(splitId: number) {
   return liveMatchday || getNextMatchday(matchdays);
 }
 
-export async function getNextMatchday(matchdays: SplitMatchday[]) {
+export async function getLastEndedMatchday(splitId: number) {
+  const matchdays = await getSplitMatchdays(splitId);
+
+  return matchdays.findLast((matchday) => matchday.status === "ended");
+}
+
+async function getNextMatchday(matchdays: SplitMatchday[]) {
   const lastEndedMatchday = matchdays.findLastIndex(
     (matchday) => matchday.status === "ended"
   );
 
   if (lastEndedMatchday === -1) return matchdays[0];
-  if (lastEndedMatchday === matchdays.length - 1) return undefined;
+  if (lastEndedMatchday === matchdays.length - 1) return;
 
   return matchdays[lastEndedMatchday + 1];
 }

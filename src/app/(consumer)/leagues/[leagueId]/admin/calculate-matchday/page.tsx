@@ -1,7 +1,8 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import { getCalculableMatchday } from "@/features/(league)/(admin)/calculate-matchday/queries/calculate-matchday";
-import { getLiveSplit } from "@/features/splits/queries/split";
+import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
+import { isAlreadyCalculated } from "@/features/(league)/(admin)/calculate-matchday/permissions/calculate-matchday";
+import { getLastEndedMatchday, getLiveSplit } from "@/features/splits/queries/split";
 import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
@@ -20,7 +21,10 @@ export default async function CalculateMatchdayPage({
       {liveSplit ? (
         <>
           <Suspense>
-            <CalculateMatchdayBanner splitId={liveSplit.id} />
+            <CalculateMatchdayBanner
+              leagueId={leagueId}
+              splitId={liveSplit.id}
+            />
           </Suspense>
         </>
       ) : (
@@ -32,4 +36,3 @@ export default async function CalculateMatchdayPage({
     </Container>
   );
 }
-
