@@ -18,8 +18,11 @@ import { deleteMatchesResults } from "@/features/(league)/matches/db/matchResult
 import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
-import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
-import { leagueMatchResults } from "@/drizzle/schema";
+import {
+  calculateLineupTotalVote,
+  enrichLineupPlayers,
+} from "@/features/(league)/matches/utils/LineupPlayers";
+import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
 
 enum CALCULATION_MESSAGES {
   CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
@@ -95,8 +98,13 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
   if (!matches.length) return;
 
   const matchesIds = matches.map((match) => match.id);
-  const lineupsPlayers = await getLineupsPlayers(matchesIds, data.matchdayId);
-  if (!lineupsPlayers.length) return;
+  const teamsIds = getMatchesTeamsIds(matches);
+
+  const [lineupsPlayers, teamsTacticalModules] = await Promise.all([
+    getLineupsPlayers(matchesIds, data.matchdayId),
+    getMatchesTeamsTacticalModules(matchesIds, teamsIds),
+  ]);
+  if (!lineupsPlayers.length || !teamsTacticalModules.length) return;
 
   const playersIds = lineupsPlayers.map((player) => player.id);
   const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
@@ -111,40 +119,49 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
   const matchesResults: (typeof leagueMatchResults.$inferInsert)[] = [];
 
-  for (const { id, homeTeamId, awayTeamId } of matches) {
-    for (const teamId of [homeTeamId, awayTeamId]) {
-      const teamPlayers = players.filter(
-        (player) => player.leagueTeamId === teamId
-      );
-    }
+  for (const { id: matchId, homeTeamId, awayTeamId } of matches) {
+    const matchPlayers = players.filter(
+      (player) =>
+        player.leagueTeamId === homeTeamId || player.leagueTeamId === awayTeamId
+    );
+
+    const homeTacticalModule = getTeamTacticalModule(
+      teamsTacticalModules,
+      matchId,
+      homeTeamId
+    );
+    const awayTacticalModule = getTeamTacticalModule(
+      teamsTacticalModules,
+      matchId,
+      awayTeamId
+    );
+
+    const totalVotes = calculateLineupTotalVote(matchPlayers, {
+      homeTeam: { id: homeTeamId, tacticalModule: homeTacticalModule },
+      awayTeam: { id: awayTeamId, tacticalModule: awayTacticalModule },
+    });
+
+    if (!totalVotes) continue;
   }
 
   return matchesResults;
 }
 
-async function getMatchesTeamsTacticalModules({
-  matchesIds,
-  teamsIds,
-}: {
-  matchesIds: string[];
-  teamsIds: string[];
-}) {
-  const results = await db.query.leagueMatchTeamLineup.findMany({
-    columns: {
-      matchId: true,
-      teamId: true,
-    },
-    with: {
-      tacticalModule: true,
-    },
-    where: (matchLineup, { and, inArray }) =>
-      and(
-        inArray(matchLineup.id, matchesIds),
-        inArray(matchLineup.teamId, teamsIds)
-      ),
-  });
+function getTeamTacticalModule(
+  teamsTacticalModules: {
+    teamId: string;
+    matchId: string;
+    tacticalModule: TacticalModule;
+  }[],
+  matchId: string,
+  teamId: string | null
+) {
+  const teamTacticalModule = teamsTacticalModules.find(
+    (tacticalModule) =>
+      tacticalModule.matchId === matchId && tacticalModule.teamId === teamId
+  );
 
-  return results;
+  return teamTacticalModule?.tacticalModule ?? null;
 }
 
 function getMatchesTeamsIds(
@@ -164,6 +181,28 @@ function getMatchesTeamsIds(
   );
 
   return Array.from(matchesTeamsIds);
+}
+
+async function getMatchesTeamsTacticalModules(
+  matchesIds: string[],
+  teamsIds: string[]
+) {
+  const results = await db.query.leagueMatchTeamLineup.findMany({
+    columns: {
+      matchId: true,
+      teamId: true,
+    },
+    with: {
+      tacticalModule: true,
+    },
+    where: (matchLineup, { and, inArray }) =>
+      and(
+        inArray(matchLineup.id, matchesIds),
+        inArray(matchLineup.teamId, teamsIds)
+      ),
+  });
+
+  return results;
 }
 
 async function getLeagueMatchdayMatches({
