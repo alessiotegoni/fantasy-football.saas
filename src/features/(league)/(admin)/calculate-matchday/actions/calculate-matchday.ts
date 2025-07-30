@@ -122,6 +122,30 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
   return matchesResults;
 }
 
+async function getMatchesTeamsTacticalModules({
+  matchesIds,
+  teamsIds,
+}: {
+  matchesIds: string[];
+  teamsIds: string[];
+}) {
+  const results = await db.query.leagueMatchTeamLineup.findMany({
+    columns: {
+      matchId: true,
+      teamId: true,
+    },
+    with: {
+      tacticalModule: true,
+    },
+    where: (matchLineup, { and, inArray }) =>
+      and(
+        inArray(matchLineup.id, matchesIds),
+        inArray(matchLineup.teamId, teamsIds)
+      ),
+  });
+
+  return results;
+}
 
 function getMatchesTeamsIds(
   matches: {
