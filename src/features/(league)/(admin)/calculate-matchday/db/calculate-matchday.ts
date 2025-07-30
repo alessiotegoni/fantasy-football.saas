@@ -7,12 +7,12 @@ import { createError } from "@/lib/helpers";
 import { and, eq } from "drizzle-orm";
 import { revalidateLeagueCalculationsCache } from "./cache/calculate-matchday";
 
-enum DB_ERROR_MESSAGE {
+enum DB_ERROR_MESSAGES {
   CREATE_CALCULATION = "Errore nel calcolo della giornata",
   UPDATE_CALCULATION = "Errore nell'aggiornamento del calcolo",
 }
 
-export async function createMatchdayCalculation(
+export async function insertCalculation(
   calculation: typeof leagueMatchdayCalculations.$inferInsert,
   tx: Omit<typeof db, "$client"> = db
 ) {
@@ -22,13 +22,13 @@ export async function createMatchdayCalculation(
     .returning({ leagueId: leagueMatchdayCalculations.leagueId });
 
   if (!res?.leagueId) {
-    throw new Error(createError(DB_ERROR_MESSAGE.CREATE_CALCULATION).message);
+    throw new Error(createError(DB_ERROR_MESSAGES.CREATE_CALCULATION).message);
   }
 
   revalidateLeagueCalculationsCache(res.leagueId);
 }
 
-export async function updateMatchdayCalculation(
+export async function updateCalculation(
   leagueId: string,
   matchdayId: number,
   status: LeagueMatchdayCalcStatuses,
@@ -46,7 +46,7 @@ export async function updateMatchdayCalculation(
     .returning({ id: leagueMatchdayCalculations.id });
 
   if (!res?.id) {
-    throw new Error(createError(DB_ERROR_MESSAGE.UPDATE_CALCULATION).message);
+    throw new Error(createError(DB_ERROR_MESSAGES.UPDATE_CALCULATION).message);
   }
 
   revalidateLeagueCalculationsCache(leagueId);

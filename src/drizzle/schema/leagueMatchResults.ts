@@ -13,9 +13,11 @@ import { leagueMemberTeams } from "./leagueMemberTeams";
 export const leagueMatchResults = pgTable(
   "league_match_results",
   {
-    leagueMatchId: uuid("league_match_id").references(() => leagueMatches.id, {
-      onDelete: "cascade",
-    }),
+    leagueMatchId: uuid("league_match_id")
+      .notNull()
+      .references(() => leagueMatches.id, {
+        onDelete: "cascade",
+      }),
     teamId: uuid("team_id")
       .notNull()
       .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
