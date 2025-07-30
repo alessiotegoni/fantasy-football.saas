@@ -114,11 +114,13 @@ function calculateTeamTotalVote(
 }
 
 function calculatePlayersTotalVote(players: { totalVote: string | null }[]) {
-  return players.reduce((acc, player) => {
+  const totalVote = players.reduce((acc, player) => {
     const totalVote = player.totalVote ? parseFloat(player.totalVote) : 0;
 
     return (acc += totalVote);
   }, 0);
+
+  return totalVote.toString()
 }
 
 function replacePlayers(

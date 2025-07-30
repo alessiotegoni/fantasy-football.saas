@@ -13,8 +13,11 @@ import {
 } from "../permissions/calculate-matchday";
 import { createError, createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
-import { updateCalculation } from "../db/calculate-matchday";
-import { deleteMatchesResults } from "@/features/(league)/matches/db/matchResult";
+import { insertCalculation, updateCalculation } from "../db/calculate-matchday";
+import {
+  deleteMatchesResults,
+  insertMatchesResults,
+} from "@/features/(league)/matches/db/matchResult";
 import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
@@ -28,8 +31,8 @@ enum CALCULATION_MESSAGES {
   CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
   CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
   MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
-  MATCHDAY_MATCHES_NOT_FOUND = "Nella tua lega in questa giornata non ci sono partite disponibili",
-  CANCULATION_CANCELLED_SUCCESFULLY = "Giornata cancellata con successo",
+  MATCHDAY_CALCULATED_SUCCESFULLY = "Giornata calcolata con successo!",
+  CANCULATION_CANCELLED_SUCCESFULLY = "Giornata cancellata con successo!",
 }
 
 export async function calculateMatchday(values: CalculateMatchdaySchema) {
@@ -43,6 +46,18 @@ export async function calculateMatchday(values: CalculateMatchdaySchema) {
   if (permissions.error) return permissions;
 
   const matchesResults = await calculateMatchesResults(data);
+
+  await db.transaction(async (tx) => {
+    await insertCalculation({ ...data, status: "calculated" }, tx);
+    if (matchesResults.length) {
+      await insertMatchesResults(data.leagueId, matchesResults, tx);
+    }
+  });
+
+  return createSuccess(
+    CALCULATION_MESSAGES.MATCHDAY_CALCULATED_SUCCESFULLY,
+    null
+  );
 }
 
 export async function recalculateMatchday(
@@ -95,7 +110,6 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       getBonusMalusesOptions(data.leagueId),
       getLeagueMatchdayMatches(data),
     ]);
-  if (!matches.length) return;
 
   const matchesIds = matches.map((match) => match.id);
   const teamsIds = getMatchesTeamsIds(matches);
@@ -104,7 +118,6 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
     getLineupsPlayers(matchesIds, data.matchdayId),
     getMatchesTeamsTacticalModules(matchesIds, teamsIds),
   ]);
-  if (!lineupsPlayers.length || !teamsTacticalModules.length) return;
 
   const playersIds = lineupsPlayers.map((player) => player.id);
   const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
@@ -142,6 +155,27 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
     });
 
     if (!totalVotes) continue;
+
+    const teams = [
+      { type: "home", teamId: homeTeamId },
+      { type: "away", teamId: awayTeamId },
+    ] as const;
+
+    for (const { type, teamId } of teams) {
+      const totalScore = totalVotes[type];
+
+      if (!teamId || !totalScore) continue;
+
+      const matchResult = {
+        leagueMatchId: matchId,
+        teamId,
+        totalScore,
+        points: 0,
+        goals: 0,
+      };
+
+      matchesResults.push(matchResult);
+    }
   }
 
   return matchesResults;
