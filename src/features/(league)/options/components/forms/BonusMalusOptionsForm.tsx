@@ -7,12 +7,12 @@ import { bonusMalusSchema, BonusMalusSchema } from "../../schema/leagueOptions";
 import SubmitButton from "@/components/SubmitButton";
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";
 import { BonusMalusCategoriesType } from "@/drizzle/schema";
-import { getBonusMaluses } from "../../queries/leagueOptions";
 import { BonusMaluses } from "@/components/BonusMaluses";
+import { BonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
 
 type Props = {
   initialData: BonusMalusSchema;
-  bonusMaluses: Awaited<ReturnType<typeof getBonusMaluses>>;
+  bonusMaluses: BonusMalus[];
   leagueId: string;
 };
 

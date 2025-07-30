@@ -48,3 +48,12 @@ export async function getPlayersMatchdayBonusMaluses({
 export type PlayerBonusMalus = Awaited<
   ReturnType<typeof getPlayersMatchdayBonusMaluses>
 >[number];
+
+export async function getBonusMaluses() {
+  "use cache";
+  cacheTag(getBonusMalusTag());
+
+  return db.query.bonusMalusTypes.findMany();
+}
+
+export type BonusMalus = Awaited<ReturnType<typeof getBonusMaluses>>[number];

@@ -33,7 +33,8 @@ export async function calculateMatchday(values: CalculateMatchdaySchema) {
   const permissions = await canCalculateMatchday(data);
   if (permissions.error) return permissions;
 
-  
+  const [] = await Promise.all([getLeague])
+
 }
 
 export async function recalculateMatchday(

@@ -16,13 +16,6 @@ export async function getTacticalModules() {
   return db.query.tacticalModules.findMany();
 }
 
-export async function getBonusMaluses() {
-  "use cache";
-  cacheTag(getBonusMalusTag());
-
-  return db.query.bonusMalusTypes.findMany();
-}
-
 export async function getGeneralOptions(leagueId: string) {
   "use cache";
   cacheTag(getLeagueOptionsTag(leagueId), getLeagueGeneralOptionsTag(leagueId));

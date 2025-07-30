@@ -1,8 +1,6 @@
 import { BonusMalusOptionsForm } from "@/features/(league)/options/components/forms/BonusMalusOptionsForm";
-import {
-  getBonusMaluses,
-  getBonusMalusesOptions,
-} from "@/features/(league)/options/queries/leagueOptions";
+import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
+import { getBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 
 export default async function LeagueBonusMalusOptionsPage({
   params,
@@ -11,11 +9,9 @@ export default async function LeagueBonusMalusOptionsPage({
 }) {
   const { leagueId } = await params;
 
-  const [bonusMalusOptions, bonusMalus] = await Promise.all([
-    getBonusMalusesOptions(leagueId),
-    getBonusMaluses(),
-  ]);
-  if (!bonusMalusOptions) return;
+  const [{ bonusMalusOptions: customBonusMalus }, bonusMalus] =
+    await Promise.all([getBonusMalusesOptions(leagueId), getBonusMaluses()]);
+  if (!customBonusMalus) return;
 
   return (
     <>
@@ -24,7 +20,7 @@ export default async function LeagueBonusMalusOptionsPage({
       </h2>
       <BonusMalusOptionsForm
         leagueId={leagueId}
-        initialData={bonusMalusOptions}
+        initialData={{ customBonusMalus }}
         bonusMaluses={bonusMalus}
       />
     </>

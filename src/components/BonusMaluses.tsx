@@ -11,13 +11,13 @@ import {
 import NumberInput from "@/components/ui/number-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BonusMalusSchema } from "@/features/(league)/options/schema/leagueOptions";
-import { getBonusMaluses } from "@/features/(league)/options/queries/leagueOptions";
+import { BonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
 
 export function BonusMaluses({
   items,
   canModify = false,
 }: {
-  items: Awaited<ReturnType<typeof getBonusMaluses>>;
+  items: BonusMalus[];
   canModify?: boolean;
 }) {
   const form = useFormContext<BonusMalusSchema>();
