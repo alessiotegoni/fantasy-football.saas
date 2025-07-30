@@ -4,6 +4,7 @@ import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import {
   getLastEndedMatchday,
   getLiveSplit,
+  getSplitMatchdays,
 } from "@/features/splits/queries/split";
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/lib/helpers";
@@ -15,11 +16,21 @@ enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",
   INVALID_SPLIT = "Puoi calcolare, ricalcolare o annullare solo le giornate dello split attuale",
   INVALID_MATCHDAY = "Puoi calcolare solo la giornata appena conclusa",
+  INVALID_SPLIT_MATCHDAY = "La giornata non fa parte dello split attuale",
   MATCHDAY_NOT_CALCULABLE = "Puoi calcolare la giornata solo dopo la mezzanotte e mezza",
   MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
+  CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
 }
 
-export async function basePermissions(leagueId: string) {
+export async function basePermissions({
+  leagueId,
+  matchdayId,
+  calculationId,
+}: {
+  leagueId: string;
+  matchdayId: number;
+  calculationId?: string;
+}) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
@@ -35,7 +46,35 @@ export async function basePermissions(leagueId: string) {
     return createError(CALCULATE_ERRORS.INVALID_SPLIT);
   }
 
-  return createSuccess("", { splitId: liveSplit.id });
+  const splitMatchdays = await getSplitMatchdays(liveSplit.id);
+  const isValidMatchday = splitMatchdays.some(
+    (matchday) => matchday.id === matchdayId
+  );
+  if (!isValidMatchday) {
+    return createError(CALCULATE_ERRORS.INVALID_SPLIT_MATCHDAY);
+  }
+
+  const data: {
+    splitId: number;
+    calculation: {
+      id: string;
+      status: "calculated" | "cancelled";
+      leagueId: string;
+      matchdayId: number;
+      calculatedAt: Date;
+    } | null;
+  } = { splitId: liveSplit.id, calculation: null };
+
+  if (calculationId) {
+    const calculation = await getCalculation(calculationId);
+    if (!calculation) {
+      return createError(CALCULATE_ERRORS.CALCULATION_NOT_FOUND);
+    }
+
+    data.calculation = calculation;
+  }
+
+  return createSuccess("", data);
 }
 
 export async function canCalculateMatchday({
@@ -45,7 +84,7 @@ export async function canCalculateMatchday({
   leagueId: string;
   matchdayId: number;
 }) {
-  const baseValidation = await basePermissions(leagueId);
+  const baseValidation = await basePermissions({ leagueId, matchdayId });
   if (baseValidation.error) return baseValidation;
 
   const [lastEndedMatchday, isMatchdayCalculated] = await Promise.all([
@@ -68,8 +107,6 @@ export async function canCalculateMatchday({
   return createSuccess("", null);
 }
 
-// TODO: recalculate and cancel permissions functions
-
 async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
   const [res] = await db
     .select({ count: count() })
@@ -83,4 +120,10 @@ async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
     );
 
   return res.count > 0;
+}
+
+async function getCalculation(id: string) {
+  return db.query.leagueMatchdayCalculations.findFirst({
+    where: (calculation, { eq }) => eq(calculation.id, id),
+  });
 }

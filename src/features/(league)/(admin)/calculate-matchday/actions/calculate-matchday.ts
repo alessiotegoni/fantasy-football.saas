@@ -4,6 +4,8 @@ import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import {
   calculateMatchdaySchema,
   CalculateMatchdaySchema,
+  cancelCalculationSchema,
+  CancelCalculationSchema,
   recalculateMatchdaySchema,
   RecalculateMatchdaySchema,
 } from "../schema/calculate-matchday";
@@ -28,10 +30,10 @@ import {
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
 
 enum CALCULATION_MESSAGES {
-  CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
   CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
   MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
   MATCHDAY_CALCULATED_SUCCESFULLY = "Giornata calcolata con successo!",
+  MATCHDAY_RECALCULATED_SUCCESFULLY = "Giornata ricalcolata con successo!",
   CANCULATION_CANCELLED_SUCCESFULLY = "Giornata cancellata con successo!",
 }
 
@@ -69,33 +71,53 @@ export async function recalculateMatchday(
     { calculationId, ...values }
   );
   if (!isValid) return error;
+
+  const baseValidation = await basePermissions(data);
+  if (baseValidation.error) return baseValidation;
+
+  const { calculation } = baseValidation.data;
+
+  if (calculation!.status === "calculated") {
+    return createError(CALCULATION_MESSAGES.MATCHDAY_ALREADY_CALCULATED);
+  }
+
+  const matchesResults = await calculateMatchesResults(data);
+
+  await db.transaction(async (tx) => {
+    await updateCalculation(calculation!, "calculated", tx);
+    if (matchesResults.length) {
+      await insertMatchesResults(data.leagueId, matchesResults, tx);
+    }
+  });
+
+  return createSuccess(
+    CALCULATION_MESSAGES.MATCHDAY_RECALCULATED_SUCCESFULLY,
+    null
+  );
 }
 
-export async function cancelCalculation(id: string) {
-  const {
-    isValid,
-    data: calculationId,
-    error,
-  } = validateSchema<string>(getUUIdSchema(), id);
+export async function cancelCalculation(values: CancelCalculationSchema) {
+  const { isValid, data, error } = validateSchema<CancelCalculationSchema>(
+    cancelCalculationSchema,
+    values
+  );
   if (!isValid) return error;
 
-  const calculation = await getCalculation(calculationId);
-  if (!calculation) {
-    return createError(CALCULATION_MESSAGES.CALCULATION_NOT_FOUND);
-  }
-  if (calculation.status !== "calculated") {
+  const baseValidation = await basePermissions(data);
+  if (baseValidation.error) return baseValidation;
+
+  const { calculation } = baseValidation.data;
+
+  if (calculation!.status === "cancelled") {
     return createError(CALCULATION_MESSAGES.CALCULATION_ALREADY_CANCELED);
   }
 
-  const baseValidation = await basePermissions(calculation.leagueId);
-  if (baseValidation.error) return baseValidation;
-
-  const matches = await getLeagueMatchdayMatches(calculation);
+  const matches = await getLeagueMatchdayMatches(calculation!);
   const matchesIds = matches.map((match) => match.id);
 
   await db.transaction(async (tx) => {
-    await updateCalculation(calculation, "cancelled", tx);
-    await deleteMatchesResults({ ...calculation, matchesIds }, tx);
+    await updateCalculation(calculation!, "cancelled", tx);
+    await deleteMatchesResults({ ...calculation!, matchesIds }, tx);
   });
 
   return createSuccess(
@@ -253,11 +275,5 @@ async function getLeagueMatchdayMatches({
         eq(match.splitMatchdayId, matchdayId),
         eq(match.isBye, false)
       ),
-  });
-}
-
-async function getCalculation(id: string) {
-  return db.query.leagueMatchdayCalculations.findFirst({
-    where: (calculation, { eq }) => eq(calculation.id, id),
   });
 }

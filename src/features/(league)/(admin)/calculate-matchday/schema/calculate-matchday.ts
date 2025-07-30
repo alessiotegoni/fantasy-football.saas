@@ -12,7 +12,10 @@ export const recalculateMatchdaySchema = z
   })
   .merge(calculateMatchdaySchema);
 
+export const cancelCalculationSchema = recalculateMatchdaySchema
+
 export type CalculateMatchdaySchema = z.infer<typeof calculateMatchdaySchema>;
 export type RecalculateMatchdaySchema = z.infer<
   typeof recalculateMatchdaySchema
 >;
+export type CancelCalculationSchema = RecalculateMatchdaySchema
