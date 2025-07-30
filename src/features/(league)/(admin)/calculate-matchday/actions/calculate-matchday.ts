@@ -121,6 +121,10 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
   return matchesResults;
 }
 
+async function getTeams(params:type) {
+
+}
+
 async function getLeagueMatchdayMatches({
   leagueId,
   matchdayId,

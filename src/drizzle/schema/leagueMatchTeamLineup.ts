@@ -1,27 +1,43 @@
-import { pgTable, uuid, smallint, timestamp } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  smallint,
+  timestamp,
+  uniqueIndex,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagueMatches } from "./leagueMatches";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { tacticalModules } from "./tacticalModules";
 
-export const leagueMatchTeamLineup = pgTable("league_match_team_lineup", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  matchId: uuid("match_id")
-    .notNull()
-    .references(() => leagueMatches.id, { onDelete: "cascade" }),
-  teamId: uuid("team_id")
-    .notNull()
-    .references(() => leagueMemberTeams.id, { onDelete: "no action" }),
-  tacticalModuleId: smallint("tactical_module_id")
-    .notNull()
-    .references(() => tacticalModules.id, { onDelete: "restrict" }),
-  createdAt: timestamp("created_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
+export const leagueMatchTeamLineup = pgTable(
+  "league_match_team_lineup",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    matchId: uuid("match_id")
+      .notNull()
+      .references(() => leagueMatches.id, { onDelete: "cascade" }),
+    teamId: uuid("team_id")
+      .notNull()
+      .references(() => leagueMemberTeams.id, { onDelete: "no action" }),
+    tacticalModuleId: smallint("tactical_module_id")
+      .notNull()
+      .references(() => tacticalModules.id, { onDelete: "restrict" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("idx_league_match_team_lineup_unique").on(
+      table.matchId,
+      table.teamId,
+      table.tacticalModuleId
+    ),
+  ]
+);
 
 export const leagueMatchTeamLineupRelations = relations(
   leagueMatchTeamLineup,
