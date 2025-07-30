@@ -38,10 +38,13 @@ export async function basePermissions(leagueId: string) {
   return createSuccess("", { splitId: liveSplit.id });
 }
 
-export async function canCalculateMatchday(
-  leagueId: string,
-  matchdayId: number
-) {
+export async function canCalculateMatchday({
+  leagueId,
+  matchdayId,
+}: {
+  leagueId: string;
+  matchdayId: number;
+}) {
   const baseValidation = await basePermissions(leagueId);
   if (baseValidation.error) return baseValidation;
 

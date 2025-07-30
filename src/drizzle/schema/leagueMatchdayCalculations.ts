@@ -4,6 +4,7 @@ import {
   smallint,
   timestamp,
   pgEnum,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { leagues } from "./leagues";
@@ -32,7 +33,13 @@ export const leagueMatchdayCalculations = pgTable(
       .notNull()
       .defaultNow(),
     status: leagueMatchdayCalcStatusEnum("status").notNull(),
-  }
+  },
+  (table) => [
+    uniqueIndex("idx_league_matchday_unique").on(
+      table.leagueId,
+      table.matchdayId
+    ),
+  ]
 );
 
 export const leagueMatchdayCalculationsRelations = relations(

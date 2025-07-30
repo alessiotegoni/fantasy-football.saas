@@ -7,7 +7,10 @@ import {
   recalculateMatchdaySchema,
   RecalculateMatchdaySchema,
 } from "../schema/calculate-matchday";
-import { basePermissions } from "../permissions/calculate-matchday";
+import {
+  basePermissions,
+  canCalculateMatchday,
+} from "../permissions/calculate-matchday";
 import { createError, createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
 import { updateCalculation } from "../db/calculate-matchday";
@@ -26,6 +29,11 @@ export async function calculateMatchday(values: CalculateMatchdaySchema) {
     values
   );
   if (!isValid) return error;
+
+  const permissions = await canCalculateMatchday(data);
+  if (permissions.error) return permissions;
+
+  
 }
 
 export async function recalculateMatchday(
