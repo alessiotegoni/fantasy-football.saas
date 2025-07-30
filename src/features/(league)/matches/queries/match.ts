@@ -9,7 +9,7 @@ import {
   players,
   teams,
 } from "@/drizzle/schema";
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 import {
   getPlayerRolesTag,
   getPlayersTag,
@@ -119,7 +119,10 @@ export async function getMatchInfo({
 
 export type MatchInfo = NonNullable<Awaited<ReturnType<typeof getMatchInfo>>>;
 
-export async function getLineupsPlayers(matchId: string, matchdayId: number) {
+export async function getLineupsPlayers(
+  matchesIds: string[],
+  matchdayId: number
+) {
   "use cache";
 
   const results = await db
@@ -154,12 +157,12 @@ export async function getLineupsPlayers(matchId: string, matchdayId: number) {
         eq(matchdayVotes.matchdayId, leagueMatches.splitMatchdayId)
       )
     )
-    .where(eq(leagueMatches.id, matchId))
+    .where(inArray(leagueMatches.id, matchesIds))
     .orderBy(asc(leagueMatchLineupPlayers.positionOrder));
 
   cacheTag(
     ...getLineupsPlayersTags({
-      matchId,
+      matchesIds,
       matchdayId,
       players: results,
     })
@@ -207,16 +210,16 @@ function getMatchInfoTags({
 }
 
 function getLineupsPlayersTags({
-  matchId,
+  matchesIds,
   matchdayId,
   players,
 }: {
-  matchId: string;
+  matchesIds: string[];
   players: { id: number }[];
   matchdayId: number;
 }) {
   const tags = [
-    getMatchLineupsTag(matchId),
+    ...matchesIds.map((matchId) => getMatchLineupsTag(matchId)),
     getPlayersTag(),
     getPlayerRolesTag(),
     getTeamsTag(),

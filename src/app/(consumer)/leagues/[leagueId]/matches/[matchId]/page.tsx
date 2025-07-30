@@ -47,7 +47,7 @@ async function SuspenseBoundary({
   const [myTeamId, currentMatchday, lineupsPlayers] = await Promise.all([
     getUserTeamId(userId, ids.leagueId),
     getCurrentMatchday(matchInfo.splitMatchday.splitId),
-    getLineupsPlayers(ids.matchId, matchInfo.splitMatchday.id),
+    getLineupsPlayers([ids.matchId], matchInfo.splitMatchday.id),
   ]);
 
   const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({

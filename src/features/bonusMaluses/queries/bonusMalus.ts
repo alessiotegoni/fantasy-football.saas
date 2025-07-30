@@ -7,14 +7,14 @@ import { getBonusMalusTag } from "@/cache/global";
 
 export async function getPlayersMatchdayBonusMaluses({
   matchdayId,
-  playerIds,
+  playersIds,
 }: {
   matchdayId: number;
-  playerIds: number[];
+  playersIds: number[];
 }) {
   "use cache";
 
-  if (!playerIds.length) return [];
+  if (!playersIds.length) return [];
 
   const results = await db
     .select({
@@ -31,7 +31,7 @@ export async function getPlayersMatchdayBonusMaluses({
     .where(
       and(
         eq(matchdayBonusMalus.matchdayId, matchdayId),
-        inArray(matchdayBonusMalus.playerId, playerIds)
+        inArray(matchdayBonusMalus.playerId, playersIds)
       )
     );
 

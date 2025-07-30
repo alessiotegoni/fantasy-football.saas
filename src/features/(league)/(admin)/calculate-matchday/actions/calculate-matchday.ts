@@ -15,11 +15,17 @@ import { createError, createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
 import { updateCalculation } from "../db/calculate-matchday";
 import { deleteMatchesResults } from "@/features/(league)/matches/db/matchResult";
+import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
+import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
+import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
+import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
+import { leagueMatchResults } from "@/drizzle/schema";
 
 enum CALCULATION_MESSAGES {
   CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
   CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
   MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
+  MATCHDAY_MATCHES_NOT_FOUND = "Nella tua lega in questa giornata non ci sono partite disponibili",
   CANCULATION_CANCELLED_SUCCESFULLY = "Giornata cancellata con successo",
 }
 
@@ -33,8 +39,7 @@ export async function calculateMatchday(values: CalculateMatchdaySchema) {
   const permissions = await canCalculateMatchday(data);
   if (permissions.error) return permissions;
 
-  const [] = await Promise.all([getLeague])
-
+  const matchesResults = await calculateMatchesResults(data);
 }
 
 export async function recalculateMatchday(
@@ -67,7 +72,8 @@ export async function cancelCalculation(id: string) {
   const baseValidation = await basePermissions(calculation.leagueId);
   if (baseValidation.error) return baseValidation;
 
-  const matchesIds = await getLeagueMatchesIds(calculation);
+  const matches = await getLeagueMatchdayMatches(calculation);
+  const matchesIds = matches.map((match) => match.id);
 
   await db.transaction(async (tx) => {
     await updateCalculation(calculation, "cancelled", tx);
@@ -80,22 +86,56 @@ export async function cancelCalculation(id: string) {
   );
 }
 
-async function getLeagueMatchesIds({
+async function calculateMatchesResults(data: CalculateMatchdaySchema) {
+  const [{ bonusMalusOptions: leagueCustomBonusMalus }, matches] =
+    await Promise.all([
+      getBonusMalusesOptions(data.leagueId),
+      getLeagueMatchdayMatches(data),
+    ]);
+  if (!matches.length) return;
+
+  const matchesIds = matches.map((match) => match.id);
+  const lineupsPlayers = await getLineupsPlayers(matchesIds, data.matchdayId);
+
+  const playersIds = lineupsPlayers.map((player) => player.id);
+  const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
+    ...data,
+    playersIds,
+  });
+  const players = enrichLineupPlayers({
+    lineupsPlayers,
+    playersBonusMaluses,
+    leagueCustomBonusMalus,
+  });
+
+  const matchesResults: (typeof leagueMatchResults.$inferInsert)[] = [];
+
+  for (const { id, homeTeamId, awayTeamId } of matches) {
+    for (const teamId of [homeTeamId, awayTeamId]) {
+      const teamPlayers = players.filter(
+        (player) => player.leagueTeamId === teamId
+      );
+    }
+  }
+
+  return matchesResults;
+}
+
+async function getLeagueMatchdayMatches({
   leagueId,
   matchdayId,
 }: {
   leagueId: string;
   matchdayId: number;
 }) {
-  const matches = await db.query.leagueMatches.findMany({
-    columns: {
-      id: true,
-    },
+  return db.query.leagueMatches.findMany({
     where: (match, { and, eq }) =>
-      and(eq(match.leagueId, leagueId), eq(match.splitMatchdayId, matchdayId)),
+      and(
+        eq(match.leagueId, leagueId),
+        eq(match.splitMatchdayId, matchdayId),
+        eq(match.isBye, false)
+      ),
   });
-
-  return matches.map((match) => match.id);
 }
 
 async function getCalculation(id: string) {
