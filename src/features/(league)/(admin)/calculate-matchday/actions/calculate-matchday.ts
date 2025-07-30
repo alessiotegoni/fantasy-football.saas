@@ -58,6 +58,23 @@ export async function cancelCalculation(id: string) {
   const matchesIds = await getLeagueMatchesIds(calculation)
 }
 
+async function getLeagueMatchesIds({
+  leagueId,
+  matchdayId,
+}: {
+  leagueId: string;
+  matchdayId: number;
+}) {
+  const matches = await db.query.leagueMatches.findMany({
+    columns: {
+      id: true,
+    },
+    where: (match, { and, eq }) =>
+      and(eq(match.leagueId, leagueId), eq(match.splitMatchdayId, matchdayId)),
+  });
+
+  return matches.map((match) => match.id);
+}
 
 async function getCalculation(id: string) {
   return db.query.leagueMatchdayCalculations.findFirst({
