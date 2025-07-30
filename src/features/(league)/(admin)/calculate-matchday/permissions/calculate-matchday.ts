@@ -16,9 +16,10 @@ enum CALCULATE_ERRORS {
   INVALID_SPLIT = "Puoi calcolare, ricalcolare o annullare solo le giornate dello split attuale",
   INVALID_MATCHDAY = "Puoi calcolare solo la giornata appena conclusa",
   MATCHDAY_NOT_CALCULABLE = "Puoi calcolare la giornata solo dopo la mezzanotte e mezza",
+  MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
 }
 
-async function basePermissions(leagueId: string) {
+export async function basePermissions(leagueId: string) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
@@ -44,9 +45,15 @@ export async function canCalculateMatchday(
   const baseValidation = await basePermissions(leagueId);
   if (baseValidation.error) return baseValidation;
 
-  const lastEndedMatchday = await getLastEndedMatchday(
-    baseValidation.data.splitId
-  );
+  const [lastEndedMatchday, isMatchdayCalculated] = await Promise.all([
+    getLastEndedMatchday(baseValidation.data.splitId),
+    isAlreadyCalculated(leagueId, matchdayId),
+  ]);
+
+  if (isMatchdayCalculated) {
+    return createError(CALCULATE_ERRORS.MATCHDAY_ALREADY_CALCULATED);
+  }
+
   if (lastEndedMatchday?.id !== matchdayId) {
     return createError(CALCULATE_ERRORS.INVALID_MATCHDAY);
   }
@@ -55,13 +62,12 @@ export async function canCalculateMatchday(
     return createError(CALCULATE_ERRORS.MATCHDAY_NOT_CALCULABLE);
   }
 
-  return createSuccess("", null)
+  return createSuccess("", null);
 }
 
-export async function isAlreadyCalculated(
-  leagueId: string,
-  matchdayId: number
-) {
+// TODO: recalculate and cancel permissions functions
+
+async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
   const [res] = await db
     .select({ count: count() })
     .from(leagueMatchdayCalculations)

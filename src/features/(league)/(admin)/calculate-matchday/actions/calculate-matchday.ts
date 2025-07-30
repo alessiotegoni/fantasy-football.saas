@@ -7,6 +7,13 @@ import {
   recalculateMatchdaySchema,
   RecalculateMatchdaySchema,
 } from "../schema/calculate-matchday";
+import { basePermissions } from "../permissions/calculate-matchday";
+import { createError } from "@/lib/helpers";
+import { db } from "@/drizzle/db";
+
+enum MATCHDAY_CALCULATION_MESSAGES {
+  CALCULATION_NOT_FODUND = "Calcolo della giornata non trovato",
+}
 
 export async function calculateMatchday(values: CalculateMatchdaySchema) {
   const { isValid, data, error } = validateSchema<CalculateMatchdaySchema>(
@@ -33,6 +40,5 @@ export async function cancelCalculation(id: string) {
     data: calculationId,
     error,
   } = validateSchema<string>(getUUIdSchema(), id);
-
   if (!isValid) return error;
-}
+
