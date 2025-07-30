@@ -96,6 +96,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
   const matchesIds = matches.map((match) => match.id);
   const lineupsPlayers = await getLineupsPlayers(matchesIds, data.matchdayId);
+  if (!lineupsPlayers.length) return;
 
   const playersIds = lineupsPlayers.map((player) => player.id);
   const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
@@ -121,8 +122,24 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
   return matchesResults;
 }
 
-async function getTeams(params:type) {
 
+function getMatchesTeamsIds(
+  matches: {
+    leagueId: string;
+    id: string;
+    splitMatchdayId: number;
+    homeTeamId: string | null;
+    awayTeamId: string | null;
+    isBye: boolean;
+  }[]
+) {
+  const matchesTeamsIds = new Set(
+    matches.flatMap((match) =>
+      [match.homeTeamId, match.awayTeamId].filter((teamId) => teamId !== null)
+    )
+  );
+
+  return Array.from(matchesTeamsIds);
 }
 
 async function getLeagueMatchdayMatches({
