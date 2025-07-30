@@ -11,8 +11,10 @@ import { basePermissions } from "../permissions/calculate-matchday";
 import { createError } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
 
-enum MATCHDAY_CALCULATION_MESSAGES {
-  CALCULATION_NOT_FODUND = "Calcolo della giornata non trovato",
+enum CALCULATION_MESSAGES {
+  CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
+  CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
+  MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
 }
 
 export async function calculateMatchday(values: CalculateMatchdaySchema) {
@@ -42,3 +44,23 @@ export async function cancelCalculation(id: string) {
   } = validateSchema<string>(getUUIdSchema(), id);
   if (!isValid) return error;
 
+  const calculation = await getCalculation(calculationId);
+  if (!calculation) {
+    return createError(CALCULATION_MESSAGES.CALCULATION_NOT_FOUND);
+  }
+  if (calculation.status !== "calculated") {
+    return createError(CALCULATION_MESSAGES.CALCULATION_ALREADY_CANCELED);
+  }
+
+  const baseValidation = await basePermissions(calculation.leagueId);
+  if (baseValidation.error) return baseValidation;
+
+  const matchesIds = await getLeagueMatchesIds(calculation)
+}
+
+
+async function getCalculation(id: string) {
+  return db.query.leagueMatchdayCalculations.findFirst({
+    where: (calculation, { eq }) => eq(calculation.id, id),
+  });
+}

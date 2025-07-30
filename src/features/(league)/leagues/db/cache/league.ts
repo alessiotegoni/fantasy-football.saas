@@ -53,7 +53,7 @@ export const getLeagueBansTag = (leagueId: string) =>
   getLeagueTag("league-bans", leagueId);
 
 export const getLeagueMatchesResultsTag = (leagueId: string) =>
-  getLeagueTag("match-results", leagueId);
+  getLeagueTag("matches-results", leagueId);
 
 export const revalidateLeagueProfileCache = ({
   leagueId,
