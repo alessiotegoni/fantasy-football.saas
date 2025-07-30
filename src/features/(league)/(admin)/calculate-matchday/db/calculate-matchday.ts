@@ -29,8 +29,7 @@ export async function insertCalculation(
 }
 
 export async function updateCalculation(
-  leagueId: string,
-  matchdayId: number,
+  { leagueId, matchdayId }: { leagueId: string; matchdayId: number },
   status: LeagueMatchdayCalcStatuses,
   tx: Omit<typeof db, "$client"> = db
 ) {
