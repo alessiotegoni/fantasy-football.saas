@@ -26,3 +26,21 @@ export async function insertMatchesResults(
   const matchesIds = results.map((result) => result.leagueMatchId);
   revalidateMatchResultsCache(leagueId, matchesIds);
 }
+
+export async function deleteMatchesResults(
+  { leagueId, matchesIds }: { leagueId: string; matchesIds: string[] },
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [res] = await tx
+    .delete(leagueMatchResults)
+    .where(inArray(leagueMatchResults.leagueMatchId, matchesIds))
+    .returning({ matchId: leagueMatchResults.leagueMatchId });
+
+  if (!res?.matchId) {
+    throw new Error(
+      createError(DB_ERROR_MESSAGES.DELETE_MATCHES_RESULTS).message
+    );
+  }
+
+  revalidateMatchResultsCache(leagueId, matchesIds);
+}
