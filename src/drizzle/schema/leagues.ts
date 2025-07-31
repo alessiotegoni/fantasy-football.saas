@@ -7,7 +7,7 @@ import {
   index,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { leagueOptions } from "./leagueOptions";
+import { leagueSettings } from "./leagueSettings";
 import { leagueUserBans } from "./leagueUserBans";
 import { leagueMatches } from "./leagueMatches";
 import { leagueMatchdayCalculations } from "./leagueMatchdayCalculations";
@@ -57,7 +57,7 @@ export const leaguesRelations = relations(leagues, ({ many, one }) => ({
     fields: [leagues.ownerId],
     references: [authUsers.id],
   }),
-  options: many(leagueOptions),
+  options: many(leagueSettings),
   members: many(leagueMembers),
   usersBans: many(leagueUserBans),
   tradeProposals: many(leagueTradeProposals),

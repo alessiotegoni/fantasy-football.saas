@@ -10,7 +10,7 @@ import { createError, createSuccess } from "@/lib/helpers";
 import { insertLeague, updateLeague } from "../db/league";
 import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
-import { insertLeagueOptions } from "@/features/(league)/settings/db/setting";
+import { insertleagueSettings } from "@/features/(league)/settings/db/setting";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { insertLeagueMember } from "../../members/db/leagueMember";
 import { createLeagueSchema, CreateLeagueSchema } from "../schema/createLeague";
@@ -88,7 +88,7 @@ async function executeLeagueCreation(
       { ownerId: context.user.id, ...context.league },
       tx
     );
-    await insertLeagueOptions({ leagueId }, tx);
+    await insertleagueSettings({ leagueId }, tx);
     return leagueId;
   });
 }

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { bonusMalusSchema, BonusMalusSchema } from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
-import { useLeagueOptions } from "@/hooks/useLeagueOptions";
+import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import { BonusMalusCategoriesType } from "@/drizzle/schema";
 import { BonusMaluses } from "@/components/BonusMaluses";
 import { BonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
@@ -21,7 +21,7 @@ export function BonusMalusSettingsForm({
   bonusMaluses,
   leagueId,
 }: Props) {
-  const { loading, saveBonusMalusOptions } = useLeagueOptions(leagueId);
+  const { loading, saveBonusMalusOptions } = useLeagueSettings(leagueId);
 
   const form = useForm<BonusMalusSchema>({
     resolver: zodResolver(bonusMalusSchema),

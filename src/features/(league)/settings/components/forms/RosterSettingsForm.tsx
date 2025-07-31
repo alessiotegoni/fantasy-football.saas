@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import CheckboxCard from "@/components/ui/checkbox-card";
 import { rosterModulesSchema, RosterModulesSchema } from "../../schema/setting";
-import { useLeagueOptions } from "@/hooks/useLeagueOptions";
+import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import NumberInput from "@/components/ui/number-input";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
@@ -28,7 +28,7 @@ type Props = {
 };
 
 export function RosterSettingsForm(rosterOptions: Props) {
-  const { loading, saveRosterModuleOptions } = useLeagueOptions(
+  const { loading, saveRosterModuleOptions } = useLeagueSettings(
     rosterOptions.leagueId
   );
 

@@ -10,17 +10,17 @@ import {
 } from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
-import { useLeagueOptions } from "@/hooks/useLeagueOptions";
+import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import FormSliderField from "@/components/FormFieldSlider";
 
-export function MarketOptionsForm({
+export function MarketSettingsForm({
   leagueId,
   initialData,
 }: {
   leagueId: string;
   initialData?: MarketOptionsSchema;
 }) {
-  const { loading, saveMarketOptions } = useLeagueOptions(leagueId);
+  const { loading, saveMarketOptions } = useLeagueSettings(leagueId);
 
   const form = useForm<MarketOptionsSchema>({
     resolver: zodResolver(marketOptionsSchema),

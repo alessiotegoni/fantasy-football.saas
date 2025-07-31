@@ -1,4 +1,4 @@
-import { GeneralOptionsForm } from "@/features/(league)/settings/components/forms/GeneralSettingsForm";
+import { GeneralSettingsForm } from "@/features/(league)/settings/components/forms/GeneralSettingsForm";
 import { getGeneralOptions } from "@/features/(league)/settings/queries/setting";
 
 export default async function LeagueCalculationsSettingsPage({
@@ -12,7 +12,7 @@ export default async function LeagueCalculationsSettingsPage({
   return (
     <div className="max-w-[700px] mx-auto">
       <h2 className="hidden md:block text-3xl font-heading mb-8">Generali</h2>
-      <GeneralOptionsForm leagueId={leagueId} initialData={generalOptions} />
+      <GeneralSettingsForm leagueId={leagueId} initialData={generalOptions} />
     </div>
   );
 }

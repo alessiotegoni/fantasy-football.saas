@@ -17,7 +17,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Disclaimer from "@/components/Disclaimer";
 import LeagueOptionLink from "@/features/(league)/settings/components/LeagueSettingLink";
 
-export default async function LeagueOptionsLayout({
+export default async function leagueSettingsLayout({
   children,
   params,
 }: {
@@ -28,7 +28,7 @@ export default async function LeagueOptionsLayout({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Mobile LeagueOptions */}
+      {/* Mobile leagueSettings */}
       <div className="md:hidden">
         <div className="flex items-center mb-4">
           <Link href={`/leagues/${leagueId}`} className="mr-3">
@@ -38,7 +38,7 @@ export default async function LeagueOptionsLayout({
         </div>
         <Carousel>
           <CarouselContent className="my-1">
-            {leagueOptions.map((option) => (
+            {leagueSettings.map((option) => (
               <CarouselItem
                 key={option.id}
                 className="basis-2/5 first:pl-4 pl-2 xs:basis-1/3"
@@ -78,7 +78,7 @@ export default async function LeagueOptionsLayout({
           <div className="p-4">
             <h2 className="text-lg font-heading mb-4">Impostazioni Lega</h2>
             <nav className="space-y-2">
-              {leagueOptions.map((option) => (
+              {leagueSettings.map((option) => (
                 <LeagueOptionLink
                   key={option.id}
                   option={option}
@@ -94,7 +94,7 @@ export default async function LeagueOptionsLayout({
   );
 }
 
-const leagueOptions = [
+const leagueSettings = [
   { id: "general", label: "Generali", icon: Settings },
   { id: "roster", label: "Rose e Moduli", icon: User },
   { id: "bonus", label: "Bonus e Malus", icon: Trophy },

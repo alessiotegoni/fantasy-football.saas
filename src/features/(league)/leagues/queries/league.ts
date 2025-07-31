@@ -50,7 +50,7 @@ export async function getLeaguePlayersPerRole(leagueId: string) {
   "use cache";
   cacheTag(getLeaguePlayersPerRoleTag(leagueId));
 
-  return db.query.leagueOptions
+  return db.query.leagueSettings
     .findFirst({
       columns: {
         playersPerRole: true,
@@ -64,7 +64,7 @@ export async function getLeagueModules(leagueId: string) {
   "use cache";
   cacheTag(getLeagueModulesTag(leagueId));
 
-  return db.query.leagueOptions
+  return db.query.leagueSettings
     .findFirst({
       columns: {
         tacticalModules: true,

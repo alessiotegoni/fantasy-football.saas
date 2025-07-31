@@ -5,7 +5,7 @@ import BackButton from "@/components/BackButton";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueGlobalTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
-import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
+import { leagueMembers, leagueSettings, leagues } from "@/drizzle/schema";
 import { count, eq, sql } from "drizzle-orm";
 import { VirtualizedLeaguesList } from "@/features/(league)/leagues/components/VirtualizedLeagueList";
 import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
@@ -51,15 +51,15 @@ async function getPublicLeagues() {
       id: leagues.id,
       name: leagues.name,
       description: leagues.description,
-      maxMembers: leagueOptions.maxMembers,
+      maxMembers: leagueSettings.maxMembers,
       currentMembers: count(leagueMembers),
     })
     .from(leagues)
-    .leftJoin(leagueOptions, eq(leagueOptions.leagueId, leagues.id))
+    .leftJoin(leagueSettings, eq(leagueSettings.leagueId, leagues.id))
     .leftJoin(leagueMembers, eq(leagueMembers.leagueId, leagues.id))
     .where(eq(leagues.visibility, "public"))
-    .groupBy(leagues.id, leagueOptions.maxMembers)
-    .having(sql`COUNT(${leagueMembers.userId}) < ${leagueOptions.maxMembers}`);
+    .groupBy(leagues.id, leagueSettings.maxMembers)
+    .having(sql`COUNT(${leagueMembers.userId}) < ${leagueSettings.maxMembers}`);
 
   cacheTag(...publicLeagues.map((league) => getLeagueMembersTag(league.id)));
 

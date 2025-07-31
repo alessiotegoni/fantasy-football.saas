@@ -15,7 +15,7 @@ import {
 } from "@/features/(league)/settings/actions/setting";
 import useActionToast from "./useActionToast";
 
-export function useLeagueOptions(leagueId: string) {
+export function useLeagueSettings(leagueId: string) {
   const toast = useActionToast();
 
   const [loading, startTransition] = useTransition();

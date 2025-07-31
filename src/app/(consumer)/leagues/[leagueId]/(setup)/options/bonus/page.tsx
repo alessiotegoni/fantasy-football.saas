@@ -1,4 +1,4 @@
-import { BonusMalusOptionsForm } from "@/features/(league)/settings/components/forms/BonusMalusSettingsForm";
+import { BonusMalusSettingsForm } from "@/features/(league)/settings/components/forms/BonusMalusSettingsForm";
 import { getBonusMalusesOptions } from "@/features/(league)/settings/queries/setting";
 import { getBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 
@@ -18,7 +18,7 @@ export default async function LeagueBonusMalusOptionsPage({
       <h2 className="hidden md:block text-3xl font-heading mb-8">
         Bonus e malus
       </h2>
-      <BonusMalusOptionsForm
+      <BonusMalusSettingsForm
         leagueId={leagueId}
         initialData={{ customBonusMalus }}
         bonusMaluses={bonusMalus}

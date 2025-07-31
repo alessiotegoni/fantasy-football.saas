@@ -1,5 +1,5 @@
 import { db } from "@/drizzle/db";
-import { leagueOptions } from "@/drizzle/schema";
+import { leagueSettings } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   getPlayersRoles,
@@ -317,9 +317,9 @@ async function getTeamsRoleSlotValidation({
 
 export async function isTradeMarketOpen(leagueId: string): Promise<boolean> {
   const [result] = await db
-    .select({ isOpen: leagueOptions.isTradingMarketOpen })
-    .from(leagueOptions)
-    .where(eq(leagueOptions.leagueId, leagueId))
+    .select({ isOpen: leagueSettings.isTradingMarketOpen })
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId))
     .limit(1);
 
   return result?.isOpen ?? false;

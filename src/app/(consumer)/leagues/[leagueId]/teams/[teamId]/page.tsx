@@ -1,5 +1,5 @@
 import { db } from "@/drizzle/db";
-import { leagueOptions } from "@/drizzle/schema";
+import { leagueSettings } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -132,9 +132,9 @@ function TeamPlayersEmptyState({ leagueId }: Pick<Props, "leagueId">) {
 
 async function getLeagueReleasePercentage(leagueId: string) {
   const [res] = await db
-    .select({ releasePercentage: leagueOptions.releasePercentage })
-    .from(leagueOptions)
-    .where(eq(leagueOptions.leagueId, leagueId));
+    .select({ releasePercentage: leagueSettings.releasePercentage })
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
 
   return res.releasePercentage;
 }

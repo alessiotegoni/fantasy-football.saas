@@ -5,13 +5,13 @@ import Disclaimer from "@/components/Disclaimer";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueIdTag } from "@/features/(league)/leagues/db/cache/league";
 import { db } from "@/drizzle/db";
-import { leagueMembers, leagueOptions, leagues } from "@/drizzle/schema";
+import { leagueMembers, leagueSettings, leagues } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import ActionButton from "@/components/ActionButton";
 import { authUsers } from "drizzle-orm/supabase";
 import { Suspense } from "react";
 import LeagueModules from "@/features/(league)/leagues/components/LeagueModules";
-import { getLeagueOptionsTag } from "@/features/(league)/settings/db/cache/setting";
+import { getleagueSettingsTag } from "@/features/(league)/settings/db/cache/setting";
 import LeaguePlayersPerRole from "@/features/(league)/leagues/components/LeaguePlayersPerRole";
 import { Trophy } from "iconoir-react";
 import Avatar from "@/components/Avatar";
@@ -154,7 +154,7 @@ async function getPublicLeague(leagueId: string) {
   cacheTag(
     getLeagueIdTag(leagueId),
     getLeagueMembersTag(leagueId),
-    getLeagueOptionsTag(leagueId)
+    getleagueSettingsTag(leagueId)
   );
 
   const [league] = await db
@@ -163,21 +163,21 @@ async function getPublicLeague(leagueId: string) {
       name: leagues.name,
       description: leagues.description,
       imageUrl: leagues.imageUrl,
-      maxMembers: leagueOptions.maxMembers,
+      maxMembers: leagueSettings.maxMembers,
       currentMembers: count(leagueMembers),
       createdAt: leagues.createdAt,
-      initialCredits: leagueOptions.initialCredits,
+      initialCredits: leagueSettings.initialCredits,
       creatorName: authUsers.email,
     })
     .from(leagues)
-    .leftJoin(leagueOptions, eq(leagueOptions.leagueId, leagues.id))
+    .leftJoin(leagueSettings, eq(leagueSettings.leagueId, leagues.id))
     .leftJoin(leagueMembers, eq(leagueMembers.leagueId, leagues.id))
     .leftJoin(authUsers, eq(authUsers.id, leagueMembers.userId))
     .where(and(eq(leagues.id, leagueId), eq(leagues.visibility, "public")))
     .groupBy(
       leagues.id,
-      leagueOptions.maxMembers,
-      leagueOptions.initialCredits,
+      leagueSettings.maxMembers,
+      leagueSettings.initialCredits,
       authUsers.email
     );
 

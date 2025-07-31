@@ -1,10 +1,5 @@
-import { db } from "@/drizzle/db";
-import { MarketOptionsForm } from "@/features/(league)/settings/components/forms/MarketSettingsForm";
-import {
-  getLeagueMarketOptionsTag,
-  getLeagueOptionsTag,
-} from "@/features/(league)/settings/db/cache/setting";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { MarketSettingsForm } from "@/features/(league)/settings/components/forms/MarketSettingsForm";
+import { getMarketOptions } from "@/features/(league)/settings/queries/setting";
 
 export default async function LeagueMarketOptionsPage({
   params,
@@ -19,22 +14,7 @@ export default async function LeagueMarketOptionsPage({
   return (
     <div className="max-w-[700px] mx-auto">
       <h2 className="hidden md:block text-3xl font-heading mb-8">Mercato</h2>
-      <MarketOptionsForm leagueId={leagueId} initialData={marketOptions} />
+      <MarketSettingsForm leagueId={leagueId} initialData={marketOptions} />
     </div>
   );
-}
-
-async function getMarketOptions(leagueId: string) {
-  "use cache";
-  cacheTag(getLeagueOptionsTag(leagueId), getLeagueMarketOptionsTag(leagueId));
-
-  const marketOptions = await db.query.leagueOptions.findFirst({
-    columns: {
-      releasePercentage: true,
-      isTradingMarketOpen: true,
-    },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
-  });
-
-  return marketOptions;
 }

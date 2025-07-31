@@ -17,8 +17,8 @@ export type GoalThresholdSettings = {
   interval: number;
 };
 
-export const leagueOptions = pgTable(
-  "league_options",
+export const leagueSettings = pgTable(
+  "league_settings",
   {
     leagueId: uuid("league_id")
       .primaryKey()
@@ -54,16 +54,16 @@ export const leagueOptions = pgTable(
       "leagues_initialCredits_check",
       sql`(initial_credits >= 200) and (initial_credits <= 5000)`
     ),
-    leagueOptionsMaxMembersCheck: check(
+    leagueSettingsMaxMembersCheck: check(
       "league_options_max_members_check",
       sql`(max_members >= 4) and (max_members <= 12)`
     ),
   })
 );
 
-export const leagueOptionsRelations = relations(leagueOptions, ({ one }) => ({
+export const leagueSettingsRelations = relations(leagueSettings, ({ one }) => ({
   league: one(leagues, {
-    fields: [leagueOptions.leagueId],
+    fields: [leagueSettings.leagueId],
     references: [leagues.id],
   }),
 }));

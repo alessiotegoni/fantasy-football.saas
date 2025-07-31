@@ -8,7 +8,7 @@ import {
   generalOptionsSchema,
 } from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
-import { useLeagueOptions } from "@/hooks/useLeagueOptions";
+import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import FormSliderField from "@/components/FormFieldSlider";
 
 export function GeneralSettingsForm({
@@ -18,7 +18,7 @@ export function GeneralSettingsForm({
   leagueId: string;
   initialData?: GeneralOptionsSchema;
 }) {
-  const { loading, saveGeneralOptions } = useLeagueOptions(leagueId);
+  const { loading, saveGeneralOptions } = useLeagueSettings(leagueId);
 
   const form = useForm<GeneralOptionsSchema>({
     resolver: zodResolver(generalOptionsSchema),

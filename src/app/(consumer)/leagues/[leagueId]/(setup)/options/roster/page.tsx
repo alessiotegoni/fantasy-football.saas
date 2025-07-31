@@ -1,13 +1,10 @@
-import { db } from "@/drizzle/db";
 import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
-import { RosterOptionsForm } from "@/features/(league)/settings/components/forms/RosterSettingsForm";
+import { RosterSettingsForm } from "@/features/(league)/settings/components/forms/RosterSettingsForm";
 import {
-  getLeagueOptionsTag,
-  getLeagueRosterOptionsTag,
-} from "@/features/(league)/settings/db/cache/setting";
-import { getTacticalModules } from "@/features/(league)/settings/queries/setting";
+  getRosterOptions,
+  getTacticalModules,
+} from "@/features/(league)/settings/queries/setting";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function LeagueRosterOptionsPage({
   params,
@@ -24,7 +21,7 @@ export default async function LeagueRosterOptionsPage({
       <h2 className="hidden md:block text-3xl font-heading mb-8">
         Rose e moduli
       </h2>
-      <RosterOptionsForm
+      <RosterSettingsForm
         leagueId={leagueId}
         initialData={rosterOptions}
         tacticalModulesPromise={getTacticalModules()}
@@ -38,19 +35,4 @@ async function getRolesWithoutPresident() {
   return getPlayersRoles().then((roles) =>
     roles.filter((role) => role.id !== PRESIDENT_ROLE_ID)
   );
-}
-
-async function getRosterOptions(leagueId: string) {
-  "use cache";
-  cacheTag(getLeagueOptionsTag(leagueId), getLeagueRosterOptionsTag(leagueId));
-
-  const rosterOptions = await db.query.leagueOptions.findFirst({
-    columns: {
-      tacticalModules: true,
-      playersPerRole: true,
-    },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
-  });
-
-  return rosterOptions;
 }

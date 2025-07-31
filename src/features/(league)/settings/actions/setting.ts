@@ -1,7 +1,7 @@
 "use server";
 
-import { leagueOptions } from "@/drizzle/schema";
-import { updateLeagueOptions as updateLeagueOptionsDb } from "../db/setting";
+import { leagueSettings } from "@/drizzle/schema";
+import { updateleagueSettings as updateleagueSettingsDb } from "../db/setting";
 import {
   bonusMalusSchema,
   BonusMalusSchema,
@@ -79,7 +79,7 @@ export async function updateMarketOptions(
   return await updateOptions({ ...data, leagueId });
 }
 
-async function updateOptions(options: typeof leagueOptions.$inferInsert) {
+async function updateOptions(options: typeof leagueSettings.$inferInsert) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
@@ -90,7 +90,7 @@ async function updateOptions(options: typeof leagueOptions.$inferInsert) {
   const visibility = await getLeagueVisibility(options.leagueId);
   if (!visibility) return createError(LEAGUE_OPTIONS_MESSAGES.LEAGUE_NOT_FOUND);
 
-  const leagueId = await updateLeagueOptionsDb(options, visibility);
+  const leagueId = await updateleagueSettingsDb(options, visibility);
   if (!leagueId) return createError(LEAGUE_OPTIONS_MESSAGES.LEAGUE_NOT_FOUND);
 
   return createSuccess("Opzioni aggiornate con successo", null);

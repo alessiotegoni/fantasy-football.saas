@@ -1,8 +1,8 @@
 import { db } from "@/drizzle/db";
-import { leagueOptions, LeagueVisibilityStatusType } from "@/drizzle/schema";
+import { leagueSettings, LeagueVisibilityStatusType } from "@/drizzle/schema";
 import {} from "@/lib/utils";
 import { eq } from "drizzle-orm";
-import { revalidateLeagueOptionsCache } from "./cache/setting";
+import { revalidateleagueSettingsCache } from "./cache/setting";
 import { createError } from "@/lib/helpers";
 
 enum DB_ERROR_MESSAGES {
@@ -10,36 +10,36 @@ enum DB_ERROR_MESSAGES {
   UPDATE = "Errore nell'aggiornamento delle opzioni della lega",
 }
 
-export async function insertLeagueOptions(
-  { leagueId }: typeof leagueOptions.$inferInsert,
+export async function insertleagueSettings(
+  { leagueId }: typeof leagueSettings.$inferInsert,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
-    .insert(leagueOptions)
+    .insert(leagueSettings)
     .values({ leagueId })
-    .returning({ leagueId: leagueOptions.leagueId });
+    .returning({ leagueId: leagueSettings.leagueId });
 
   if (!res.leagueId) {
     throw new Error(createError(DB_ERROR_MESSAGES.INSERT).message);
   }
 }
 
-export async function updateLeagueOptions(
-  { leagueId, ...options }: typeof leagueOptions.$inferInsert,
+export async function updateleagueSettings(
+  { leagueId, ...options }: typeof leagueSettings.$inferInsert,
   visibility: LeagueVisibilityStatusType,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
-    .update(leagueOptions)
+    .update(leagueSettings)
     .set(options)
-    .where(eq(leagueOptions.leagueId, leagueId))
-    .returning({ leagueId: leagueOptions.leagueId });
+    .where(eq(leagueSettings.leagueId, leagueId))
+    .returning({ leagueId: leagueSettings.leagueId });
 
   if (!res.leagueId) {
     throw new Error(createError(DB_ERROR_MESSAGES.UPDATE).message);
   }
 
-  revalidateLeagueOptionsCache({ leagueId: res.leagueId, visibility });
+  revalidateleagueSettingsCache({ leagueId: res.leagueId, visibility });
 
   return res.leagueId;
 }

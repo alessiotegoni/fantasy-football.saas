@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import {
   leagueMembers,
-  leagueOptions,
+  leagueSettings,
   leagues,
   userSubscriptions,
 } from "@/drizzle/schema";
@@ -109,13 +109,13 @@ async function isLeagueFull(leagueId: string) {
   const [result] = await db
     .select({
       leagueMembersCount: count(leagueMembers),
-      maxMembers: leagueOptions.maxMembers,
+      maxMembers: leagueSettings.maxMembers,
     })
     .from(leagues)
-    .innerJoin(leagueOptions, eq(leagueOptions.leagueId, leagues.id))
+    .innerJoin(leagueSettings, eq(leagueSettings.leagueId, leagues.id))
     .innerJoin(leagueMembers, eq(leagueMembers.leagueId, leagues.id))
     .where(eq(leagues.id, leagueId))
-    .groupBy(leagueOptions.maxMembers);
+    .groupBy(leagueSettings.maxMembers);
 
   return result.leagueMembersCount === result.maxMembers;
 }

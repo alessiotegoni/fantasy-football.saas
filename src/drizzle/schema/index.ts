@@ -9,7 +9,7 @@ export * from "./matchdayVotes";
 export * from "./bonusMalusTypes";
 export * from "./matchdayBonusMalus";
 export * from "./leagues";
-export * from "./leagueOptions";
+export * from "./leagueSettings";
 export * from "./leagueMembers";
 export * from "./leagueMemberTeams";
 export * from "./leagueMemberTeamPlayers";
