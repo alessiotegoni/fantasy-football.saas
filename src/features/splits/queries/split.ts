@@ -13,12 +13,6 @@ export async function getSplits() {
 
 export type Split = typeof splits.$inferSelect;
 
-export async function getLastSplit() {
-  const splits = await getSplits();
-
-  return splits.at(-1);
-}
-
 export async function getUpcomingSplit() {
   const splits = await getSplits();
 

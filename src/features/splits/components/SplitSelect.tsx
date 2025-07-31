@@ -9,25 +9,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Split } from "@/features/splits/queries/split";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function SplitSelect({ splits }: { splits: Split[] }) {
+export default function SplitSelect({
+  splits,
+  defaultSplit,
+}: {
+  splits: Split[];
+  defaultSplit?: Split;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
-  const currentSplitId = searchParams.get("splitId");
+  const defaultSplitId = defaultSplit?.id.toString();
 
   function handleChange(splitId: string) {
-    if (currentSplitId === splitId) return;
+    if (defaultSplitId === splitId) return;
 
     router.replace(`?splitId=${splitId}`);
   }
 
   return (
-    <Select
-      onValueChange={handleChange}
-      defaultValue={currentSplitId ?? undefined}
-    >
+    <Select onValueChange={handleChange} defaultValue={defaultSplitId}>
       <SelectTrigger className="w-[140px]">
         <SelectValue placeholder="Seleziona split" />
       </SelectTrigger>
