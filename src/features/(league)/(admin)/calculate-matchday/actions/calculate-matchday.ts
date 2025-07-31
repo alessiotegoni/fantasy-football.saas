@@ -91,7 +91,11 @@ export async function recalculateMatchday(
   const matchesResults = await calculateMatchesResults(data);
 
   await db.transaction(async (tx) => {
-    await updateCalculation(calculation!, "calculated", tx);
+    await updateCalculation(
+      calculation!,
+      { status: "calculated", calculatedAt: new Date() },
+      tx
+    );
     if (matchesResults.length) {
       await insertMatchesResults(data.leagueId, matchesResults, tx);
     }
@@ -123,7 +127,7 @@ export async function cancelCalculation(values: CancelCalculationSchema) {
   const matchesIds = matches.map((match) => match.id);
 
   await db.transaction(async (tx) => {
-    await updateCalculation(calculation!, "cancelled", tx);
+    await updateCalculation(calculation!, { status: "cancelled" }, tx);
     await deleteMatchesResults({ ...calculation!, matchesIds }, tx);
   });
 

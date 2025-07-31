@@ -30,12 +30,12 @@ export async function insertCalculation(
 
 export async function updateCalculation(
   { leagueId, matchdayId }: { leagueId: string; matchdayId: number },
-  status: LeagueMatchdayCalcStatuses,
+  calculation: Partial<typeof leagueMatchdayCalculations.$inferInsert>,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
     .update(leagueMatchdayCalculations)
-    .set({ status })
+    .set(calculation)
     .where(
       and(
         eq(leagueMatchdayCalculations.leagueId, leagueId),
