@@ -26,13 +26,15 @@ export async function getGeneralSettings(leagueId: string) {
     getLeagueGeneralSettingsTag(leagueId)
   );
 
-  return db.query.leagueSettings.findFirst({
-    columns: {
-      initialCredits: true,
-      maxMembers: true,
-    },
-    where: (settings, { eq }) => eq(settings.leagueId, leagueId),
-  });
+  const [result] = await db
+    .select({
+      initialCredits: leagueSettings.initialCredits,
+      maxMembers: leagueSettings.maxMembers,
+    })
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
+
+  return result;
 }
 
 export async function getRosterSettings(leagueId: string) {
