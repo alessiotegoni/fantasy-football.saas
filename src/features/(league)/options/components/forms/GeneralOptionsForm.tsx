@@ -24,7 +24,7 @@ export function GeneralOptionsForm({
     resolver: zodResolver(generalOptionsSchema),
     defaultValues: initialData ?? {
       initialCredits: 500,
-      maxMembers: 20,
+      maxMembers: 12,
     },
   });
 
@@ -51,7 +51,7 @@ export function GeneralOptionsForm({
           tip="Numero massimo di partecipanti che possono unirsi alla
                         lega"
           min={4}
-          max={20}
+          max={12}
           step={1}
           unit="membri"
         />

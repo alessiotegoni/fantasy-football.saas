@@ -9,7 +9,7 @@ export const generalOptionsSchema = z.object({
   maxMembers: z
     .number()
     .min(4, "Il numero minimo di membri è 4")
-    .max(20, "Il numero massimo di membri è 20"),
+    .max(12, "Il numero massimo di membri è 12"),
 });
 
 // Schema per le rose e moduli
