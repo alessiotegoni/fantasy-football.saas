@@ -1,27 +1,20 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import SplitSelect from "@/features/splits/components/SplitSelect";
-import { getSplits } from "@/features/splits/queries/split";
+import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
+import { Suspense } from "react";
 
 export default async function LeagueStandingPage({
   params,
   searchParams,
 }: {
   params: Promise<{ leagueId: string }>;
-  searchParams: Promise<{ splitId?: number }>;
+  searchParams: Promise<{ splitId?: string }>;
 }) {
-  const [splits, { leagueId }, { splitId }] = await Promise.all([
-    getSplits(),
-    params,
-    searchParams,
-  ]);
+  const [splits, { leagueId }] = await Promise.all([getSplits(), params]);
 
-  let selectedSplit = splits.at(-1);
-
-  if (splitId && validateSerialId(splitId).success) {
-    selectedSplit = splits.find((split) => split.id === splitId);
-  }
+  const lastSplit = splits.at(-1);
 
   return (
     <Container
@@ -29,17 +22,46 @@ export default async function LeagueStandingPage({
       headerLabel="Classifica"
       className="max-w-[700px]"
       renderHeaderRight={() => (
-        <SplitSelect splits={splits} defaultSplit={selectedSplit} />
+        <SplitSelect splits={splits} defaultSplit={lastSplit} />
       )}
     >
-      {selectedSplit ? (
-        <></>
-      ) : (
-        <EmptyState
-          title="Classifica non disponibile"
-          description="La classifica sara disponibile quando lo split verra annunciato, la prima giornata sara finita e tu la avrai calcolata"
+      <Suspense>
+        <SuspenseBoundary
+          leagueId={leagueId}
+          selectedSplitPromise={searchParams.then((sp) => sp.splitId)}
+          splits={splits}
+          lastSplit={lastSplit}
         />
-      )}
+      </Suspense>
     </Container>
   );
+}
+
+async function SuspenseBoundary({
+  leagueId,
+  selectedSplitPromise,
+  splits,
+  lastSplit,
+}: {
+  leagueId: string;
+  selectedSplitPromise: Promise<string | undefined>;
+  splits: Split[];
+  lastSplit?: Split;
+}) {
+  let selectedSplit = lastSplit;
+
+  const selectedSplitId = parseInt((await selectedSplitPromise) ?? "0");
+
+  if (selectedSplitId && validateSerialId(selectedSplitId).success) {
+    selectedSplit = splits.find((split) => split.id === selectedSplitId);
+  }
+
+  if (!selectedSplit) {
+    return (
+      <EmptyState
+        title="Classifica non disponibile"
+        description="La classifica sara disponibile quando lo split sara' annunciato ed avrai calcolato la prima giornata"
+      />
+    );
+  }
 }
