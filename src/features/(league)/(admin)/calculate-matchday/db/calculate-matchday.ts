@@ -1,8 +1,5 @@
 import { db } from "@/drizzle/db";
-import {
-  leagueMatchdayCalculations,
-  type LeagueMatchdayCalcStatuses,
-} from "@/drizzle/schema/leagueMatchdayCalculations";
+import { leagueMatchdayCalculations } from "@/drizzle/schema/leagueMatchdayCalculations";
 import { createError } from "@/lib/helpers";
 import { and, eq } from "drizzle-orm";
 import { revalidateLeagueCalculationsCache } from "./cache/calculate-matchday";
