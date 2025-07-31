@@ -42,15 +42,15 @@ export async function getRosterSettings(leagueId: string) {
     getLeagueRosterSettingsTag(leagueId)
   );
 
-  const rosterSettings = await db.query.leagueSettings.findFirst({
-    columns: {
-      tacticalModules: true,
-      playersPerRole: true,
-    },
-    where: (settings, { eq }) => eq(settings.leagueId, leagueId),
-  });
+  const [result] = await db
+    .select({
+      tacticalModules: leagueSettings.tacticalModules,
+      playersPerRole: leagueSettings.playersPerRole,
+    })
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
 
-  return rosterSettings;
+  return result;
 }
 
 export async function getBonusMalusesSettings(leagueId: string) {

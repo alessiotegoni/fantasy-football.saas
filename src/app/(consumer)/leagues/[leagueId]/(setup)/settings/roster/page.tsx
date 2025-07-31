@@ -14,7 +14,6 @@ export default async function LeagueRosterSettingsPage({
   const { leagueId } = await params;
 
   const rosterSettings = await getRosterSettings(leagueId);
-  if (!rosterSettings) return;
 
   return (
     <div className="max-w-[700px] mx-auto">
