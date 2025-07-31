@@ -1,7 +1,7 @@
 import { getLeagueTag } from "@/cache/helpers";
 import { revalidateTag } from "next/cache";
 
-export type CALENDAR_TAG = "league-calendar";
+export type LEAGUE_CALENDAR_TAG = "league-calendar";
 
 export const getLeagueCalendarTag = (leagueId: string) =>
   getLeagueTag("league-calendar", leagueId);

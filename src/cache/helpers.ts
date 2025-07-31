@@ -7,11 +7,12 @@ import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueM
 import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trade";
-import { CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/calendar";
+import { LEAGUE_CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/calendar";
 import { MATCHDAY_VOTE_TAG } from "@/features/votes/db/cache/vote";
 import { MATCHDAY_BONUS_MALUS_TAG } from "@/features/bonusMaluses/db/cache/bonusMalus";
 import { CALCULATIONS_TAG } from "@/features/(league)/(admin)/calculate-matchday/db/cache/calculate-matchday";
 import { LEAGUE_SETTINGS_TAG } from "@/features/(league)/settings/db/cache/setting";
+import { LEAGUE_STANDING_TAG } from "@/features/(league)/standing/db/cache/standing";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
@@ -19,7 +20,8 @@ export type CACHE_TAG =
   | LEAGUE_TAG
   | LEAGUE_SETTINGS_TAG
   | LEAGUE_MEMBERS_TAG
-  | CALENDAR_TAG
+  | LEAGUE_STANDING_TAG
+  | LEAGUE_CALENDAR_TAG
   | TRADES_TAG
   | TEAM_TAG
   | TEAM_PLAYERS_TAG
