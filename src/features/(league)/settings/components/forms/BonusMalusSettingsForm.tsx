@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-import { bonusMalusSchema, BonusMalusSchema } from "../../schema/leagueOptions";
+import { bonusMalusSchema, BonusMalusSchema } from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";
 import { BonusMalusCategoriesType } from "@/drizzle/schema";
@@ -16,7 +16,7 @@ type Props = {
   leagueId: string;
 };
 
-export function BonusMalusOptionsForm({
+export function BonusMalusSettingsForm({
   initialData,
   bonusMaluses,
   leagueId,

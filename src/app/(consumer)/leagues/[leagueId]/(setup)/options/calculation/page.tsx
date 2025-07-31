@@ -1,7 +1,7 @@
 import { GeneralOptionsForm } from "@/features/(league)/settings/components/forms/GeneralSettingsForm";
 import { getGeneralOptions } from "@/features/(league)/settings/queries/setting";
 
-export default async function LeagueGeneralOptionsPage({
+export default async function LeagueCalculationsSettingsPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;

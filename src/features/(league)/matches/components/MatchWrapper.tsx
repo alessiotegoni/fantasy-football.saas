@@ -7,7 +7,7 @@ import StarterLineups from "./StarterLineups";
 import BenchLineup from "./BenchLineup";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import ModulesSelect from "./ModulesSelect";
-import { getTacticalModules } from "../../options/queries/leagueOptions";
+import { getTacticalModules } from "../../settings/queries/setting";
 import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";

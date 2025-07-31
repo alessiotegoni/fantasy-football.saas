@@ -1,13 +1,13 @@
-import { getBonusMalusTag, getTacticalModulesTag } from "@/cache/global";
+import { getTacticalModulesTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import {
-  getLeagueBonusMalusOptionsTag,
-  getLeagueGeneralOptionsTag,
-  getLeagueOptionsTag,
-} from "../db/cache/leagueOption";
 import { leagueOptions } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
+import {
+  getLeagueBonusMalusSettingsTag,
+  getLeagueGeneralSettingsTag,
+  getLeagueSettingsTag,
+} from "../db/cache/setting";
 
 export async function getTacticalModules() {
   "use cache";
@@ -18,7 +18,10 @@ export async function getTacticalModules() {
 
 export async function getGeneralOptions(leagueId: string) {
   "use cache";
-  cacheTag(getLeagueOptionsTag(leagueId), getLeagueGeneralOptionsTag(leagueId));
+  cacheTag(
+    getLeagueSettingsTag(leagueId),
+    getLeagueGeneralSettingsTag(leagueId)
+  );
 
   return db.query.leagueOptions.findFirst({
     columns: {
@@ -32,8 +35,8 @@ export async function getGeneralOptions(leagueId: string) {
 export async function getBonusMalusesOptions(leagueId: string) {
   "use cache";
   cacheTag(
-    getLeagueOptionsTag(leagueId),
-    getLeagueBonusMalusOptionsTag(leagueId)
+    getLeagueSettingsTag(leagueId),
+    getLeagueBonusMalusSettingsTag(leagueId)
   );
 
   const [result] = await db

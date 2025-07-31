@@ -6,12 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   type GeneralOptionsSchema,
   generalOptionsSchema,
-} from "../../schema/leagueOptions";
+} from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";
 import FormSliderField from "@/components/FormFieldSlider";
 
-export function GeneralOptionsForm({
+export function GeneralSettingsForm({
   leagueId,
   initialData,
 }: {

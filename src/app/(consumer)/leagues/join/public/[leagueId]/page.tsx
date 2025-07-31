@@ -11,14 +11,14 @@ import ActionButton from "@/components/ActionButton";
 import { authUsers } from "drizzle-orm/supabase";
 import { Suspense } from "react";
 import LeagueModules from "@/features/(league)/leagues/components/LeagueModules";
-import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
+import { getLeagueOptionsTag } from "@/features/(league)/settings/db/cache/setting";
 import LeaguePlayersPerRole from "@/features/(league)/leagues/components/LeaguePlayersPerRole";
 import { Trophy } from "iconoir-react";
 import Avatar from "@/components/Avatar";
 import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
 import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMember";
 import { getLeagueModules } from "@/features/(league)/leagues/queries/league";
-import { getTacticalModules } from "@/features/(league)/options/queries/leagueOptions";
+import { getTacticalModules } from "@/features/(league)/settings/queries/setting";
 
 export default async function LeagueDetailPage({
   params,

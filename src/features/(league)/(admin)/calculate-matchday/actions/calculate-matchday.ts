@@ -20,7 +20,7 @@ import {
   deleteMatchesResults,
   insertMatchesResults,
 } from "@/features/(league)/matches/db/matchResult";
-import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
+import { getBonusMalusesOptions } from "@/features/(league)/settings/queries/setting";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 import {

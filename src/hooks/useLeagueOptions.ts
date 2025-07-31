@@ -6,13 +6,13 @@ import {
   GeneralOptionsSchema,
   MarketOptionsSchema,
   RosterModulesSchema,
-} from "@/features/(league)/options/schema/leagueOptions";
+} from "@/features/(league)/settings/schema/setting";
 import {
   updateBonusMalusOptions,
   updateGeneralOptions,
   updateMarketOptions,
   updateRosterModuleOptions,
-} from "@/features/(league)/options/actions/leagueOptions";
+} from "@/features/(league)/settings/actions/setting";
 import useActionToast from "./useActionToast";
 
 export function useLeagueOptions(leagueId: string) {

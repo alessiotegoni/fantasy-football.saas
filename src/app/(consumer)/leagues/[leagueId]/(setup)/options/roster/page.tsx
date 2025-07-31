@@ -1,11 +1,11 @@
 import { db } from "@/drizzle/db";
 import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
-import { RosterOptionsForm } from "@/features/(league)/options/components/forms/RosterOptionForm";
+import { RosterOptionsForm } from "@/features/(league)/settings/components/forms/RosterSettingsForm";
 import {
   getLeagueOptionsTag,
   getLeagueRosterOptionsTag,
-} from "@/features/(league)/options/db/cache/leagueOption";
-import { getTacticalModules } from "@/features/(league)/options/queries/leagueOptions";
+} from "@/features/(league)/settings/db/cache/setting";
+import { getTacticalModules } from "@/features/(league)/settings/queries/setting";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 

@@ -16,7 +16,7 @@ type Props = {
   className?: string;
 };
 
-export default function LeagueOptionLink({
+export default function LeagueSettingLink({
   option,
   leagueId,
   className,

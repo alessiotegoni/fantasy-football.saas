@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { leagueOptions, LeagueVisibilityStatusType } from "@/drizzle/schema";
 import {} from "@/lib/utils";
 import { eq } from "drizzle-orm";
-import { revalidateLeagueOptionsCache } from "./cache/leagueOption";
+import { revalidateLeagueOptionsCache } from "./cache/setting";
 import { createError } from "@/lib/helpers";
 
 enum DB_ERROR_MESSAGES {

@@ -3,7 +3,7 @@ import TeamsCreditsProvider from "@/contexts/TeamsCreditsProvider";
 import LeagueTeamCardWithCredits from "@/features/(league)/(admin)/handle-credits/components/LeagueTeamCardWithCredits";
 import ResetCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/ResetCreditsDialog";
 import UpdateCreditsButton from "@/features/(league)/(admin)/handle-credits/components/UpdateCreditsButton";
-import { getGeneralOptions } from "@/features/(league)/options/queries/leagueOptions";
+import { getGeneralOptions } from "@/features/(league)/settings/queries/setting";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { Suspense } from "react";
 

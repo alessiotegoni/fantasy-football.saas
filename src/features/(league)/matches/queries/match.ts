@@ -21,7 +21,7 @@ import {
   getMatchLineupsTag,
   getMatchResultsTag,
 } from "@/features/(league)/matches/db/cache/match";
-import { getLeagueOptionsTag } from "@/features/(league)/options/db/cache/leagueOption";
+import { getLeagueOptionsTag } from "@/features/(league)/settings/db/cache/setting";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";

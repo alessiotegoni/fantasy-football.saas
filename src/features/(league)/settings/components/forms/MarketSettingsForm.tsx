@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   type MarketOptionsSchema,
   marketOptionsSchema,
-} from "../../schema/leagueOptions";
+} from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
 import { useLeagueOptions } from "@/hooks/useLeagueOptions";

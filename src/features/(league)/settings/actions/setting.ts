@@ -1,7 +1,7 @@
 "use server";
 
 import { leagueOptions } from "@/drizzle/schema";
-import { updateLeagueOptions as updateLeagueOptionsDb } from "../db/leagueOptions";
+import { updateLeagueOptions as updateLeagueOptionsDb } from "../db/setting";
 import {
   bonusMalusSchema,
   BonusMalusSchema,
@@ -11,10 +11,10 @@ import {
   MarketOptionsSchema,
   rosterModulesSchema,
   RosterModulesSchema,
-} from "../schema/leagueOptions";
+} from "../schema/setting";
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
-import { revalidateLeagueRosterOptionsCache } from "../db/cache/leagueOption";
+import { revalidateLeagueRosterOptionsCache } from "../db/cache/setting";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/lib/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";

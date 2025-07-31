@@ -9,7 +9,7 @@ import {
   getLeagueGeneralOptionsTag,
   getLeagueModulesTag,
   getLeaguePlayersPerRoleTag,
-} from "@/features/(league)/options/db/cache/leagueOption";
+} from "@/features/(league)/settings/db/cache/setting";
 import { db } from "@/drizzle/db";
 import { getMemberIdTag } from "../../members/db/cache/leagueMember";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";

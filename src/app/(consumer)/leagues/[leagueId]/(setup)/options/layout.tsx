@@ -1,5 +1,12 @@
 import type React from "react";
-import { Settings, User, Trophy, ArrowLeft, Suitcase } from "iconoir-react";
+import {
+  Settings,
+  User,
+  Trophy,
+  ArrowLeft,
+  Suitcase,
+  Calculator,
+} from "iconoir-react";
 import Link from "next/link";
 import {
   Carousel,
@@ -8,7 +15,7 @@ import {
 } from "@/components/ui/carousel";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Disclaimer from "@/components/Disclaimer";
-import LeagueOptionLink from "@/features/(league)/options/components/LeagueOptionLink";
+import LeagueOptionLink from "@/features/(league)/settings/components/LeagueSettingLink";
 
 export default async function LeagueOptionsLayout({
   children,
@@ -64,8 +71,10 @@ export default async function LeagueOptionsLayout({
             <Disclaimer />
           </TooltipProvider>
         </div>
-        <aside className="sticky top-0 w-64 border-r border-border
-        rounded-2xl bg-(--sidebar)">
+        <aside
+          className="sticky top-0 w-64 border-r border-border
+        rounded-2xl bg-(--sidebar)"
+        >
           <div className="p-4">
             <h2 className="text-lg font-heading mb-4">Impostazioni Lega</h2>
             <nav className="space-y-2">
@@ -89,6 +98,7 @@ const leagueOptions = [
   { id: "general", label: "Generali", icon: Settings },
   { id: "roster", label: "Rose e Moduli", icon: User },
   { id: "bonus", label: "Bonus e Malus", icon: Trophy },
+  { id: "calculation", label: "Calcolo", icon: Calculator },
   { id: "market", label: "Mercato", icon: Suitcase },
 ];
 

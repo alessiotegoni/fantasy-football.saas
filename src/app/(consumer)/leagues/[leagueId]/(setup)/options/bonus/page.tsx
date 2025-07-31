@@ -1,5 +1,5 @@
-import { BonusMalusOptionsForm } from "@/features/(league)/options/components/forms/BonusMalusOptionsForm";
-import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leagueOptions";
+import { BonusMalusOptionsForm } from "@/features/(league)/settings/components/forms/BonusMalusSettingsForm";
+import { getBonusMalusesOptions } from "@/features/(league)/settings/queries/setting";
 import { getBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 
 export default async function LeagueBonusMalusOptionsPage({

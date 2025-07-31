@@ -3,7 +3,6 @@ import { MATCH_TAG } from "@/features/(league)/matches/db/cache/match";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/users/db/cache/user";
 import { AUCTION_TAG } from "@/features/(league)/auctions/db/cache/auction";
-import { LEAGUE_OPTIONS_TAG } from "@/features/(league)/options/db/cache/leagueOption";
 import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueMember";
 import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
@@ -12,12 +11,13 @@ import { CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/cale
 import { MATCHDAY_VOTE_TAG } from "@/features/votes/db/cache/vote";
 import { MATCHDAY_BONUS_MALUS_TAG } from "@/features/bonusMaluses/db/cache/bonusMalus";
 import { CALCULATIONS_TAG } from "@/features/(league)/(admin)/calculate-matchday/db/cache/calculate-matchday";
+import { LEAGUE_SETTINGS_TAG } from "@/features/(league)/settings/db/cache/setting";
 
 export type CACHE_TAG =
   | GLOBAL_TAG
   | USER_TAG
   | LEAGUE_TAG
-  | LEAGUE_OPTIONS_TAG
+  | LEAGUE_SETTINGS_TAG
   | LEAGUE_MEMBERS_TAG
   | CALENDAR_TAG
   | TRADES_TAG
@@ -27,7 +27,7 @@ export type CACHE_TAG =
   | MATCHDAY_VOTE_TAG
   | MATCHDAY_BONUS_MALUS_TAG
   | CALCULATIONS_TAG
-  | AUCTION_TAG
+  | AUCTION_TAG;
 
 export const getGlobalTag = (tag: CACHE_TAG) => `global:${tag}` as const;
 
