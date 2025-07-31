@@ -1,4 +1,5 @@
 import { db } from "@/drizzle/db";
+import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { RosterOptionsForm } from "@/features/(league)/options/components/forms/RosterOptionForm";
 import {
   getLeagueOptionsTag,
@@ -27,9 +28,15 @@ export default async function LeagueRosterOptionsPage({
         leagueId={leagueId}
         initialData={rosterOptions}
         tacticalModulesPromise={getTacticalModules()}
-        playersRolesPromise={getPlayersRoles()}
+        playersRolesPromise={getRolesWithoutPresident()}
       />
     </div>
+  );
+}
+
+async function getRolesWithoutPresident() {
+  return getPlayersRoles().then((roles) =>
+    roles.filter((role) => role.id !== PRESIDENT_ROLE_ID)
   );
 }
 
