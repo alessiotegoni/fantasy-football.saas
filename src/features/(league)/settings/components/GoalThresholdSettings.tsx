@@ -11,22 +11,18 @@ import { useFormContext } from "react-hook-form";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { CalculationSettingsSchema } from "../schema/setting";
 import ScrollArea from "@/components/ui/scroll-area";
+import { type GoalThresholdSettings } from "@/drizzle/schema";
 
 export function GoalThresholdSettings() {
   const form = useFormContext<CalculationSettingsSchema>();
-  const { base, interval } = form.watch("goalThreshold") || {
-    base: 58,
-    interval: 6,
-  };
-
-  const thresholds = Array.from({ length: 10 }, (_, i) => base + i * interval);
+  const threshold = form.watch("goalThreshold");
 
   return (
     <FormFieldTooltip
       classNames={{ label: "text-xl mb-7" }}
       label="Soglia goal"
     >
-      <div className="grid md:grid-cols-2 gap-6 mb-4">
+      <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-4">
         <FormField
           control={form.control}
           name="goalThreshold.base"
@@ -80,22 +76,31 @@ export function GoalThresholdSettings() {
           )}
         />
       </div>
-
-      <div>
-        <h3 className="text-lg font-medium mb-3">Anteprima soglie goal</h3>
-        <ScrollArea direction="horizontal">
-          <div className="flex gap-8">
-            {thresholds.map((threshold, i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <div className="text-sm font-bold text-primary">
-                  {i + 1}° GOL
-                </div>
-                <div className="text-2xl font-heading">{threshold}</div>
-              </div>
-            ))}
-          </div>
-        </ScrollArea>
-      </div>
+      <GoalThresholdPreview {...threshold} />
     </FormFieldTooltip>
+  );
+}
+
+function GoalThresholdPreview({ base, interval }: GoalThresholdSettings) {
+  if (!base || !interval) return null;
+
+  const thresholds = Array.from({ length: 10 }, (_, i) => base + i * interval);
+
+  return (
+    <div>
+      <h3 className="text-lg font-medium mb-3">Anteprima soglie goal</h3>
+      <ScrollArea direction="horizontal">
+        <div className="flex">
+          {thresholds.map((threshold, i) => (
+            <div key={i} className="basis-1/4">
+              <div className="text-sm font-bold text-primary mb-2">
+                {i + 1}° GOL
+              </div>
+              <div className="text-2xl font-heading">{threshold}</div>
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   );
 }
