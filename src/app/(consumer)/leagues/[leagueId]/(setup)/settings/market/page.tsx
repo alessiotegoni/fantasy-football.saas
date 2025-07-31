@@ -1,20 +1,20 @@
 import { MarketSettingsForm } from "@/features/(league)/settings/components/forms/MarketSettingsForm";
-import { getMarketOptions } from "@/features/(league)/settings/queries/setting";
+import { getMarketSettings } from "@/features/(league)/settings/queries/setting";
 
-export default async function LeagueMarketOptionsPage({
+export default async function LeagueMarketSettingsPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
   const { leagueId } = await params;
 
-  const marketOptions = await getMarketOptions(leagueId);
-  if (!marketOptions) return;
+  const marketSettings = await getMarketSettings(leagueId);
+  if (!marketSettings) return;
 
   return (
     <div className="max-w-[700px] mx-auto">
       <h2 className="hidden md:block text-3xl font-heading mb-8">Mercato</h2>
-      <MarketSettingsForm leagueId={leagueId} initialData={marketOptions} />
+      <MarketSettingsForm leagueId={leagueId} initialData={marketSettings} />
     </div>
   );
 }

@@ -1,16 +1,16 @@
 import { BonusMalusSettingsForm } from "@/features/(league)/settings/components/forms/BonusMalusSettingsForm";
-import { getBonusMalusesOptions } from "@/features/(league)/settings/queries/setting";
+import { getBonusMalusesSettings } from "@/features/(league)/settings/queries/setting";
 import { getBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 
-export default async function LeagueBonusMalusOptionsPage({
+export default async function LeagueBonusMalusSettingsPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
   const { leagueId } = await params;
 
-  const [{ bonusMalusOptions: customBonusMalus }, bonusMalus] =
-    await Promise.all([getBonusMalusesOptions(leagueId), getBonusMaluses()]);
+  const [{ bonusMalusSettings: customBonusMalus }, bonusMalus] =
+    await Promise.all([getBonusMalusesSettings(leagueId), getBonusMaluses()]);
   if (!customBonusMalus) return;
 
   return (

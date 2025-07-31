@@ -27,27 +27,27 @@ type Props = {
   playersRolesPromise: ReturnType<typeof getPlayersRoles>;
 };
 
-export function RosterSettingsForm(rosterOptions: Props) {
-  const { loading, saveRosterModuleOptions } = useLeagueSettings(
-    rosterOptions.leagueId
+export function RosterSettingsForm(rosterSettings: Props) {
+  const { loading, saveRosterModuleSettings } = useLeagueSettings(
+    rosterSettings.leagueId
   );
 
   const form = useForm<RosterModulesSchema>({
     resolver: zodResolver(rosterModulesSchema),
-    defaultValues: rosterOptions.initialData,
+    defaultValues: rosterSettings.initialData,
   });
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(saveRosterModuleOptions)}
+        onSubmit={form.handleSubmit(saveRosterModuleSettings)}
         className="space-y-6"
       >
         <Suspense>
-          <LeaguePlayersPerRole {...rosterOptions} />
+          <LeaguePlayersPerRole {...rosterSettings} />
         </Suspense>
         <Suspense>
-          <LeagueTacticalModules {...rosterOptions} />
+          <LeagueTacticalModules {...rosterSettings} />
         </Suspense>
 
         <SubmitButton loadingText="Salvando opzioni" isLoading={loading}>

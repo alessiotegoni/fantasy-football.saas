@@ -21,7 +21,7 @@ export function BonusMalusSettingsForm({
   bonusMaluses,
   leagueId,
 }: Props) {
-  const { loading, saveBonusMalusOptions } = useLeagueSettings(leagueId);
+  const { loading, saveBonusMalusSettings } = useLeagueSettings(leagueId);
 
   const form = useForm<BonusMalusSchema>({
     resolver: zodResolver(bonusMalusSchema),
@@ -36,7 +36,7 @@ export function BonusMalusSettingsForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(saveBonusMalusOptions)}
+        onSubmit={form.handleSubmit(saveBonusMalusSettings)}
         className="space-y-6"
       >
         {Object.entries(bonusMalusGrouped).map(([category, bonusMaluses]) => (

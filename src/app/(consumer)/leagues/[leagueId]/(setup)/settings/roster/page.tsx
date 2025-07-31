@@ -1,20 +1,20 @@
 import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { RosterSettingsForm } from "@/features/(league)/settings/components/forms/RosterSettingsForm";
 import {
-  getRosterOptions,
+  getRosterSettings,
   getTacticalModules,
 } from "@/features/(league)/settings/queries/setting";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 
-export default async function LeagueRosterOptionsPage({
+export default async function LeagueRosterSettingsPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
   const { leagueId } = await params;
 
-  const rosterOptions = await getRosterOptions(leagueId);
-  if (!rosterOptions) return;
+  const rosterSettings = await getRosterSettings(leagueId);
+  if (!rosterSettings) return;
 
   return (
     <div className="max-w-[700px] mx-auto">
@@ -23,7 +23,7 @@ export default async function LeagueRosterOptionsPage({
       </h2>
       <RosterSettingsForm
         leagueId={leagueId}
-        initialData={rosterOptions}
+        initialData={rosterSettings}
         tacticalModulesPromise={getTacticalModules()}
         playersRolesPromise={getRolesWithoutPresident()}
       />

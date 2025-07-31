@@ -24,7 +24,7 @@ enum LEAGUE_SETTINGS_MESSAGES {
   LEAGUE_NOT_FOUND = "Lega non trovata",
 }
 
-export async function updateGeneralOptions(
+export async function updateGeneralSettings(
   values: GeneralSettingsSchema,
   leagueId: string
 ) {
@@ -34,10 +34,10 @@ export async function updateGeneralOptions(
   );
   if (!isValid) return error;
 
-  return await updateOptions({ ...data, leagueId });
+  return await updateSettings({ ...data, leagueId });
 }
 
-export async function updateRosterModuleOptions(
+export async function updateRosterModuleSettings(
   values: RosterModulesSchema,
   leagueId: string
 ) {
@@ -47,13 +47,13 @@ export async function updateRosterModuleOptions(
   );
   if (!isValid) return error;
 
-  const res = await updateOptions({ ...data, leagueId });
+  const res = await updateSettings({ ...data, leagueId });
   revalidateLeagueRosterSettingsCache(leagueId);
 
   return res;
 }
 
-export async function updateBonusMalusOptions(
+export async function updateBonusMalusSettings(
   values: BonusMalusSchema,
   leagueId: string
 ) {
@@ -63,10 +63,10 @@ export async function updateBonusMalusOptions(
   );
   if (!isValid) return error;
 
-  return await updateOptions({ ...data, leagueId });
+  return await updateSettings({ ...data, leagueId });
 }
 
-export async function updateMarketOptions(
+export async function updateMarketSettings(
   values: MarketSettingsSchema,
   leagueId: string
 ) {
@@ -76,22 +76,22 @@ export async function updateMarketOptions(
   );
   if (!isValid) return error;
 
-  return await updateOptions({ ...data, leagueId });
+  return await updateSettings({ ...data, leagueId });
 }
 
-async function updateOptions(options: typeof leagueSettings.$inferInsert) {
+async function updateSettings(settings: typeof leagueSettings.$inferInsert) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  if (!(await isLeagueAdmin(userId, options.leagueId))) {
+  if (!(await isLeagueAdmin(userId, settings.leagueId))) {
     return createError(LEAGUE_SETTINGS_MESSAGES.REQUIRE_ADMIN);
   }
 
-  const visibility = await getLeagueVisibility(options.leagueId);
+  const visibility = await getLeagueVisibility(settings.leagueId);
   if (!visibility)
     return createError(LEAGUE_SETTINGS_MESSAGES.LEAGUE_NOT_FOUND);
 
-  const leagueId = await updateleagueSettingsDb(options, visibility);
+  const leagueId = await updateleagueSettingsDb(settings, visibility);
   if (!leagueId) return createError(LEAGUE_SETTINGS_MESSAGES.LEAGUE_NOT_FOUND);
 
   return createSuccess("Opzioni aggiornate con successo", null);

@@ -21,7 +21,7 @@ import {
   getMatchLineupsTag,
   getMatchResultsTag,
 } from "@/features/(league)/matches/db/cache/match";
-import { getleagueSettingsTag } from "@/features/(league)/settings/db/cache/setting";
+import { getLeagueSettingsTag } from "@/features/(league)/settings/db/cache/setting";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { getPlayerMatchdayVoteTag } from "@/features/votes/db/cache/vote";
@@ -48,7 +48,7 @@ export async function getMatchInfo({
       league: {
         columns: {},
         with: {
-          options: {
+          settings: {
             columns: {
               customBonusMalus: true,
             },
@@ -112,7 +112,7 @@ export async function getMatchInfo({
   return {
     homeTeam: formatTeamData(homeTeamId, homeTeam, lineups),
     awayTeam: formatTeamData(awayTeamId, awayTeam, lineups),
-    leagueCustomBonusMalus: league.options[0].customBonusMalus,
+    leagueCustomBonusMalus: league.settings[0].customBonusMalus,
     ...match,
   };
 }
@@ -199,7 +199,7 @@ function getMatchInfoTags({
     getMatchInfoTag(matchId),
     getMatchResultsTag(matchId),
     getTacticalModulesTag(),
-    getleagueSettingsTag(leagueId),
+    getLeagueSettingsTag(leagueId),
     getSplitMatchdaysIdTag(splitMatchday.id),
   ];
 

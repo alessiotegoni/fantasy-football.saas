@@ -18,7 +18,7 @@ export async function getTacticalModules() {
   return db.query.tacticalModules.findMany();
 }
 
-export async function getGeneralOptions(leagueId: string) {
+export async function getGeneralSettings(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueSettingsTag(leagueId),
@@ -30,29 +30,29 @@ export async function getGeneralOptions(leagueId: string) {
       initialCredits: true,
       maxMembers: true,
     },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
+    where: (settings, { eq }) => eq(settings.leagueId, leagueId),
   });
 }
 
-export async function getRosterOptions(leagueId: string) {
+export async function getRosterSettings(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueSettingsTag(leagueId),
     getLeagueRosterSettingsTag(leagueId)
   );
 
-  const rosterOptions = await db.query.leagueSettings.findFirst({
+  const rosterSettings = await db.query.leagueSettings.findFirst({
     columns: {
       tacticalModules: true,
       playersPerRole: true,
     },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
+    where: (settings, { eq }) => eq(settings.leagueId, leagueId),
   });
 
-  return rosterOptions;
+  return rosterSettings;
 }
 
-export async function getBonusMalusesOptions(leagueId: string) {
+export async function getBonusMalusesSettings(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueSettingsTag(leagueId),
@@ -60,27 +60,42 @@ export async function getBonusMalusesOptions(leagueId: string) {
   );
 
   const [result] = await db
-    .select({ bonusMalusOptions: leagueSettings.customBonusMalus })
+    .select({ bonusMalusSettings: leagueSettings.customBonusMalus })
     .from(leagueSettings)
     .where(eq(leagueSettings.leagueId, leagueId));
 
   return result;
 }
 
-export async function getMarketOptions(leagueId: string) {
+export async function getSettings(leagueId: string) {
+  "use cache";
+  cacheTag(
+    getLeagueSettingsTag(leagueId),
+    getLeagueBonusMalusSettingsTag(leagueId)
+  );
+
+  const [result] = await db
+    .select({ bonusMalusSettings: leagueSettings.customBonusMalus })
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
+
+  return result;
+}
+
+export async function getMarketSettings(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueSettingsTag(leagueId),
     getLeagueMarketSettingsTag(leagueId)
   );
 
-  const marketOptions = await db.query.leagueSettings.findFirst({
+  const marketSettings = await db.query.leagueSettings.findFirst({
     columns: {
       releasePercentage: true,
       isTradingMarketOpen: true,
     },
-    where: (options, { eq }) => eq(options.leagueId, leagueId),
+    where: (settings, { eq }) => eq(settings.leagueId, leagueId),
   });
 
-  return marketOptions;
+  return marketSettings;
 }

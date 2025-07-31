@@ -3,15 +3,15 @@
 import { useTransition } from "react";
 import {
   BonusMalusSchema,
-  GeneralOptionsSchema,
-  MarketOptionsSchema,
+  GeneralSettingsSchema,
+  MarketSettingsSchema,
   RosterModulesSchema,
 } from "@/features/(league)/settings/schema/setting";
 import {
-  updateBonusMalusOptions,
-  updateGeneralOptions,
-  updateMarketOptions,
-  updateRosterModuleOptions,
+  updateBonusMalusSettings,
+  updateGeneralSettings,
+  updateMarketSettings,
+  updateRosterModuleSettings,
 } from "@/features/(league)/settings/actions/setting";
 import useActionToast from "./useActionToast";
 
@@ -33,27 +33,27 @@ export function useLeagueSettings(leagueId: string) {
     });
   }
 
-  const saveGeneralOptions = async (data: GeneralOptionsSchema) => {
-    return wrapAction(updateGeneralOptions, data);
+  const saveGeneralSettings = async (data: GeneralSettingsSchema) => {
+    return wrapAction(updateGeneralSettings, data);
   };
 
-  const saveRosterModuleOptions = async (data: RosterModulesSchema) => {
-    return wrapAction(updateRosterModuleOptions, data);
+  const saveRosterModuleSettings = async (data: RosterModulesSchema) => {
+    return wrapAction(updateRosterModuleSettings, data);
   };
 
-  const saveBonusMalusOptions = async (data: BonusMalusSchema) => {
-    return wrapAction(updateBonusMalusOptions, data);
+  const saveBonusMalusSettings = async (data: BonusMalusSchema) => {
+    return wrapAction(updateBonusMalusSettings, data);
   };
 
-  const saveMarketOptions = async (data: MarketOptionsSchema) => {
-    return wrapAction(updateMarketOptions, data);
+  const saveMarketSettings = async (data: MarketSettingsSchema) => {
+    return wrapAction(updateMarketSettings, data);
   };
 
   return {
-    saveGeneralOptions,
-    saveRosterModuleOptions,
-    saveBonusMalusOptions,
-    saveMarketOptions,
+    saveGeneralSettings,
+    saveRosterModuleSettings,
+    saveBonusMalusSettings,
+    saveMarketSettings,
     loading,
   };
 }

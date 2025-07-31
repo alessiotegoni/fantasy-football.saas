@@ -20,7 +20,7 @@ import {
   deleteMatchesResults,
   insertMatchesResults,
 } from "@/features/(league)/matches/db/matchResult";
-import { getBonusMalusesOptions } from "@/features/(league)/settings/queries/setting";
+import { getBonusMalusesSettings } from "@/features/(league)/settings/queries/setting";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 import {
@@ -127,9 +127,9 @@ export async function cancelCalculation(values: CancelCalculationSchema) {
 }
 
 async function calculateMatchesResults(data: CalculateMatchdaySchema) {
-  const [{ bonusMalusOptions: leagueCustomBonusMalus }, matches] =
+  const [{ bonusMalusSettings: leagueCustomBonusMalus }, matches] =
     await Promise.all([
-      getBonusMalusesOptions(data.leagueId),
+      getBonusMalusesSettings(data.leagueId),
       getLeagueMatchdayMatches(data),
     ]);
 
@@ -207,7 +207,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
   return matchesResults;
 }
 
-// FIXME: Rimuovere da RosterOptions president da playersPerRole
+// FIXME: Rimuovere da RosterSettings president da playersPerRole
 
 function getTeamTacticalModule(
   teamsTacticalModules: {

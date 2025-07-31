@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  type GeneralOptionsSchema,
-  generalOptionsSchema,
+  type GeneralSettingsSchema,
+  generalSettingsSchema,
 } from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
 import { useLeagueSettings } from "@/hooks/useLeagueSettings";
@@ -16,12 +16,12 @@ export function GeneralSettingsForm({
   initialData,
 }: {
   leagueId: string;
-  initialData?: GeneralOptionsSchema;
+  initialData?: GeneralSettingsSchema;
 }) {
-  const { loading, saveGeneralOptions } = useLeagueSettings(leagueId);
+  const { loading, saveGeneralSettings } = useLeagueSettings(leagueId);
 
-  const form = useForm<GeneralOptionsSchema>({
-    resolver: zodResolver(generalOptionsSchema),
+  const form = useForm<GeneralSettingsSchema>({
+    resolver: zodResolver(generalSettingsSchema),
     defaultValues: initialData ?? {
       initialCredits: 500,
       maxMembers: 12,
@@ -31,10 +31,10 @@ export function GeneralSettingsForm({
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(saveGeneralOptions)}
+        onSubmit={form.handleSubmit(saveGeneralSettings)}
         className="space-y-6"
       >
-        <FormSliderField<GeneralOptionsSchema>
+        <FormSliderField<GeneralSettingsSchema>
           name="initialCredits"
           label="Crediti iniziali per squadra"
           tip="Crediti disponibili per ogni squadra all'inizio della
@@ -45,7 +45,7 @@ export function GeneralSettingsForm({
           unit="crediti"
         />
 
-        <FormSliderField<GeneralOptionsSchema>
+        <FormSliderField<GeneralSettingsSchema>
           name="maxMembers"
           label="Numero massimo membri"
           tip="Numero massimo di partecipanti che possono unirsi alla

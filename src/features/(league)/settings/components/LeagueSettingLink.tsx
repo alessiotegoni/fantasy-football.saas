@@ -25,7 +25,7 @@ export default function LeagueSettingLink({
 
   return (
     <NavLink
-      href={getItemHref(`/leagues/:leagueId/options/${option.id}`, leagueId)}
+      href={getItemHref(`/leagues/:leagueId//${option.id}`, leagueId)}
       render={({ isActive, href }) => (
         <Button
           variant={isMobile ? "outline" : "ghost"}

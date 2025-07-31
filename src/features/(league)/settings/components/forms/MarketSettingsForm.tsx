@@ -5,8 +5,8 @@ import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  type MarketOptionsSchema,
-  marketOptionsSchema,
+  type MarketSettingsSchema,
+  marketSettingsSchema,
 } from "../../schema/setting";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
@@ -18,22 +18,22 @@ export function MarketSettingsForm({
   initialData,
 }: {
   leagueId: string;
-  initialData?: MarketOptionsSchema;
+  initialData?: MarketSettingsSchema;
 }) {
-  const { loading, saveMarketOptions } = useLeagueSettings(leagueId);
+  const { loading, saveMarketSettings } = useLeagueSettings(leagueId);
 
-  const form = useForm<MarketOptionsSchema>({
-    resolver: zodResolver(marketOptionsSchema),
+  const form = useForm<MarketSettingsSchema>({
+    resolver: zodResolver(marketSettingsSchema),
     defaultValues: initialData,
   });
 
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(saveMarketOptions)}
+        onSubmit={form.handleSubmit(saveMarketSettings)}
         className="space-y-6"
       >
-        <FormSliderField<MarketOptionsSchema>
+        <FormSliderField<MarketSettingsSchema>
           name="releasePercentage"
           label="Percentuale di svincolo"
           tip="La percentuale di svincolo è la percentuale con cui verranno calcolati i crediti da restituire alla squadra in caso di svincolo di un giocatore"

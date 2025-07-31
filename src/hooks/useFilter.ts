@@ -1,13 +1,13 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 
-type UseFilterOptions<TItem, TFilters> = {
+type UseFilterSettings<TItem, TFilters> = {
   filterFn: (item: TItem, filters: TFilters) => boolean;
   defaultFilters: TFilters;
 };
 
 export function useFilter<TItem, TFilters>(
   items: TItem[],
-  { filterFn, defaultFilters }: UseFilterOptions<TItem, TFilters>
+  { filterFn, defaultFilters }: UseFilterSettings<TItem, TFilters>
 ) {
   const [filters, setFilters] = useState(defaultFilters);
 

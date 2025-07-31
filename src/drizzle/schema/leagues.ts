@@ -57,7 +57,7 @@ export const leaguesRelations = relations(leagues, ({ many, one }) => ({
     fields: [leagues.ownerId],
     references: [authUsers.id],
   }),
-  options: many(leagueSettings),
+  settings: many(leagueSettings),
   members: many(leagueMembers),
   usersBans: many(leagueUserBans),
   tradeProposals: many(leagueTradeProposals),

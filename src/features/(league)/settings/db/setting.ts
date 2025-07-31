@@ -24,13 +24,13 @@ export async function insertLeagueSettings(
 }
 
 export async function updateLeagueSettings(
-  { leagueId, ...options }: typeof leagueSettings.$inferInsert,
+  { leagueId, ...settings }: typeof leagueSettings.$inferInsert,
   visibility: LeagueVisibilityStatusType,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
     .update(leagueSettings)
-    .set(options)
+    .set(settings)
     .where(eq(leagueSettings.leagueId, leagueId))
     .returning({ leagueId: leagueSettings.leagueId });
 

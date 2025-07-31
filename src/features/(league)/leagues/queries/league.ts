@@ -55,7 +55,7 @@ export async function getLeaguePlayersPerRole(leagueId: string) {
       columns: {
         playersPerRole: true,
       },
-      where: (options, { eq }) => eq(options.leagueId, leagueId),
+      where: (settings, { eq }) => eq(settings.leagueId, leagueId),
     })
     .then((res) => res!.playersPerRole);
 }
@@ -69,7 +69,7 @@ export async function getLeagueModules(leagueId: string) {
       columns: {
         tacticalModules: true,
       },
-      where: (options, { eq }) => eq(options.leagueId, leagueId),
+      where: (settings, { eq }) => eq(settings.leagueId, leagueId),
     })
     .then((res) => res!.tacticalModules);
 }

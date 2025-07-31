@@ -55,7 +55,7 @@ export const leagueSettings = pgTable(
       sql`(initial_credits >= 200) and (initial_credits <= 5000)`
     ),
     leagueSettingsMaxMembersCheck: check(
-      "league_options_max_members_check",
+      "league__max_members_check",
       sql`(max_members >= 4) and (max_members <= 12)`
     ),
   })
