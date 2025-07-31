@@ -1,68 +1,143 @@
-## 🧠 Prompt per Gemini Code Assistant – Mappatura LineupPlayers con Voti e Bonus/Malus
+# 🧠 UI Goal Threshold Settings – Calcio a 7
 
-### 🎯 Obiettivo
+## 🎯 Obiettivo
 
-Ho bisogno che tu analizzi il file `[matchId]/page.tsx` e costruisca la logica per **mappare i `lineupPlayers`** affinché ogni giocatore abbia:
-
-- `vote`: già presente nella struttura dati.
-- `bonusMaluses`: lista di bonus/malus correlata.
-- `totalVote`: calcolato in base a `vote` + i valori dei bonus/malus personalizzati.
+Implementare un'interfaccia utente per la configurazione delle soglie goal in una Lega di Fantacalcio a 7, ispirata alla UI ufficiale della Lega Serie A ma **adattata alla logica semplificata e coerente** della mia applicazione.
 
 ---
 
-### 📦 Dati disponibili
+## 📁 File da leggere
 
-- `lineupPlayers[]`: array di giocatori titolari/panchina, con campo `playerId` e `vote`.
-- `playersBonusMaluses[]`: array di bonus/malus (contiene `playerId`, `bonusMalusTypeId`, `count`, ecc.)
-- `matchInfo.leagueCustomBonusMalus`: oggetto con chiavi = ID bonus/malus, valori = numero (es. `+3`, `-1.5`, ecc.)
+Per realizzare correttamente la modifica, **leggi attentamente i seguenti file presenti nel progetto**:
 
----
+- `LeagueCalculationSettingsPage`
+- `CalculationSettingsForm` ← **Inserisci qui la logica descritta**
 
-### ⚙️ Cosa voglio che venga fatto
-
-1. 🔄 **Mappatura**: arricchisci ogni `lineupPlayer` con:
-   - `bonusMaluses`: array dei bonus/malus ottenuti da `playersBonusMaluses`, filtrati per `playerId`.
-   - `totalVote`: valore calcolato tramite una funzione `calculateTotalVote`.
-
-2. 🧮 **Calcolo `totalVote`**:
-   - Parti dal campo `vote` del giocatore.
-   - Per ogni bonus/malus associato a quel giocatore:
-     - Usa il suo `bonusMalusTypeId` per accedere al valore numerico da `leagueCustomBonusMalus`.
-     - Moltiplica quel valore per `count` (lo stesso tipo di bonus/malus può essere ripetuto).
-     - Somma o sottrai dal `vote` a seconda del segno.
-   - Attenzione: il voto può essere `null` → in quel caso, `totalVote` dovrà essere anch’esso `null`.
-
-3. 📦 **Output finale**:
-   - Ogni `lineupPlayer` deve avere:
-     ```ts
-     {
-       playerId: number;
-       vote: number | null;
-       bonusMaluses: {
-         id: number;
-         count: number;
-         imageUrl: string;
-       }[];
-       totalVote: number | null;
-       // ...altri campi
-     }
-     ```
+> ⚠️ **Nota importante**: tutti i componenti di questa UI, inclusi quelli eventualmente creati appositamente, devono essere **utilizzati all'interno di `FormFieldTooltip`**, seguendo il pattern già in uso nel progetto.
 
 ---
 
-### 📌 Constraints
+## 📷 Riferimento UI
 
-- Non creare nessuna API.
-- La logica può essere scritta in una funzione standalone (`enrichLineupPlayersWithVotes` o simile).
-- Evita mutazioni: lavora con dati immutabili.
-- `leagueCustomBonusMalus` è dinamico e può contenere valori sia negativi che positivi.
-- Se un bonus/malus non esiste in `leagueCustomBonusMalus`, **ignoralo**.
+Usa il file `ui-example.png` come **riferimento visivo** per lo stile e la disposizione della UI.
+Riproduci una versione **orizzontale**, adattata alla logica descritta di seguito e **coerente con lo stile visivo già usato nel progetto**.
 
 ---
 
-### ✨ Suggerimenti opzionali
+## ⚙️ Logica da implementare
 
-- Usa `Map<number, number>` per ottimizzare la lookup di `leagueCustomBonusMalus`.
-- Scrivi test/unit logic per `calculateTotalVote()` se vuoi modularizzare bene.
-- Se utile, puoi anche esportare un helper tipo `getPlayerBonusMaluses(playerId)`.
+La UI deve permettere all’utente di impostare due parametri:
 
+1. **Soglia base (`base`)**: il punteggio a partire dal quale si segna il primo goal (default `58`)
+2. **Intervallo (`interval`)**: ogni quanti punti aggiuntivi si segna un goal in più (default `6`)
+
+La UI **non deve permettere di inserire tutte le soglie manualmente**.
+
+---
+
+### 📈 Calcolo delle soglie (dinamico)
+
+Le soglie vengono generate automaticamente a partire da questi due valori, ad esempio:
+
+```json
+{
+  "base": 58,
+  "interval": 6
+}
+```
+
+Questo significa:
+- 1° goal: 58 punti
+- 2° goal: 64 punti
+- 3° goal: 70 punti
+- 4° goal: 76 punti
+- 5° goal: 82 punti
+- ...e così via
+
+Il numero di goal dipende quindi **solo** dal punteggio totale del team e da questi due parametri.
+
+---
+
+## 🧩 Componenti richiesti nella UI
+
+### 1. **Slider orizzontale di preview**
+
+- Mostra graficamente una scala dei punteggi in cui si segnano i goal.
+- In ascissa: i punteggi (58, 64, 70, ...)
+- In ordinata (sopra o sotto): il numero di goal (1, 2, 3, ...)
+- Deve aggiornarsi dinamicamente quando cambiano `base` o `interval`
+- **Non deve essere interattivo**, è solo una preview
+- Deve essere **scrollabile orizzontalmente su mobile**
+
+### 2. **Input configurabili**
+
+Due campi numerici all’interno di `FormFieldTooltip`:
+
+- `⚽ Primo goal a:` → input `base` (default `58`)
+- `🔁 Intervallo goal:` → input `interval` (default `6`)
+
+Modificando uno di questi, si aggiorna anche lo slider.
+
+### 3. **Anteprima testuale**
+
+Sotto lo slider, aggiungi una preview testuale generata dinamicamente:
+
+```
+Esempio:
+Punti 58 → 1 gol
+Punti 64 → 2 gol
+Punti 70 → 3 gol
+Punti 76 → 4 gol
+...
+```
+
+Mostrane almeno 5 per chiarezza.
+
+---
+
+## ✅ Requisiti funzionali
+
+- La logica va **inserita dentro `CalculationSettingsForm`**
+- Tutti i componenti devono essere **wrappati dentro `FormFieldTooltip`**
+- Deve seguire lo **stile visivo già usato nell'app** (colori, tipografia, spacing)
+- Deve essere **responsive** (scroll orizzontale su mobile)
+- Gli input devono essere **validati**:
+
+```ts
+base >= 40 && base <= 100
+interval >= 1 && interval <= 20
+```
+
+In caso contrario, mostra un messaggio d’errore.
+
+---
+
+## 🧪 Comportamento atteso
+
+1. L’utente imposta `base` e `interval`
+2. La UI aggiorna la preview slider e la preview testuale
+3. I dati vengono salvati come:
+
+```json
+{
+  "base": 58,
+  "interval": 6
+}
+```
+
+nella configurazione della lega, in sostituzione del precedente sistema a soglie manuali.
+
+---
+
+## 📌 Riassunto finale
+
+| Campo       | Tipo     | Default | Note                          |
+|-------------|----------|---------|-------------------------------|
+| base        | number   | 58      | Punteggio minimo per 1 gol    |
+| interval    | number   | 6       | Ogni quanti punti si fa 1 gol |
+
+---
+
+## 🔁 Integrazione
+
+Inserisci tutto il codice e la logica UI direttamente dentro **`CalculationSettingsForm`**, utilizzando `FormFieldTooltip` per ciascun componente, e rispettando il design system già presente nell'applicazione.
