@@ -24,6 +24,22 @@ export default async function LeagueStandingPage({
   }
 
   return (
-   
+    <Container
+      leagueId={leagueId}
+      headerLabel="Classifica"
+      className="max-w-[700px]"
+      renderHeaderRight={() => (
+        <SplitSelect splits={splits} defaultSplit={selectedSplit} />
+      )}
+    >
+      {selectedSplit ? (
+        <></>
+      ) : (
+        <EmptyState
+          title="Classifica non disponibile"
+          description="La classifica sara disponibile quando lo split verra annunciato, la prima giornata sara finita e tu la avrai calcolata"
+        />
+      )}
+    </Container>
   );
 }
