@@ -55,7 +55,7 @@ export function calculatePlayerTotalVote(
   }, vote);
 }
 
-export function calculateLineupTotalVote(
+export function calculateLineupsTotalVote(
   players: LineupPlayer[],
   {
     homeTeam,
@@ -120,7 +120,7 @@ function calculatePlayersTotalVote(players: { totalVote: string | null }[]) {
     return (acc += totalVote);
   }, 0);
 
-  return totalVote.toString()
+  return totalVote.toString();
 }
 
 function replacePlayers(

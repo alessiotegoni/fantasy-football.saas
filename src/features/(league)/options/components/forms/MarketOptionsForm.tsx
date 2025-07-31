@@ -40,7 +40,7 @@ export function MarketOptionsForm({
           min={0}
           max={100}
           step={5}
-          unit="percentuale"
+          unit="%"
         />
 
         <FormField

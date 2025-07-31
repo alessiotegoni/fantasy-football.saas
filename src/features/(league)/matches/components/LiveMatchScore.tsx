@@ -1,9 +1,9 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
-import { calculateLineupTotalVote } from "../utils/LineupPlayers";
+import { calculateLineupsTotalVote } from "../utils/LineupPlayers";
 import ScoresSeparator from "./ScoresSeparator";
 
 type Props = {
-  totalVotes: ReturnType<typeof calculateLineupTotalVote>;
+  totalVotes: ReturnType<typeof calculateLineupsTotalVote>;
   currentMatchday?: SplitMatchday;
   splitMatchday: SplitMatchday;
   isBye: boolean;

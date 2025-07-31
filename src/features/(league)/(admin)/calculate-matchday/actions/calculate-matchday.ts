@@ -24,7 +24,7 @@ import { getBonusMalusesOptions } from "@/features/(league)/options/queries/leag
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 import {
-  calculateLineupTotalVote,
+  calculateLineupsTotalVote,
   enrichLineupPlayers,
 } from "@/features/(league)/matches/utils/LineupPlayers";
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
@@ -171,7 +171,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       awayTeamId
     );
 
-    const totalVotes = calculateLineupTotalVote(matchPlayers, {
+    const totalVotes = calculateLineupsTotalVote(matchPlayers, {
       homeTeam: { id: homeTeamId, tacticalModule: homeTacticalModule },
       awayTeam: { id: awayTeamId, tacticalModule: awayTacticalModule },
     });
@@ -188,6 +188,10 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
       if (!teamId || !totalScore) continue;
 
+      // TODO: aggiungere soglia goal nelle opzioni della lega (informarsi prima)
+      // la soglia goal e' calcolabile dal totalScore + le impostazioni della lega
+      // dopo aver calcolato i goals, calcolare anche i punti (vincente: 3, perdente: -3, pareggio: 1)
+
       const matchResult = {
         leagueMatchId: matchId,
         teamId,
@@ -202,6 +206,8 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
   return matchesResults;
 }
+
+// FIXME: Rimuovere da RosterOptions president da playersPerRole
 
 function getTeamTacticalModule(
   teamsTacticalModules: {

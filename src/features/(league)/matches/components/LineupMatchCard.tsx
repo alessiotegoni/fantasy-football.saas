@@ -1,6 +1,6 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer } from "../queries/match";
-import { calculateLineupTotalVote } from "../utils/LineupPlayers";
+import { calculateLineupsTotalVote } from "../utils/LineupPlayers";
 import { LineupTeam } from "../utils/match";
 import MatchCard from "./MatchCard";
 import LiveMatchScore from "./LiveMatchScore";
@@ -31,7 +31,7 @@ export default function LineupMatchCard({
   const homeModule = homeTeam.lineup?.tacticalModule ?? null;
   const awayModule = awayTeam.lineup?.tacticalModule ?? null;
 
-  const teamTotalVotes = calculateLineupTotalVote(players, {
+  const teamTotalVotes = calculateLineupsTotalVote(players, {
     homeTeam: { ...homeTeam, tacticalModule: homeModule },
     awayTeam: { ...awayTeam, tacticalModule: awayModule },
   });
