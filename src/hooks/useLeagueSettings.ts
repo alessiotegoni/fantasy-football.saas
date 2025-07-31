@@ -3,11 +3,13 @@
 import { useTransition } from "react";
 import {
   BonusMalusSchema,
+  CalculationSettingsSchema,
   GeneralSettingsSchema,
   MarketSettingsSchema,
   RosterModulesSchema,
 } from "@/features/(league)/settings/schema/setting";
 import {
+  calculationSettings,
   updateBonusMalusSettings,
   updateGeneralSettings,
   updateMarketSettings,
@@ -41,6 +43,10 @@ export function useLeagueSettings(leagueId: string) {
     return wrapAction(updateRosterModuleSettings, data);
   };
 
+  const saveCalculationsSettings = async (data: CalculationSettingsSchema) => {
+    return wrapAction(calculationSettings, data);
+  };
+
   const saveBonusMalusSettings = async (data: BonusMalusSchema) => {
     return wrapAction(updateBonusMalusSettings, data);
   };
@@ -53,6 +59,7 @@ export function useLeagueSettings(leagueId: string) {
     saveGeneralSettings,
     saveRosterModuleSettings,
     saveBonusMalusSettings,
+    saveCalculationsSettings,
     saveMarketSettings,
     loading,
   };

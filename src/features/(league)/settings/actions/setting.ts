@@ -5,6 +5,8 @@ import { updateLeagueSettings as updateleagueSettingsDb } from "../db/setting";
 import {
   bonusMalusSchema,
   BonusMalusSchema,
+  calculationSettingsSchema,
+  CalculationSettingsSchema,
   generalSettingsSchema,
   GeneralSettingsSchema,
   marketSettingsSchema,
@@ -59,6 +61,19 @@ export async function updateBonusMalusSettings(
 ) {
   const { isValid, error, data } = validateSchema<BonusMalusSchema>(
     bonusMalusSchema,
+    values
+  );
+  if (!isValid) return error;
+
+  return await updateSettings({ ...data, leagueId });
+}
+
+export async function calculationSettings(
+  values: CalculationSettingsSchema,
+  leagueId: string
+) {
+  const { isValid, error, data } = validateSchema<CalculationSettingsSchema>(
+    calculationSettingsSchema,
     values
   );
   if (!isValid) return error;
