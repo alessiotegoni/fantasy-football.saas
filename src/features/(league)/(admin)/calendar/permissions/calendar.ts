@@ -1,7 +1,10 @@
+import { db } from "@/drizzle/db";
+import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
 import { createError, createSuccess } from "@/lib/helpers";
+import { and, count, eq } from "drizzle-orm";
 
 enum GENERATE_CALENDAR_MESSAGES {
   REQUIRE_ADMIN = "Per gestire il calendario devi essere un admin della lega",
@@ -29,4 +32,18 @@ export async function canGenerateCalendar(userId: string, leagueId: string) {
   }
 
   return createSuccess("", { upcomingSplitId: upcomingSplit.id });
+}
+
+export async function hasGeneratedCalendar(leagueId: string, splitId: number) {
+  const [result] = await db
+    .select({ count: count() })
+    .from(leagueMatches)
+    .innerJoin(
+      splitMatchdays,
+      eq(splitMatchdays.id, leagueMatches.splitMatchdayId)
+    )
+    .innerJoin(splits, eq(splits.id, splitMatchdays.splitId))
+    .where(and(eq(splits.id, splitId), eq(leagueMatches.leagueId, leagueId)));
+
+  return result.count > 0;
 }

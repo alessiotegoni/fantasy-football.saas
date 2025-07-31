@@ -4,6 +4,7 @@ import EmptyState from "@/components/EmptyState";
 import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
 import CalculationsList from "@/features/(league)/(admin)/calculate-matchday/components/CalculationsList";
 import { getCalculations } from "@/features/(league)/(admin)/calculate-matchday/queries/calculate-matchday";
+import { hasGeneratedCalendar } from "@/features/(league)/(admin)/calendar/permissions/calendar";
 import {
   getLastEndedMatchday,
   getLiveSplit,
@@ -45,9 +46,10 @@ async function SuspenseBoundary({
   leagueId: string;
   splitId: number;
 }) {
-  const [matchday, matchdayCalcs] = await Promise.all([
+  const [matchday, matchdayCalcs, isCalendarGenerated] = await Promise.all([
     getLastEndedMatchday(splitId),
     getCalculations(leagueId, splitId),
+    hasGeneratedCalendar(leagueId, splitId)
   ]);
 
   if (!matchday) {

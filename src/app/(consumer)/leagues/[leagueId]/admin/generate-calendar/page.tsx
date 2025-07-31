@@ -3,12 +3,10 @@ import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import { Button } from "@/components/ui/button";
-import { db } from "@/drizzle/db";
-import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
 import { regenerateCalendar } from "@/features/(league)/(admin)/calendar/actions/calendar";
 import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
+import { hasGeneratedCalendar } from "@/features/(league)/(admin)/calendar/permissions/calendar";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
-import { and, count, eq } from "drizzle-orm";
 import { NavArrowRight, WarningTriangle } from "iconoir-react";
 import Link from "next/link";
 import { Suspense } from "react";
@@ -79,18 +77,4 @@ async function SuspenseBoundary({
   ) : (
     <CalendarEmptyState leagueId={leagueId} />
   );
-}
-
-async function hasGeneratedCalendar(leagueId: string, splitId: number) {
-  const [result] = await db
-    .select({ count: count() })
-    .from(leagueMatches)
-    .innerJoin(
-      splitMatchdays,
-      eq(splitMatchdays.id, leagueMatches.splitMatchdayId)
-    )
-    .innerJoin(splits, eq(splits.id, splitMatchdays.splitId))
-    .where(and(eq(splits.id, splitId), eq(leagueMatches.leagueId, leagueId)));
-
-  return result.count > 0;
 }
