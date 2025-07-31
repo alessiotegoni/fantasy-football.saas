@@ -16,7 +16,7 @@ export default function CalendarEmptyState({
 }: Props) {
   return (
     <EmptyState
-      title="Nessun calendario trovato"
+      title="Calendario non disponibile"
       description={description}
       renderButton={() =>
         showButton && (

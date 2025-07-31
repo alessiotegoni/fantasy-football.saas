@@ -16,10 +16,12 @@ import { WarningTriangle } from "iconoir-react";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import MatchdaySection from "@/features/(league)/(admin)/calendar/components/MatchdaySection";
+import EmptyState from "@/components/EmptyState";
+import BackButton from "@/components/BackButton";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
-  searchParams: Promise<{ splitId: string }>;
+  searchParams: Promise<{ splitId?: string }>;
 };
 export default async function LeagueCalendarPage({
   params,
@@ -27,21 +29,24 @@ export default async function LeagueCalendarPage({
 }: Props) {
   const [{ leagueId }, splits] = await Promise.all([params, getSplits()]);
 
+  const lastSplit = splits.at(-1);
+
   return (
     <Container
       headerLabel="Calendario"
       leagueId={leagueId}
       renderHeaderRight={() => (
         <Suspense>
-          <SplitSelect splits={splits} />
+          <SplitSelect splits={splits} defaultSplit={lastSplit} />
         </Suspense>
       )}
     >
       <Suspense>
         <SuspenseBoundary
           leagueId={leagueId}
-          splitIdPromise={searchParams.then((sp) => sp.splitId)}
+          selectedSplitPromise={searchParams.then((sp) => sp.splitId)}
           splits={splits}
+          lastSplit={lastSplit}
         />
       </Suspense>
     </Container>
@@ -50,22 +55,36 @@ export default async function LeagueCalendarPage({
 
 async function SuspenseBoundary({
   leagueId,
-  splitIdPromise,
+  selectedSplitPromise,
   splits,
+  lastSplit,
 }: {
   leagueId: string;
-  splitIdPromise: Promise<string>;
+  selectedSplitPromise: Promise<string | undefined>;
   splits: Split[];
+  lastSplit?: Split;
 }) {
-  const splitId = parseInt(await splitIdPromise);
-  if (!validateSerialId(splitId).success) notFound();
+  let selectedSplit = lastSplit;
 
-  const split = splits.find((split) => split.id === splitId);
-  if (!split) notFound();
+  const selectedSplitId = parseInt((await selectedSplitPromise) ?? "0");
+  if (selectedSplitId && validateSerialId(selectedSplitId).success) {
+    selectedSplit = splits.find((split) => split.id === selectedSplitId);
+  }
 
-  const calendar = await getLeagueCalendar(leagueId, split.id);
+  if (!selectedSplit) {
+    return (
+      <EmptyState
+        icon={WarningTriangle}
+        title="Calendario non disponibile"
+        description="Il calendario sara disponibile quando dopo l'annuncio dello split lo genererai"
+        renderButton={() => <BackButton />}
+      />
+    );
+  }
+
+  const calendar = await getLeagueCalendar(leagueId, selectedSplit.id);
   if (!calendar) {
-    const isUpcoming = split.status === "upcoming";
+    const isUpcoming = selectedSplit.status === "upcoming";
 
     return (
       <CalendarEmptyState
@@ -75,7 +94,9 @@ async function SuspenseBoundary({
         description={
           !isUpcoming
             ? `Lo split e' ${
-                split.status === "ended" ? "gia finito" : "appena iniziato"
+                selectedSplit.status === "ended"
+                  ? "gia finito"
+                  : "appena iniziato"
               } e non puoi piu generare il calendario`
             : undefined
         }
@@ -93,7 +114,7 @@ async function SuspenseBoundary({
       <Suspense fallback={<CalendarSections matches={groupedMatches} />}>
         <CalendarSections
           matches={groupedMatches}
-          currentMatchday={await getCurrentMatchday(split.id)}
+          currentMatchday={await getCurrentMatchday(selectedSplit.id)}
         />
       </Suspense>
     </div>

@@ -29,19 +29,21 @@ export default function SplitSelect({
   }
 
   return (
-    <Select onValueChange={handleChange} defaultValue={defaultSplitId}>
-      <SelectTrigger className="w-[140px]">
-        <SelectValue placeholder="Seleziona split" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {splits.map((split) => (
-            <SelectItem key={split.id} value={split.id.toString()}>
-              {split.name}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    !!splits.length && (
+      <Select onValueChange={handleChange} defaultValue={defaultSplitId}>
+        <SelectTrigger className="w-[140px]">
+          <SelectValue placeholder="Seleziona split" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {splits.map((split) => (
+              <SelectItem key={split.id} value={split.id.toString()}>
+                {split.name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    )
   );
 }
