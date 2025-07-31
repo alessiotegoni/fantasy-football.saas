@@ -173,7 +173,7 @@ const navItems = [
   },
   {
     name: "Classifica",
-    href: "/leagues/:leagueId/standings",
+    href: "/leagues/:leagueId/standing",
     icon: Medal1st,
   },
 ];

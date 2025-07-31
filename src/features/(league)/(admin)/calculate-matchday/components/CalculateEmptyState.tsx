@@ -6,7 +6,7 @@ export default function CalculateEmptyState() {
     <EmptyState
       title="Giornata non ancora calcolabile"
       description="Potrai calcolare la giornata dopo la mezzanotte e mezza"
-      renderButton={() => <BackButton className="min-w-36" />}
+      renderButton={() => <BackButton />}
     />
   );
 }

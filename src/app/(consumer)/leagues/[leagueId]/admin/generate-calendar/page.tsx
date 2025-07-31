@@ -1,4 +1,5 @@
 import ActionButton from "@/components/ActionButton";
+import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
@@ -30,8 +31,9 @@ export default async function GenerateCalendarPage({
       ) : (
         <EmptyState
           icon={WarningTriangle}
-          title="Split non disponibile"
+          title="Calendario non generabile"
           description="Lo split è già iniziato o non è ancora stato annunciato. Non puoi generare un nuovo calendario."
+          renderButton={() => <BackButton />}
         />
       )}
     </Container>

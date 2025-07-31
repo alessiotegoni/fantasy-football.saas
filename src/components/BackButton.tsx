@@ -29,7 +29,11 @@ export default function BackButton({
       <Link href={backTo}>{content}</Link>
     </Button>
   ) : (
-    <Button variant="link" className={cn(className)} onClick={() => router.back()}>
+    <Button
+      variant="link"
+      className={cn("min-w-36", className)}
+      onClick={() => router.back()}
+    >
       {content}
     </Button>
   );
