@@ -7,7 +7,7 @@ import { cn, getItemHref } from "@/lib/utils";
 import Link from "next/link";
 
 type Props = {
-  option: {
+  setting: {
     id: string;
     label: string;
     icon: React.ComponentType<{ className?: string }>;
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function LeagueSettingLink({
-  option,
+  setting,
   leagueId,
   className,
 }: Props) {
@@ -25,7 +25,7 @@ export default function LeagueSettingLink({
 
   return (
     <NavLink
-      href={getItemHref(`/leagues/:leagueId//${option.id}`, leagueId)}
+      href={getItemHref(`/leagues/:leagueId/settings/${setting.id}`, leagueId)}
       render={({ isActive, href }) => (
         <Button
           variant={isMobile ? "outline" : "ghost"}
@@ -40,8 +40,8 @@ export default function LeagueSettingLink({
           )}
         >
           <Link href={href}>
-            <option.icon className="size-5" />
-            {option.label}
+            <setting.icon className="size-5" />
+            {setting.label}
           </Link>
         </Button>
       )}

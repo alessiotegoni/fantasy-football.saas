@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/carousel";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Disclaimer from "@/components/Disclaimer";
-import LeagueOptionLink from "@/features/(league)/settings/components/LeagueSettingLink";
+import LeagueSettingLink from "@/features/(league)/settings/components/LeagueSettingLink";
 
 export default async function leagueSettingsLayout({
   children,
@@ -38,14 +38,14 @@ export default async function leagueSettingsLayout({
         </div>
         <Carousel>
           <CarouselContent className="my-1">
-            {leagueSettings.map((option) => (
+            {leagueSettings.map((setting) => (
               <CarouselItem
-                key={option.id}
+                key={setting.id}
                 className="basis-2/5 first:pl-4 pl-2 xs:basis-1/3"
               >
-                <LeagueOptionLink
-                  key={option.id}
-                  option={option}
+                <LeagueSettingLink
+                  key={setting.id}
+                  setting={setting}
                   leagueId={leagueId}
                 />
               </CarouselItem>
@@ -78,10 +78,10 @@ export default async function leagueSettingsLayout({
           <div className="p-4">
             <h2 className="text-lg font-heading mb-4">Impostazioni Lega</h2>
             <nav className="space-y-2">
-              {leagueSettings.map((option) => (
-                <LeagueOptionLink
-                  key={option.id}
-                  option={option}
+              {leagueSettings.map((setting) => (
+                <LeagueSettingLink
+                  key={setting.id}
+                  setting={setting}
                   leagueId={leagueId}
                   className="py-2.5 rounded-lg justify-start"
                 />
@@ -102,6 +102,6 @@ const leagueSettings = [
   { id: "market", label: "Mercato", icon: Suitcase },
 ];
 
-//  activeOption === option.id
+//  activeSetting === setting.id
 //                       ? "bg-primary text-primary-foreground"
 //                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
