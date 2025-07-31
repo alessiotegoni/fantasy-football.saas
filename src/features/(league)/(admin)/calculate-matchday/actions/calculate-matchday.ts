@@ -31,6 +31,7 @@ import {
   enrichLineupPlayers,
 } from "@/features/(league)/matches/utils/LineupPlayers";
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
+import { getGoals, getPoints } from "@/features/(league)/matches/utils/matchResult";
 
 enum CALCULATION_MESSAGES {
   CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
@@ -185,31 +186,32 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
     if (!totalVotes) continue;
 
-    const teams = [
-      { type: "home", teamId: homeTeamId },
-      { type: "away", teamId: awayTeamId },
-    ] as const;
+    const homeGoals = totalVotes.home
+      ? getGoals(totalVotes.home, goalThresholdSettings)
+      : 0;
+    const awayGoals = totalVotes.away
+      ? getGoals(totalVotes.away, goalThresholdSettings)
+      : 0;
+    const { homePoints, awayPoints } = getPoints(homeGoals, awayGoals);
 
-    for (const { type, teamId } of teams) {
-      const totalScore = totalVotes[type];
-
-      if (!teamId || !totalScore) continue;
-
-      const goals = 
-
-      // TODO: aggiungere soglia goal nelle opzioni della lega (informarsi prima)
-      // la soglia goal e' calcolabile dal totalScore + le impostazioni della lega
-      // dopo aver calcolato i goals, calcolare anche i punti (vincente: 3, perdente: -3, pareggio: 1)
-
-      const matchResult = {
+    if (homeTeamId && totalVotes.home) {
+      matchesResults.push({
         leagueMatchId: matchId,
-        teamId,
-        totalScore,
-        points: 0,
-        goals: 0,
-      };
+        teamId: homeTeamId,
+        totalScore: totalVotes.home,
+        points: homePoints,
+        goals: homeGoals,
+      });
+    }
 
-      matchesResults.push(matchResult);
+    if (awayTeamId && totalVotes.away) {
+      matchesResults.push({
+        leagueMatchId: matchId,
+        teamId: awayTeamId,
+        totalScore: totalVotes.away,
+        points: awayPoints,
+        goals: awayGoals,
+      });
     }
   }
 
