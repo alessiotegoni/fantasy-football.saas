@@ -1,6 +1,7 @@
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
+import { Button } from "@/components/ui/button";
 import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
 import CalculationsList from "@/features/(league)/(admin)/calculate-matchday/components/CalculationsList";
 import { getCalculations } from "@/features/(league)/(admin)/calculate-matchday/queries/calculate-matchday";
@@ -9,6 +10,8 @@ import {
   getLastEndedMatchday,
   getLiveSplit,
 } from "@/features/splits/queries/split";
+import { NavArrowRight, WarningTriangle } from "iconoir-react";
+import Link from "next/link";
 import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
@@ -49,12 +52,17 @@ async function SuspenseBoundary({
   const [matchday, matchdayCalcs, isCalendarGenerated] = await Promise.all([
     getLastEndedMatchday(splitId),
     getCalculations(leagueId, splitId),
-    hasGeneratedCalendar(leagueId, splitId)
+    hasGeneratedCalendar(leagueId, splitId),
   ]);
+
+  if (!isCalendarGenerated) {
+    return <CalendarNotGeneratedEmptyState leagueId={leagueId} />;
+  }
 
   if (!matchday) {
     return (
       <EmptyState
+        icon={WarningTriangle}
         title="Giornata non ancora calcolabile"
         description="Potrai calcolare la giornata dopo la mezzanotte e mezza"
         renderButton={() => <BackButton className="min-w-36" />}
@@ -80,5 +88,23 @@ async function SuspenseBoundary({
         )}
       </div>
     </>
+  );
+}
+
+function CalendarNotGeneratedEmptyState({ leagueId }: { leagueId: string }) {
+  return (
+    <EmptyState
+      icon={WarningTriangle}
+      title="Calendario non generato"
+      description="Per calcolare le giornate devi prima generare un calendario"
+      renderButton={() => (
+        <Button asChild>
+          <Link href={`/leagues/${leagueId}/admin/generate-calendar`}>
+            Crea calendario
+            <NavArrowRight className="size-5" />
+          </Link>
+        </Button>
+      )}
+    />
   );
 }
