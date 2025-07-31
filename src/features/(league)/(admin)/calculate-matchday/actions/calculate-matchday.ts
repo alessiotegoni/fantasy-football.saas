@@ -31,7 +31,10 @@ import {
   enrichLineupPlayers,
 } from "@/features/(league)/matches/utils/LineupPlayers";
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
-import { getGoals, getPoints } from "@/features/(league)/matches/utils/matchResult";
+import {
+  getGoals,
+  getPoints,
+} from "@/features/(league)/matches/utils/matchResult";
 
 enum CALCULATION_MESSAGES {
   CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",

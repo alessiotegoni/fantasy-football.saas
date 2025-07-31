@@ -52,7 +52,7 @@ async function SuspenseBoundary({
 
   const playersBonusMaluses = await getPlayersMatchdayBonusMaluses({
     matchdayId: matchInfo.splitMatchday.id,
-    playerIds: lineupsPlayers.map((player) => player.id),
+    playersIds: lineupsPlayers.map((player) => player.id),
   });
 
   const enrichedLineupPlayers = enrichLineupPlayers({
