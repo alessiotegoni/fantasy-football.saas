@@ -90,13 +90,13 @@ export async function getMarketSettings(leagueId: string) {
     getLeagueMarketSettingsTag(leagueId)
   );
 
-  const marketSettings = await db.query.leagueSettings.findFirst({
-    columns: {
-      releasePercentage: true,
-      isTradingMarketOpen: true,
-    },
-    where: (settings, { eq }) => eq(settings.leagueId, leagueId),
-  });
+  const [result] = await db
+    .select({
+      releasePercentage: leagueSettings.releasePercentage,
+      isTradingMarketOpen: leagueSettings.isTradingMarketOpen,
+    })
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
 
-  return marketSettings;
+  return result;
 }

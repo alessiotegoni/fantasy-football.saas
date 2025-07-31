@@ -9,7 +9,6 @@ export default async function LeagueMarketSettingsPage({
   const { leagueId } = await params;
 
   const marketSettings = await getMarketSettings(leagueId);
-  if (!marketSettings) return;
 
   return (
     <div className="max-w-[700px] mx-auto">
