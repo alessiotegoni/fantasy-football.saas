@@ -20,7 +20,10 @@ import {
   deleteMatchesResults,
   insertMatchesResults,
 } from "@/features/(league)/matches/db/matchResult";
-import { getBonusMalusesSettings } from "@/features/(league)/settings/queries/setting";
+import {
+  getBonusMalusesSettings,
+  getCalculationSettings,
+} from "@/features/(league)/settings/queries/setting";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 import {
@@ -127,11 +130,15 @@ export async function cancelCalculation(values: CancelCalculationSchema) {
 }
 
 async function calculateMatchesResults(data: CalculateMatchdaySchema) {
-  const [{ bonusMalusSettings: leagueCustomBonusMalus }, matches] =
-    await Promise.all([
-      getBonusMalusesSettings(data.leagueId),
-      getLeagueMatchdayMatches(data),
-    ]);
+  const [
+    { bonusMalusSettings: leagueCustomBonusMalus },
+    { goalThresholdSettings },
+    matches,
+  ] = await Promise.all([
+    getBonusMalusesSettings(data.leagueId),
+    getCalculationSettings(data.leagueId),
+    getLeagueMatchdayMatches(data),
+  ]);
 
   const matchesIds = matches.map((match) => match.id);
   const teamsIds = getMatchesTeamsIds(matches);
@@ -188,6 +195,8 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
       if (!teamId || !totalScore) continue;
 
+      const goals = 
+
       // TODO: aggiungere soglia goal nelle opzioni della lega (informarsi prima)
       // la soglia goal e' calcolabile dal totalScore + le impostazioni della lega
       // dopo aver calcolato i goals, calcolare anche i punti (vincente: 3, perdente: -3, pareggio: 1)
@@ -206,8 +215,6 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
 
   return matchesResults;
 }
-
-// FIXME: Rimuovere da RosterSettings president da playersPerRole
 
 function getTeamTacticalModule(
   teamsTacticalModules: {
