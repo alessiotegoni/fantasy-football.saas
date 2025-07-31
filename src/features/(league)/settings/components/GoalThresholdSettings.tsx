@@ -15,7 +15,6 @@ import { type GoalThresholdSettings } from "@/drizzle/schema";
 
 export function GoalThresholdSettings() {
   const form = useFormContext<CalculationSettingsSchema>();
-  const threshold = form.watch("goalThreshold");
 
   return (
     <FormFieldTooltip
@@ -42,6 +41,8 @@ export function GoalThresholdSettings() {
                         e.target.value === "" ? null : Number(e.target.value)
                       )
                     }
+                    min={40}
+                    max={100}
                   />
                 </FormControl>
               </FormFieldTooltip>
@@ -68,6 +69,8 @@ export function GoalThresholdSettings() {
                         e.target.value === "" ? null : Number(e.target.value)
                       )
                     }
+                    min={1}
+                    max={20}
                   />
                 </FormControl>
               </FormFieldTooltip>
@@ -76,13 +79,18 @@ export function GoalThresholdSettings() {
           )}
         />
       </div>
-      <GoalThresholdPreview {...threshold} />
+      <GoalThresholdPreview />
     </FormFieldTooltip>
   );
 }
 
-function GoalThresholdPreview({ base, interval }: GoalThresholdSettings) {
-  if (!base || !interval) return null;
+function GoalThresholdPreview() {
+  const form = useFormContext<CalculationSettingsSchema>();
+  const { base, interval } = form.watch("goalThreshold");
+
+  if (!base || !interval || form.getFieldState("goalThreshold").invalid) {
+    return null;
+  }
 
   const thresholds = Array.from({ length: 10 }, (_, i) => base + i * interval);
 

@@ -9,6 +9,7 @@ import {
 } from "../../schema/setting";
 import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import { GoalThresholdSettings } from "../GoalThresholdSettings";
+import SubmitButton from "@/components/SubmitButton";
 
 export function CalculationSettingsForm({
   leagueId,
@@ -31,6 +32,10 @@ export function CalculationSettingsForm({
         className="space-y-6"
       >
         <GoalThresholdSettings />
+
+        <SubmitButton loadingText="Salvando impostazioni" isLoading={loading}>
+          Salva Impostazioni Di Calcolo
+        </SubmitButton>
       </form>
     </Form>
   );
