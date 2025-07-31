@@ -16,7 +16,8 @@ export default function EmptyState({
 }: Props) {
   return (
     <div
-      className="flex flex-col justify-center items-center p-8 sm:py-12 bg-muted/30 rounded-2xl text-center
+      className="absolute top-1/2 left-1/2 w-full max-w-[600px] md:max-w-none p-4 -translate-1/2 md:static md:translate-none
+      flex flex-col justify-center items-center md:p-8 sm:py-12 md:bg-muted/30 rounded-2xl text-center
     text-sm md:text-base min-h-[300px]"
     >
       <div className="size-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -25,7 +26,7 @@ export default function EmptyState({
       <h3 className="text-xl font-heading mb-2">{title}</h3>
       <p className="text-muted-foreground">{description}</p>
       {renderButton && (
-        <Button asChild className="w-fit mt-7">
+        <Button asChild className="w-fit mt-9 md:mt-7">
           {renderButton()}
         </Button>
       )}
