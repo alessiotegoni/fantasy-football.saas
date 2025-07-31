@@ -1,7 +1,6 @@
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import CalculateEmptyState from "@/features/(league)/(admin)/calculate-matchday/components/CalculateEmptyState";
 import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
 import CalculationsList from "@/features/(league)/(admin)/calculate-matchday/components/CalculationsList";
 import { getCalculations } from "@/features/(league)/(admin)/calculate-matchday/queries/calculate-matchday";
@@ -69,15 +68,11 @@ async function SuspenseBoundary({
     <>
       {!isAlreadyCalculated && <CalculateMatchdayBanner matchday={matchday} />}
       <div>
-        {!isAlreadyCalculated && (
-          <h2 className="text-xl font-bold tracking-tight">
-            Giornate calcolate
-          </h2>
-        )}
+        <h2 className="text-lg font-semibold mb-2">Giornate calcolate</h2>
         {matchdayCalcs.length > 0 ? (
-          <CalculationsList calculations={matchdayCalcs} />
+          <CalculationsList leagueId={leagueId} calculations={matchdayCalcs} />
         ) : (
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground">
             Nessuna giornata è stata ancora calcolata.
           </p>
         )}

@@ -4,8 +4,10 @@ import CalculateMatchdayButton from "./CalculateMatchdayButton";
 import { cancelCalculation } from "../actions/calculate-matchday";
 
 export default function CalculationsList({
+  leagueId,
   calculations,
 }: {
+  leagueId: string;
   calculations: Calculation[];
 }) {
   return (
@@ -13,17 +15,27 @@ export default function CalculationsList({
       {calculations.map((c) => (
         <li
           key={c.id}
-          className="flex items-center justify-between rounded-lg border bg-card p-4 text-card-foreground"
+          className="flex items-center justify-between rounded-2xl border bg-card p-4 text-card-foreground"
         >
           <div>
-            <p className="font-semibold">Giornata {c.matchday.number}</p>
-            <p className="text-sm text-muted-foreground">
-              {new Date(c.calculatedAt).toLocaleDateString()}
-            </p>
+            <p className="font-semibold mb-1">Giornata {c.matchday.number}</p>
+            {c.status === "calculated" && (
+              <p className="text-sm text-muted-foreground">
+                Calcolata il {new Date(c.calculatedAt).toLocaleDateString()}
+              </p>
+            )}
+            {c.status === "cancelled" && (
+              <p className="text-sm text-destructive">Calcolo annullato</p>
+            )}
           </div>
           {c.status === "calculated" && (
             <ActionButton
-              action={cancelCalculation}
+              className="w-fit"
+              action={cancelCalculation.bind(null, {
+                calculationId: c.id,
+                leagueId,
+                matchdayId: c.matchday.id,
+              })}
               variant="destructive"
               loadingText="Annullo"
             >
@@ -32,6 +44,7 @@ export default function CalculationsList({
           )}
           {c.status === "cancelled" && (
             <CalculateMatchdayButton
+              className="w-fit"
               calculationId={c.id}
               matchdayId={c.matchday.id}
             >
