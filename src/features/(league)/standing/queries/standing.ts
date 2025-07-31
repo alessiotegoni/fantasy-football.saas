@@ -23,7 +23,7 @@ export async function getStanding(leagueId: string, splitId: number) {
       },
       totalScore: sum(leagueMatchResults.totalScore),
       points: sum(leagueMatchResults.points),
-      goals: sum(leagueMatchResults.goals),
+      goalsScored: sum(leagueMatchResults.goals),
       goalsConceded: sum(opponentResults.goals),
     })
     .from(leagueMatchResults)
