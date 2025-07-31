@@ -18,7 +18,7 @@ export function MarketSettingsForm({
   initialData,
 }: {
   leagueId: string;
-  initialData?: MarketSettingsSchema;
+  initialData: MarketSettingsSchema;
 }) {
   const { loading, saveMarketSettings } = useLeagueSettings(leagueId);
 
