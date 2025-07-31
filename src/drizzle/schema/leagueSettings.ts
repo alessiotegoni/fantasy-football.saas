@@ -43,7 +43,7 @@ export const leagueSettings = pgTable(
       .default('{"base": 58, "interval": 6}')
       .$type<GoalThresholdSettings>(),
 
-    maxMembers: smallint("max_members").notNull().default(20),
+    maxMembers: smallint("max_members").notNull().default(12),
     isTradingMarketOpen: boolean("trading_market_open")
       .notNull()
       .default(false),

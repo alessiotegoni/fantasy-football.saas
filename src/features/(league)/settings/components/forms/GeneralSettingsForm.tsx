@@ -16,16 +16,13 @@ export function GeneralSettingsForm({
   initialData,
 }: {
   leagueId: string;
-  initialData?: GeneralSettingsSchema;
+  initialData: GeneralSettingsSchema;
 }) {
   const { loading, saveGeneralSettings } = useLeagueSettings(leagueId);
 
   const form = useForm<GeneralSettingsSchema>({
     resolver: zodResolver(generalSettingsSchema),
-    defaultValues: initialData ?? {
-      initialCredits: 500,
-      maxMembers: 12,
-    },
+    defaultValues: initialData,
   });
 
   return (
