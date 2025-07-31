@@ -31,13 +31,21 @@ export const bonusMalusSchema = z.object({
   customBonusMalus: z.record(
     z.string(),
     z
-    .number()
-    .min(-10, "Il valore minimo è -10")
-    .max(10, "Il valore massimo è 10")
+      .number()
+      .min(-10, "Il valore minimo è -10")
+      .max(10, "Il valore massimo è 10")
   ),
 });
 
-// Schema per mercato 
+// Schema per calcolo delle giornate
+export const calculationSettingsSchema = z.object({
+  goalThreshold: z.object({
+    base: z.number().min(40).max(100),
+    interval: z.number().min(1).max(20),
+  }),
+});
+
+// Schema per mercato
 export const marketOptionsSchema = z.object({
   isTradingMarketOpen: z.boolean(),
   releasePercentage: z
