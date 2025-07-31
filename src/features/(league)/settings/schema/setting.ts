@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-// Schema per le opzioni generali
-export const generalOptionsSchema = z.object({
+// Schema per impostazioni generali
+export const generalSettingsSchema = z.object({
   initialCredits: z
     .number()
     .min(200, "I crediti iniziali devono essere almeno 200")
@@ -45,8 +45,8 @@ export const calculationSettingsSchema = z.object({
   }),
 });
 
-// Schema per mercato
-export const marketOptionsSchema = z.object({
+// Schema per impostazioni mercato
+export const marketSettingsSchema = z.object({
   isTradingMarketOpen: z.boolean(),
   releasePercentage: z
     .number({ message: "Deve essere un numero valido" })
@@ -54,7 +54,10 @@ export const marketOptionsSchema = z.object({
     .max(100, "La percentuale di svincolo devono essere un valore tra 0 e 100"),
 });
 
-export type GeneralOptionsSchema = z.infer<typeof generalOptionsSchema>;
+export type GeneralSettingsSchema = z.infer<typeof generalSettingsSchema>;
 export type RosterModulesSchema = z.infer<typeof rosterModulesSchema>;
 export type BonusMalusSchema = z.infer<typeof bonusMalusSchema>;
-export type MarketOptionsSchema = z.infer<typeof marketOptionsSchema>;
+export type CalculationSettingsSchema = z.infer<
+  typeof calculationSettingsSchema
+>;
+export type MarketSettingsSchema = z.infer<typeof marketSettingsSchema>;

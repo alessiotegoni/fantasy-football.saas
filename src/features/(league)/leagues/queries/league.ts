@@ -6,7 +6,7 @@ import {
 } from "../db/cache/league";
 import { isPremiumUnlocked } from "../permissions/league";
 import {
-  getLeagueGeneralOptionsTag,
+  getLeagueGeneralSettingsTag,
   getLeagueModulesTag,
   getLeaguePlayersPerRoleTag,
 } from "@/features/(league)/settings/db/cache/setting";
@@ -32,7 +32,7 @@ export async function getLeagueInviteCredentials(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueInviteCredentialsTag(leagueId),
-    getLeagueGeneralOptionsTag(leagueId),
+    getLeagueGeneralSettingsTag(leagueId),
     getLeagueProfileTag(leagueId)
   );
 

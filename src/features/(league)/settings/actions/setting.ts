@@ -1,35 +1,35 @@
 "use server";
 
 import { leagueSettings } from "@/drizzle/schema";
-import { updateleagueSettings as updateleagueSettingsDb } from "../db/setting";
+import { updateLeagueSettings as updateleagueSettingsDb } from "../db/setting";
 import {
   bonusMalusSchema,
   BonusMalusSchema,
-  generalOptionsSchema,
-  GeneralOptionsSchema,
-  marketOptionsSchema,
-  MarketOptionsSchema,
+  generalSettingsSchema,
+  GeneralSettingsSchema,
+  marketSettingsSchema,
+  MarketSettingsSchema,
   rosterModulesSchema,
   RosterModulesSchema,
 } from "../schema/setting";
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
-import { revalidateLeagueRosterOptionsCache } from "../db/cache/setting";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/lib/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
+import { revalidateLeagueRosterSettingsCache } from "../db/cache/setting";
 
-enum LEAGUE_OPTIONS_MESSAGES {
+enum LEAGUE_SETTINGS_MESSAGES {
   REQUIRE_ADMIN = "Devi essere admin della lega per modificare le opzioni",
   LEAGUE_NOT_FOUND = "Lega non trovata",
 }
 
 export async function updateGeneralOptions(
-  values: GeneralOptionsSchema,
+  values: GeneralSettingsSchema,
   leagueId: string
 ) {
-  const { isValid, error, data } = validateSchema<GeneralOptionsSchema>(
-    generalOptionsSchema,
+  const { isValid, error, data } = validateSchema<GeneralSettingsSchema>(
+    generalSettingsSchema,
     values
   );
   if (!isValid) return error;
@@ -48,7 +48,7 @@ export async function updateRosterModuleOptions(
   if (!isValid) return error;
 
   const res = await updateOptions({ ...data, leagueId });
-  revalidateLeagueRosterOptionsCache(leagueId);
+  revalidateLeagueRosterSettingsCache(leagueId);
 
   return res;
 }
@@ -67,11 +67,11 @@ export async function updateBonusMalusOptions(
 }
 
 export async function updateMarketOptions(
-  values: MarketOptionsSchema,
+  values: MarketSettingsSchema,
   leagueId: string
 ) {
-  const { isValid, error, data } = validateSchema<MarketOptionsSchema>(
-    marketOptionsSchema,
+  const { isValid, error, data } = validateSchema<MarketSettingsSchema>(
+    marketSettingsSchema,
     values
   );
   if (!isValid) return error;
@@ -84,19 +84,20 @@ async function updateOptions(options: typeof leagueSettings.$inferInsert) {
   if (!userId) return createError(VALIDATION_ERROR);
 
   if (!(await isLeagueAdmin(userId, options.leagueId))) {
-    return createError(LEAGUE_OPTIONS_MESSAGES.REQUIRE_ADMIN);
+    return createError(LEAGUE_SETTINGS_MESSAGES.REQUIRE_ADMIN);
   }
 
   const visibility = await getLeagueVisibility(options.leagueId);
-  if (!visibility) return createError(LEAGUE_OPTIONS_MESSAGES.LEAGUE_NOT_FOUND);
+  if (!visibility)
+    return createError(LEAGUE_SETTINGS_MESSAGES.LEAGUE_NOT_FOUND);
 
   const leagueId = await updateleagueSettingsDb(options, visibility);
-  if (!leagueId) return createError(LEAGUE_OPTIONS_MESSAGES.LEAGUE_NOT_FOUND);
+  if (!leagueId) return createError(LEAGUE_SETTINGS_MESSAGES.LEAGUE_NOT_FOUND);
 
   return createSuccess("Opzioni aggiornate con successo", null);
 }
 
-function getLeagueVisibility(leagueId: string) {
+async function getLeagueVisibility(leagueId: string) {
   return db.query.leagues
     .findFirst({
       columns: {
