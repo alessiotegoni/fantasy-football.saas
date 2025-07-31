@@ -9,7 +9,7 @@ import {
   RosterModulesSchema,
 } from "@/features/(league)/settings/schema/setting";
 import {
-  calculationSettings,
+  updateCalculationSettings,
   updateBonusMalusSettings,
   updateGeneralSettings,
   updateMarketSettings,
@@ -44,7 +44,7 @@ export function useLeagueSettings(leagueId: string) {
   };
 
   const saveCalculationsSettings = async (data: CalculationSettingsSchema) => {
-    return wrapAction(calculationSettings, data);
+    return wrapAction(updateCalculationSettings, data);
   };
 
   const saveBonusMalusSettings = async (data: BonusMalusSchema) => {

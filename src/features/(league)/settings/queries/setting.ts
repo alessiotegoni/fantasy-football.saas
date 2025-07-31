@@ -78,7 +78,7 @@ export async function getCalculationSettings(leagueId: string) {
   );
 
   const [result] = await db
-    .select({ goalThreshold: leagueSettings.goalThresholdSettings })
+    .select({ goalThresholdSettings: leagueSettings.goalThresholdSettings })
     .from(leagueSettings)
     .where(eq(leagueSettings.leagueId, leagueId));
 

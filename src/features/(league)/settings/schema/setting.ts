@@ -39,14 +39,14 @@ export const bonusMalusSchema = z.object({
 
 // Schema per calcolo delle giornate
 export const calculationSettingsSchema = z.object({
-  goalThreshold: z.object({
+  goalThresholdSettings: z.object({
     base: z
-      .number()
+      .number({ message: "Deve essere un numero" })
       .int("Deve essere un numero intero")
       .min(40, "Deve essere un numero maggiore o uguale a 40")
       .max(100, "Deve essere un numero minore o uguale a 100"),
     interval: z
-      .number()
+      .number({ message: "Deve essere un numero" })
       .int("Deve essere un numero intero")
       .min(1, "Deve essere un numero maggiore o uguale di 1")
       .max(20, "Deve essere un numero minore o uguale di 20"),

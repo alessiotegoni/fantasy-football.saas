@@ -24,7 +24,7 @@ export function GoalThresholdSettings() {
       <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-4">
         <FormField
           control={form.control}
-          name="goalThreshold.base"
+          name="goalThresholdSettings.base"
           render={({ field }) => (
             <FormItem>
               <FormFieldTooltip
@@ -52,7 +52,7 @@ export function GoalThresholdSettings() {
         />
         <FormField
           control={form.control}
-          name="goalThreshold.interval"
+          name="goalThresholdSettings.interval"
           render={({ field }) => (
             <FormItem>
               <FormFieldTooltip
@@ -86,9 +86,9 @@ export function GoalThresholdSettings() {
 
 function GoalThresholdPreview() {
   const form = useFormContext<CalculationSettingsSchema>();
-  const { base, interval } = form.watch("goalThreshold");
+  const { base, interval } = form.watch("goalThresholdSettings");
 
-  if (!base || !interval || form.getFieldState("goalThreshold").invalid) {
+  if (!base || !interval || form.getFieldState("goalThresholdSettings").invalid) {
     return null;
   }
 

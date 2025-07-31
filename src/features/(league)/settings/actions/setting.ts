@@ -68,7 +68,7 @@ export async function updateBonusMalusSettings(
   return await updateSettings({ ...data, leagueId });
 }
 
-export async function calculationSettings(
+export async function updateCalculationSettings(
   values: CalculationSettingsSchema,
   leagueId: string
 ) {
