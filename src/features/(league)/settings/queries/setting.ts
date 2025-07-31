@@ -5,6 +5,7 @@ import { leagueSettings } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   getLeagueBonusMalusSettingsTag,
+  getLeagueCalculationSettingsTag,
   getLeagueGeneralSettingsTag,
   getLeagueMarketSettingsTag,
   getLeagueRosterSettingsTag,
@@ -67,15 +68,15 @@ export async function getBonusMalusesSettings(leagueId: string) {
   return result;
 }
 
-export async function getSettings(leagueId: string) {
+export async function getCalculationSettings(leagueId: string) {
   "use cache";
   cacheTag(
     getLeagueSettingsTag(leagueId),
-    getLeagueBonusMalusSettingsTag(leagueId)
+    getLeagueCalculationSettingsTag(leagueId)
   );
 
   const [result] = await db
-    .select({ bonusMalusSettings: leagueSettings.customBonusMalus })
+    .select({ goalThreshold: leagueSettings.goalThresholdSettings })
     .from(leagueSettings)
     .where(eq(leagueSettings.leagueId, leagueId));
 
