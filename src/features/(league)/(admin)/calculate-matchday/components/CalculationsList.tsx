@@ -29,18 +29,7 @@ export default function CalculationsList({
             )}
           </div>
           {c.status === "calculated" && (
-            <ActionButton
-              className="w-fit"
-              action={cancelCalculation.bind(null, {
-                calculationId: c.id,
-                leagueId,
-                matchdayId: c.matchday.id,
-              })}
-              variant="destructive"
-              loadingText="Annullo"
-            >
-              Annulla
-            </ActionButton>
+            <CancelCalculationButton leagueId={leagueId} calculation={c} />
           )}
           {c.status === "cancelled" && (
             <CalculateMatchdayButton
@@ -54,5 +43,33 @@ export default function CalculationsList({
         </li>
       ))}
     </ul>
+  );
+}
+
+function CancelCalculationButton({
+  leagueId,
+  calculation: {
+    id: calculationId,
+    matchday: { id: matchdayId },
+  },
+}: {
+  leagueId: string;
+  calculation: Calculation;
+}) {
+  return (
+    <ActionButton
+      className="w-fit"
+      action={cancelCalculation.bind(null, {
+        calculationId,
+        leagueId,
+        matchdayId,
+      })}
+      variant="destructive"
+      loadingText="Annullo"
+      requireAreYouSure
+      areYouSureDescription="Sei sicuro di voler annullare la giornata? Tutti i risultati verranno azzerati, puoi comunque ricalcolarla quando vuoi prima della fine dello split"
+    >
+      Annulla
+    </ActionButton>
   );
 }
