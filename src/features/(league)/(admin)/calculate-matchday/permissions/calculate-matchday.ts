@@ -11,6 +11,7 @@ import { createError, createSuccess } from "@/lib/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
 import { isMatchdayCalculable } from "../utils/calculate-matchday";
+import { hasGeneratedCalendar } from "../../calendar/permissions/calendar";
 
 enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",
@@ -20,6 +21,7 @@ enum CALCULATE_ERRORS {
   MATCHDAY_NOT_CALCULABLE = "Puoi calcolare la giornata solo dopo la mezzanotte e mezza",
   MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
   CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
+  CALENDAR_NOT_GENERATED = "Non puoi calcolare/annullare le giornate senza aver prima generato un calendario",
 }
 
 export async function basePermissions({
@@ -46,7 +48,15 @@ export async function basePermissions({
     return createError(CALCULATE_ERRORS.INVALID_SPLIT);
   }
 
-  const splitMatchdays = await getSplitMatchdays(liveSplit.id);
+  const [splitMatchdays, isCalendarGenerated] = await Promise.all([
+    getSplitMatchdays(liveSplit.id),
+    hasGeneratedCalendar(leagueId, liveSplit.id),
+  ]);
+
+  if (!isCalendarGenerated) {
+    return createError(CALCULATE_ERRORS.CALENDAR_NOT_GENERATED);
+  }
+
   const isValidMatchday = splitMatchdays.some(
     (matchday) => matchday.id === matchdayId
   );
