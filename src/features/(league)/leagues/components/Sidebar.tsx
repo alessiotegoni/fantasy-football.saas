@@ -153,7 +153,7 @@ export const publicSections = [
       },
       {
         name: "Impostazioni lega",
-        href: "/leagues/:leagueId//general",
+        href: "/leagues/:leagueId/settings/general",
         icon: Settings,
         basePath: "/leagues/:leagueId/",
       },

@@ -67,7 +67,7 @@ function CancelCalculationButton({
       variant="destructive"
       loadingText="Annullo"
       requireAreYouSure
-      areYouSureDescription="Sei sicuro di voler annullare la giornata? Tutti i risultati verranno azzerati, puoi comunque ricalcolarla quando vuoi prima della fine dello split"
+      areYouSureDescription="Sei sicuro di voler annullare la giornata? Tutti i risultati dei match di questa giornata verranno azzerati, puoi comunque ricalcolarla quando vuoi prima della fine dello split"
     >
       Annulla
     </ActionButton>

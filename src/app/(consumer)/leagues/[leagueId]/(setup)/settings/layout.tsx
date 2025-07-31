@@ -101,7 +101,3 @@ const leagueSettings = [
   { id: "calculation", label: "Calcolo", icon: Calculator },
   { id: "market", label: "Mercato", icon: Suitcase },
 ];
-
-//  activeSetting === setting.id
-//                       ? "bg-primary text-primary-foreground"
-//                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
