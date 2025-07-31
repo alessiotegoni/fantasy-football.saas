@@ -26,7 +26,7 @@ export const leagueOptions = pgTable(
     initialCredits: smallint("initial_credits").notNull().default(500),
     playersPerRole: jsonb("players_per_role")
       .notNull()
-      .default('{"1": 2, "2": 3, "3": 4, "4": 3, "5": 1}')
+      .default('{"2": 3, "3": 4, "4": 3, "5": 1}')
       .$type<PlayersPerRole>(),
     tacticalModules: jsonb("tactical_modules")
       .notNull()
