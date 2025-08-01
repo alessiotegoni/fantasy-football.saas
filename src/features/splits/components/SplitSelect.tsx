@@ -31,7 +31,7 @@ export default function SplitSelect({
   return (
     !!splits.length && (
       <Select onValueChange={handleChange} defaultValue={defaultSplitId}>
-        <SelectTrigger className="w-[140px]">
+        <SelectTrigger className="cursor-pointer w-[120px] sm:w-[130px] p-3 px-3.5 sm:p-5 sm:py-3.5">
           <SelectValue placeholder="Seleziona split" />
         </SelectTrigger>
         <SelectContent>
