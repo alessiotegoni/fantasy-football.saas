@@ -3,6 +3,7 @@ import { leagueMatchResults } from "@/drizzle/schema";
 import { createError } from "@/lib/helpers";
 import { inArray } from "drizzle-orm";
 import { revalidateMatchResultsCache } from "./cache/match";
+import { revalidateLeagueStandingCache } from "../../standing/db/cache/standing";
 
 enum DB_ERROR_MESSAGES {
   ADD_MATCHES_RESULTS = "Errore nell'aggiunta dei risultati dei match",
@@ -25,6 +26,7 @@ export async function insertMatchesResults(
 
   const matchesIds = results.map((result) => result.leagueMatchId);
   revalidateMatchResultsCache(leagueId, matchesIds);
+  revalidateLeagueStandingCache(leagueId);
 }
 
 export async function deleteMatchesResults(
@@ -37,4 +39,5 @@ export async function deleteMatchesResults(
     .returning({ matchId: leagueMatchResults.leagueMatchId });
 
   revalidateMatchResultsCache(leagueId, matchesIds);
+  revalidateLeagueStandingCache(leagueId);
 }
