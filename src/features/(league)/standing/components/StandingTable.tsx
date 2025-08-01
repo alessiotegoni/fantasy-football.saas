@@ -2,14 +2,19 @@
 
 import { StandingData } from "../queries/standing";
 import { cn } from "@/lib/utils";
+import { LeaderboardStar } from "iconoir-react";
+
+type Props = {
+  data: StandingData[];
+  isExtended: boolean;
+  isSplitEnded: boolean;
+};
 
 export default function StandingTable({
   data,
   isExtended,
-}: {
-  data: StandingData[];
-  isExtended: boolean;
-}) {
+  isSplitEnded,
+}: Props) {
   return (
     <div className="bg-muted/30 rounded-2xl overflow-hidden">
       {/* Header */}
@@ -55,26 +60,38 @@ export default function StandingTable({
             >
               {/* Team Info */}
               <div className="flex items-center">
-                <div
-                  className={`w-1 h-8 rounded-r mr-2 xs:mr-3 ${
-                    index === 0
-                      ? "bg-blue-500"
-                      : index < 3
-                      ? "bg-green-500"
-                      : isExtended
-                      ? "bg-transparent"
-                      : index === data.length - 1
-                      ? "bg-destructive"
-                      : "bg-transparent"
-                  }`}
-                />
-                <span className="text-secondary font-bold text-lg mr-2 xs:mr-3">
-                  {index + 1}
-                </span>
+                {isSplitEnded &&
+                index === 0 &&
+                parseInt(standing?.points ?? "0") > 0 ? (
+                  <LeaderboardStar className="text-primary size-6 mr-2 xs:mr-3" />
+                ) : (
+                  <>
+                    <div
+                      className={`w-1 h-5 sm:h-8 rounded-r mr-2 xs:mr-3 ${
+                        index === 0
+                          ? "bg-blue-500"
+                          : index < 3
+                          ? "bg-green-500"
+                          : isExtended
+                          ? "bg-transparent"
+                          : index === data.length - 1
+                          ? "bg-destructive"
+                          : "bg-transparent"
+                      }`}
+                    />
+                    <span className="text-secondary font-bold text-lg mr-2 xs:mr-3">
+                      {index + 1}
+                    </span>
+                  </>
+                )}
                 <span
                   className={cn(
                     "xs:text-sm sm:text-base font-medium truncate",
-                    !isExtended ? "text-xs" : "text-sm"
+                    !isExtended ? "text-xs" : "text-sm",
+                    isSplitEnded &&
+                      index === 0 &&
+                      parseInt(standing?.points ?? "0") > 0 &&
+                      "text-primary"
                   )}
                 >
                   {standing.team.name}

@@ -5,7 +5,13 @@ import { StandingData } from "../queries/standing";
 import { StandingToggle } from "./StandingToggle";
 import StandingTable from "./StandingTable";
 
-export default function StandingWrapper({ data }: { data: StandingData[] }) {
+export default function StandingWrapper({
+  data,
+  isSplitEnded,
+}: {
+  data: StandingData[];
+  isSplitEnded: boolean;
+}) {
   const [isExtended, setIsExtended] = useLocalStorage(
     "standing-extended-view",
     false
@@ -14,7 +20,7 @@ export default function StandingWrapper({ data }: { data: StandingData[] }) {
   return (
     <>
       <StandingToggle isExtended={isExtended} onToggle={setIsExtended} />
-      <StandingTable data={data} isExtended={isExtended} />
+      <StandingTable data={data} isExtended={isExtended} isSplitEnded={isSplitEnded} />
     </>
   );
 }

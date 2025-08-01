@@ -71,7 +71,12 @@ async function SuspenseBoundary({
 
   console.log(standingData);
 
-  return <StandingWrapper data={mockStandingsData} />;
+  return (
+    <StandingWrapper
+      data={mockStandingsData}
+      isSplitEnded={selectedSplit.status === "ended"}
+    />
+  );
 }
 
 const mockStandingsData = [
