@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { Leaderboard, Settings } from "iconoir-react";
 import { Switch } from "@/components/ui/switch";
 
 type Props = {
@@ -10,30 +10,15 @@ type Props = {
 
 export function StandingToggle({ isExtended, onToggle }: Props) {
   return (
-    <div className="flex items-center justify-between p-4 bg-gray-800 rounded-xl border border-gray-700 mb-6">
-      <div className="flex items-center space-x-3">
-        <Settings className="w-5 h-5 text-gray-400" />
-        <span className="text-white font-medium">
-          Impostazioni visualizzazione
+    <div className="flex items-center justify-between p-3 xs:p-4 bg-muted/30 rounded-2xl border border-border mb-6">
+      <div className="flex items-center gap-3">
+        <Leaderboard className="size-6 text-muted-foreground" />
+        <span className="text-sm xs:text-base font-medium">
+          Classifica estesa
         </span>
       </div>
-      <div className="flex items-center space-x-3">
-        <span
-          className={`text-sm ${
-            !isExtended ? "text-blue-400" : "text-gray-400"
-          }`}
-        >
-          Normale
-        </span>
-        <Switch checked={isExtended} onCheckedChange={onToggle} />
-        <span
-          className={`text-sm ${
-            isExtended ? "text-blue-400" : "text-gray-400"
-          }`}
-        >
-          Estesa
-        </span>
-      </div>
+
+      <Switch checked={isExtended} onCheckedChange={onToggle} />
     </div>
   );
 }

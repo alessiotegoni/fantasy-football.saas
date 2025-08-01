@@ -72,7 +72,7 @@ async function SuspenseBoundary({
 
   console.log(standingData);
 
-  return <StandingWrapper data={standingData} />;
+  return <StandingWrapper data={mockStandingsData} />;
 }
 
 const mockStandingsData = [
