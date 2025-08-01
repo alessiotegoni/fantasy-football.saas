@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import { StandingMobileTable } from "@/features/(league)/standing/components/StandingMobileTable";
+import StandingWrapper from "@/features/(league)/standing/components/StandingWrapper";
 import { getLeagueStandingData } from "@/features/(league)/standing/queries/standing";
 import SplitSelect from "@/features/splits/components/SplitSelect";
 import { getSplits, Split } from "@/features/splits/queries/split";
@@ -71,7 +72,7 @@ async function SuspenseBoundary({
 
   console.log(standingData);
 
-  return <StandingMobileTable data={mockStandingsData} isExtended={false} />;
+  return <StandingWrapper data={standingData} />;
 }
 
 const mockStandingsData = [
