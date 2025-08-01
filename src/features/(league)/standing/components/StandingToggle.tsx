@@ -11,7 +11,10 @@ type Props = {
 export function StandingToggle({ isExtended, onToggle }: Props) {
   return (
     <div className="flex items-center justify-between p-3 xs:p-4 bg-muted/30 rounded-2xl border border-border mb-6">
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3 cursor-pointer"
+        onClick={onToggle.bind(null, !isExtended)}
+      >
         <Leaderboard className="size-6 text-muted-foreground" />
         <span className="text-sm xs:text-base font-medium">
           Classifica estesa
