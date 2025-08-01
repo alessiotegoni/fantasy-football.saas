@@ -15,6 +15,11 @@ export default function StandingTable({
   isExtended,
   isSplitEnded,
 }: Props) {
+  const totalScores = data.map((s) => parseFloat(s.totalScore ?? "0"));
+
+  const minScoreIndex = getMinScoreIndex(data, totalScores);
+  const maxScoreIndex = getMaxScoreIndex(data, totalScores);
+
   return (
     <div className="bg-muted/30 rounded-2xl overflow-hidden">
       {/* Header */}
@@ -99,7 +104,7 @@ export default function StandingTable({
               </div>
 
               {isExtended ? (
-                <div className="grid grid-cols-8 gap-2 sm:text-center text-sm sm:text-base font-medium text-muted-foreground">
+                <div className="grid grid-cols-8 gap-1 xs:gap-4 sm:text-center text-sm sm:text-base font-medium text-muted-foreground">
                   <p>{standing.wins + standing.draws + standing.losses}</p>
                   <p>{standing.wins}</p>
                   <p>{standing.draws}</p>
@@ -109,15 +114,28 @@ export default function StandingTable({
                   <p className="text-secondary font-bold sm:text-lg">
                     {standing.points}
                   </p>
-                  <p>{standing.totalScore}</p>
+                  <p
+                    className={cn(
+                      index === maxScoreIndex && "text-green-500",
+                      index === minScoreIndex && "text-destructive"
+                    )}
+                  >
+                    {formatTotalScore(standing.totalScore)}
+                  </p>
                 </div>
               ) : (
-                <div className="flex justify-between items-center gap-4">
+                <div className="flex justify-between items-center gap-5">
                   <p className="text-secondary font-bold sm:text-lg">
                     {standing.points}
                   </p>
-                  <p className="text-muted-foreground text-sm font-medium">
-                    {standing.totalScore}
+                  <p
+                    className={cn(
+                      "text-muted-foreground text-sm font-medium",
+                      index === maxScoreIndex && "text-green-500",
+                      index === minScoreIndex && "text-destructive"
+                    )}
+                  >
+                    {formatTotalScore(standing.totalScore)}
                   </p>
                 </div>
               )}
@@ -127,4 +145,29 @@ export default function StandingTable({
       </div>
     </div>
   );
+}
+
+function getMinScoreIndex(data: StandingData[], scores: number[]) {
+  const minTotalScore = Math.min(...scores);
+
+  const minScoreIndex = data.findLastIndex(
+    (s) => parseFloat(s.totalScore ?? "0") === minTotalScore
+  );
+
+  return minScoreIndex;
+}
+
+function getMaxScoreIndex(data: StandingData[], scores: number[]) {
+  const maxTotalScore = Math.max(...scores);
+
+  const maxScoreIndex = data.findIndex(
+    (s) => parseFloat(s.totalScore ?? "0") === maxTotalScore
+  );
+
+  return maxScoreIndex;
+}
+
+function formatTotalScore(score: string | null) {
+  const number = parseFloat(score ?? "0");
+  return Math.ceil(number);
 }

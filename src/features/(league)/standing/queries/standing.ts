@@ -24,7 +24,6 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
       team: {
         id: leagueMatchResults.teamId,
         name: leagueMemberTeams.name,
-        imageUrl: leagueMemberTeams.imageUrl,
       },
       totalScore: sum(leagueMatchResults.totalScore),
       points: sum(leagueMatchResults.points),
