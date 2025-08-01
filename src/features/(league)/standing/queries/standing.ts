@@ -3,16 +3,20 @@ import { leagueMatchResults } from "@/drizzle/schema/leagueMatchResults";
 import { leagueMatches } from "@/drizzle/schema/leagueMatches";
 import { splitMatchdays } from "@/drizzle/schema/splitMatchdays";
 import { leagueMemberTeams } from "@/drizzle/schema/leagueMemberTeams";
-import { and, eq, sum, desc, ne, asc } from "drizzle-orm";
+import { and, eq, sum, desc, ne, asc, sql } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueStandingTag } from "../db/cache/standing";
 import { alias } from "drizzle-orm/pg-core";
 
-export async function getStanding(leagueId: string, splitId: number) {
+export async function getLeagueStanding(leagueId: string, splitId: number) {
   "use cache";
   cacheTag(getLeagueStandingTag(leagueId));
 
   const opponentResults = alias(leagueMatchResults, "opponent_results");
+
+  const goalDifference = sql<number>`${sum(leagueMatchResults.goals)} - ${sum(
+    opponentResults.goals
+  )}`;
 
   const standings = await db
     .select({
@@ -25,6 +29,10 @@ export async function getStanding(leagueId: string, splitId: number) {
       points: sum(leagueMatchResults.points),
       goalsScored: sum(leagueMatchResults.goals),
       goalsConceded: sum(opponentResults.goals),
+      goalDifference,
+      wins: sql<number>`sum(case when ${leagueMatchResults.points} = 3 then 1 else 0 end)`,
+      draws: sql<number>`sum(case when ${leagueMatchResults.points} = 1 then 1 else 0 end)`,
+      losses: sql<number>`sum(case when ${leagueMatchResults.points} = -3 then 1 else 0 end)`,
     })
     .from(leagueMatchResults)
     .innerJoin(
@@ -57,7 +65,8 @@ export async function getStanding(leagueId: string, splitId: number) {
       desc(sum(leagueMatchResults.points)),
       desc(sum(leagueMatchResults.totalScore)),
       desc(sum(leagueMatchResults.goals)),
-      asc(sum(opponentResults.goals))
+      asc(sum(opponentResults.goals)),
+      desc(goalDifference)
     );
 
   return standings;
