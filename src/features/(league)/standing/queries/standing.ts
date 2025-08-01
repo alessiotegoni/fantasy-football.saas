@@ -7,10 +7,11 @@ import { and, eq, sum, desc, ne, asc, sql } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueStandingTag } from "../db/cache/standing";
 import { alias } from "drizzle-orm/pg-core";
+import { getLeagueTeamsTag } from "../../teams/db/cache/leagueTeam";
 
 export async function getLeagueStandingData(leagueId: string, splitId: number) {
   "use cache";
-  cacheTag(getLeagueStandingTag(leagueId));
+  cacheTag(getLeagueStandingTag(leagueId), getLeagueTeamsTag(leagueId));
 
   const opponentResults = alias(leagueMatchResults, "opponent_results");
 
@@ -18,7 +19,7 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
     opponentResults.goals
   )}`;
 
-  const result = await db
+  const results = await db
     .select({
       team: {
         id: leagueMatchResults.teamId,
@@ -74,7 +75,7 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
       desc(goalDifference)
     );
 
-  return result;
+  return results;
 }
 
 export type StandingData = Awaited<
