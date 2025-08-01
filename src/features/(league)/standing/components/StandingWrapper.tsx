@@ -2,9 +2,8 @@
 
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { StandingData } from "../queries/standing";
-import { useIsMobile } from "@/hooks/useMobile";
 import { StandingToggle } from "./StandingToggle";
-import { StandingMobileTable } from "./StandingMobileTable";
+import StandingTable from "./StandingTable";
 
 export default function StandingWrapper({ data }: { data: StandingData[] }) {
   const [isExtended, setIsExtended] = useLocalStorage(
@@ -12,14 +11,10 @@ export default function StandingWrapper({ data }: { data: StandingData[] }) {
     false
   );
 
-  const isMobile = useIsMobile();
-
   return (
     <>
       <StandingToggle isExtended={isExtended} onToggle={setIsExtended} />
-      {isMobile ? (
-        <StandingMobileTable data={data} isExtended={isExtended} />
-      ) : null}
+      <StandingTable data={data} isExtended={isExtended} />
     </>
   );
 }

@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import { StandingMobileTable } from "@/features/(league)/standing/components/StandingMobileTable";
+import { StandingMobileTable } from "@/features/(league)/standing/components/StandingTable";
 import StandingWrapper from "@/features/(league)/standing/components/StandingWrapper";
 import { getLeagueStandingData } from "@/features/(league)/standing/queries/standing";
 import SplitSelect from "@/features/splits/components/SplitSelect";
