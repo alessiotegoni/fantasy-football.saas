@@ -1,5 +1,7 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
+import { StandingMobileTable } from "@/features/(league)/standing/components/StandingMobileTable";
+import { getLeagueStandingData } from "@/features/(league)/standing/queries/standing";
 import SplitSelect from "@/features/splits/components/SplitSelect";
 import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
@@ -64,4 +66,133 @@ async function SuspenseBoundary({
       />
     );
   }
+
+  const standingData = await getLeagueStandingData(leagueId, selectedSplit.id);
+
+  console.log(standingData);
+
+  return <StandingMobileTable data={mockStandingsData} isExtended={false} />;
 }
+
+const mockStandingsData = [
+  {
+    team: {
+      id: "1",
+      name: "RESTIVO FC",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1250",
+    points: "45",
+    goalsScored: "28",
+    goalsConceded: "12",
+    goalDifference: 16,
+    wins: 14,
+    draws: 3,
+    losses: 1,
+  },
+  {
+    team: {
+      id: "2",
+      name: "botafiga fc",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1180",
+    points: "42",
+    goalsScored: "25",
+    goalsConceded: "15",
+    goalDifference: 10,
+    wins: 13,
+    draws: 3,
+    losses: 2,
+  },
+  {
+    team: {
+      id: "3",
+      name: "VillainsAlwaysWin",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1165",
+    points: "38",
+    goalsScored: "22",
+    goalsConceded: "18",
+    goalDifference: 4,
+    wins: 11,
+    draws: 5,
+    losses: 2,
+  },
+  {
+    team: {
+      id: "4",
+      name: "FREEBOSSETTIFC",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1145",
+    points: "35",
+    goalsScored: "20",
+    goalsConceded: "16",
+    goalDifference: 4,
+    wins: 10,
+    draws: 5,
+    losses: 3,
+  },
+  {
+    team: {
+      id: "5",
+      name: "Coca Juniors",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1120",
+    points: "32",
+    goalsScored: "19",
+    goalsConceded: "20",
+    goalDifference: -1,
+    wins: 9,
+    draws: 5,
+    losses: 4,
+  },
+  {
+    team: {
+      id: "6",
+      name: "poggioletto",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1095",
+    points: "28",
+    goalsScored: "16",
+    goalsConceded: "22",
+    goalDifference: -6,
+    wins: 8,
+    draws: 4,
+    losses: 6,
+  },
+  {
+    team: {
+      id: "7",
+      name: "BERLUSCA DORTMUND",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1070",
+    points: "25",
+    goalsScored: "14",
+    goalsConceded: "25",
+    goalDifference: -11,
+    wins: 7,
+    draws: 4,
+    losses: 7,
+  },
+  {
+    team: {
+      id: "8",
+      name: "riportainvitailveccjioditatore",
+      imageUrl: "/placeholder.svg?height=32&width=32",
+    },
+    totalScore: "1045",
+    points: "22",
+    goalsScored: "12",
+    goalsConceded: "28",
+    goalDifference: -16,
+    wins: 6,
+    draws: 4,
+    losses: 8,
+  },
+];
