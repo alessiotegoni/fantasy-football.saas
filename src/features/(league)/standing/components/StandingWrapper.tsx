@@ -4,6 +4,7 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { StandingData } from "../queries/standing";
 import { StandingToggle } from "./StandingToggle";
 import StandingTable from "./StandingTable";
+import StandingLegend from "./StandingLegend";
 
 export default function StandingWrapper({
   data,
@@ -20,7 +21,12 @@ export default function StandingWrapper({
   return (
     <>
       <StandingToggle isExtended={isExtended} onToggle={setIsExtended} />
-      <StandingTable data={data} isExtended={isExtended} isSplitEnded={isSplitEnded} />
+      <StandingTable
+        data={data}
+        isExtended={isExtended}
+        isSplitEnded={isSplitEnded}
+      />
+      <StandingLegend />
     </>
   );
 }

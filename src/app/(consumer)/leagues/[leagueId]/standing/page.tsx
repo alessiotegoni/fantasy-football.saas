@@ -191,7 +191,7 @@ const mockStandingsData = [
       name: "riportainvitailveccjioditatore",
       imageUrl: "/placeholder.svg?height=32&width=32",
     },
-    totalScore: "1045",
+    totalScore: "1080",
     points: "22",
     goalsScored: "12",
     goalsConceded: "28",

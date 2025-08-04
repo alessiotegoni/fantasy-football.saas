@@ -19,6 +19,8 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
     opponentResults.goals
   )}`;
 
+  // TODO: funzione per vedere quali team accederanno ai play in, quarti e semifinali (vedi chatgpt)
+
   const results = await db
     .select({
       team: {
