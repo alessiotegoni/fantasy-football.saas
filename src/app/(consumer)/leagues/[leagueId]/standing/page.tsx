@@ -51,7 +51,7 @@ async function SuspenseBoundary({
   lastSplit?: Split;
 }) {
   let selectedSplit = lastSplit;
-
+  
   const selectedSplitId = parseInt((await selectedSplitPromise) ?? "0");
 
   if (selectedSplitId && validateSerialId(selectedSplitId).success) {

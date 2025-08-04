@@ -1,10 +1,11 @@
 import { Clock, FastArrowDown, FastArrowRight } from "iconoir-react";
-import { TradeStatusTheme } from "../utils/trade";
+import { groupTradePlayers, TradeStatusTheme } from "../utils/trade";
 import { TradeCardProps } from "./TradeCard";
 import TeamInfo from "./TradeTeamInfo";
 import { cn } from "@/lib/utils";
 import TradeStatusBadge from "./TradeStatusBadge";
 import PlayersSection from "./TradePlayerSection";
+import { formatPlural } from "@/lib/formatters";
 
 export default function LeagueTradeCard({
   trade,
@@ -20,6 +21,8 @@ export default function LeagueTradeCard({
       minute: "2-digit",
     }).format(date);
   };
+
+  const groupedPlayers = groupTradePlayers(trade.proposedPlayers);
 
   return (
     <div
@@ -73,18 +76,32 @@ export default function LeagueTradeCard({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <PlayersSection
-          players={trade.proposedPlayers.filter((p) => p.offeredByProposer)}
+          players={groupedPlayers.proposed ?? []}
           isTradeOver={isTradeOver}
-          title={`${trade.proposerTeam.name} offre`}
+          title={formatPlural(
+            groupedPlayers.proposed?.length ?? 0,
+            {
+              singular: "Offerto",
+              plural: "Offerti",
+            },
+            { includeCount: false }
+          )}
           leagueTeamId={trade.proposerTeamId}
           credits={trade.creditOfferedByProposer}
           creditsType="offered"
           theme={theme}
         />
         <PlayersSection
-          players={trade.proposedPlayers.filter((p) => !p.offeredByProposer)}
+          players={groupedPlayers.proposed ?? []}
           isTradeOver={isTradeOver}
-          title={`${trade.receiverTeam.name} offre`}
+          title={formatPlural(
+            groupedPlayers.requested?.length ?? 0,
+            {
+              singular: "Richiesto",
+              plural: "Richiesti",
+            },
+            { includeCount: false }
+          )}
           leagueTeamId={trade.receiverTeamId}
           credits={trade.creditRequestedByProposer}
           creditsType="requested"
