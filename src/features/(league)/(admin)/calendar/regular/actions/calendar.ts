@@ -7,10 +7,10 @@ import {
   validateSchema,
   VALIDATION_ERROR,
 } from "@/schema/helpers";
-import { canGenerateCalendar } from "../permissions/calendar";
+import { canGenerateCalendar } from "../regular/permissions/calendar";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
-import { deleteCalendar, insertCalendar } from "../db/calendar";
+import { deleteCalendar, insertCalendar } from "../regular/db/calendar";
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
 

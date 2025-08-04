@@ -6,7 +6,7 @@ import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import { Button } from "@/components/ui/button";
 import { regenerateCalendar } from "@/features/(league)/(admin)/calendar/actions/calendar";
 import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
-import { hasGeneratedCalendar } from "@/features/(league)/(admin)/calendar/permissions/calendar";
+import { hasGeneratedCalendar } from "@/features/(league)/(admin)/calendar/regular/permissions/calendar";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
 import { NavArrowRight, WarningTriangle } from "iconoir-react";
 import Link from "next/link";

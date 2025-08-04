@@ -11,7 +11,7 @@ import { createError, createSuccess } from "@/lib/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
 import { isMatchdayCalculable } from "../utils/calculate-matchday";
-import { hasGeneratedCalendar } from "../../calendar/permissions/calendar";
+import { hasGeneratedCalendar } from "../../calendar/regular/permissions/calendar";
 
 enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",
