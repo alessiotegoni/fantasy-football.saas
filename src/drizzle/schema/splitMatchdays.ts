@@ -3,6 +3,19 @@ import { relations } from "drizzle-orm";
 import { splits, splitStatusEnum } from "./splits";
 import { leagueMatches } from "./leagueMatches";
 import { leagueMatchdayCalculations } from "./leagueMatchdayCalculations";
+import { pgEnum } from "drizzle-orm/pg-core";
+
+export const matchdayTypes = [
+  "regular",
+  "play_in",
+  "quarter_final",
+  "semi_final",
+  "final",
+] as const;
+
+export type MatchdayType = (typeof matchdayTypes)[number];
+
+export const matchdayTypeEnum = pgEnum("matchday_type", matchdayTypes);
 
 export const splitMatchdays = pgTable("split_matchdays", {
   id: smallint("id").generatedByDefaultAsIdentity().primaryKey(),
@@ -13,6 +26,7 @@ export const splitMatchdays = pgTable("split_matchdays", {
   startAt: timestamp("start_at", { withTimezone: true }).notNull(),
   endAt: timestamp("end_at", { withTimezone: true }).notNull(),
   status: splitStatusEnum("status").notNull().default("upcoming"),
+  type: matchdayTypeEnum("type").notNull().default("regular"),
 });
 
 export const splitMatchdaysRelations = relations(
