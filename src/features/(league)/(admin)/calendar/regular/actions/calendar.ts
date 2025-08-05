@@ -7,12 +7,12 @@ import {
   validateSchema,
   VALIDATION_ERROR,
 } from "@/schema/helpers";
-import { canGenerateCalendar } from "../regular/permissions/calendar";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
-import { deleteCalendar, insertCalendar } from "../regular/db/calendar";
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
+import { deleteCalendar, insertCalendar } from "../db/calendar";
+import { canGenerateCalendar } from "../permissions/calendar";
 
 export async function generateCalendar(leagueId: string) {
   const { error, message, data } = await calendarValidation(leagueId);
