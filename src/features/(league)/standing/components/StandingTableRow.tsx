@@ -1,6 +1,8 @@
 import { LeaderboardStar } from "iconoir-react";
 import { StandingData } from "../queries/standing";
 import { cn } from "@/lib/utils";
+import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
+import { getFinalPhaseColor } from "../utils/standing";
 
 type Props = {
   standing: StandingData;
@@ -9,6 +11,7 @@ type Props = {
   isSplitEnded: boolean;
   isMinScore: boolean;
   isMaxScore: boolean;
+  phase: keyof FinalPhaseAccess | null;
 };
 
 export default function StandingTableRow({
@@ -18,6 +21,7 @@ export default function StandingTableRow({
   isSplitEnded,
   isMinScore,
   isMaxScore,
+  phase,
 }: Props) {
   return (
     <div key={standing.team.id} className="p-2.5 xs:p-3 sm:p-4">
@@ -36,17 +40,10 @@ export default function StandingTableRow({
           ) : (
             <>
               <div
-                className={`w-1 h-5 sm:h-8 rounded-r mr-2 xs:mr-3 ${
-                  index === 0
-                    ? "bg-blue-500"
-                    : index < 3
-                    ? "bg-green-500"
-                    : isExtended
-                    ? "bg-transparent"
-                    : index === data.length - 1
-                    ? "bg-destructive"
-                    : "bg-transparent"
-                }`}
+                className={cn(
+                  `w-1 h-5 sm:h-8 rounded-r mr-2 xs:mr-3`,
+                  phase ? getFinalPhaseColor(phase) : "bg-transparent"
+                )}
               />
               <span className="text-secondary font-bold text-lg mr-2 xs:mr-3">
                 {rank + 1}

@@ -3,17 +3,20 @@
 import { StandingData } from "../queries/standing";
 import { cn } from "@/lib/utils";
 import StandingTableRow from "./StandingTableRow";
+import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
 
 type Props = {
   data: StandingData[];
   isExtended: boolean;
   isSplitEnded: boolean;
+  finalPhaseAccess: FinalPhaseAccess;
 };
 
 export default function StandingTable({
   data,
   isExtended,
   isSplitEnded,
+  finalPhaseAccess,
 }: Props) {
   const totalScores = data.map((s) => parseFloat(s.totalScore ?? "0"));
 
@@ -61,11 +64,29 @@ export default function StandingTable({
             isSplitEnded={isSplitEnded}
             isMinScore={index === getMinScoreIndex(data, totalScores)}
             isMaxScore={index === getMaxScoreindex(data, totalScores)}
+            phase={getTeamPhase(standing.team.id, finalPhaseAccess)}
           />
         ))}
       </div>
     </div>
   );
+}
+
+function getTeamPhase(
+  teamId: string,
+  finalPhaseAccess: FinalPhaseAccess
+): keyof FinalPhaseAccess | null {
+  for (const [phase, list] of Object.entries(finalPhaseAccess)) {
+    if (
+      Array.isArray(list) &&
+      list.some((id: any) =>
+        Array.isArray(id) ? id.includes(teamId) : id === teamId
+      )
+    ) {
+      return phase as keyof FinalPhaseAccess;
+    }
+  }
+  return null;
 }
 
 function getMinScoreIndex(data: StandingData[], scores: number[]) {
