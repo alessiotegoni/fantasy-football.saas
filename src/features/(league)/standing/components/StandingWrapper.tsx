@@ -5,14 +5,15 @@ import { StandingData } from "../queries/standing";
 import { StandingToggle } from "./StandingToggle";
 import StandingTable from "./StandingTable";
 import StandingLegend from "./StandingLegend";
+import { FinalStageAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
 
-export default function StandingWrapper({
-  data,
-  isSplitEnded,
-}: {
+type Props = {
   data: StandingData[];
   isSplitEnded: boolean;
-}) {
+  finalPhaseAccess: FinalStageAccess
+};
+
+export default function StandingWrapper({ data, isSplitEnded }: Props) {
   const [isExtended, setIsExtended] = useLocalStorage(
     "standing-extended-view",
     false

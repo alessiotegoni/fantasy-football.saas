@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
+import { getFinalPhaseAccess } from "@/features/(league)/(admin)/calendar/final-phase/utils/calendar";
 import StandingWrapper from "@/features/(league)/standing/components/StandingWrapper";
 import { getLeagueStandingData } from "@/features/(league)/standing/queries/standing";
 import SplitSelect from "@/features/splits/components/SplitSelect";
@@ -51,7 +52,7 @@ async function SuspenseBoundary({
   lastSplit?: Split;
 }) {
   let selectedSplit = lastSplit;
-  
+
   const selectedSplitId = parseInt((await selectedSplitPromise) ?? "0");
 
   if (selectedSplitId && validateSerialId(selectedSplitId).success) {
@@ -68,13 +69,15 @@ async function SuspenseBoundary({
   }
 
   const standingData = await getLeagueStandingData(leagueId, selectedSplit.id);
+  const finalPhaseAccess = getFinalPhaseAccess(mockStandingsData)
 
-  console.log(standingData);
+  console.log(standingData, finalPhaseAccess);
 
   return (
     <StandingWrapper
       data={mockStandingsData}
       isSplitEnded={selectedSplit.status === "ended"}
+      finalPhaseAccess={finalPhaseAccess}
     />
   );
 }

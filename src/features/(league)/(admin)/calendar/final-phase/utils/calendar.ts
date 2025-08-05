@@ -1,6 +1,6 @@
 import { StandingData } from "@/features/(league)/standing/queries/standing";
 
-type FinalStageAccess = {
+export type FinalStageAccess = {
   final: string[];
   semifinal: string[];
   quarterfinal: string[];
@@ -8,7 +8,7 @@ type FinalStageAccess = {
   excluded: string[];
 };
 
-export function getFinalStageAccess(teams: StandingData[]): FinalStageAccess {
+export function getFinalPhaseAccess(teams: StandingData[]): FinalStageAccess {
   const ids = teams.map((t) => t.team.id);
   const length = ids.length;
 
@@ -52,34 +52,34 @@ export function getFinalStageAccess(teams: StandingData[]): FinalStageAccess {
 
     case 8:
       result.semifinal.push(ids[0]);
-      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4]);
+      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4], ids[5]);
       result.playIn.push([ids[6], ids[7]]);
       break;
 
     case 9:
       result.semifinal.push(ids[0]);
-      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4]);
+      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4], ids[5]);
       result.playIn.push([ids[6], ids[7]]);
       result.excluded.push(ids[8]);
       break;
 
     case 10:
       result.semifinal.push(ids[0]);
-      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4]);
+      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4], ids[5]);
       result.playIn.push([ids[6], ids[7]]);
       result.excluded.push(ids[8], ids[9]);
       break;
 
     case 11:
       result.semifinal.push(ids[0]);
-      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4]);
+      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4], ids[5]);
       result.playIn.push([ids[6], ids[7]]);
       result.excluded.push(ids[8], ids[9], ids[10]);
       break;
 
     case 12:
       result.semifinal.push(ids[0]);
-      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4]);
+      result.quarterfinal.push(ids[1], ids[2], ids[3], ids[4], ids[5]);
       result.playIn.push([ids[6], ids[7]]);
       result.excluded.push(ids[8], ids[9], ids[10], ids[11]);
       break;
