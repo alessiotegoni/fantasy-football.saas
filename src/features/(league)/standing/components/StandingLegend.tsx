@@ -1,5 +1,10 @@
-type Props = {};
-export default function StandingLegend({}: Props) {
+import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
+
+export default function StandingLegend({
+  finalPhaseAccess,
+}: {
+  finalPhaseAccess: FinalPhaseAccess;
+}) {
   return (
     <div className="mt-6 p-4 rounded-xl bg-muted/30 border border-border">
       <h3 className="text-white font-medium mb-3">Legenda</h3>

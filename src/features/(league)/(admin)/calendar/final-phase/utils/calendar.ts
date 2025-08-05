@@ -1,6 +1,6 @@
 import { StandingData } from "@/features/(league)/standing/queries/standing";
 
-export type FinalStageAccess = {
+export type FinalPhaseAccess = {
   final: string[];
   semifinal: string[];
   quarterfinal: string[];
@@ -8,11 +8,11 @@ export type FinalStageAccess = {
   excluded: string[];
 };
 
-export function getFinalPhaseAccess(teams: StandingData[]): FinalStageAccess {
+export function getFinalPhaseAccess(teams: StandingData[]): FinalPhaseAccess {
   const ids = teams.map((t) => t.team.id);
   const length = ids.length;
 
-  const result: FinalStageAccess = {
+  const result: FinalPhaseAccess = {
     final: [],
     semifinal: [],
     quarterfinal: [],
