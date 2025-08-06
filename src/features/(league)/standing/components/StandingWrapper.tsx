@@ -10,6 +10,7 @@ import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calen
 type Props = {
   data: StandingData[];
   isSplitEnded: boolean;
+  isDefaultStanding: boolean;
   finalPhaseAccess: FinalPhaseAccess;
 };
 

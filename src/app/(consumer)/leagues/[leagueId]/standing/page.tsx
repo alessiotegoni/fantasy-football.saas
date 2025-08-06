@@ -72,6 +72,7 @@ async function SuspenseBoundary({
   }
 
   let standingData = await getLeagueStandingData(leagueId, selectedSplit.id);
+  let isDefaultStainding = false;
 
   if (!standingData.length && selectedSplit.status === "ended") {
     return (
@@ -84,9 +85,10 @@ async function SuspenseBoundary({
 
   if (!standingData.length && selectedSplit.status !== "ended") {
     standingData = await getDefaultStandingData(leagueId);
+    isDefaultStainding = true;
   }
 
-  const finalPhaseAccess = getFinalPhaseAccess(mockStandingsData);
+  const finalPhaseAccess = getFinalPhaseAccess(standingData);
 
   console.log(standingData, finalPhaseAccess);
 
@@ -94,6 +96,7 @@ async function SuspenseBoundary({
     <StandingWrapper
       data={standingData}
       isSplitEnded={selectedSplit.status === "ended"}
+      isDefaultStanding={isDefaultStainding}
       finalPhaseAccess={finalPhaseAccess}
     />
   );

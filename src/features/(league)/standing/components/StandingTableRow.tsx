@@ -3,6 +3,7 @@ import { StandingData } from "../queries/standing";
 import { cn } from "@/lib/utils";
 import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
 import { getFinalPhaseColor } from "../utils/standing";
+import StandingTableRowTotalScore from "./StandingTableRowTotalScore";
 
 type Props = {
   standing: StandingData;
@@ -11,17 +12,17 @@ type Props = {
   isSplitEnded: boolean;
   isMinScore: boolean;
   isMaxScore: boolean;
+  isDefaultStanding: boolean;
   phase: keyof FinalPhaseAccess | null;
 };
 
 export default function StandingTableRow({
   standing,
-  rank,
   isExtended,
-  isSplitEnded,
-  isMinScore,
-  isMaxScore,
+  rank,
   phase,
+  isSplitEnded,
+  ...props
 }: Props) {
   return (
     <div key={standing.team.id} className="p-2.5 xs:p-3 sm:p-4">
@@ -75,37 +76,21 @@ export default function StandingTableRow({
             <p className="text-secondary font-bold sm:text-lg">
               {standing.points}
             </p>
-            <p
-              className={cn(
-                isMaxScore && "text-green-500",
-                isMinScore && "text-destructive"
-              )}
-            >
-              {formatTotalScore(standing.totalScore)}
-            </p>
+            <StandingTableRowTotalScore {...props} {...standing} />
           </div>
         ) : (
           <div className="flex justify-between items-center gap-5">
             <p className="text-secondary font-bold sm:text-lg">
               {standing.points}
             </p>
-            <p
-              className={cn(
-                "text-muted-foreground text-sm font-medium",
-                isMaxScore && "text-green-500",
-                isMinScore && "text-destructive"
-              )}
-            >
-              {formatTotalScore(standing.totalScore)}
-            </p>
+            <StandingTableRowTotalScore
+              className="text-muted-foreground text-sm font-medium"
+              {...props}
+              {...standing}
+            />
           </div>
         )}
       </div>
     </div>
   );
-}
-
-function formatTotalScore(score: string | null) {
-  const number = parseFloat(score ?? "0");
-  return Math.ceil(number);
 }

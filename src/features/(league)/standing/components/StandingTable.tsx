@@ -9,6 +9,7 @@ type Props = {
   data: StandingData[];
   isExtended: boolean;
   isSplitEnded: boolean;
+  isDefaultStanding: boolean;
   finalPhaseAccess: FinalPhaseAccess;
 };
 
@@ -16,6 +17,7 @@ export default function StandingTable({
   data,
   isExtended,
   isSplitEnded,
+  isDefaultStanding,
   finalPhaseAccess,
 }: Props) {
   const totalScores = data.map((s) => parseFloat(s.totalScore ?? "0"));
@@ -64,6 +66,7 @@ export default function StandingTable({
             isSplitEnded={isSplitEnded}
             isMinScore={index === getMinScoreIndex(data, totalScores)}
             isMaxScore={index === getMaxScoreindex(data, totalScores)}
+            isDefaultStanding={isDefaultStanding}
             phase={getTeamPhase(standing.team.id, finalPhaseAccess)}
           />
         ))}
