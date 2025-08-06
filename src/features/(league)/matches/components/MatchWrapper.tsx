@@ -18,6 +18,7 @@ import PlayersDialog from "./PlayersDialog";
 import { groupLineupsPlayers } from "../utils/LineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
 import BenchSkeleton from "./skeletons/BenchSkeleton";
+import { HomeLineupSlot } from "./LineupSlot";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -64,14 +65,11 @@ export default function MatchWrapper({
         <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
             <>
-              <PresidentSlot
+              <HomeLineupSlot
                 starterPresident={getPresident(
                   groupedPlayers["starter"] ?? [],
                   matchInfo.homeTeam.id
                 )}
-                canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
-              />
-              <BenchLineup
                 players={getBenchPlayers(matchInfo.homeTeam.id)}
                 canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
                 className="2xl:border-r"
@@ -113,14 +111,11 @@ export default function MatchWrapper({
         <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
             <>
-              <PresidentSlot
+              <HomeLineupSlot
                 starterPresident={getPresident(
                   groupedPlayers["starter"] ?? [],
                   matchInfo.awayTeam.id
                 )}
-                canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-              />
-              <BenchLineup
                 players={getBenchPlayers(matchInfo.awayTeam.id)}
                 canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
                 className="2xl:border-l"
