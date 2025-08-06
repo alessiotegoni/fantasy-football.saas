@@ -1,5 +1,5 @@
 import { db } from "@/drizzle/db";
-import { leagueSettings } from "@/drizzle/schema";
+import { leagueSettings, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -70,11 +70,14 @@ async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
   return (
     <div className="flex flex-wrap justify-center md:justify-normal gap-3">
       {playerRoles.map((role) => {
-        const requiredCount = leaguePlayerRoles[role.id] || 0;
+        const requiredCount =
+          { [PRESIDENT_ROLE_ID]: 1, ...leaguePlayerRoles }[role.id] || 0;
+
         const teamCount =
           teamPlayerRolesCount.find(
             (teamPlayer) => teamPlayer.roleId === role.id
           )?.playersCount || 0;
+
         const isComplete = teamCount >= requiredCount;
 
         return (
