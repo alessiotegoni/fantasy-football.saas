@@ -11,25 +11,18 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  loginSchema,
-  LoginSchemaType,
-  oauthProviders,
-  OauthProviderType,
-} from "../schema/login";
+import { loginSchema, LoginSchemaType, oauthProviders } from "../schema/login";
 import { login } from "../actions/login";
 import { useRouter, useSearchParams } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { useEmailLogin } from "@/hooks/useLoginEmail";
 import SubmitButton from "@/components/SubmitButton";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import useActionToast from "@/hooks/useActionToast";
 import SocialLogin from "./SocialLogin";
 
 export default function LoginForm() {
   const toast = useActionToast();
 
-  const { getEmail, saveEmail } = useEmailLogin();
+  const { email, saveEmail } = useEmailLogin();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -38,7 +31,7 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       type: "email",
-      email: getEmail() ?? "",
+      email,
     },
   });
 

@@ -7,8 +7,9 @@ import { useLocalStorage } from "./useLocalStorage";
 const STORAGE_KEY = "authEmail";
 
 export function useEmailLogin() {
-  const toast = useActionToast();
   const [email, setEmail] = useLocalStorage(STORAGE_KEY, "");
+
+  const toast = useActionToast();
 
   const saveEmail = setEmail;
   const clearEmail = () => setEmail("");

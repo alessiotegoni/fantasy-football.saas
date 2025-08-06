@@ -21,7 +21,7 @@ import { otpSchema, OtpSchema } from "../schema/login";
 import { verifyOtp } from "../actions/login";
 
 export default function VerifyOtpForm() {
-  const { getEmail, clearEmail, resendCode } = useEmailLogin();
+  const { email, clearEmail, resendCode } = useEmailLogin();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -34,7 +34,6 @@ export default function VerifyOtpForm() {
   });
 
   useEffect(() => {
-    const email = getEmail();
     if (!email) return router.push("/auth/login");
     form.setValue("email", email);
   }, []);
@@ -84,7 +83,7 @@ export default function VerifyOtpForm() {
           <div className="flex items-center justify-between mb-8 rounded-lg">
             <div className="text-sm">
               <span className="text-muted-foreground">Codice inviato a: </span>
-              <span className="font-medium">{getEmail()}</span>
+              <span className="font-medium">{email}</span>
             </div>
             <Button
               variant="link"
@@ -101,7 +100,7 @@ export default function VerifyOtpForm() {
           <SubmitButton
             loadingText="Verifico codice"
             variant="gradient"
-            disabled={form.watch("token").length !== 6 || !getEmail()}
+            disabled={form.watch("token").length !== 6 || !email}
           >
             Verifica
           </SubmitButton>
@@ -115,7 +114,7 @@ export default function VerifyOtpForm() {
           variant="link"
           loadingText="invio nuovo codice"
           className="w-fit"
-          disabled={!getEmail()}
+          disabled={!email}
           displayToast={false}
           action={resendCode}
         >
