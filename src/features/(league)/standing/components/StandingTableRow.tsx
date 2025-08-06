@@ -3,7 +3,7 @@ import { StandingData } from "../queries/standing";
 import { cn } from "@/lib/utils";
 import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
 import { getFinalPhaseColor } from "../utils/standing";
-import StandingTableRowTotalScore from "./StandingTableRowTotalScore";
+import { default as TotalScore } from "./StandingTableRowTotalScore";
 
 type Props = {
   standing: StandingData;
@@ -24,6 +24,9 @@ export default function StandingTableRow({
   isSplitEnded,
   ...props
 }: Props) {
+  const isWinner =
+    isSplitEnded && rank === 0 && parseInt(standing?.points ?? "0") > 0;
+
   return (
     <div key={standing.team.id} className="p-2.5 xs:p-3 sm:p-4">
       <div
@@ -34,9 +37,7 @@ export default function StandingTableRow({
       >
         {/* Team Info */}
         <div className="flex items-center">
-          {isSplitEnded &&
-          rank === 0 &&
-          parseInt(standing?.points ?? "0") > 0 ? (
+          {isWinner ? (
             <LeaderboardStar className="text-primary size-6 mr-2 xs:mr-3" />
           ) : (
             <>
@@ -57,10 +58,7 @@ export default function StandingTableRow({
             className={cn(
               "xs:text-sm sm:text-base font-medium truncate",
               !isExtended ? "text-xs" : "text-sm",
-              isSplitEnded &&
-                rank === 0 &&
-                parseInt(standing?.points ?? "0") > 0 &&
-                "text-primary"
+              isWinner && "text-primary"
             )}
           >
             {standing.team.name}
@@ -78,14 +76,14 @@ export default function StandingTableRow({
             <p className="text-secondary font-bold sm:text-lg">
               {standing.points}
             </p>
-            <StandingTableRowTotalScore {...props} {...standing} />
+            <TotalScore {...props} {...standing} />
           </div>
         ) : (
           <div className="flex justify-between items-center gap-5">
             <p className="text-secondary font-bold sm:text-lg">
               {standing.points}
             </p>
-            <StandingTableRowTotalScore
+            <TotalScore
               className="text-muted-foreground text-sm font-medium"
               {...props}
               {...standing}

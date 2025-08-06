@@ -1,14 +1,6 @@
 import { FinalPhaseAccess } from "../../(admin)/calendar/final-phase/utils/calendar";
 import { getFinalPhaseColor } from "../utils/standing";
 
-const PHASE_LABELS: Record<keyof FinalPhaseAccess, string> = {
-  final: "Finale",
-  semifinal: "Semifinale",
-  quarterfinal: "Quarti di finale",
-  playIn: "Play-in",
-  excluded: "Esclusi",
-};
-
 export default function StandingLegend({
   finalPhaseAccess,
 }: {
@@ -17,6 +9,8 @@ export default function StandingLegend({
   const activePhases = Object.entries(finalPhaseAccess).filter(
     ([_, teams]) => teams.length > 0
   ) as [keyof FinalPhaseAccess, string[] | [string, string][]][];
+
+  if (!activePhases.length) return null
 
   return (
     <div className="mt-6 p-4 rounded-xl bg-muted/30 border border-border">
@@ -32,3 +26,11 @@ export default function StandingLegend({
     </div>
   );
 }
+
+const PHASE_LABELS: Record<keyof FinalPhaseAccess, string> = {
+  final: "Finale",
+  semifinal: "Semifinale",
+  quarterfinal: "Quarti di finale",
+  playIn: "Play-in",
+  excluded: "Esclusi",
+};

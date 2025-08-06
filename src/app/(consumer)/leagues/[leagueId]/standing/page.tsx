@@ -9,6 +9,7 @@ import {
 import SplitSelect from "@/features/splits/components/SplitSelect";
 import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
+import { WarningTriangle } from "iconoir-react";
 import { Suspense } from "react";
 
 export default async function LeagueStandingPage({
@@ -84,7 +85,9 @@ async function SuspenseBoundary({
   }
 
   if (!standingData.length && selectedSplit.status !== "ended") {
-    standingData = await getDefaultStandingData(leagueId);
+    const defaultData = await getDefaultStandingData(leagueId);
+
+    standingData = defaultData;
     isDefaultStainding = true;
   }
 
