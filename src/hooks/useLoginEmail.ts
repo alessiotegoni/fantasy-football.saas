@@ -1,38 +1,28 @@
 "use client";
 
 import { login } from "@/features/auth/actions/login";
-import { useCallback } from "react";
 import useActionToast from "./useActionToast";
+import { useLocalStorage } from "./useLocalStorage";
 
 const STORAGE_KEY = "authEmail";
 
 export function useEmailLogin() {
+  const toast = useActionToast();
+  const [email, setEmail] = useLocalStorage(STORAGE_KEY, "");
 
-  const toast = useActionToast()
+  const saveEmail = setEmail;
+  const clearEmail = () => setEmail("");
 
-  const saveEmail = useCallback((email: string) => {
-    sessionStorage?.setItem(STORAGE_KEY, email);
-  }, []);
-
-  const getEmail = useCallback((): string | null => {
-    return sessionStorage?.getItem(STORAGE_KEY);
-  }, []);
-
-  const clearEmail = useCallback(() => {
-    sessionStorage?.removeItem(STORAGE_KEY);
-  }, []);
-
-  const resendCode = useCallback(async () => {
-    const email = sessionStorage?.getItem(STORAGE_KEY) ?? "";
+  const resendCode = async () => {
     const res = await login({ type: "email", email });
     if (!res.error) res.message = "Codice inviato con successo";
     toast(res);
     return res;
-  }, []);
+  };
 
   return {
+    email,
     saveEmail,
-    getEmail,
     clearEmail,
     resendCode,
   };

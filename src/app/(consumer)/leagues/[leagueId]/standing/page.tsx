@@ -85,7 +85,9 @@ async function SuspenseBoundary({
   if (!standingData.length && selectedSplit.status !== "ended") {
     const defaultData = await getDefaultStandingData(leagueId);
 
-    if (defaultData.length < 4) {
+    // FIXME: Replace mockStandingData with standingData
+
+    if (mockStandingsData.length < 4) {
       return (
         <StandingEmptyState
           description="Per vedere la classifica sono necessarie almeno 4 squadre all'interno della lega"
@@ -104,11 +106,13 @@ async function SuspenseBoundary({
     isDefaultStainding = true;
   }
 
-  const finalPhaseAccess = getFinalPhaseAccess(standingData);
+  // FIXME: Replace mockStandingData with standingData
+
+  const finalPhaseAccess = getFinalPhaseAccess(mockStandingsData);
 
   return (
     <StandingWrapper
-      data={standingData}
+      data={mockStandingsData}
       isSplitEnded={selectedSplit.status === "ended"}
       isDefaultStanding={isDefaultStainding}
       finalPhaseAccess={finalPhaseAccess}
