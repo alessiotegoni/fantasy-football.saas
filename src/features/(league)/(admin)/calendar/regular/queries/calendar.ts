@@ -1,5 +1,5 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getLeagueCalendarTag } from "../db/cache/calendar";
+import { getLeagueRegularCalendarTag } from "../../db/cache/calendar";
 import {
   leagueMatches,
   splitMatchdays,
@@ -23,7 +23,7 @@ type MatchResult = {
 export async function getRegularCalendar(leagueId: string, splitId: number) {
   "use cache";
   cacheTag(
-    getLeagueCalendarTag(leagueId),
+    getLeagueRegularCalendarTag(leagueId),
     getLeagueTeamsTag(leagueId),
     getLeagueMatchesResultsTag(leagueId),
     getSplitsMatchdaysTag()

@@ -11,7 +11,7 @@ import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getSplitMatchdays } from "@/features/splits/queries/split";
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
-import { deleteCalendar, insertCalendar } from "../db/calendar";
+import { deleteCalendar, insertCalendar } from "../../db/calendar";
 import { canGenerateCalendar } from "../permissions/calendar";
 
 export async function generateCalendar(leagueId: string) {

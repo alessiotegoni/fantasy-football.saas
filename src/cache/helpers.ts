@@ -7,7 +7,7 @@ import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueM
 import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
 import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trade";
-import { LEAGUE_CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/regular/db/cache/calendar";
+import { LEAGUE_CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/calendar";
 import { MATCHDAY_VOTE_TAG } from "@/features/votes/db/cache/vote";
 import { MATCHDAY_BONUS_MALUS_TAG } from "@/features/bonusMaluses/db/cache/bonusMalus";
 import { CALCULATIONS_TAG } from "@/features/(league)/(admin)/calculate-matchday/db/cache/calculate-matchday";

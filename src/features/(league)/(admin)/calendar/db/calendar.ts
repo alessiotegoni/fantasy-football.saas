@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { leagueMatches } from "@/drizzle/schema";
 import { createError } from "@/lib/helpers";
-import { revalidateLeagueCalendarCache } from "./cache/calendar";
+import { revalidateLeagueCalendarsCache } from "./cache/calendar";
 import { eq } from "drizzle-orm";
 
 enum DB_ERRORS {
@@ -22,7 +22,7 @@ export async function insertCalendar(
     throw new Error(createError(DB_ERRORS.INSERT_ERROR).message);
   }
 
-  revalidateLeagueCalendarCache(data[0].leagueId);
+  revalidateLeagueCalendarsCache(data[0].leagueId);
 }
 
 export async function deleteCalendar(
@@ -38,5 +38,5 @@ export async function deleteCalendar(
     throw new Error(createError(DB_ERRORS.DELETE_ERROR).message);
   }
 
-  revalidateLeagueCalendarCache(leagueId);
+  revalidateLeagueCalendarsCache(leagueId);
 }
