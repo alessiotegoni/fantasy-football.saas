@@ -1,12 +1,16 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getLeagueRegularCalendarTag } from "../../db/cache/calendar";
+import {
+  getLeagueFinalPhaseCalendarTag,
+  getLeagueRegularCalendarTag,
+} from "../../db/cache/calendar";
 import {
   leagueMatches,
   splitMatchdays,
   leagueMemberTeams,
   leagueMatchResults,
+  MatchdayType,
 } from "@/drizzle/schema";
-import { eq, and, asc, sql } from "drizzle-orm";
+import { eq, and, asc, sql, ne } from "drizzle-orm";
 
 import { getLeagueTeamsTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { db } from "@/drizzle/db";
@@ -14,21 +18,31 @@ import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache
 import { alias } from "drizzle-orm/pg-core";
 import { getSplitsMatchdaysTag } from "@/cache/global";
 
-type MatchResult = {
-  teamId: string;
-  goals: number;
-  totalScore: string;
-};
-
 export async function getRegularCalendar(leagueId: string, splitId: number) {
   "use cache";
   cacheTag(
     getLeagueRegularCalendarTag(leagueId),
-    getLeagueTeamsTag(leagueId),
-    getLeagueMatchesResultsTag(leagueId),
-    getSplitsMatchdaysTag()
+    ...getLeagueCalendarTags(leagueId)
   );
 
+  return getLeagueCalendar(leagueId, splitId);
+}
+
+export async function getFinalPhaseCalendar(leagueId: string, splitId: number) {
+  "use cache";
+  cacheTag(
+    getLeagueFinalPhaseCalendarTag(leagueId),
+    ...getLeagueCalendarTags(leagueId)
+  );
+
+  return getLeagueCalendar(leagueId, splitId, false);
+}
+
+async function getLeagueCalendar(
+  leagueId: string,
+  splitId: number,
+  isRegular = true
+) {
   const homeTeam = alias(leagueMemberTeams, "homeTeam");
   const awayTeam = alias(leagueMemberTeams, "awayTeam");
 
@@ -72,7 +86,9 @@ export async function getRegularCalendar(leagueId: string, splitId: number) {
       and(
         eq(leagueMatches.leagueId, leagueId),
         eq(splitMatchdays.splitId, splitId),
-        eq(splitMatchdays.type, "regular")
+        isRegular
+          ? eq(splitMatchdays.type, "regular")
+          : ne(splitMatchdays.type, "regular")
       )
     )
     .orderBy(asc(splitMatchdays.number))
@@ -81,7 +97,12 @@ export async function getRegularCalendar(leagueId: string, splitId: number) {
   return results;
 }
 
-export type Match = Awaited<ReturnType<typeof getRegularCalendar>>[number];
+export type Match = Awaited<ReturnType<typeof getLeagueCalendar>>[number];
+type MatchResult = {
+  teamId: string;
+  goals: number;
+  totalScore: string;
+};
 
 function matchResultsSql() {
   return sql<MatchResult[]>`
@@ -96,4 +117,12 @@ function matchResultsSql() {
       '[]'
     )
   `.as("matchResults");
+}
+
+function getLeagueCalendarTags(leagueId: string) {
+  return [
+    getLeagueTeamsTag(leagueId),
+    getLeagueMatchesResultsTag(leagueId),
+    getSplitsMatchdaysTag(),
+  ];
 }
