@@ -29,9 +29,10 @@ export async function regenerateCalendar(leagueId: string) {
   if (error) return createError(message);
 
   const calendar = await getCalendar(data);
+  const matchdaysIds = calendar.map((match) => match.splitMatchdayId);
 
   await db.transaction(async (tx) => {
-    await deleteCalendar(leagueId, tx);
+    await deleteCalendar(leagueId, matchdaysIds, tx);
     await insertCalendar(calendar, tx);
   });
 

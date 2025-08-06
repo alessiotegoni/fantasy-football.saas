@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { leagueMatches } from "@/drizzle/schema";
 import { createError } from "@/lib/helpers";
 import { revalidateLeagueCalendarsCache } from "./cache/calendar";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 enum DB_ERRORS {
   INSERT_ERROR = "Errore nella creazione del calendario",
@@ -27,11 +27,17 @@ export async function insertCalendar(
 
 export async function deleteCalendar(
   leagueId: string,
+  matchdaysIds: number[],
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
     .delete(leagueMatches)
-    .where(eq(leagueMatches.leagueId, leagueId))
+    .where(
+      and(
+        eq(leagueMatches.leagueId, leagueId),
+        inArray(leagueMatches.splitMatchdayId, matchdaysIds)
+      )
+    )
     .returning({ calendarId: leagueMatches.id });
 
   if (!res.calendarId) {

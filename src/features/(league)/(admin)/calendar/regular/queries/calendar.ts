@@ -8,10 +8,8 @@ import {
   splitMatchdays,
   leagueMemberTeams,
   leagueMatchResults,
-  MatchdayType,
 } from "@/drizzle/schema";
 import { eq, and, asc, sql, ne } from "drizzle-orm";
-
 import { getLeagueTeamsTag } from "@/features/(league)/teams/db/cache/leagueTeam";
 import { db } from "@/drizzle/db";
 import { getLeagueMatchesResultsTag } from "@/features/(league)/leagues/db/cache/league";
