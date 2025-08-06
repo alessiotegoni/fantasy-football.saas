@@ -8,6 +8,7 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueStandingTag } from "../db/cache/standing";
 import { alias } from "drizzle-orm/pg-core";
 import { getLeagueTeamsTag } from "../../teams/db/cache/leagueTeam";
+import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 
 export async function getLeagueStandingData(leagueId: string, splitId: number) {
   "use cache";
@@ -18,8 +19,6 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
   const goalDifference = sql<number>`${sum(leagueMatchResults.goals)} - ${sum(
     opponentResults.goals
   )}`;
-
-  // TODO: funzione per vedere quali team accederanno ai play in, quarti e semifinali (vedi chatgpt)
 
   const results = await db
     .select({

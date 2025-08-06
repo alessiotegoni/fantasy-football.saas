@@ -68,8 +68,22 @@ async function SuspenseBoundary({
     );
   }
 
-  const standingData = await getLeagueStandingData(leagueId, selectedSplit.id);
-  const finalPhaseAccess = getFinalPhaseAccess(mockStandingsData)
+  let standingData = await getLeagueStandingData(leagueId, selectedSplit.id);
+
+  if (!standingData.length && selectedSplit.status === "ended") {
+    return (
+      <EmptyState
+        title="Classifica non disponibile"
+        description={`La classifica non e' disponibile perche questa lega non ha partecipato allo split ${selectedSplit.id}`}
+      />
+    );
+  }
+
+  if (!standingData.length && selectedSplit.status !== "ended") {
+    standingData =
+  }
+
+  const finalPhaseAccess = getFinalPhaseAccess(mockStandingsData);
 
   console.log(standingData, finalPhaseAccess);
 

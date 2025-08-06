@@ -21,7 +21,7 @@ export default function StandingLegend({
   return (
     <div className="mt-6 p-4 rounded-xl bg-muted/30 border border-border">
       <h3 className="text-white font-medium mb-3">Legenda</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+      <div className="flex flex-col items-start sm:flex-row justify-between sm:items-center gap-5 text-sm">
         {activePhases.map(([phase]) => (
           <div key={phase} className="flex items-center space-x-2">
             <div className={`w-3 h-3 rounded ${getFinalPhaseColor(phase)}`} />
