@@ -81,3 +81,19 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
 export type StandingData = Awaited<
   ReturnType<typeof getLeagueStandingData>
 >[number];
+
+export async function getDefaultStandingData(leagueId: string) {
+  const teams = await getLeagueTeams(leagueId);
+
+  return teams.map((team) => ({
+    team,
+    totalScore: "0",
+    points: "0",
+    goalsScored: "0",
+    goalsConceded: "0",
+    goalDifference: 0,
+    wins: 0,
+    draws: 0,
+    losses: 0,
+  }));
+}
