@@ -20,7 +20,7 @@ type MatchResult = {
   totalScore: string;
 };
 
-export async function getLeagueCalendar(leagueId: string, splitId: number) {
+export async function getRegularCalendar(leagueId: string, splitId: number) {
   "use cache";
   cacheTag(
     getLeagueCalendarTag(leagueId),
@@ -71,7 +71,8 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
     .where(
       and(
         eq(leagueMatches.leagueId, leagueId),
-        eq(splitMatchdays.splitId, splitId)
+        eq(splitMatchdays.splitId, splitId),
+        eq(splitMatchdays.type, "regular")
       )
     )
     .orderBy(asc(splitMatchdays.number))
@@ -80,7 +81,7 @@ export async function getLeagueCalendar(leagueId: string, splitId: number) {
   return results;
 }
 
-export type Match = Awaited<ReturnType<typeof getLeagueCalendar>>[number];
+export type Match = Awaited<ReturnType<typeof getRegularCalendar>>[number];
 
 function matchResultsSql() {
   return sql<MatchResult[]>`

@@ -1,10 +1,5 @@
 import Container from "@/components/Container";
-import CalendarEmptyState from "@/features/(league)/(admin)/calendar/components/CalendarEmptyState";
 import SplitSelect from "@/features/splits/components/SplitSelect";
-import {
-  getLeagueCalendar,
-  Match,
-} from "@/features/(league)/(admin)/calendar/queries/calendar";
 import {
   getCurrentMatchday,
   getSplits,
@@ -13,11 +8,15 @@ import {
 } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { WarningTriangle } from "iconoir-react";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import MatchdaySection from "@/features/(league)/(admin)/calendar/components/MatchdaySection";
 import EmptyState from "@/components/EmptyState";
 import BackButton from "@/components/BackButton";
+import CalendarEmptyState from "@/features/(league)/(admin)/calendar/regular/components/CalendarEmptyState";
+import {
+  getRegularCalendar,
+  Match,
+} from "@/features/(league)/(admin)/calendar/regular/queries/calendar";
+import MatchdaySection from "@/features/(league)/(admin)/calendar/regular/components/MatchdaySection";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
@@ -82,7 +81,7 @@ async function SuspenseBoundary({
     );
   }
 
-  const calendar = await getLeagueCalendar(leagueId, selectedSplit.id);
+  const calendar = await getRegularCalendar(leagueId, selectedSplit.id);
   if (!calendar) {
     const isUpcoming = selectedSplit.status === "upcoming";
 

@@ -79,7 +79,7 @@ function getTeamPhase(
   for (const [phase, list] of Object.entries(finalPhaseAccess)) {
     if (
       Array.isArray(list) &&
-      list.some((id: any) =>
+      list.some((id) =>
         Array.isArray(id) ? id.includes(teamId) : id === teamId
       )
     ) {
