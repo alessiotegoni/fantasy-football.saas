@@ -40,12 +40,14 @@ export default function StandingTableRow({
             <LeaderboardStar className="text-primary size-6 mr-2 xs:mr-3" />
           ) : (
             <>
-              <div
-                className={cn(
-                  `w-1 h-5 sm:h-8 rounded-r mr-2 xs:mr-3`,
-                  phase ? getFinalPhaseColor(phase) : "bg-transparent"
-                )}
-              />
+              {!props.isDefaultStanding && (
+                <div
+                  className={cn(
+                    `w-1 h-5 sm:h-8 rounded-r mr-2 xs:mr-3`,
+                    phase ? getFinalPhaseColor(phase) : "bg-transparent"
+                  )}
+                />
+              )}
               <span className="text-secondary font-bold text-lg mr-2 xs:mr-3">
                 {rank + 1}
               </span>
