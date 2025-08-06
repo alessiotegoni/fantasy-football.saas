@@ -17,7 +17,7 @@ export default function EmptyState({
   return (
     <div
       className="absolute top-1/2 left-1/2 w-full max-w-[600px] md:max-w-none p-4 -translate-1/2 md:static md:translate-none
-      flex flex-col justify-center items-center md:p-8 sm:py-12 md:bg-muted/30 rounded-2xl text-center
+      flex flex-col justify-center items-center md:p-8 sm:py-12 md:bg-muted/30 rounded-3xl text-center
     text-sm md:text-base min-h-[300px]"
     >
       <div className="size-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">

@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
+import { Button } from "@/components/ui/button";
 import { getFinalPhaseAccess } from "@/features/(league)/(admin)/calendar/final-phase/utils/calendar";
 import StandingWrapper from "@/features/(league)/standing/components/StandingWrapper";
 import {
@@ -9,8 +10,9 @@ import {
 import SplitSelect from "@/features/splits/components/SplitSelect";
 import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
-import { WarningTriangle } from "iconoir-react";
-import { Suspense } from "react";
+import { NavArrowRight } from "iconoir-react";
+import Link from "next/link";
+import { ComponentPropsWithoutRef, Suspense } from "react";
 
 export default async function LeagueStandingPage({
   params,
@@ -65,10 +67,7 @@ async function SuspenseBoundary({
 
   if (!selectedSplit) {
     return (
-      <EmptyState
-        title="Classifica non disponibile"
-        description="La classifica sara disponibile quando lo split sara' annunciato ed avrai calcolato la prima giornata"
-      />
+      <StandingEmptyState description="La classifica sara disponibile quando lo split sara' annunciato ed avrai calcolato la prima giornata" />
     );
   }
 
@@ -77,8 +76,7 @@ async function SuspenseBoundary({
 
   if (!standingData.length && selectedSplit.status === "ended") {
     return (
-      <EmptyState
-        title="Classifica non disponibile"
+      <StandingEmptyState
         description={`La classifica non e' disponibile perche questa lega non ha partecipato allo split ${selectedSplit.id}`}
       />
     );
@@ -87,13 +85,26 @@ async function SuspenseBoundary({
   if (!standingData.length && selectedSplit.status !== "ended") {
     const defaultData = await getDefaultStandingData(leagueId);
 
+    if (defaultData.length < 4) {
+      return (
+        <StandingEmptyState
+          description="Per vedere la classifica sono necessarie almeno 4 squadre all'interno della lega"
+          renderButton={() => (
+            <Button className="w-44" asChild>
+              <Link href={`/leagues/${leagueId}/teams`}>
+                Vedi squadre <NavArrowRight className="size-5" />
+              </Link>
+            </Button>
+          )}
+        />
+      );
+    }
+
     standingData = defaultData;
     isDefaultStainding = true;
   }
 
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
-
-  console.log(standingData, finalPhaseAccess);
 
   return (
     <StandingWrapper
@@ -103,6 +114,12 @@ async function SuspenseBoundary({
       finalPhaseAccess={finalPhaseAccess}
     />
   );
+}
+
+function StandingEmptyState(
+  props: Omit<ComponentPropsWithoutRef<typeof EmptyState>, "title">
+) {
+  return <EmptyState title="Classifica non disponibile" {...props} />;
 }
 
 const mockStandingsData = [
