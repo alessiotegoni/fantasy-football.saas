@@ -24,7 +24,7 @@ export default function PlayersSelectList({
   function handleAddPlayer(player: TeamPlayer) {
     if (!type) return;
 
-    const newPlayer = formatTeamPlayer(player);
+    const newPlayer = formatTeamPlayer(player, { lineupPlayerType: type });
 
     const addPlayer =
       type === "starter" ? handleAddStarterPlayer : handleAddBenchPlayer;

@@ -145,7 +145,10 @@ function replacePlayers(
   return starterPlayers;
 }
 
-export function formatTeamPlayer(player: TeamPlayer): LineupPlayer {
+export function formatTeamPlayer(
+  player: TeamPlayer,
+  data?: Partial<LineupPlayer>
+): LineupPlayer {
   return {
     ...player,
     vote: null,
@@ -154,6 +157,7 @@ export function formatTeamPlayer(player: TeamPlayer): LineupPlayer {
     positionOrder: null,
     bonusMaluses: [],
     lineupPlayerType: null,
+    ...data,
   };
 }
 

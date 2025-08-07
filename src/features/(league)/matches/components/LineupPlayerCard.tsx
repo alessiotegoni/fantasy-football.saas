@@ -18,7 +18,7 @@ export default function LineupPlayerCard({
   player,
   type,
   className,
-  canEdit,
+  canEdit = false,
 }: Props) {
   const isStarter = type === "starter";
 
