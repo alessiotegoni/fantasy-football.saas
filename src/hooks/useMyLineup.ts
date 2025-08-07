@@ -56,7 +56,9 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     });
   }
 
-  function movePlayer(source: LineupPlayer, target: LineupPlayer) {
+  function switchPlayers(source: LineupPlayer, target: LineupPlayer) {
+    if (source.role.id !== target.role.id) return;
+
     const filteredStarters = starterPlayers.filter(
       (p) => p.id !== source.id && p.id !== target.id
     );
@@ -120,6 +122,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     addBenchPlayer,
     addStarterPlayer,
     removePlayerFromLineup,
-    movePlayer,
+    switchPlayers,
   };
 }
