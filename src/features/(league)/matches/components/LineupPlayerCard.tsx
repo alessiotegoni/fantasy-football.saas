@@ -22,9 +22,6 @@ export default function LineupPlayerCard({
 }: Props) {
   const isStarter = type === "starter";
 
-  console.log(player);
-
-
   return (
     <div
       // ref={setNodeRef}
