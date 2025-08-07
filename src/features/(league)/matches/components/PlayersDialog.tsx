@@ -18,7 +18,7 @@ import { use, useEffect } from "react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import { useIsMobile } from "@/hooks/useMobile";
-import PlayersSelectList from "./PlayersDialogList";
+import PlayersSelectList from "./PlayersSelectList";
 import { findNextAvailablePositionId } from "../utils/match";
 
 export default function PlayersDialog({

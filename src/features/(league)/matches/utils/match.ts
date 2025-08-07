@@ -88,3 +88,4 @@ export function findNextAvailablePositionId({
 export function reorderBench(players: LineupPlayer[]) {
   return players.map((p, i) => ({ ...p, positionOrder: i + 1 }));
 }
+

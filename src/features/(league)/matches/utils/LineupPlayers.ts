@@ -5,6 +5,7 @@ import {
 } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { PlayerBonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
+import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 type EnrichLineupPlayersParams = {
   lineupsPlayers: LineupPlayer[];
@@ -144,6 +145,21 @@ function replacePlayers(
   return starterPlayers;
 }
 
-export function groupLineupsPlayers<T extends LineupPlayer>(players: T[]) {
-  return Object.groupBy(players, (player) => player.lineupPlayerType);
+export function formatTeamPlayer(player: TeamPlayer): LineupPlayer {
+  return {
+    ...player,
+    vote: null,
+    totalVote: null,
+    positionId: null,
+    positionOrder: null,
+    bonusMaluses: [],
+    lineupPlayerType: null,
+  };
+}
+
+export function groupLineupsPlayers(players: LineupPlayer[]) {
+  return Object.groupBy(
+    players,
+    (player) => player.lineupPlayerType ?? "bench"
+  );
 }

@@ -5,8 +5,8 @@ import { MyLineupContext } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { reorderBench } from "@/features/(league)/matches/utils/match";
 import useSortPlayers from "./useSortPlayers";
-import { PositionId } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
+import { formatTeamPlayer } from "@/features/(league)/matches/utils/LineupPlayers";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -21,18 +21,14 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   const { sortPlayers } = useSortPlayers();
 
-  function addBenchPlayer(newPlayer: Omit<LineupPlayer, "positionId">) {
+  function addBenchPlayer(newPlayer: LineupPlayer) {
     addLineupPlayers({
       benchPlayers: [...benchPlayers, { ...newPlayer, positionId: null }],
       starterPlayers: starterPlayers.filter((p) => p.id !== newPlayer.id),
     });
   }
 
-  function addStarterPlayer(
-    newPlayer: Omit<LineupPlayer, "positionId"> & {
-      positionId: PositionId;
-    }
-  ) {
+  function addStarterPlayer(newPlayer: LineupPlayer) {
     addLineupPlayers({
       starterPlayers: [...starterPlayers, newPlayer],
       benchPlayers: benchPlayers.filter((p) => p.id !== newPlayer.id),
@@ -109,7 +105,11 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
     const fullList = sortPlayers([...baseAvailable, ...swappable]);
 
-    return roleId ? fullList.filter((p) => p.role.id === roleId) : fullList;
+    const players = roleId
+      ? fullList.filter((p) => p.role.id === roleId)
+      : fullList;
+
+    return players.map((player) => formatTeamPlayer(player));
   }, [teamPlayers, starterPlayers, benchPlayers, type, roleId]);
 
   return {

@@ -1,17 +1,17 @@
 "use client";
 
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import { findNextAvailablePositionId } from "../utils/match";
-import { LineupPlayerType } from "@/drizzle/schema";
 import ScrollArea from "@/components/ui/scroll-area";
+import { LineupPlayer } from "../queries/match";
+import { formatTeamPlayer } from "../utils/LineupPlayers";
 
-export default function PlayersDialogList({
+export default function PlayersSelectList({
   availablePlayers,
 }: {
-  availablePlayers: TeamPlayer[] | LineupPlayerWithoutVotes[];
+  availablePlayers: LineupPlayer[];
 }) {
   const {
     myLineup: { tacticalModule, starterPlayers, benchPlayers },
@@ -24,10 +24,7 @@ export default function PlayersDialogList({
   function handleAddPlayer(player: TeamPlayer) {
     if (!type) return;
 
-    const newPlayer = {
-      ...player,
-      lineupPlayerType: type,
-    };
+    const newPlayer = formatTeamPlayer(player);
 
     const addPlayer =
       type === "starter" ? handleAddStarterPlayer : handleAddBenchPlayer;
@@ -35,9 +32,7 @@ export default function PlayersDialogList({
     addPlayer(newPlayer);
   }
 
-  function handleAddStarterPlayer(
-    newPlayer: TeamPlayer & { lineupPlayerType: LineupPlayerType }
-  ) {
+  function handleAddStarterPlayer(newPlayer: LineupPlayer) {
     if (!tacticalModule || !roleId) return;
 
     const positionId = findNextAvailablePositionId({
@@ -63,9 +58,7 @@ export default function PlayersDialogList({
     addStarterPlayer(playerToAdd);
   }
 
-  function handleAddBenchPlayer(
-    newPlayer: TeamPlayer & { lineupPlayerType: LineupPlayerType }
-  ) {
+  function handleAddBenchPlayer(newPlayer: LineupPlayer) {
     const positionOrder = benchPlayers.length + 1;
     addBenchPlayer({ ...newPlayer, positionOrder });
 
