@@ -18,9 +18,7 @@ type Props = {
   canEdit?: boolean;
 };
 
-// TODO: aggiungere il ruolo del giocatore (<PlayerRoleBadge />) insieme al team se non ci sono bonusMalus
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
-// FIXME: UI LineupPlayerCard
 
 export default function LineupPlayerCard({
   player,
@@ -133,7 +131,7 @@ export default function LineupPlayerCard({
             variant="ghost"
             size="icon"
             className={cn(
-              "hidden group-hover:flex cursor-grab p-0 rounded-full w-full hover:bg-transparent",
+              "hidden group-hover:flex hover:flex cursor-grab p-0 rounded-full w-full hover:bg-transparent",
               "absolute top-full",
               isDragging && "cursor-grabbing"
             )}
