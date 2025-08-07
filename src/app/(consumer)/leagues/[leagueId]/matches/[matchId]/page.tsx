@@ -14,6 +14,7 @@ import { getUserId } from "@/features/users/utils/user";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import MyLineupDndProvider from "@/contexts/MyLineupDndProvider";
 
 export default async function MatchPage({
   params,
@@ -65,14 +66,16 @@ async function SuspenseBoundary({
 
   return (
     <MyLineupProvider myTeam={myTeam}>
-      <MatchWrapper
-        matchInfo={matchInfo}
-        currentMatchday={currentMatchday}
-        lineupsPlayers={enrichedLineupPlayers}
-        myTeamId={myTeam?.id ?? null}
-        showLineups
-        {...ids}
-      />
+      <MyLineupDndProvider>
+        <MatchWrapper
+          matchInfo={matchInfo}
+          currentMatchday={currentMatchday}
+          lineupsPlayers={enrichedLineupPlayers}
+          myTeamId={myTeam?.id ?? null}
+          showLineups
+          {...ids}
+        />
+      </MyLineupDndProvider>
     </MyLineupProvider>
   );
 }

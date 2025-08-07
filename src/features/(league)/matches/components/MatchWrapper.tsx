@@ -4,7 +4,6 @@ import Container from "@/components/Container";
 import { Suspense } from "react";
 import FootballFieldBg from "./FootballFieldBg";
 import StarterLineups from "./StarterLineups";
-import BenchLineup from "./BenchLineup";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import ModulesSelect from "./ModulesSelect";
 import { getTacticalModules } from "../../settings/queries/setting";
@@ -13,12 +12,11 @@ import Disclaimer from "@/components/Disclaimer";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { getPresident, LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
-import PresidentSlot from "./PresidentSlot";
 import PlayersDialog from "./PlayersDialog";
 import { groupLineupsPlayers } from "../utils/LineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
 import BenchSkeleton from "./skeletons/BenchSkeleton";
-import { HomeLineupSlot } from "./LineupSlot";
+import { AwayLineupSlot, HomeLineupSlot } from "./LineupSlot";
 
 type Props = {
   matchInfo: MatchInfo;
@@ -111,7 +109,7 @@ export default function MatchWrapper({
         <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
             <>
-              <HomeLineupSlot
+              <AwayLineupSlot
                 starterPresident={getPresident(
                   groupedPlayers["starter"] ?? [],
                   matchInfo.awayTeam.id
