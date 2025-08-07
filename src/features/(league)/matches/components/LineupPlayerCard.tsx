@@ -53,10 +53,7 @@ export default function LineupPlayerCard({
             transform?.y ?? 0
           }px)`,
         }}
-        className={cn(
-          "group relative",
-          isDragging && "z-50"
-        )}
+        className={cn("group relative", isDragging && "z-50")}
       >
         <div>
           <div
@@ -84,12 +81,12 @@ export default function LineupPlayerCard({
                 />
               )}
             </div>
-            <div className={cn(isStarter ? "text-xs" : "text-xs")}>
+            <div className={cn("text-xs max-w-20", isBench && "truncate")}>
               <p className="font-semibold">
                 {player.displayName.split(" ").slice(1).join(" ")}
               </p>
               {isBench && player.team && (
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[11px] text-muted-foreground">
                   {player.team.displayName}
                 </span>
               )}
