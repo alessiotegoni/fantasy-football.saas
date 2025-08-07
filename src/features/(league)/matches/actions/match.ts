@@ -10,13 +10,13 @@ import {
   deleteLineupPlayers,
   insertLineup,
   insertLineupPlayers,
+  updateLineup,
 } from "../db/match";
 
 export async function saveLineup(values: MatchLineupSchema) {
   const { success, data, error } = await matchLineupSchema.safeParseAsync(
     values
   );
-  console.log(error);
   if (!success) return createError(VALIDATION_ERROR);
 
   const userId = await getUserId();
@@ -34,6 +34,7 @@ export async function saveLineup(values: MatchLineupSchema) {
       );
     }
 
+    await updateLineup(lineupId, data, tx);
     await deleteLineupPlayers(lineupId, data.matchId, tx);
     if (data.lineupPlayers.length) {
       const lineupPlayers = mapLineupPlayers(lineupId, data.lineupPlayers);

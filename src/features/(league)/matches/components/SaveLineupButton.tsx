@@ -20,6 +20,9 @@ export default function SaveLineupButton({
     isLineupDirty,
   } = useMyLineup();
 
+  console.log(tacticalModule);
+
+
   async function handleSaveLineup() {
     if (!tacticalModule) return createError("Nessun modulo tattico trovato");
 

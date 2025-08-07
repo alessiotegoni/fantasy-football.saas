@@ -32,7 +32,7 @@ export async function insertLineup(
 
 export async function updateLineup(
   lineupId: string,
-  { tacticalModuleId }: typeof leagueMatchTeamLineup.$inferInsert,
+  { tacticalModuleId }: { tacticalModuleId: number },
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [res] = await tx
