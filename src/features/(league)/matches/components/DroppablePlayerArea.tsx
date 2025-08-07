@@ -10,6 +10,7 @@ type Props = {
   roleId?: number;
   lineupType: LineupPlayerType;
   children: React.ReactNode;
+  className?: string;
 };
 
 export default function DroppablePlayerArea({
@@ -17,6 +18,7 @@ export default function DroppablePlayerArea({
   roleId,
   lineupType,
   children,
+  className = "",
 }: Props) {
   const { setNodeRef } = useDroppable({
     id: useId(),
@@ -27,5 +29,9 @@ export default function DroppablePlayerArea({
     },
   });
 
-  return <div ref={setNodeRef}>{children}</div>;
+  return (
+    <div ref={setNodeRef} className={className}>
+      {children}
+    </div>
+  );
 }

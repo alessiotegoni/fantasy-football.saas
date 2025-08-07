@@ -7,8 +7,9 @@ import { LineupPlayerType } from "@/drizzle/schema";
 import RemovePlayerButton from "./RemovePlayerButton";
 import { useDraggable } from "@dnd-kit/core";
 import DroppablePlayerArea from "./DroppablePlayerArea";
-import { DragHandGesture } from "iconoir-react";
+import { DragHandGesture, User } from "iconoir-react";
 import { Button } from "@/components/ui/button";
+import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 
 type Props = {
   player: LineupPlayer;
@@ -41,6 +42,9 @@ export default function LineupPlayerCard({
     });
 
   const isStarter = type === "starter";
+  const isBench = type === "bench";
+
+  const draggableProps = isBench ? { ...attributes, ...listeners } : {};
 
   return (
     <DroppablePlayerArea lineupType="starter" player={player}>
@@ -51,25 +55,42 @@ export default function LineupPlayerCard({
             transform?.y ?? 0
           }px)`,
         }}
+        className={cn("group relative", isDragging && "z-50")}
+        {...draggableProps}
       >
         <div
           className={cn(
-            "relative flex items-center gap-2 p-2 rounded-md group",
+            "relative flex items-center gap-2 p-2 rounded-md overflow-visible",
             isStarter ? "flex-col text-center" : "flex-row",
             isDragging && "border border-primary",
+            isBench && "cursor-grab",
+            isDragging && isBench && "cursor-grabbing",
             className
           )}
         >
-          <Avatar
-            imageUrl={player.avatarUrl}
-            name={player.displayName}
-            className={cn(isStarter ? "size-12" : "size-10")}
-            renderFallback={() => null}
-          />
+          <div className="relative">
+            <Avatar
+              imageUrl={player.avatarUrl}
+              name={player.displayName}
+              className={cn(isStarter ? "size-12" : "size-10")}
+              renderFallback={() => <User />}
+            />
+            {isBench && player.role && (
+              <PlayerRoleBadge
+                role={player.role}
+                className="absolute -top-1 -left-1 size-4 text-[10px]"
+              />
+            )}
+          </div>
           <div className={cn(isStarter ? "text-xs" : "text-xs")}>
             <p className="font-semibold">
-              {player.displayName.split(" ").slice(1)}
+              {player.displayName.split(" ").slice(1).join(" ")}
             </p>
+            {isBench && player.team && (
+              <span className="text-xs text-muted-foreground">
+                {player.team.displayName}
+              </span>
+            )}
             {player.vote !== null && (
               <div className="flex items-center gap-1">
                 <span className="text-muted-foreground">
@@ -93,15 +114,21 @@ export default function LineupPlayerCard({
           </div>
           {canEdit && <RemovePlayerButton playerId={player.id} />}
         </div>
-        <Button
-          {...attributes}
-          {...listeners}
-          variant="ghost"
-          size="icon"
-          className="cursor-grab p-0 rounded-full w-full hover:bg-transparent"
-        >
-          <DragHandGesture className="size-6" />
-        </Button>
+        {isStarter && (
+          <Button
+            {...attributes}
+            {...listeners}
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "hidden group-hover:flex cursor-grab p-0 rounded-full w-full hover:bg-transparent",
+              "absolute top-full",
+              isDragging && "cursor-grabbing"
+            )}
+          >
+            <DragHandGesture className="size-6" />
+          </Button>
+        )}
       </div>
     </DroppablePlayerArea>
   );

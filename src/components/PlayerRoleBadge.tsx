@@ -1,3 +1,4 @@
+import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { cn } from "@/lib/utils";
 import { Crown } from "iconoir-react";
@@ -18,7 +19,7 @@ export default function PlayerRoleBadge({ role, className }: Props) {
         badgeStyle
       )}
     >
-      {role.id === 1 ? <Crown className="text-primary size-4" /> : role.shortName}
+      {role.id === PRESIDENT_ROLE_ID ? <Crown className="text-primary size-4" /> : role.shortName}
     </div>
   );
 }

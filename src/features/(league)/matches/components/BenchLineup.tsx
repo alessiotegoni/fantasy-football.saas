@@ -44,8 +44,8 @@ export default function BenchLineup({
           </PlayersSelectTrigger>
         )}
       </div>
-      <DroppablePlayerArea lineupType="bench">
-        <ScrollArea className="space-y-3 max-h-[430px]">
+      <DroppablePlayerArea lineupType="bench" className="h-full">
+        <ScrollArea className={cn("space-y-4 max-h-[430px]", players.length <= 8 && "p-0")}>
           {players.map((player) => (
             <LineupPlayerCard
               key={player.id}
