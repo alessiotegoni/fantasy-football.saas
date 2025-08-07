@@ -1,9 +1,12 @@
+"use client";
+
 import Avatar from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
 import RemovePlayerButton from "./RemovePlayerButton";
 import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
+import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
   player: LineupPlayerWithoutVotes &
@@ -22,6 +25,19 @@ export default function LineupPlayerCard({
   className,
   canEdit,
 }: Props) {
+  const { attributes, listeners, setNodeRef } = useDraggable({
+    id: player.id,
+    attributes: {
+      role: "div",
+      roleDescription: "draggable player",
+      tabIndex: player.positionOrder,
+    },
+    data: {
+      player,
+      type,
+    },
+  });
+
   const isStarter = type === "starter";
 
   const totalVote =
@@ -32,6 +48,9 @@ export default function LineupPlayerCard({
 
   return (
     <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
       className={cn(
         "relative flex items-center gap-2 p-2 rounded-md group",
         isStarter ? "flex-col text-center" : "flex-row",
@@ -55,14 +74,7 @@ export default function LineupPlayerCard({
               <div className="flex gap-1">
                 {player.bonusMaluses.map((bm, index) => (
                   <div key={index} className="flex items-center">
-                    {bm.imageUrl && (
-                      <Image
-                        src={bm.imageUrl}
-                        alt="bonus/malus icon"
-                        width={16}
-                        height={16}
-                      />
-                    )}
+                    {bm.imageUrl && <></>}
                     <span>{bm.count > 0 ? `+${bm.count}` : bm.count}</span>
                   </div>
                 ))}

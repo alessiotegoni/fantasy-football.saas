@@ -1,6 +1,6 @@
 "use client";
 
-import { LineupPlayerType, PositionId } from "@/drizzle/schema";
+import { LineupPlayerType } from "@/drizzle/schema";
 import useMyLineup from "@/hooks/useMyLineup";
 import { cn } from "@/lib/utils";
 
