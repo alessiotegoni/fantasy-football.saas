@@ -1,6 +1,5 @@
 "use client";
 
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
 import { Crown, Plus, UserCrown, UserXmark } from "iconoir-react";
@@ -12,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 type Props = {
   canEditLineup: boolean;
-  starterPresident: LineupPlayer | LineupPlayerWithoutVotes | undefined;
+  starterPresident: LineupPlayer | undefined;
 };
 
 export default function PresidentSlot({
