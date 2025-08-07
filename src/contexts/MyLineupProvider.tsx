@@ -1,10 +1,10 @@
 "use client";
 
-import { LineupPlayerType, PositionId, TacticalModule } from "@/drizzle/schema";
+import { LineupPlayerType, TacticalModule } from "@/drizzle/schema";
+import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { tacticalModuleSchema } from "@/features/(league)/matches/schema/matchTacticalModule";
 import { groupLineupsPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
 import { LineupTeam, MyTeam } from "@/features/(league)/matches/utils/match";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import {
   createContext,
   useCallback,
@@ -13,17 +13,11 @@ import {
   useState,
 } from "react";
 
-export type LineupPlayerWithoutVotes = TeamPlayer & {
-  lineupPlayerType: LineupPlayerType;
-  positionId: PositionId | null;
-  positionOrder: number;
-};
-
 export type MyLineup = {
   id: string | null;
   tacticalModule: TacticalModule | null;
-  benchPlayers: LineupPlayerWithoutVotes[];
-  starterPlayers: LineupPlayerWithoutVotes[];
+  benchPlayers: LineupPlayer[];
+  starterPlayers: LineupPlayer[];
 };
 
 type PlayersDialog = {

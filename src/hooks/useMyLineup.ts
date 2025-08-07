@@ -1,14 +1,12 @@
 "use client";
 
 import { useContext, useMemo } from "react";
-import {
-  MyLineupContext,
-  LineupPlayerWithoutVotes,
-} from "@/contexts/MyLineupProvider";
+import { MyLineupContext } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { reorderBench } from "@/features/(league)/matches/utils/match";
 import useSortPlayers from "./useSortPlayers";
 import { PositionId } from "@/drizzle/schema";
+import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -23,9 +21,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   const { sortPlayers } = useSortPlayers();
 
-  function addBenchPlayer(
-    newPlayer: Omit<LineupPlayerWithoutVotes, "positionId">
-  ) {
+  function addBenchPlayer(newPlayer: Omit<LineupPlayer, "positionId">) {
     addLineupPlayers({
       benchPlayers: [...benchPlayers, { ...newPlayer, positionId: null }],
       starterPlayers: starterPlayers.filter((p) => p.id !== newPlayer.id),
@@ -33,7 +29,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   }
 
   function addStarterPlayer(
-    newPlayer: Omit<LineupPlayerWithoutVotes, "positionId"> & {
+    newPlayer: Omit<LineupPlayer, "positionId"> & {
       positionId: PositionId;
     }
   ) {
@@ -47,8 +43,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     starterPlayers,
     benchPlayers,
   }: {
-    starterPlayers: LineupPlayerWithoutVotes[];
-    benchPlayers: LineupPlayerWithoutVotes[];
+    starterPlayers: LineupPlayer[];
+    benchPlayers: LineupPlayer[];
   }) {
     handleSetLineup({ starterPlayers, benchPlayers });
   }
@@ -62,10 +58,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     });
   }
 
-  function movePlayer(
-    source: LineupPlayerWithoutVotes,
-    target: LineupPlayerWithoutVotes
-  ) {
+  function movePlayer(source: LineupPlayer, target: LineupPlayer) {
     const filteredStarters = starterPlayers.filter(
       (p) => p.id !== source.id && p.id !== target.id
     );

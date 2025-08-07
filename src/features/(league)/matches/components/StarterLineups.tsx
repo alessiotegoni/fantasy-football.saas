@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import { SplitMatchday } from "@/features/splits/queries/split";
@@ -14,16 +14,8 @@ type Props = {
 };
 
 export default function StarterLineups({
-  match: {
-    id: matchId,
-    isBye,
-    homeTeam,
-    awayTeam,
-    leagueCustomBonusMalus,
-    splitMatchday: matchMatchday,
-  },
+  match: { isBye, homeTeam, awayTeam, splitMatchday: matchMatchday },
   players,
-  currentMatchday,
   isMatchdayClosed,
 }: Props) {
   if (isBye) return null;

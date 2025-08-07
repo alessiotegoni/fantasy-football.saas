@@ -2,11 +2,10 @@ import { Plus } from "lucide-react";
 import { LineupPlayer } from "../queries/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import LineupPlayerCard from "./LineupPlayerCard";
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { PositionId } from "@/drizzle/schema";
 
 type Props = {
-  player: LineupPlayer | LineupPlayerWithoutVotes | undefined;
+  player: LineupPlayer | undefined;
   roleId: number;
   positionId: PositionId;
   canEdit: boolean;

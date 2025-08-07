@@ -5,12 +5,10 @@ import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
 import RemovePlayerButton from "./RemovePlayerButton";
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
-  player: LineupPlayerWithoutVotes &
-    Partial<Pick<LineupPlayer, "vote" | "bonusMaluses">>;
+  player: LineupPlayer;
   type: LineupPlayerType;
   className?: string;
   canEdit?: boolean;
@@ -25,18 +23,18 @@ export default function LineupPlayerCard({
   className,
   canEdit,
 }: Props) {
-  const { attributes, listeners, transform, setNodeRef } = useDraggable({
-    id: player.id,
-    attributes: {
-      role: "div",
-      roleDescription: "draggable player",
-      tabIndex: player.positionOrder,
-    },
-    data: {
-      player,
-      type,
-    },
-  });
+  // const { attributes, listeners, transform, setNodeRef } = useDraggable({
+  //   id: player.id,
+  //   attributes: {
+  //     role: "div",
+  //     roleDescription: "draggable player",
+  //     tabIndex: player.positionOrder,
+  //   },
+  //   data: {
+  //     player,
+  //     type,
+  //   },
+  // });
 
   const isStarter = type === "starter";
 
@@ -46,21 +44,19 @@ export default function LineupPlayerCard({
         (player.bonusMaluses?.reduce((acc, bm) => acc + bm.count, 0) ?? 0)
       : undefined;
 
-  console.log(transform);
-
   return (
     <div
-      ref={setNodeRef}
-      {...attributes}
-      {...listeners}
+      // ref={setNodeRef}
+      // {...attributes}
+      // {...listeners}
+      // style={{
+      //   transform: `translate(${transform?.x ?? 0}px, ${transform?.y ?? 0}px)`,
+      // }}
       className={cn(
         "relative flex items-center gap-2 p-2 rounded-md group",
         isStarter ? "flex-col text-center" : "flex-row",
         className
       )}
-      style={{
-        transform: `translate(${transform?.x ?? 0}px, ${transform?.y ?? 0}px)`,
-      }}
     >
       <Avatar
         imageUrl={player.avatarUrl}
@@ -69,7 +65,9 @@ export default function LineupPlayerCard({
         renderFallback={() => null}
       />
       <div className={cn(isStarter ? "text-xs" : "text-xs")}>
-        <p className="font-semibold">{player.displayName}</p>
+        <p className="font-semibold">
+          {player.displayName.split(" ").slice(1)}
+        </p>
         {player.vote !== undefined && (
           <div className="flex items-center gap-1">
             <span className="text-muted-foreground">
