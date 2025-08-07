@@ -53,7 +53,7 @@ export default function LeagueSidebar({
           </Button>
         </div>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="custom-scrollbar">
         {sidebarSection.map(({ type, items }) => {
           const section = (
             <SidebarSection
