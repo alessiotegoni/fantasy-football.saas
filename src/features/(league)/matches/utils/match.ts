@@ -6,7 +6,6 @@ import {
 } from "@/drizzle/schema";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { LineupPlayer, MatchInfo } from "../queries/match";
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 
 export function formatTeamData(
   teamId: string | null,
@@ -52,10 +51,7 @@ export function getMyTeam(
 
 export type MyTeam = ReturnType<typeof getMyTeam>;
 
-export function getPresident(
-  players: LineupPlayer[] | LineupPlayerWithoutVotes[],
-  teamId: string | null
-) {
+export function getPresident(players: LineupPlayer[], teamId: string | null) {
   const president = players.find(
     (player) =>
       player.role.id === PRESIDENT_ROLE_ID && player.leagueTeamId === teamId
@@ -70,7 +66,7 @@ export function findNextAvailablePositionId({
   tacticalModule: { layout },
 }: {
   roleId: number;
-  starterPlayers: LineupPlayerWithoutVotes[];
+  starterPlayers: LineupPlayer[];
   tacticalModule: TacticalModule;
 }) {
   const positionSlot = [PRESIDENT_SLOT, ...layout].find(
@@ -89,6 +85,6 @@ export function findNextAvailablePositionId({
   return nextAvailable ?? null;
 }
 
-export function reorderBench(players: LineupPlayerWithoutVotes[]) {
+export function reorderBench(players: LineupPlayer[]) {
   return players.map((p, i) => ({ ...p, positionOrder: i + 1 }));
 }

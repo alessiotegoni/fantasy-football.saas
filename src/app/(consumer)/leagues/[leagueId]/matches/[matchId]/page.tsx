@@ -62,7 +62,10 @@ async function SuspenseBoundary({
     ...matchInfo,
   });
 
-  const myTeam = getMyTeam(myTeamId, matchInfo, lineupsPlayers);
+  const myTeam = getMyTeam(myTeamId, matchInfo, enrichedLineupPlayers);
+
+  console.log(myTeam);
+
 
   return (
     <MyLineupProvider myTeam={myTeam}>

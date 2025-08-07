@@ -1,11 +1,8 @@
-"use client";
-
 import Avatar from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
 import RemovePlayerButton from "./RemovePlayerButton";
-import { useDraggable } from "@dnd-kit/core";
 
 type Props = {
   player: LineupPlayer;
@@ -23,26 +20,10 @@ export default function LineupPlayerCard({
   className,
   canEdit,
 }: Props) {
-  // const { attributes, listeners, transform, setNodeRef } = useDraggable({
-  //   id: player.id,
-  //   attributes: {
-  //     role: "div",
-  //     roleDescription: "draggable player",
-  //     tabIndex: player.positionOrder,
-  //   },
-  //   data: {
-  //     player,
-  //     type,
-  //   },
-  // });
-
   const isStarter = type === "starter";
 
-  const totalVote =
-    player.vote !== undefined && player.vote !== null
-      ? player.vote +
-        (player.bonusMaluses?.reduce((acc, bm) => acc + bm.count, 0) ?? 0)
-      : undefined;
+  console.log(player);
+
 
   return (
     <div
@@ -68,7 +49,7 @@ export default function LineupPlayerCard({
         <p className="font-semibold">
           {player.displayName.split(" ").slice(1)}
         </p>
-        {player.vote !== undefined && (
+        {player.vote !== null && (
           <div className="flex items-center gap-1">
             <span className="text-muted-foreground">
               Voto: {player.vote ?? "-"}
@@ -85,8 +66,8 @@ export default function LineupPlayerCard({
             )}
           </div>
         )}
-        {totalVote !== undefined && (
-          <p className="font-bold">Totale: {totalVote}</p>
+        {player.totalVote !== null && (
+          <p className="font-bold">Totale: {player.totalVote}</p>
         )}
       </div>
       {canEdit && <RemovePlayerButton playerId={player.id} />}

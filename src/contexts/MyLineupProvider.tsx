@@ -5,6 +5,7 @@ import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { tacticalModuleSchema } from "@/features/(league)/matches/schema/matchTacticalModule";
 import { groupLineupsPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
 import { LineupTeam, MyTeam } from "@/features/(league)/matches/utils/match";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import {
   createContext,
   useCallback,
@@ -63,16 +64,10 @@ export default function MyLineupProvider({
     getInitialDialog()
   );
 
-  useEffect(() => {
-    if (myLineup.tacticalModule) {
-      try {
-        localStorage.setItem(
-          LOCAL_STORAGE_KEY,
-          JSON.stringify(myLineup.tacticalModule)
-        );
-      } catch {}
-    }
-  }, [myLineup.tacticalModule]);
+  const [, setTacticalModule] = useLocalStorage(
+    LOCAL_STORAGE_KEY,
+    myLineup.tacticalModule
+  );
 
   const handleSetLineup = useCallback(
     (lineup: Partial<MyLineup>) =>
@@ -82,6 +77,7 @@ export default function MyLineupProvider({
 
   const handleSetModule = useCallback((tacticalModule: TacticalModule) => {
     handleSetLineup({ tacticalModule });
+    setTacticalModule(tacticalModule);
   }, []);
 
   const handleSetPlayersDialog = useCallback(

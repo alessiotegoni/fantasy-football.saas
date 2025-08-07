@@ -1,4 +1,3 @@
-import { LineupPlayerWithoutVotes } from "@/contexts/MyLineupProvider";
 import {
   CustomBonusMalus,
   RolePosition,
@@ -145,8 +144,6 @@ function replacePlayers(
   return starterPlayers;
 }
 
-export function groupLineupsPlayers<
-  T extends LineupPlayer | LineupPlayerWithoutVotes
->(players: T[]) {
+export function groupLineupsPlayers<T extends LineupPlayer>(players: T[]) {
   return Object.groupBy(players, (player) => player.lineupPlayerType);
 }
