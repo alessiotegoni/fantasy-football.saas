@@ -25,7 +25,7 @@ export default function LineupPlayerCard({
   className,
   canEdit,
 }: Props) {
-  const { attributes, listeners, setNodeRef } = useDraggable({
+  const { attributes, listeners, transform, setNodeRef } = useDraggable({
     id: player.id,
     attributes: {
       role: "div",
@@ -46,6 +46,8 @@ export default function LineupPlayerCard({
         (player.bonusMaluses?.reduce((acc, bm) => acc + bm.count, 0) ?? 0)
       : undefined;
 
+  console.log(transform);
+
   return (
     <div
       ref={setNodeRef}
@@ -56,6 +58,9 @@ export default function LineupPlayerCard({
         isStarter ? "flex-col text-center" : "flex-row",
         className
       )}
+      style={{
+        transform: `translate(${transform?.x ?? 0}px, ${transform?.y ?? 0}px)`,
+      }}
     >
       <Avatar
         imageUrl={player.avatarUrl}
