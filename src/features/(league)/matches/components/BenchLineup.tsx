@@ -33,7 +33,7 @@ export default function BenchLineup({
         className
       )}
     >
-      <div className="flex justify-between items-center gap-2 mb-3">
+      <div className="flex justify-between items-center gap-2 mb-4">
         <h2 className="text-sm xs:text-base">Panchina</h2>
         {canEditLineup && (
           <PlayersSelectTrigger
@@ -44,18 +44,18 @@ export default function BenchLineup({
           </PlayersSelectTrigger>
         )}
       </div>
-      <DroppablePlayerArea lineupType="bench" className="h-full">
-        <ScrollArea className={cn("space-y-4 max-h-[430px]", players.length <= 8 && "p-0")}>
-          {players.map((player) => (
-            <LineupPlayerCard
-              key={player.id}
-              player={player}
-              type="bench"
-              canEdit={canEditLineup}
-              className="p-0 w-full text-left text-xs"
-            />
-          ))}
-        </ScrollArea>
+      <DroppablePlayerArea lineupType="bench" className="h-full space-y-3.5">
+        {/* <ScrollArea className={cn("space-y-4 max-h-[430px]", players.length <= 8 && "p-0")}> */}
+        {players.map((player) => (
+          <LineupPlayerCard
+            key={player.id}
+            player={player}
+            type="bench"
+            canEdit={canEditLineup}
+            className="p-0 w-full text-left text-xs"
+          />
+        ))}
+        {/* </ScrollArea> */}
       </DroppablePlayerArea>
     </div>
   );

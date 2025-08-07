@@ -23,11 +23,11 @@ export default function RemovePlayerButton({ playerId, className }: Props) {
       onClick={removePlayerFromLineup.bind(null, playerId)}
       className={cn(
         isMobile ? "absolute flex" : "hidden group-hover:flex absolute",
-        "top-1 right-1 p-1 rounded-full size-5",
+        "top-1 right-1 p-1 rounded-full size-5 !bg-destructive/100",
         className
       )}
     >
-      <Xmark className="size-3" />
+      <Xmark className="size-3.5" />
     </Button>
   );
 }
