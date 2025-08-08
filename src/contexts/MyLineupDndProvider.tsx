@@ -30,7 +30,13 @@ export default function MyLineupDndProvider({
 
     //FIXME: switchPlayers not working
 
-    if (targetPlayer && sourcePlayer.id !== targetPlayer?.id) {
+    if (
+      targetPlayer &&
+      sourcePlayer.id !== targetPlayer?.id &&
+      ![sourcePlayer, targetPlayer].every(
+        (player) => player.lineupPlayerType === "bench"
+      )
+    ) {
       switchPlayers(sourcePlayer, targetPlayer);
       return;
     }

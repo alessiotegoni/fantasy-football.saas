@@ -5,8 +5,6 @@ import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import { Plus } from "iconoir-react";
-import ScrollArea from "@/components/ui/scroll-area";
-import DroppablePlayerArea from "./DroppablePlayerArea";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -48,20 +46,22 @@ export default function BenchLineup({
           </PlayersSelectTrigger>
         )}
       </div>
-      <DroppablePlayerArea lineupType="bench" className="h-full space-y-3.5">
-        <SortableContext items={players} strategy={verticalListSortingStrategy}>
-          {/* <ScrollArea className={cn("space-y-4 max-h-[430px]", players.length <= 8 && "p-0")}> */}
-          {players.map((player) => (
-            <SortableLineupPlayerCard
-              key={player.id}
-              player={player}
-              type="bench"
-              canEdit={canEditLineup}
-            />
-          ))}
-          {/* </ScrollArea> */}
-        </SortableContext>
-      </DroppablePlayerArea>
+
+      {/* <ScrollArea className={cn("space-y-4 max-h-[430px]", players.length <= 8 && "p-0")}> */}
+      <SortableContext
+        items={players.map((player) => player.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {players.map((player) => (
+          <SortableLineupPlayerCard
+            key={player.id}
+            player={player}
+            type="bench"
+            canEdit={canEditLineup}
+          />
+        ))}
+      </SortableContext>
+      {/* </ScrollArea> */}
     </div>
   );
 }

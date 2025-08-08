@@ -26,7 +26,7 @@ export default function DroppablePlayerArea({
   className = "",
 }: Props) {
   const { setNodeRef } = useDroppable({
-    id: useId(),
+    id: player ? player.id : useId(),
     data: {
       player,
       roleId,

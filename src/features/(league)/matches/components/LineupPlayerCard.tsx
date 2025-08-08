@@ -21,111 +21,102 @@ type Props = {
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 
-function LineupPlayerCard({
-  player,
-  type,
-  className,
-  canEdit = false,
-}: Props) {
-  const { attributes, listeners, transform, isDragging, setNodeRef } =
-    useDraggable({
-      id: player.id,
-      attributes: {
-        role: "div",
-        roleDescription: "draggable player",
-        tabIndex: player.positionOrder ?? 0,
-      },
-      data: {
-        player,
-      },
-    });
+function LineupPlayerCard({ player, type, className, canEdit = false }: Props) {
+  // const { attributes, listeners, transform, isDragging, setNodeRef } =
+  //   useDraggable({
+  //     id: player.id,
+  //     attributes: {
+  //       role: "div",
+  //       roleDescription: "draggable player",
+  //       tabIndex: player.positionOrder ?? 0,
+  //     },
+  //     data: {
+  //       player,
+  //     },
+  //   });
 
   const isStarter = type === "starter";
   const isBench = type === "bench";
 
-  const draggableProps = isBench ? { ...attributes, ...listeners } : {};
+  // const draggableProps = isBench ? { ...attributes, ...listeners } : {};
 
   console.log(player);
 
-
   return (
-    <DroppablePlayerArea lineupType="starter" player={player}>
-      <div
-        ref={setNodeRef}
-        style={{
-          transform: `translate(${transform?.x ?? 0}px, ${
-            transform?.y ?? 0
-          }px)`,
-        }}
-        className={cn("group relative", isDragging && "z-50")}
-      >
-        <div>
-          <div
-            className={cn(
-              "relative flex items-center gap-2 p-2 rounded-md",
-              isStarter && "flex-col text-center",
-              isBench && "hover:cursor-grab flex-row",
-              isDragging && "border border-primary",
-              isDragging && isBench && "cursor-grabbing",
-              className
-            )}
-            {...draggableProps}
-          >
-            <div className="relative">
-              <Avatar
-                imageUrl={player.avatarUrl}
-                name={player.displayName}
-                className={cn(isStarter ? "size-12" : "size-10")}
-                renderFallback={() => <User />}
-              />
-              {isBench && player.role && (
-                <PlayerRoleBadge
-                  role={player.role}
-                  className="absolute -top-1 -left-1 size-4 text-[10px]"
-                />
-              )}
-            </div>
-            <div className={cn("text-xs max-w-20", isBench && "truncate")}>
-              <p className="font-semibold">
-                {player.displayName.split(" ").slice(1).join(" ")}
-              </p>
-              {isBench && player.team && (
-                <span className="text-[11px] text-muted-foreground">
-                  {player.team.displayName}
-                </span>
-              )}
-              {player.vote !== null && (
-                <div className="flex items-center gap-1">
-                  <span className="text-muted-foreground">
-                    Voto: {player.vote ?? "-"}
-                  </span>
-                  {player.bonusMaluses && player.bonusMaluses.length > 0 && (
-                    <div className="flex gap-1">
-                      {player.bonusMaluses.map((bm, index) => (
-                        <div key={index} className="flex items-center">
-                          {bm.imageUrl && <></>}
-                          <span>
-                            {bm.count > 0 ? `+${bm.count}` : bm.count}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-              {player.totalVote !== null && (
-                <p className="font-bold">Totale: {player.totalVote}</p>
-              )}
-            </div>
-          </div>
-          {canEdit && (
-            <RemovePlayerButton
-              playerId={player.id}
-              className={cn(isBench && "-top-1 -right-1")}
-            />
+    <div
+    // ref={setNodeRef}
+    // style={{
+    //   transform: `translate(${transform?.x ?? 0}px, ${
+    //     transform?.y ?? 0
+    //   }px)`,
+    // }}
+    // className={cn("group relative", isDragging && "z-50")}
+    >
+      <div>
+        <div
+          className={cn(
+            "relative flex items-center gap-2 p-2 rounded-md",
+            isStarter && "flex-col text-center",
+            isBench && "hover:cursor-grab flex-row",
+            // isDragging && "border border-primary",
+            // isDragging && isBench && "cursor-grabbing",
+            className
           )}
+          // {...draggableProps}
+        >
+          <div className="relative">
+            <Avatar
+              imageUrl={player.avatarUrl}
+              name={player.displayName}
+              className={cn(isStarter ? "size-12" : "size-10")}
+              renderFallback={() => <User />}
+            />
+            {isBench && player.role && (
+              <PlayerRoleBadge
+                role={player.role}
+                className="absolute -top-1 -left-1 size-4 text-[10px]"
+              />
+            )}
+          </div>
+          <div className={cn("text-xs max-w-20", isBench && "truncate")}>
+            <p className="font-semibold">
+              {player.displayName.split(" ").slice(1).join(" ")}
+            </p>
+            {isBench && player.team && (
+              <span className="text-[11px] text-muted-foreground">
+                {player.team.displayName}
+              </span>
+            )}
+            {player.vote !== null && (
+              <div className="flex items-center gap-1">
+                <span className="text-muted-foreground">
+                  Voto: {player.vote ?? "-"}
+                </span>
+                {player.bonusMaluses && player.bonusMaluses.length > 0 && (
+                  <div className="flex gap-1">
+                    {player.bonusMaluses.map((bm, index) => (
+                      <div key={index} className="flex items-center">
+                        {bm.imageUrl && <></>}
+                        <span>{bm.count > 0 ? `+${bm.count}` : bm.count}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+            {player.totalVote !== null && (
+              <p className="font-bold">Totale: {player.totalVote}</p>
+            )}
+          </div>
         </div>
-        {isStarter && (
+        {canEdit && (
+          <RemovePlayerButton
+            playerId={player.id}
+            className={cn(isBench && "-top-1 -right-1")}
+          />
+        )}
+      </div>
+      {/* {isStarter && (
           <Button
             {...attributes}
             {...listeners}
@@ -139,9 +130,8 @@ function LineupPlayerCard({
           >
             <DragHandGesture className="size-6" />
           </Button>
-        )}
-      </div>
-    </DroppablePlayerArea>
+        )} */}
+    </div>
   );
 }
 
