@@ -1,6 +1,5 @@
 "use client";
 import { PositionId } from "@/drizzle/schema";
-import { DroppablePlayerArea } from "@/features/(league)/matches/components/DroppablePlayerArea";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
 import { Collision, DndContext, DragEndEvent } from "@dnd-kit/core";

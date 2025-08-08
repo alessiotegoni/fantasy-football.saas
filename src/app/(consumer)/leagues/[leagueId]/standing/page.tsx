@@ -114,7 +114,7 @@ async function SuspenseBoundary({
     <StandingWrapper
       data={mockStandingsData}
       isSplitEnded={selectedSplit.status === "ended"}
-      isDefaultStanding={isDefaultStainding}
+      isDefaultStanding={true} //FIXME: add isDefaultStanding variable
       finalPhaseAccess={finalPhaseAccess}
     />
   );

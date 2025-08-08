@@ -6,7 +6,7 @@ import { Crown, Plus, UserCrown, UserXmark } from "iconoir-react";
 import { getPresident } from "../utils/match";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import PresidentCard from "./PresidentCard";
-import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
+import { PRESIDENT_POSITION_ID, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { cn } from "@/lib/utils";
 import DroppablePlayerArea from "./DroppablePlayerArea";
 
@@ -62,7 +62,11 @@ export default function PresidentSlot({
         </div>
       )}
       {!hasPresident && canEditLineup && (
-        <DroppablePlayerArea lineupType="starter" roleId={PRESIDENT_ROLE_ID}>
+        <DroppablePlayerArea
+          lineupType="starter"
+          roleId={PRESIDENT_ROLE_ID}
+          positionId={PRESIDENT_POSITION_ID}
+        >
           <AddPresidentButton className="w-full mt-2 2xl:size-full flex-col justify-center 2xl:justify-start gap-2 2xl:mt-6.5">
             <UserCrown className="size-8 text-muted-foreground" />
             <p className="max-w-28 sm:max-w-fit text-sm font-medium text-muted-foreground text-center w-full 2xl:max-w-32">
