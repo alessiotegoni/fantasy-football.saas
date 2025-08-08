@@ -11,6 +11,8 @@ import {
 } from "@dnd-kit/sortable";
 import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
 import ScrollArea from "@/components/ui/scroll-area";
+import DroppablePlayerArea from "./DroppablePlayerArea";
+import RemovePlayerDroppableArea from "./RemovePlayerDroppableArea";
 
 type Props = {
   players: LineupPlayer[];
@@ -35,7 +37,7 @@ export default function BenchLineup({
   return (
     <div
       className={cn(
-        `bg-input/30 rounded-3xl min-h-[500px] h-[500px] border-border p-3 sm:p-4`,
+        `bg-input/30 rounded-3xl min-h-[500px] h-[500px] border-border p-3 sm:p-4 flex flex-col`,
         className
       )}
     >
@@ -55,7 +57,12 @@ export default function BenchLineup({
         items={players.map((player) => player.id)}
         strategy={verticalListSortingStrategy}
       >
-        <ScrollArea className={cn("space-y-4 overflow-visible h-full", players.length <= 8 && "p-0")}>
+        <ScrollArea
+          className={cn(
+            "space-y-4 overflow-visible grow",
+            players.length <= 8 && "p-0"
+          )}
+        >
           {players.map((player) => (
             <SortableLineupPlayerCard
               key={player.id}
@@ -65,6 +72,7 @@ export default function BenchLineup({
           ))}
         </ScrollArea>
       </SortableContext>
+      {canEditLineup && <RemovePlayerDroppableArea />}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useDroppable } from "@dnd-kit/core";
+import { UniqueIdentifier, useDroppable } from "@dnd-kit/core";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType, PositionId } from "@/drizzle/schema";
 import { useId } from "react";
@@ -11,13 +11,15 @@ type Props = DroppablePlayerArea & {
 };
 
 export type DroppablePlayerArea = {
+  id?: UniqueIdentifier;
   player?: LineupPlayer;
   roleId?: number;
   positionId?: PositionId;
-  lineupType: LineupPlayerType;
+  lineupType?: LineupPlayerType;
 };
 
 export default function DroppablePlayerArea({
+  id,
   player,
   roleId,
   positionId,
@@ -26,7 +28,7 @@ export default function DroppablePlayerArea({
   className = "",
 }: Props) {
   const { setNodeRef } = useDroppable({
-    id: player ? player.id : useId(),
+    id: id ? id : player ? player.id : useId(),
     data: {
       player,
       roleId,

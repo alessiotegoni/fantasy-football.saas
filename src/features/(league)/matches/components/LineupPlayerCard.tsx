@@ -1,3 +1,5 @@
+"use client";
+
 import Avatar from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
@@ -6,17 +8,19 @@ import RemovePlayerButton from "./RemovePlayerButton";
 import { User } from "iconoir-react";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
+import { useIsMobile } from "@/hooks/useMobile";
 
 type Props = {
   player: LineupPlayer;
   type: LineupPlayerType;
   className?: string;
-  canEdit?: boolean;
+  canEdit: boolean;
 };
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 
-function LineupPlayerCard({ player, type, className, canEdit = false }: Props) {
+function LineupPlayerCard({ player, type, className, canEdit }: Props) {
+  const isMobile = useIsMobile();
 
   const isStarter = type === "starter";
   const isBench = type === "bench";
