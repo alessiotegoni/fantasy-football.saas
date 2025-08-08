@@ -38,8 +38,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     });
   }
 
-  console.log(starterPlayers);
-
   function addLineupPlayers({
     starterPlayers,
     benchPlayers,
@@ -96,7 +94,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       target.positionId = null;
       target.positionOrder = source.positionOrder;
       filteredBench.push(target);
-    } else {
+    }
+    if (target.lineupPlayerType === "bench") {
       source.lineupPlayerType = "bench";
       source.positionId = null;
       source.positionOrder = target.positionOrder;

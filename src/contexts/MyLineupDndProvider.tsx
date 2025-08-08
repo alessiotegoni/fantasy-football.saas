@@ -25,6 +25,10 @@ export default function MyLineupDndProvider({
     console.log(e.collisions);
     const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
 
+    console.log(sourcePlayer, targetPlayer);
+
+    //FIXME: switchPlayers not working
+
     if (targetPlayer && sourcePlayer.id !== targetPlayer?.id) {
       switchPlayers(sourcePlayer, targetPlayer);
       return;

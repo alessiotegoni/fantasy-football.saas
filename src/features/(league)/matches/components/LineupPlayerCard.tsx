@@ -10,6 +10,7 @@ import DroppablePlayerArea from "./DroppablePlayerArea";
 import { DragHandGesture, User } from "iconoir-react";
 import { Button } from "@/components/ui/button";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
+import { memo } from "react";
 
 type Props = {
   player: LineupPlayer;
@@ -20,7 +21,7 @@ type Props = {
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 
-export default function LineupPlayerCard({
+function LineupPlayerCard({
   player,
   type,
   className,
@@ -140,3 +141,5 @@ export default function LineupPlayerCard({
     </DroppablePlayerArea>
   );
 }
+
+export default memo(LineupPlayerCard);
