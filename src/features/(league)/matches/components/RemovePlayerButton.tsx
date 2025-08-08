@@ -11,6 +11,10 @@ type Props = {
   className?: string;
 };
 
+// TODO: per telefono (breakpooint sm) rimuovere il bottone ed aggiungere
+// che swappando verso sinistra si elimina (appare anche una scritta)
+// mentre per breakpoint (2xl) vedere BenchLineup
+
 export default function RemovePlayerButton({ playerId, className }: Props) {
   const isMobile = useIsMobile();
 
@@ -23,7 +27,7 @@ export default function RemovePlayerButton({ playerId, className }: Props) {
       onClick={removePlayerFromLineup.bind(null, playerId)}
       className={cn(
         isMobile ? "absolute flex" : "hidden group-hover:flex absolute",
-        "top-1 right-1 p-1 rounded-full size-5 !bg-destructive/100",
+        "top-1/2 -translate-y-1/2 right-1 p-1 rounded-full size-5 !bg-destructive/100",
         className
       )}
     >

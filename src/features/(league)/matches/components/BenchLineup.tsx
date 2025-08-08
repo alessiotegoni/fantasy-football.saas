@@ -29,6 +29,9 @@ export default function BenchLineup({
 
   const players = canEditLineup ? benchPlayers : lineupPlayers;
 
+  // TODO: per breakpoint (2xl) mostrare il cestino (droppable) in basso della bench
+  // e una volta rilasciato il giocatore al suo interno eliminarlo dalla lineup
+
   return (
     <div
       className={cn(
@@ -52,7 +55,7 @@ export default function BenchLineup({
         items={players.map((player) => player.id)}
         strategy={verticalListSortingStrategy}
       >
-        <ScrollArea className={cn("space-y-4 overflow-visible", players.length <= 8 && "p-0")}>
+        <ScrollArea className={cn("space-y-4 overflow-visible h-full", players.length <= 8 && "p-0")}>
           {players.map((player) => (
             <SortableLineupPlayerCard
               key={player.id}

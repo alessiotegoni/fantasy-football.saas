@@ -1,5 +1,3 @@
-"use client";
-
 import Avatar from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
@@ -19,6 +17,7 @@ type Props = {
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 
 function LineupPlayerCard({ player, type, className, canEdit = false }: Props) {
+
   const isStarter = type === "starter";
   const isBench = type === "bench";
 
@@ -80,7 +79,7 @@ function LineupPlayerCard({ player, type, className, canEdit = false }: Props) {
       {canEdit && (
         <RemovePlayerButton
           playerId={player.id}
-          className={cn(isBench && "-top-1 -right-1")}
+          className={cn(isStarter && "-top-5 right-0")}
         />
       )}
     </div>
