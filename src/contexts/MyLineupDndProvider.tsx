@@ -22,7 +22,7 @@ export default function MyLineupDndProvider({
     const sourcePlayer: LineupPlayer = e.active.data.current?.player;
     if (!sourcePlayer) return;
 
-    console.log(e.collisions);
+    console.log(e.over?.data.current);
     const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
 
     console.log(sourcePlayer, targetPlayer);
