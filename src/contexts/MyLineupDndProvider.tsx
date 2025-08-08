@@ -20,6 +20,7 @@ export default function MyLineupDndProvider({
 }) {
   const {
     addStarterPlayer,
+    addBenchPlayer,
     removePlayerFromLineup,
     switchPlayers,
     switchPlayerPosition,
@@ -29,22 +30,20 @@ export default function MyLineupDndProvider({
 
   function handleDragStart(event: DragStartEvent) {
     const player = event.active.data.current?.player as LineupPlayer;
-    if (player) {
-      setActivePlayer(player);
-    }
+    if (player) setActivePlayer(player);
   }
 
   function handleDragEnd(e: DragEndEvent) {
     setActivePlayer(null);
 
     const { active, over } = e;
-    if (!over) return;
 
-    const sourcePlayer: LineupPlayer = e.active.data.current?.player;
+    const sourcePlayer: LineupPlayer = active.data.current?.player;
     if (!sourcePlayer) return;
+    console.log(e.collisions);
 
-    if (active.id !== over.id) {
-      const targetPlayer = over.data.current?.player as LineupPlayer;
+    if (active.id !== over?.id) {
+      const targetPlayer = over?.data.current?.player as LineupPlayer;
 
       if (
         [sourcePlayer, targetPlayer].every(
@@ -80,21 +79,36 @@ export default function MyLineupDndProvider({
     if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
       switchPlayerPosition(sourcePlayer, closestPositionId);
     }
+
+    movePlayerToBench(sourcePlayer);
   }
+
+  //FIXME: dallo starter alla panchina non si spostano ancora
+  //  (perche benchLineup non viene rilevato come droppable)
 
   function movePlayerToStarter(
     benchPlayer: LineupPlayer,
     positionId: PositionId
   ) {
-    const newStarterPlayer = {
+    const newStarterPlayer: LineupPlayer = {
       ...benchPlayer,
-      lineupPlayerType: "starter" as LineupPlayerType,
+      lineupPlayerType: "starter",
       positionOrder: getPositionOrder(positionId),
       positionId,
     };
 
     removePlayerFromLineup(benchPlayer.id);
     addStarterPlayer(newStarterPlayer);
+  }
+
+  function movePlayerToBench(starterPlayer: LineupPlayer) {
+    const newBenchPlayer: LineupPlayer = {
+      ...starterPlayer,
+      lineupPlayerType: "bench",
+    };
+
+    removePlayerFromLineup(starterPlayer.id);
+    addStarterPlayer(newBenchPlayer);
   }
 
   return (

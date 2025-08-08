@@ -29,7 +29,14 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
   function addBenchPlayer(newPlayer: LineupPlayer) {
     addLineupPlayers({
-      benchPlayers: [...benchPlayers, { ...newPlayer, positionId: null }],
+      benchPlayers: [
+        ...benchPlayers,
+        {
+          ...newPlayer,
+          positionId: null,
+          positionOrder: benchPlayers.length + 1,
+        },
+      ],
       starterPlayers: starterPlayers.filter((p) => p.id !== newPlayer.id),
     });
   }

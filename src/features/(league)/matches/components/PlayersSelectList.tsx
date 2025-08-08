@@ -18,7 +18,7 @@ export default function PlayersSelectList({
   availablePlayers: LineupPlayer[];
 }) {
   const {
-    myLineup: { tacticalModule, starterPlayers, benchPlayers },
+    myLineup: { tacticalModule, starterPlayers },
     playersDialog: { type, roleId, positionId },
     addStarterPlayer,
     addBenchPlayer,
@@ -68,8 +68,7 @@ export default function PlayersSelectList({
   }
 
   function handleAddBenchPlayer(newPlayer: LineupPlayer) {
-    const positionOrder = benchPlayers.length + 1;
-    addBenchPlayer({ ...newPlayer, positionOrder });
+    addBenchPlayer(newPlayer);
 
     const isLastPlayer = availablePlayers.length - 1 <= 0;
     handleSetPlayersDialog({ open: !isLastPlayer });
