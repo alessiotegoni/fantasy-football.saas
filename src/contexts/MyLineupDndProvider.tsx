@@ -4,6 +4,7 @@ import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { getPositionOrder } from "@/features/(league)/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
 import { Collision, DndContext, DragEndEvent } from "@dnd-kit/core";
+import {  } from "@dnd-kit/utilities";
 
 export default function MyLineupDndProvider({
   children,
@@ -27,8 +28,6 @@ export default function MyLineupDndProvider({
     const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
 
     console.log(sourcePlayer, targetPlayer);
-
-    //FIXME: switchPlayers not working
 
     if (
       targetPlayer &&

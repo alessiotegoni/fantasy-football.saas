@@ -79,7 +79,7 @@ function LineupPlayerCard({ player, type, className, canEdit = false }: Props) {
       {canEdit && (
         <RemovePlayerButton
           playerId={player.id}
-          className={cn(isStarter && "-top-5 right-0")}
+          className={cn(isStarter && "top-0 right-0 xl:top-1 xl:right-1")}
         />
       )}
     </div>

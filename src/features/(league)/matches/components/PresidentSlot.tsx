@@ -93,6 +93,7 @@ function AddPresidentButton({
     <PlayersSelectTrigger
       lineupType="starter"
       roleId={PRESIDENT_ROLE_ID}
+      positionId={PRESIDENT_POSITION_ID}
       className={className}
     >
       {children}

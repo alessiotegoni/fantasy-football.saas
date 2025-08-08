@@ -89,6 +89,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       (p) => p.id !== source.id && p.id !== target.id
     );
 
+    
     if (target.lineupPlayerType === "starter") {
       source.lineupPlayerType = "starter";
       source.positionId = target.positionId;
@@ -100,6 +101,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       target.positionOrder = source.positionOrder;
       filteredBench.push(target);
     }
+
     if (target.lineupPlayerType === "bench") {
       source.lineupPlayerType = "bench";
       source.positionId = null;
