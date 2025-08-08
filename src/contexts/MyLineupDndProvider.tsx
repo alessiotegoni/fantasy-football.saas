@@ -4,7 +4,7 @@ import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { getPositionOrder } from "@/features/(league)/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
 import { Collision, DndContext, DragEndEvent } from "@dnd-kit/core";
-import {  } from "@dnd-kit/utilities";
+import {} from "@dnd-kit/utilities";
 
 export default function MyLineupDndProvider({
   children,
@@ -24,18 +24,9 @@ export default function MyLineupDndProvider({
     const sourcePlayer: LineupPlayer = e.active.data.current?.player;
     if (!sourcePlayer) return;
 
-    console.log(e.over?.data.current);
     const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
 
-    console.log(sourcePlayer, targetPlayer);
-
-    if (
-      targetPlayer &&
-      sourcePlayer.id !== targetPlayer?.id &&
-      ![sourcePlayer, targetPlayer].every(
-        (player) => player.lineupPlayerType === "bench"
-      )
-    ) {
+    if (targetPlayer && sourcePlayer.id !== targetPlayer?.id) {
       switchPlayers(sourcePlayer, targetPlayer);
       return;
     }
@@ -52,8 +43,6 @@ export default function MyLineupDndProvider({
     if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
       switchPlayerPosition(sourcePlayer, closestPositionId);
     }
-
-    // FIXME: gestire il caso degli spostamenti da starter a bench (prima vedere sortablelist da aggiongere a BenchLineup)
   }
 
   function moveToStarter(benchPlayer: LineupPlayer) {

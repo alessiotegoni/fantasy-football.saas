@@ -79,45 +79,109 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     handleSetLineup({ benchPlayers, starterPlayers: newStartersPlayers });
   }
 
-  function switchPlayers(source: LineupPlayer, target: LineupPlayer) {
-    if (source.role.id !== target.role.id) return;
+  function swapBenchPlayers(source: LineupPlayer, target: LineupPlayer) {
+    const newBench = [...benchPlayers];
+    const sourceIndex = newBench.findIndex((p) => p.id === source.id);
+    const targetIndex = newBench.findIndex((p) => p.id === target.id);
 
-    const filteredStarters = starterPlayers.filter(
-      (p) => p.id !== source.id && p.id !== target.id
-    );
-    const filteredBench = benchPlayers.filter(
-      (p) => p.id !== source.id && p.id !== target.id
-    );
+    if (sourceIndex === -1 || targetIndex === -1) return;
 
-    
-    if (target.lineupPlayerType === "starter") {
-      source.lineupPlayerType = "starter";
-      source.positionId = target.positionId;
-      source.positionOrder = target.positionOrder;
-      filteredStarters.push(source);
-
-      target.lineupPlayerType = "bench";
-      target.positionId = null;
-      target.positionOrder = source.positionOrder;
-      filteredBench.push(target);
-    }
-
-    if (target.lineupPlayerType === "bench") {
-      source.lineupPlayerType = "bench";
-      source.positionId = null;
-      source.positionOrder = target.positionOrder;
-      filteredBench.push(source);
-
-      target.lineupPlayerType = "starter";
-      target.positionId = source.positionId;
-      target.positionOrder = source.positionOrder;
-      filteredStarters.push(target);
-    }
+    [newBench[sourceIndex], newBench[targetIndex]] = [
+      newBench[targetIndex],
+      newBench[sourceIndex],
+    ];
 
     handleSetLineup({
-      starterPlayers: filteredStarters,
-      benchPlayers: reorderBench(filteredBench),
+      starterPlayers,
+      benchPlayers: reorderBench(newBench),
     });
+  }
+
+  function swapStarterPlayers(source: LineupPlayer, target: LineupPlayer) {
+    if (source.role.id !== target.role.id) return;
+
+    const newStarters = [...starterPlayers];
+    const sourceIndex = newStarters.findIndex((p) => p.id === source.id);
+    const targetIndex = newStarters.findIndex((p) => p.id === target.id);
+
+    if (sourceIndex === -1 || targetIndex === -1) return;
+
+    const sourcePlayer = newStarters[sourceIndex];
+    const targetPlayer = newStarters[targetIndex];
+
+    newStarters[sourceIndex] = {
+      ...sourcePlayer,
+      positionId: targetPlayer.positionId,
+      positionOrder: targetPlayer.positionOrder,
+    };
+    newStarters[targetIndex] = {
+      ...targetPlayer,
+      positionId: sourcePlayer.positionId,
+      positionOrder: sourcePlayer.positionOrder,
+    };
+
+    handleSetLineup({
+      starterPlayers: newStarters,
+      benchPlayers,
+    });
+  }
+
+  function swapStarterWithBench(source: LineupPlayer, target: LineupPlayer) {
+    if (source.role.id !== target.role.id) return;
+
+    const starter = source.lineupPlayerType === "starter" ? source : target;
+    const bench = source.lineupPlayerType === "bench" ? source : target;
+
+    const starterInfo = starterPlayers.find((p) => p.id === starter.id);
+    if (!starterInfo) return;
+
+    const updatedStarters = starterPlayers
+      .filter((p) => p.id !== starter.id)
+      .concat({
+        ...bench,
+        lineupPlayerType: "starter",
+        positionId: starterInfo.positionId,
+        positionOrder: starterInfo.positionOrder,
+      });
+
+    const updatedBench = benchPlayers
+      .filter((p) => p.id !== bench.id)
+      .concat({
+        ...starter,
+        lineupPlayerType: "bench",
+        positionId: null,
+        positionOrder: null,
+      });
+
+    handleSetLineup({
+      starterPlayers: updatedStarters,
+      benchPlayers: reorderBench(updatedBench),
+    });
+  }
+
+  function switchPlayers(source: LineupPlayer, target: LineupPlayer) {
+    const isSourceStarter = source.lineupPlayerType === "starter";
+    const isTargetStarter = target.lineupPlayerType === "starter";
+    const isSourceBench = source.lineupPlayerType === "bench";
+    const isTargetBench = target.lineupPlayerType === "bench";
+
+    if (isSourceBench && isTargetBench) {
+      swapBenchPlayers(source, target);
+      return;
+    }
+
+    if (isSourceStarter && isTargetStarter) {
+      swapStarterPlayers(source, target);
+      return;
+    }
+
+    if (
+      (isSourceStarter && isTargetBench) ||
+      (isSourceBench && isTargetStarter)
+    ) {
+      swapStarterWithBench(source, target);
+      return;
+    }
   }
 
   const availablePlayers = useMemo(() => {

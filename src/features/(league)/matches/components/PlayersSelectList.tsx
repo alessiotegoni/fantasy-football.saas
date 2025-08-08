@@ -60,7 +60,7 @@ export default function PlayersSelectList({
 
     const playerToAdd = {
       ...newPlayer,
-      positionOrder: getPositionOrder(positionId),
+      positionOrder: getPositionOrder(playerPositionId),
       positionId: playerPositionId,
     };
 
