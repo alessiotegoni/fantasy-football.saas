@@ -7,6 +7,7 @@ import { findNextAvailablePositionId } from "../utils/match";
 import ScrollArea from "@/components/ui/scroll-area";
 import { LineupPlayer } from "../queries/match";
 import { formatTeamPlayer } from "../utils/LineupPlayers";
+import { PositionId } from "@/drizzle/schema";
 
 export default function PlayersSelectList({
   availablePlayers,
@@ -33,26 +34,34 @@ export default function PlayersSelectList({
   }
 
   function handleAddStarterPlayer(newPlayer: LineupPlayer) {
-    if (!tacticalModule || !roleId) return;
+    if (!tacticalModule || !roleId || !positionId) return;
 
-    const positionId = findNextAvailablePositionId({
-      starterPlayers,
-      roleId,
-      tacticalModule,
-    });
+    let playerPositionId: PositionId | null = positionId;
 
-    if (!positionId) {
+    const isOccupied = starterPlayers.some(
+      (player) => player.positionId === playerPositionId
+    );
+
+    if (isOccupied) {
+      playerPositionId = findNextAvailablePositionId({
+        starterPlayers,
+        roleId,
+        tacticalModule,
+      });
+    }
+
+    if (!playerPositionId) {
       handleSetPlayersDialog({ open: false });
       return;
     }
 
-    const [, id] = positionId.split("-");
+    const [, id] = playerPositionId.split("-");
     const positionOrder = parseInt(id);
 
     const playerToAdd = {
       ...newPlayer,
       positionOrder,
-      positionId,
+      positionId: playerPositionId,
     };
 
     addStarterPlayer(playerToAdd);
