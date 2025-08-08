@@ -45,6 +45,9 @@ function LineupPlayerCard({
 
   const draggableProps = isBench ? { ...attributes, ...listeners } : {};
 
+  console.log(player);
+
+
   return (
     <DroppablePlayerArea lineupType="starter" player={player}>
       <div

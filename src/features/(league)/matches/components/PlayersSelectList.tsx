@@ -15,7 +15,7 @@ export default function PlayersSelectList({
 }) {
   const {
     myLineup: { tacticalModule, starterPlayers, benchPlayers },
-    playersDialog: { type, roleId },
+    playersDialog: { type, roleId, positionId },
     addStarterPlayer,
     addBenchPlayer,
     handleSetPlayersDialog,

@@ -11,8 +11,9 @@ import { PositionId } from "@/drizzle/schema";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
-  if (!context)
+  if (!context) {
     throw new Error("useMyLineup must be used within a MyLineupProvider");
+  }
 
   const {
     myLineup: { starterPlayers, benchPlayers },
