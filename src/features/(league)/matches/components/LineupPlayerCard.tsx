@@ -1,5 +1,3 @@
-"use client";
-
 import Avatar from "@/components/Avatar";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
@@ -8,7 +6,6 @@ import RemovePlayerButton from "./RemovePlayerButton";
 import { User } from "iconoir-react";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
-import { useIsMobile } from "@/hooks/useMobile";
 
 type Props = {
   player: LineupPlayer;
@@ -20,8 +17,6 @@ type Props = {
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 
 function LineupPlayerCard({ player, type, className, canEdit }: Props) {
-  const isMobile = useIsMobile();
-
   const isStarter = type === "starter";
   const isBench = type === "bench";
 
@@ -83,7 +78,10 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
       {canEdit && (
         <RemovePlayerButton
           playerId={player.id}
-          className={cn(isStarter && "top-0 right-0 xl:top-1 xl:right-1")}
+          className={cn(
+            isStarter && "top-0 right-0 xl:top-1 xl:right-1",
+            isBench && "hidden sm:group-hover:flex 2xl:group-hover:hidden"
+          )}
         />
       )}
     </div>
