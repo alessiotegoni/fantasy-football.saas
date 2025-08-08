@@ -31,6 +31,8 @@ export default function BenchLineup({
 
   const players = canEditLineup ? benchPlayers : lineupPlayers;
 
+  // FIXME: quando si switchano i giocatori alculi scompaiono
+
   return (
     <div
       className={cn(

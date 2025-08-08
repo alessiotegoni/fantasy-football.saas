@@ -1,5 +1,5 @@
 "use client";
-import { PositionId } from "@/drizzle/schema";
+import { LineupPlayerType, PositionId } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { getPositionOrder } from "@/features/(league)/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
@@ -48,7 +48,7 @@ export default function MyLineupDndProvider({
 
       if (
         [sourcePlayer, targetPlayer].every(
-          (player) => player.lineupPlayerType === "bench"
+          (player) => player?.lineupPlayerType === "bench"
         )
       ) {
         reorderBenchPlayers(sourcePlayer.id, targetPlayer.id);
@@ -71,13 +71,10 @@ export default function MyLineupDndProvider({
     }
 
     const closestPositionId = getClosestPositionId(e.collisions, sourcePlayer);
+    console.log(closestPositionId);
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
-      movePlayerToStarter({
-        ...sourcePlayer,
-        positionOrder: getPositionOrder(closestPositionId),
-        positionId: closestPositionId,
-      });
+      movePlayerToStarter(sourcePlayer, closestPositionId);
     }
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
@@ -85,9 +82,19 @@ export default function MyLineupDndProvider({
     }
   }
 
-  function movePlayerToStarter(benchPlayer: LineupPlayer) {
+  function movePlayerToStarter(
+    benchPlayer: LineupPlayer,
+    positionId: PositionId
+  ) {
+    const newStarterPlayer = {
+      ...benchPlayer,
+      lineupPlayerType: "starter" as LineupPlayerType,
+      positionOrder: getPositionOrder(positionId),
+      positionId,
+    };
+
     removePlayerFromLineup(benchPlayer.id);
-    addStarterPlayer(benchPlayer);
+    addStarterPlayer(newStarterPlayer);
   }
 
   return (
