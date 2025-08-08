@@ -23,25 +23,45 @@ export default function MyLineupDndProvider({
     removePlayerFromLineup,
     switchPlayers,
     switchPlayerPosition,
+    reorderBenchPlayers,
   } = useMyLineup();
   const [activePlayer, setActivePlayer] = useState<LineupPlayer | null>(null);
 
   function handleDragStart(event: DragStartEvent) {
     const player = event.active.data.current?.player as LineupPlayer;
-    if (player) setActivePlayer(player);
+    if (player) {
+      setActivePlayer(player);
+    }
   }
 
   function handleDragEnd(e: DragEndEvent) {
     setActivePlayer(null);
-    if (!e.collisions?.length) return;
+
+    const { active, over } = e;
+    if (!over) return;
 
     const sourcePlayer: LineupPlayer = e.active.data.current?.player;
     if (!sourcePlayer) return;
+
+    if (active.id !== over.id) {
+      const targetPlayer = over.data.current?.player as LineupPlayer;
+
+      if (
+        [sourcePlayer, targetPlayer].every(
+          (player) => player.lineupPlayerType === "bench"
+        )
+      ) {
+        reorderBenchPlayers(sourcePlayer.id, targetPlayer.id);
+        return;
+      }
+    }
 
     if (e.over?.id === "remove-player") {
       removePlayerFromLineup(sourcePlayer.id);
       return;
     }
+
+    if (!e.collisions?.length) return;
 
     const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
 

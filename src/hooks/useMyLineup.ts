@@ -11,6 +11,7 @@ import {
 } from "@/features/(league)/matches/utils/LineupPlayers";
 import { PositionId } from "@/drizzle/schema";
 import { reorderBench } from "@/features/(league)/matches/utils/Lineup";
+import { arrayMove } from "@dnd-kit/sortable";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -79,19 +80,13 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     handleSetLineup({ benchPlayers, starterPlayers: newStartersPlayers });
   }
 
-  function swapBenchPlayers(source: LineupPlayer, target: LineupPlayer) {
-    const newBench = [...benchPlayers];
-    const sourceIndex = newBench.findIndex((p) => p.id === source.id);
-    const targetIndex = newBench.findIndex((p) => p.id === target.id);
+  function reorderBenchPlayers(activeId: number, overId: number) {
+    const oldIndex = benchPlayers.findIndex((p) => p.id === activeId);
+    const newIndex = benchPlayers.findIndex((p) => p.id === overId);
 
-    if (sourceIndex === -1 || targetIndex === -1) return;
+    if (oldIndex === -1 || newIndex === -1) return;
 
-    [newBench[sourceIndex], newBench[targetIndex]] = [
-      newBench[targetIndex],
-      newBench[sourceIndex],
-    ];
-
-    console.log(newBench);
+    const newBench = arrayMove(benchPlayers, oldIndex, newIndex);
 
     handleSetLineup({
       starterPlayers,
@@ -167,11 +162,6 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     const isSourceBench = source.lineupPlayerType === "bench";
     const isTargetBench = target.lineupPlayerType === "bench";
 
-    if (isSourceBench && isTargetBench) {
-      swapBenchPlayers(source, target);
-      return;
-    }
-
     if (isSourceStarter && isTargetStarter) {
       swapStarterPlayers(source, target);
       return;
@@ -214,7 +204,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     addBenchPlayer,
     addStarterPlayer,
     removePlayerFromLineup,
-    switchPlayerPosition,
     switchPlayers,
+    switchPlayerPosition,
+    reorderBenchPlayers,
   };
 }

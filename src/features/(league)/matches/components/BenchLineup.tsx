@@ -57,7 +57,7 @@ export default function BenchLineup({
       >
         <ScrollArea
           className={cn(
-            "space-y-4 overflow-visible grow",
+            "space-y-4 overflow-visible grow max-h-full",
             players.length <= 8 && "p-0"
           )}
         >
