@@ -5,8 +5,12 @@ import { MyLineupContext } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import useSortPlayers from "./useSortPlayers";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
-import { formatTeamPlayer } from "@/features/(league)/matches/utils/LineupPlayers";
+import {
+  formatTeamPlayer,
+  getPositionOrder,
+} from "@/features/(league)/matches/utils/LineupPlayers";
 import { PositionId } from "@/drizzle/schema";
+import { reorderBench } from "@/features/(league)/matches/utils/Lineup";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -69,6 +73,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
 
     const newStartersPlayers = starterPlayers.with(playerIndex, {
       ...starterPlayer,
+      positionOrder: getPositionOrder(positionId),
       positionId,
     });
     handleSetLineup({ benchPlayers, starterPlayers: newStartersPlayers });

@@ -3,10 +3,13 @@
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
-import { findNextAvailablePositionId } from "../utils/match";
 import ScrollArea from "@/components/ui/scroll-area";
 import { LineupPlayer } from "../queries/match";
-import { formatTeamPlayer } from "../utils/LineupPlayers";
+import {
+  findNextAvailablePositionId,
+  formatTeamPlayer,
+  getPositionOrder,
+} from "../utils/LineupPlayers";
 import { PositionId } from "@/drizzle/schema";
 
 export default function PlayersSelectList({
@@ -57,7 +60,7 @@ export default function PlayersSelectList({
 
     const playerToAdd = {
       ...newPlayer,
-      positionOrder: g,
+      positionOrder: getPositionOrder(positionId),
       positionId: playerPositionId,
     };
 

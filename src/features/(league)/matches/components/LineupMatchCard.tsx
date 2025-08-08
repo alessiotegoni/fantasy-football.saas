@@ -1,6 +1,6 @@
 import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer } from "../queries/match";
-import { calculateLineupsTotalVote } from "../utils/LineupPlayers";
+import { calculateLineupsTotalVote } from "../utils/Lineup";
 import { LineupTeam } from "../utils/match";
 import MatchCard from "./MatchCard";
 import LiveMatchScore from "./LiveMatchScore";

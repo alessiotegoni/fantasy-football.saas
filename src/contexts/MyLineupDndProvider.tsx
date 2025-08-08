@@ -1,6 +1,7 @@
 "use client";
 import { PositionId } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
+import { getPositionOrder } from "@/features/(league)/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
 import { Collision, DndContext, DragEndEvent } from "@dnd-kit/core";
 
@@ -39,6 +40,7 @@ export default function MyLineupDndProvider({
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
       moveToStarter({
         ...sourcePlayer,
+        positionOrder: getPositionOrder(closestPositionId),
         positionId: closestPositionId,
       });
     }
