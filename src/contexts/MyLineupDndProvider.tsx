@@ -9,8 +9,12 @@ export default function MyLineupDndProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const { switchPlayers, addStarterPlayer, removePlayerFromLineup } =
-    useMyLineup();
+  const {
+    addStarterPlayer,
+    removePlayerFromLineup,
+    switchPlayers,
+    switchPlayerPosition,
+  } = useMyLineup();
 
   function handleMovePlayer(e: DragEndEvent) {
     if (!e.collisions?.length) return;
@@ -28,13 +32,14 @@ export default function MyLineupDndProvider({
 
     const closestPositionId = getClosestPositionId(e.collisions, sourcePlayer);
 
-    if (closestPositionId) {
-      const newStarterPlayer = {
+    if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
+      moveToStarter({
         ...sourcePlayer,
         positionId: closestPositionId,
-      };
-      moveToStarter(newStarterPlayer);
-      return;
+      });
+    }
+    if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
+      switchPlayerPosition(sourcePlayer, closestPositionId);
     }
 
     // FIXME: gestire il caso degli spostamenti da starter a bench (prima vedere sortablelist da aggiongere a BenchLineup)

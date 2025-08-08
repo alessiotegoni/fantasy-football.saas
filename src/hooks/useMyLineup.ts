@@ -7,6 +7,7 @@ import { reorderBench } from "@/features/(league)/matches/utils/match";
 import useSortPlayers from "./useSortPlayers";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { formatTeamPlayer } from "@/features/(league)/matches/utils/LineupPlayers";
+import { PositionId } from "@/drizzle/schema";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   const context = useContext(MyLineupContext);
@@ -37,6 +38,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     });
   }
 
+  console.log(starterPlayers);
+
   function addLineupPlayers({
     starterPlayers,
     benchPlayers,
@@ -50,10 +53,27 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
   function removePlayerFromLineup(playerId: number) {
     const updatedStarter = starterPlayers.filter((p) => p.id !== playerId);
     const updatedBench = benchPlayers.filter((p) => p.id !== playerId);
+
     handleSetLineup({
       starterPlayers: updatedStarter,
       benchPlayers: reorderBench(updatedBench),
     });
+  }
+
+  function switchPlayerPosition(
+    starterPlayer: LineupPlayer,
+    positionId: PositionId
+  ) {
+    const playerIndex = starterPlayers.findIndex(
+      (player) => player.id === starterPlayer.id
+    );
+    if (playerIndex === -1) return;
+
+    const newStartersPlayers = starterPlayers.with(playerIndex, {
+      ...starterPlayer,
+      positionId,
+    });
+    handleSetLineup({ benchPlayers, starterPlayers: newStartersPlayers });
   }
 
   function switchPlayers(source: LineupPlayer, target: LineupPlayer) {
@@ -122,6 +142,7 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     addBenchPlayer,
     addStarterPlayer,
     removePlayerFromLineup,
+    switchPlayerPosition,
     switchPlayers,
   };
 }
