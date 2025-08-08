@@ -4,6 +4,7 @@ import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import LineupPlayerCard from "./LineupPlayerCard";
 import { PositionId } from "@/drizzle/schema";
 import DroppablePlayerArea from "./DroppablePlayerArea";
+import DraggableLineupPlayerCard from "./DraggableLineupPlayerCard";
 
 type Props = {
   player: LineupPlayer | undefined;
@@ -19,12 +20,7 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
     <>
       {player && (
         <DroppablePlayerArea lineupType="starter" player={player}>
-          <LineupPlayerCard
-            player={player}
-            type="starter"
-            canEdit={canEdit}
-            className="size-14 sm:size-16 xl:size-18 flex items-center justify-center"
-          />
+          <DraggableLineupPlayerCard player={player} canEdit={canEdit} />
         </DroppablePlayerArea>
       )}
       {!player && canEdit && (
