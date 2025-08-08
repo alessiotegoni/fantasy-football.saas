@@ -34,11 +34,12 @@ export default function BenchLineup({
   return (
     <div
       className={cn(
-        `bg-input/30 rounded-3xl min-h-[500px] h-[500px] border-border p-3 sm:p-4 flex flex-col`,
+        `bg-input/30 rounded-3xl min-h-[500px] h-[500px] border-border p-3 sm:p-4
+        flex flex-col gap-4`,
         className
       )}
     >
-      <div className="flex justify-between items-center gap-2 mb-4">
+      <div className="flex justify-between items-center gap-2">
         <h2 className="text-sm xs:text-base">Panchina</h2>
         {canEditLineup && (
           <PlayersSelectTrigger

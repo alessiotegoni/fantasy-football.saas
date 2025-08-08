@@ -87,8 +87,6 @@ export default function MyLineupProvider({
     []
   );
 
-  // FIXME: quando switcho due giocatori della stessa lineup
-
   const isLineupDirty = useMemo(() => {
     if (myLineup.tacticalModule?.id !== initialLineup.tacticalModule?.id) {
       return true;

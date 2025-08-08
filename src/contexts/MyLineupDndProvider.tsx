@@ -3,8 +3,15 @@ import { PositionId } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { getPositionOrder } from "@/features/(league)/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
-import { Collision, DndContext, DragEndEvent } from "@dnd-kit/core";
-import {} from "@dnd-kit/utilities";
+import {
+  Collision,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+} from "@dnd-kit/core";
+import { useState } from "react";
+import LineupPlayerCard from "@/features/(league)/matches/components/LineupPlayerCard";
 
 export default function MyLineupDndProvider({
   children,
@@ -17,8 +24,15 @@ export default function MyLineupDndProvider({
     switchPlayers,
     switchPlayerPosition,
   } = useMyLineup();
+  const [activePlayer, setActivePlayer] = useState<LineupPlayer | null>(null);
 
-  function handleMovePlayer(e: DragEndEvent) {
+  function handleDragStart(event: DragStartEvent) {
+    const player = event.active.data.current?.player as LineupPlayer;
+    if (player) setActivePlayer(player);
+  }
+
+  function handleDragEnd(e: DragEndEvent) {
+    setActivePlayer(null);
     if (!e.collisions?.length) return;
 
     const sourcePlayer: LineupPlayer = e.active.data.current?.player;
@@ -56,7 +70,20 @@ export default function MyLineupDndProvider({
     addStarterPlayer(benchPlayer);
   }
 
-  return <DndContext onDragEnd={handleMovePlayer}>{children}</DndContext>;
+  return (
+    <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      {children}
+      {activePlayer && (
+        <DragOverlay>
+          <LineupPlayerCard
+            player={activePlayer}
+            type={activePlayer.lineupPlayerType!}
+            canEdit={true}
+          />
+        </DragOverlay>
+      )}
+    </DndContext>
+  );
 }
 
 function getTargetPlayer(

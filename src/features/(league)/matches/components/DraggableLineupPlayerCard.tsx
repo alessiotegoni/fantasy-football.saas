@@ -41,7 +41,7 @@ export default function DraggableLineupPlayerCard({ player, canEdit }: Props) {
         canEdit={canEdit}
         className={cn(
           "size-14 sm:size-16 xl:size-18 flex items-center justify-center",
-          isDragging && "border border-primary"
+          isDragging && "opacity-0 pointer-events-none"
         )}
       />
       <Button
@@ -50,9 +50,9 @@ export default function DraggableLineupPlayerCard({ player, canEdit }: Props) {
         variant="ghost"
         size="icon"
         className={cn(
-          "hidden group-hover:flex hover:flex cursor-grab p-0 rounded-full w-full hover:bg-transparent",
+          "cursor-grab p-0 rounded-full w-full hover:bg-transparent",
           "absolute top-full",
-          isDragging && "cursor-grabbing"
+          isDragging ? "flex cursor-grabbing" : "hidden group-hover:flex"
         )}
       >
         <DragHandGesture className="size-6" />

@@ -35,7 +35,7 @@ export default function SortableLineupPlayerCard({ player, canEdit }: Props) {
         canEdit={canEdit}
         className={cn(
           "p-0 w-full text-left text-xs",
-          isDragging && "cursor-grabbing"
+          isDragging && "opacity-0 pointer-events-none cursor-grabbing"
         )}
       />
     </div>
