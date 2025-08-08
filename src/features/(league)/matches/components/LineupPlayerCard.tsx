@@ -5,10 +5,7 @@ import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
 import RemovePlayerButton from "./RemovePlayerButton";
-import { useDraggable } from "@dnd-kit/core";
-import DroppablePlayerArea from "./DroppablePlayerArea";
-import { DragHandGesture, User } from "iconoir-react";
-import { Button } from "@/components/ui/button";
+import { User } from "iconoir-react";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
 

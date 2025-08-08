@@ -10,6 +10,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
+import ScrollArea from "@/components/ui/scroll-area";
 
 type Props = {
   players: LineupPlayer[];
@@ -47,21 +48,20 @@ export default function BenchLineup({
         )}
       </div>
 
-      {/* <ScrollArea className={cn("space-y-4 max-h-[430px]", players.length <= 8 && "p-0")}> */}
       <SortableContext
         items={players.map((player) => player.id)}
         strategy={verticalListSortingStrategy}
       >
-        {players.map((player) => (
-          <SortableLineupPlayerCard
-            key={player.id}
-            player={player}
-            type="bench"
-            canEdit={canEditLineup}
-          />
-        ))}
+        <ScrollArea className={cn("space-y-4 overflow-visible", players.length <= 8 && "p-0")}>
+          {players.map((player) => (
+            <SortableLineupPlayerCard
+              key={player.id}
+              player={player}
+              canEdit={canEditLineup}
+            />
+          ))}
+        </ScrollArea>
       </SortableContext>
-      {/* </ScrollArea> */}
     </div>
   );
 }

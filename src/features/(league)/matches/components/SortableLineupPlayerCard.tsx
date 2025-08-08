@@ -1,4 +1,5 @@
 import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import LineupPlayerCard from "./LineupPlayerCard";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
@@ -17,19 +18,17 @@ export default function SortableLineupPlayerCard({ player, canEdit }: Props) {
     transition,
     isDragging,
   } = useSortable({
-    id: player.positionOrder ?? 0,
+    id: player.id,
     data: { player, roleId: null, positionId: null, lineupType: "bench" },
   });
 
-  const style = {
-    transform,
-    transition,
-  };
-
-  console.log(style);
-
   return (
-    <div ref={setNodeRef} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+    >
       <LineupPlayerCard
         type="bench"
         player={player}
