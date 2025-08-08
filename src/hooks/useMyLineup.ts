@@ -3,7 +3,6 @@
 import { useContext, useMemo } from "react";
 import { MyLineupContext } from "@/contexts/MyLineupProvider";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { reorderBench } from "@/features/(league)/matches/utils/match";
 import useSortPlayers from "./useSortPlayers";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
 import { formatTeamPlayer } from "@/features/(league)/matches/utils/LineupPlayers";

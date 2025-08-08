@@ -1,6 +1,8 @@
 import {
   CustomBonusMalus,
-  RolePosition,
+  PositionId,
+  PRESIDENT_ROLE_ID,
+  PRESIDENT_SLOT,
   TacticalModule,
 } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
@@ -55,94 +57,43 @@ export function calculatePlayerTotalVote(
   }, vote);
 }
 
-export function calculateLineupsTotalVote(
-  players: LineupPlayer[],
-  {
-    homeTeam,
-    awayTeam,
-    isBye = false,
-  }: {
-    homeTeam: { id: string | null; tacticalModule: TacticalModule | null };
-    awayTeam: { id: string | null; tacticalModule: TacticalModule | null };
-    isBye?: boolean;
-  }
-) {
-  if (isBye || !players.length || (!homeTeam.id && !awayTeam.id)) return null;
+export function getPresident(players: LineupPlayer[], teamId: string | null) {
+  const president = players.find(
+    (player) =>
+      player.role.id === PRESIDENT_ROLE_ID && player.leagueTeamId === teamId
+  );
 
-  const playerWithVotes = players.filter((player) => player.totalVote !== null);
-
-  const totalVotes = {
-    home: calculateTeamTotalVote(playerWithVotes, homeTeam),
-    away: calculateTeamTotalVote(playerWithVotes, awayTeam),
-  };
-
-  return totalVotes;
+  return president;
 }
 
-function calculateTeamTotalVote(
-  players: LineupPlayer[],
-  team: { id: string | null; tacticalModule: TacticalModule | null }
-) {
-  if (!team.tacticalModule) return null;
-
-  const teamPlayers = players.filter(
-    (player) => player.leagueTeamId === team.id
+export function findNextAvailablePositionId({
+  starterPlayers,
+  roleId,
+  tacticalModule: { layout },
+}: {
+  roleId: number;
+  starterPlayers: LineupPlayer[];
+  tacticalModule: TacticalModule;
+}) {
+  const positionSlot = [PRESIDENT_SLOT, ...layout].find(
+    (layout) => layout.roleId === roleId
   );
-  if (!teamPlayers.length) return null;
-
-  const starterPlayers = teamPlayers.filter(
-    (player) => player.lineupPlayerType === "starter"
-  );
+  if (!positionSlot) return null;
 
   const occupiedPositions = new Set(
-    starterPlayers.map((player) => player.positionId)
+    starterPlayers.filter((p) => p.role.id === roleId).map((p) => p.positionId)
   );
 
-  const freeSlots = team.tacticalModule.layout.filter((slot) =>
-    slot.positionsIds.some((positionId) => !occupiedPositions.has(positionId))
+  const nextAvailable = positionSlot.positionsIds.find(
+    (posId) => !occupiedPositions.has(posId)
   );
-  if (!freeSlots.length) return calculatePlayersTotalVote(starterPlayers);
 
-  const benchPlayers = players.filter(
-    (player) => player.lineupPlayerType === "bench"
-  );
-  if (!benchPlayers.length) return calculatePlayersTotalVote(starterPlayers);
-
-  const newPlayers = replacePlayers(starterPlayers, benchPlayers, freeSlots);
-
-  return calculatePlayersTotalVote(newPlayers);
+  return nextAvailable ?? null;
 }
 
-function calculatePlayersTotalVote(players: { totalVote: string | null }[]) {
-  const totalVote = players.reduce((acc, player) => {
-    const totalVote = player.totalVote ? parseFloat(player.totalVote) : 0;
-
-    return (acc += totalVote);
-  }, 0);
-
-  return totalVote.toString();
-}
-
-function replacePlayers(
-  starterPlayers: LineupPlayer[],
-  benchPlayers: LineupPlayer[],
-  freeSlots: RolePosition[]
-) {
-  freeSlots.forEach((slot) => {
-    const rolePlayers = benchPlayers.filter(
-      (player) => player.role.id === slot.roleId
-    );
-    if (!rolePlayers.length) return;
-
-    slot.positionsIds.forEach(() => {
-      const [rolePlayer] = rolePlayers.splice(0, 1);
-      if (!rolePlayer) return;
-
-      starterPlayers.push(rolePlayer);
-    });
-  });
-
-  return starterPlayers;
+export function getPositionOrder(positionId: PositionId) {
+  const [, id] = positionId.split("-");
+  return parseInt(id);
 }
 
 export function formatTeamPlayer(

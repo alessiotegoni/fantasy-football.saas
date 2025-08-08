@@ -55,12 +55,9 @@ export default function PlayersSelectList({
       return;
     }
 
-    const [, id] = playerPositionId.split("-");
-    const positionOrder = parseInt(id);
-
     const playerToAdd = {
       ...newPlayer,
-      positionOrder,
+      positionOrder: g,
       positionId: playerPositionId,
     };
 
