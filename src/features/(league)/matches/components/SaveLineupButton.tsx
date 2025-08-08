@@ -5,6 +5,8 @@ import useMyLineup from "@/hooks/useMyLineup";
 import { saveLineup } from "../actions/match";
 import { createError } from "@/lib/helpers";
 import { useIsMobile } from "@/hooks/useMobile";
+import { MatchLineupSchema } from "../schema/match";
+import { LineupPlayer } from "../queries/match";
 
 export default function SaveLineupButton({
   leagueId,
@@ -23,11 +25,16 @@ export default function SaveLineupButton({
   async function handleSaveLineup() {
     if (!tacticalModule) return createError("Nessun modulo tattico trovato");
 
+    const lineupPlayers = mapLineupPlayers([
+      ...starterPlayers,
+      ...benchPlayers,
+    ]);
+
     return saveLineup({
       lineupId,
       leagueId,
       matchId,
-      lineupPlayers: [...starterPlayers, ...benchPlayers],
+      lineupPlayers,
       tacticalModuleId: tacticalModule.id,
     });
   }
@@ -44,4 +51,19 @@ export default function SaveLineupButton({
       </ActionButton>
     )
   );
+}
+
+function mapLineupPlayers(
+  players: LineupPlayer[]
+): MatchLineupSchema["lineupPlayers"] {
+  const mappedPlayers = players.map(
+    ({ id, lineupPlayerType, positionId, positionOrder }) => ({
+      id,
+      lineupPlayerType: lineupPlayerType ?? "bench",
+      positionId,
+      positionOrder: positionOrder ?? 0,
+    })
+  );
+
+  return mappedPlayers;
 }

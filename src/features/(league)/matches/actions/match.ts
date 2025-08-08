@@ -14,12 +14,7 @@ import {
 } from "../db/match";
 
 export async function saveLineup(values: MatchLineupSchema) {
-  const { success, data, error } = await matchLineupSchema.safeParseAsync(
-    values
-  );
-  console.log(error, values);
-
-
+  const { success, data } = await matchLineupSchema.safeParseAsync(values);
   if (!success) return createError(VALIDATION_ERROR);
 
   const userId = await getUserId();
