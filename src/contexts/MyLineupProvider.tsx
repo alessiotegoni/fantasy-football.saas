@@ -87,24 +87,37 @@ export default function MyLineupProvider({
     []
   );
 
+  // FIXME: quando switcho due giocatori della stessa lineup
+
   const isLineupDirty = useMemo(() => {
     if (myLineup.tacticalModule?.id !== initialLineup.tacticalModule?.id) {
       return true;
     }
 
-    const starterIds = myLineup.starterPlayers.map((p) => p.id).sort();
-    const initialStarterIds = initialLineup.starterPlayers
-      .map((p) => p.id)
+    const getStarterSignature = (p: LineupPlayer) => `${p.id}@${p.positionId}`;
+    const starterSignature = myLineup.starterPlayers
+      .map(getStarterSignature)
+      .sort();
+    const initialStarterSignature = initialLineup.starterPlayers
+      .map(getStarterSignature)
       .sort();
 
-    if (JSON.stringify(starterIds) !== JSON.stringify(initialStarterIds)) {
+    if (
+      JSON.stringify(starterSignature) !==
+      JSON.stringify(initialStarterSignature)
+    ) {
       return true;
     }
 
-    const benchIds = myLineup.benchPlayers.map((p) => p.id).sort();
-    const initialBenchIds = initialLineup.benchPlayers.map((p) => p.id).sort();
+    const getBenchSignature = (p: LineupPlayer) => `${p.id}@${p.positionOrder}`;
+    const benchSignature = myLineup.benchPlayers.map(getBenchSignature).sort();
+    const initialBenchSignature = initialLineup.benchPlayers
+      .map(getBenchSignature)
+      .sort();
 
-    if (JSON.stringify(benchIds) !== JSON.stringify(initialBenchIds)) {
+    if (
+      JSON.stringify(benchSignature) !== JSON.stringify(initialBenchSignature)
+    ) {
       return true;
     }
 
