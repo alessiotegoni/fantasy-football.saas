@@ -31,9 +31,6 @@ export default function BenchLineup({
 
   const players = canEditLineup ? benchPlayers : lineupPlayers;
 
-  // TODO: per breakpoint (2xl) mostrare il cestino (droppable) in basso della bench
-  // e una volta rilasciato il giocatore al suo interno eliminarlo dalla lineup
-
   return (
     <div
       className={cn(

@@ -91,6 +91,8 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
       newBench[sourceIndex],
     ];
 
+    console.log(newBench);
+
     handleSetLineup({
       starterPlayers,
       benchPlayers: reorderBench(newBench),

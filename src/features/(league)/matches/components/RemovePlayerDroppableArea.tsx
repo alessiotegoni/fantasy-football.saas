@@ -13,7 +13,7 @@ export default function RemovePlayerDroppableArea() {
     myLineup: { starterPlayers, benchPlayers },
   } = useMyLineup();
 
-  const canShowArea = [...starterPlayers, benchPlayers].length;
+  const canShowArea = !![...starterPlayers, benchPlayers].length;
   if (!canShowArea) return null;
 
   return (

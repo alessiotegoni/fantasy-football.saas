@@ -24,6 +24,11 @@ export default function MyLineupDndProvider({
     const sourcePlayer: LineupPlayer = e.active.data.current?.player;
     if (!sourcePlayer) return;
 
+    if (e.over?.id === "remove-player") {
+      removePlayerFromLineup(sourcePlayer.id);
+      return;
+    }
+
     const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
 
     if (targetPlayer && sourcePlayer.id !== targetPlayer?.id) {
@@ -34,18 +39,19 @@ export default function MyLineupDndProvider({
     const closestPositionId = getClosestPositionId(e.collisions, sourcePlayer);
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
-      moveToStarter({
+      movePlayerToStarter({
         ...sourcePlayer,
         positionOrder: getPositionOrder(closestPositionId),
         positionId: closestPositionId,
       });
     }
+
     if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
       switchPlayerPosition(sourcePlayer, closestPositionId);
     }
   }
 
-  function moveToStarter(benchPlayer: LineupPlayer) {
+  function movePlayerToStarter(benchPlayer: LineupPlayer) {
     removePlayerFromLineup(benchPlayer.id);
     addStarterPlayer(benchPlayer);
   }
