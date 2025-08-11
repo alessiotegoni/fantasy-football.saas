@@ -83,12 +83,8 @@ export default function PlayersSelectList({
     [availablePlayers]
   );
 
-  console.log(availablePlayers);
-
-  console.dir(groupedPlayers);
-
   return Object.entries(groupedPlayers).map(([playerStatus, players]) => (
-    <div key={playerStatus}>
+    <div key={playerStatus} className="not-first:mt-3">
       {roleId !== PRESIDENT_ROLE_ID && (
         <h3 className="font-medium mb-2.5 md:mt-3">
           {playerStatus === "not-lined-up"
