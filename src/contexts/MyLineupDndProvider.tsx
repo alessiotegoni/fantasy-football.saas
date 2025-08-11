@@ -36,11 +36,10 @@ export default function MyLineupDndProvider({
   function handleDragEnd(e: DragEndEvent) {
     setActivePlayer(null);
 
-    const { active, over } = e;
+    const { active, over, collisions } = e;
 
     const sourcePlayer: LineupPlayer = active.data.current?.player;
     if (!sourcePlayer) return;
-    console.log(e);
 
     if (active.id !== over?.id) {
       const targetPlayer = over?.data.current?.player as LineupPlayer;
@@ -60,16 +59,17 @@ export default function MyLineupDndProvider({
       return;
     }
 
-    if (!e.collisions?.length) return;
-
-    const targetPlayer = getTargetPlayer(e.collisions, sourcePlayer);
+    const targetPlayer = getTargetPlayer(collisions ?? [], sourcePlayer);
 
     if (targetPlayer && sourcePlayer.id !== targetPlayer?.id) {
       switchPlayers(sourcePlayer, targetPlayer);
       return;
     }
 
-    const closestPositionId = getClosestPositionId(e.collisions, sourcePlayer);
+    const closestPositionId = getClosestPositionId(
+      collisions ?? [],
+      sourcePlayer
+    );
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
       movePlayerToStarter(sourcePlayer, closestPositionId);
@@ -81,7 +81,11 @@ export default function MyLineupDndProvider({
       return;
     }
 
-    if (!closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
+    if (
+      !closestPositionId &&
+      !over &&
+      sourcePlayer.lineupPlayerType === "starter"
+    ) {
       movePlayerToBench(sourcePlayer);
     }
   }
