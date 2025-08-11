@@ -14,6 +14,8 @@ import {
 } from "../db/match";
 
 export async function saveLineup(values: MatchLineupSchema) {
+  console.log(values);
+
   const { success, data, error } = await matchLineupSchema.safeParseAsync(values);
   console.log(error);
 
@@ -36,10 +38,10 @@ export async function saveLineup(values: MatchLineupSchema) {
 
     await updateLineup(lineupId, data, tx);
     await deleteLineupPlayers(lineupId, data.matchId, tx);
-    if (data.lineupPlayers.length) {
-      const lineupPlayers = mapLineupPlayers(lineupId, data.lineupPlayers);
-      await insertLineupPlayers(data.matchId, lineupPlayers, tx);
-    }
+    // if (data.lineupPlayers.length) {
+    //   const lineupPlayers = mapLineupPlayers(lineupId, data.lineupPlayers);
+    //   await insertLineupPlayers(data.matchId, lineupPlayers, tx);
+    // }
   });
 
   return createSuccess("Formazione salvata con successo", null);
