@@ -10,7 +10,8 @@ import {
   formatTeamPlayer,
   getPositionOrder,
 } from "../utils/LineupPlayers";
-import { PositionId } from "@/drizzle/schema";
+import { PositionId, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
+import { useMemo } from "react";
 
 export default function PlayersSelectList({
   availablePlayers,
@@ -74,19 +75,42 @@ export default function PlayersSelectList({
     handleSetPlayersDialog({ open: !isLastPlayer });
   }
 
-  return (
-    <ScrollArea className="max-h-[40dvh] xl:max-h-96 md:mt-3">
-      {availablePlayers.map((player) => (
-        <PlayerCard
-          key={player.id}
-          className="cursor-pointer"
-          showSelectButton={false}
-          showPurchaseCost={false}
-          onSelect={handleAddPlayer}
-          canSelectCard
-          {...player}
-        />
-      ))}
-    </ScrollArea>
+  const groupedPlayers = useMemo(
+    () =>
+      Object.groupBy(availablePlayers, (player) =>
+        player.lineupPlayerType === null ? "not-lined-up" : "lined-up"
+      ),
+    [availablePlayers]
   );
+
+  console.log(availablePlayers);
+
+  console.dir(groupedPlayers);
+
+  return Object.entries(groupedPlayers).map(([playerStatus, players]) => (
+    <div key={playerStatus}>
+      {roleId !== PRESIDENT_ROLE_ID && (
+        <h3 className="font-medium mb-2.5 md:mt-3">
+          {playerStatus === "not-lined-up"
+            ? "Non schiearati"
+            : type === "bench"
+            ? "Titolari"
+            : "In panchina"}
+        </h3>
+      )}
+      <ScrollArea className="max-h-[40dvh] xl:max-h-96">
+        {players.map((player) => (
+          <PlayerCard
+            key={player.id}
+            className="cursor-pointer"
+            showSelectButton={false}
+            showPurchaseCost={false}
+            onSelect={handleAddPlayer}
+            canSelectCard
+            {...player}
+          />
+        ))}
+      </ScrollArea>
+    </div>
+  ));
 }

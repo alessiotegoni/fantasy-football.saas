@@ -101,13 +101,13 @@ export function formatTeamPlayer(
   data?: Partial<LineupPlayer>
 ): LineupPlayer {
   return {
-    ...player,
+    lineupPlayerType: null,
     vote: null,
     totalVote: null,
     positionId: null,
     positionOrder: null,
     bonusMaluses: [],
-    lineupPlayerType: null,
+    ...player,
     ...data,
   };
 }
