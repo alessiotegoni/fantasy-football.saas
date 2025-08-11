@@ -5,7 +5,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { SwipeableList } from "react-swipeable-list";
+import { SwipeableList, Type } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
 import { LineupPlayer } from "../queries/match";
 import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
@@ -33,7 +33,7 @@ export default function BenchPlayersList({ players, canEditLineup }: Props) {
         )}
       >
         {isMobile ? (
-          <SwipeableList className="custom-scrollbar">
+          <SwipeableList className="custom-scrollbar" type={Type.MS}>
             {players.map((player) => (
               <SwipeableLineupPlayerCard
                 key={player.id}
@@ -48,6 +48,7 @@ export default function BenchPlayersList({ players, canEditLineup }: Props) {
               key={player.id}
               player={player}
               canEdit={canEditLineup}
+              className="p-3 sm:p-4 !py-0 first:!pt-1.5 first:sm:!pt-2.5"
             />
           ))
         )}

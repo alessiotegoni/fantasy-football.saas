@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  LeadingActions,
   SwipeableListItem,
   SwipeAction,
   TrailingActions,
@@ -9,36 +8,36 @@ import {
 import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
 import LineupPlayerCard from "./LineupPlayerCard";
-import { useSortable } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import { Trash, TrashSolid } from "iconoir-react";
+import { TrashSolid } from "iconoir-react";
+import { useRef } from "react";
 
 type Props = {
   player: LineupPlayer;
   canEditLineup: boolean;
 };
+
 export default function SwipeableLineupPlayerCard({
   player,
   canEditLineup,
 }: Props) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: player.id,
-    data: { player, roleId: null, positionId: null, lineupType: "bench" },
-  });
+  const { removePlayerFromLineup } = useMyLineup();
+  const triggeredRef = useRef(false);
+
+  function handleSwipeProgress(progress: number) {
+    if (!triggeredRef.current && progress >= 100) {
+      triggeredRef.current = true;
+      removePlayerFromLineup(player.id);
+    }
+    if (progress === 0) triggeredRef.current = false;
+  }
 
   return (
     <SwipeableListItem
-      leadingActions={leadingActions()}
-      trailingActions={<RemovePlayerAction {...player} />}
+      trailingActions={<RemovePlayer playerId={player.id} />}
+      onSwipeProgress={handleSwipeProgress}
+    //   onSwipeEnd={handleSwipeEnd}
       className="p-3 sm:p-4 !pt-3 sm:!pt-3.5 first:!pt-1.5 !pb-0"
-      onSwipeEnd={console.log}
     >
       <LineupPlayerCard
         key={player.id}
@@ -51,29 +50,23 @@ export default function SwipeableLineupPlayerCard({
   );
 }
 
-const leadingActions = () => (
-  <LeadingActions>
-    <SwipeAction onClick={() => console.info("Must be draggable")}>
-      Must be draggable
-    </SwipeAction>
-  </LeadingActions>
-);
-
-function RemovePlayerAction({ id: playerId }: LineupPlayer) {
+function RemovePlayer({ playerId }: { playerId: number }) {
   const { removePlayerFromLineup } = useMyLineup();
 
   return (
     <TrailingActions>
       <Button
         variant="destructive"
-        className="rounded-none mt-3 p-0 justify-center !items-center"
+        className="rounded-none mt-2 p-0 justify-center !items-center !bg-destructive/100"
         asChild
       >
         <SwipeAction
-        //   destructive={true}
+          destructive={true}
           onClick={removePlayerFromLineup.bind(null, playerId)}
         >
-          <TrashSolid className="size-5" />
+          <div className="h-full flex items-center justify-center p-4">
+            <TrashSolid className="size-5" />
+          </div>
         </SwipeAction>
       </Button>
     </TrailingActions>
