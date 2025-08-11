@@ -40,7 +40,7 @@ export default function MyLineupDndProvider({
 
     const sourcePlayer: LineupPlayer = active.data.current?.player;
     if (!sourcePlayer) return;
-    console.log(e.collisions);
+    console.log(e);
 
     if (active.id !== over?.id) {
       const targetPlayer = over?.data.current?.player as LineupPlayer;
@@ -70,7 +70,6 @@ export default function MyLineupDndProvider({
     }
 
     const closestPositionId = getClosestPositionId(e.collisions, sourcePlayer);
-    console.log(closestPositionId);
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
       movePlayerToStarter(sourcePlayer, closestPositionId);

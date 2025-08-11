@@ -41,37 +41,39 @@ export default function BenchLineup({
         className
       )}
     >
-      <div className="flex justify-between items-center gap-2">
-        <h2 className="text-sm xs:text-base">Panchina</h2>
-        {canEditLineup && (
-          <PlayersSelectTrigger
-            lineupType="bench"
-            className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0"
-          >
-            <Plus className="size-5 font-semibold" />
-          </PlayersSelectTrigger>
-        )}
-      </div>
-
-      <SortableContext
-        items={players.map((player) => player.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <ScrollArea
-          className={cn(
-            "space-y-4 overflow-visible grow max-h-full",
-            players.length <= 8 && "p-0"
+      <DroppablePlayerArea id="bench-area" lineupType="bench" className="grow">
+        <div className="flex justify-between items-center gap-2 mb-4">
+          <h2 className="text-sm xs:text-base">Panchina</h2>
+          {canEditLineup && (
+            <PlayersSelectTrigger
+              lineupType="bench"
+              className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0"
+            >
+              <Plus className="size-5 font-semibold" />
+            </PlayersSelectTrigger>
           )}
+        </div>
+
+        <SortableContext
+          items={players.map((player) => player.id)}
+          strategy={verticalListSortingStrategy}
         >
-          {players.map((player) => (
-            <SortableLineupPlayerCard
-              key={player.id}
-              player={player}
-              canEdit={canEditLineup}
-            />
-          ))}
-        </ScrollArea>
-      </SortableContext>
+          <ScrollArea
+            className={cn(
+              "space-y-4 overflow-visible h-full",
+              players.length <= 8 && "p-0"
+            )}
+          >
+            {players.map((player) => (
+              <SortableLineupPlayerCard
+                key={player.id}
+                player={player}
+                canEdit={canEditLineup}
+              />
+            ))}
+          </ScrollArea>
+        </SortableContext>
+      </DroppablePlayerArea>
       {canEditLineup && <RemovePlayerDroppableArea />}
     </div>
   );

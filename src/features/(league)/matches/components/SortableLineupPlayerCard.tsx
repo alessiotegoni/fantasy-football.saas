@@ -1,7 +1,6 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import LineupPlayerCard from "./LineupPlayerCard";
-import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 
 type Props = {
@@ -27,16 +26,17 @@ export default function SortableLineupPlayerCard({ player, canEdit }: Props) {
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        visibility: isDragging ? "hidden" : "visible",
+      }}
     >
       <LineupPlayerCard
         type="bench"
         player={player}
         canEdit={canEdit}
-        className={cn(
-          "p-0 w-full text-left text-xs",
-          isDragging && "opacity-0 pointer-events-none cursor-grabbing"
-        )}
+        className="p-0 w-full text-left text-xs"
       />
     </div>
   );
