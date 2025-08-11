@@ -17,7 +17,6 @@ type Props = {
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 // FIXME: President lineup card ui
 
-
 function LineupPlayerCard({ player, type, className, canEdit }: Props) {
   const isStarter = type === "starter";
   const isBench = type === "bench";
@@ -77,7 +76,7 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
           <p className="font-bold">Totale: {player.totalVote}</p>
         )}
       </div>
-      {canEdit && (
+      {canEdit && isStarter && (
         <RemovePlayerButton
           playerId={player.id}
           className={cn(

@@ -29,7 +29,7 @@ export default function BenchLineup({
     <div
       className={cn(
         `bg-input/30 rounded-3xl min-h-[500px] h-[500px] border-border
-        flex flex-col pb-3 sm:pb-4 2xl:pb-0`,
+        flex flex-col pb-3 sm:pb-0`,
         className
       )}
     >

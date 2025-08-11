@@ -15,7 +15,7 @@ export default function SaveLineupButton({
   leagueId: string;
   matchId: string;
 }) {
-  const isMobile = useIsMobile();
+  const isMobile = useIsMobile(640);
 
   const {
     myLineup: { id: lineupId, starterPlayers, benchPlayers, tacticalModule },
