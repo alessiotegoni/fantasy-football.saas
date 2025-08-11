@@ -74,13 +74,17 @@ export default function MyLineupDndProvider({
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
       movePlayerToStarter(sourcePlayer, closestPositionId);
+      return;
     }
 
     if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
       switchPlayerPosition(sourcePlayer, closestPositionId);
+      return;
     }
 
-    movePlayerToBench(sourcePlayer);
+    if (!closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
+      movePlayerToBench(sourcePlayer);
+    }
   }
 
   //FIXME: dallo starter alla panchina non si spostano ancora
@@ -97,7 +101,6 @@ export default function MyLineupDndProvider({
       positionId,
     };
 
-    removePlayerFromLineup(benchPlayer.id);
     addStarterPlayer(newStarterPlayer);
   }
 
@@ -107,8 +110,7 @@ export default function MyLineupDndProvider({
       lineupPlayerType: "bench",
     };
 
-    removePlayerFromLineup(starterPlayer.id);
-    addStarterPlayer(newBenchPlayer);
+    addBenchPlayer(newBenchPlayer);
   }
 
   return (

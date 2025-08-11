@@ -25,6 +25,9 @@ export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {
     handleSetLineup,
   } = context;
 
+  console.log(starterPlayers, benchPlayers);
+  
+
   const { sortPlayers } = useSortPlayers();
 
   function addBenchPlayer(newPlayer: LineupPlayer) {
