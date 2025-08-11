@@ -30,6 +30,7 @@ export default function SortableLineupPlayerCard({ player, canEdit }: Props) {
         transform: CSS.Transform.toString(transform),
         transition,
         visibility: isDragging ? "hidden" : "visible",
+        cursor: isDragging ? "grabbing" : "grab",
       }}
       className="p-3 sm:p-4 !py-0 first:!pt-1.5 first:sm:!pt-2.5"
     >

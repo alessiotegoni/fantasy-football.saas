@@ -5,14 +5,8 @@ import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import { Plus } from "iconoir-react";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
-import ScrollArea from "@/components/ui/scroll-area";
-import DroppablePlayerArea from "./DroppablePlayerArea";
 import RemovePlayerDroppableArea from "./RemovePlayerDroppableArea";
+import BenchPlayersList from "./BenchPlayersList";
 
 type Props = {
   players: LineupPlayer[];
@@ -51,26 +45,8 @@ export default function BenchLineup({
         )}
       </div>
 
-      <SortableContext
-        items={players.map((player) => player.id)}
-        strategy={verticalListSortingStrategy}
-      >
-        <ScrollArea
-          className={cn(
-            "space-y-3.5 max-h-[calc(500px-12px)] grow",
-            players.length <= 8 && "p-0"
-          )}
-        >
-          {players.map((player) => (
-            <SortableLineupPlayerCard
-              key={player.id}
-              player={player}
-              canEdit={canEditLineup}
+      <BenchPlayersList players={players} canEditLineup={canEditLineup} />
 
-            />
-          ))}
-        </ScrollArea>
-      </SortableContext>
       {canEditLineup && <RemovePlayerDroppableArea />}
     </div>
   );

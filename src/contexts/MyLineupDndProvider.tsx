@@ -71,6 +71,14 @@ export default function MyLineupDndProvider({
       sourcePlayer
     );
 
+    if (
+      !closestPositionId &&
+      !over &&
+      sourcePlayer.lineupPlayerType === "starter"
+    ) {
+      movePlayerToBench(sourcePlayer);
+    }
+
     if (closestPositionId && sourcePlayer.lineupPlayerType === "bench") {
       movePlayerToStarter(sourcePlayer, closestPositionId);
       return;
@@ -79,14 +87,6 @@ export default function MyLineupDndProvider({
     if (closestPositionId && sourcePlayer.lineupPlayerType === "starter") {
       switchPlayerPosition(sourcePlayer, closestPositionId);
       return;
-    }
-
-    if (
-      !closestPositionId &&
-      !over &&
-      sourcePlayer.lineupPlayerType === "starter"
-    ) {
-      movePlayerToBench(sourcePlayer);
     }
   }
 
