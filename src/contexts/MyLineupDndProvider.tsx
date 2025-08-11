@@ -90,9 +90,6 @@ export default function MyLineupDndProvider({
     }
   }
 
-  //FIXME: dallo starter alla panchina non si spostano ancora
-  //  (perche benchLineup non viene rilevato come droppable)
-
   function movePlayerToStarter(
     benchPlayer: LineupPlayer,
     positionId: PositionId

@@ -17,11 +17,11 @@ export default function RemovePlayerDroppableArea() {
   if (!canShowArea) return null;
 
   return (
-    <DroppablePlayerArea id="remove-player">
+    <DroppablePlayerArea id="remove-player" className="hidden 2xl:block p-3 sm:p-4 !pt-4">
       <Tooltip>
         <TooltipTrigger
           className="w-full bg-destructive/80 border border-destructive
-          rounded-xl hidden 2xl:flex justify-center items-center
+          rounded-xl flex justify-center items-center
           gap-2 p-2.5"
         >
           <TrashSolid className="size-5" />

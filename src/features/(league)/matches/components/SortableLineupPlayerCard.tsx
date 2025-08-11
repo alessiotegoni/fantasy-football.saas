@@ -31,6 +31,7 @@ export default function SortableLineupPlayerCard({ player, canEdit }: Props) {
         transition,
         visibility: isDragging ? "hidden" : "visible",
       }}
+      className="p-3 sm:p-4 !py-0 first:!pt-1.5 first:sm:!pt-2.5"
     >
       <LineupPlayerCard
         type="bench"

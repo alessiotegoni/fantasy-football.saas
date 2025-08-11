@@ -15,6 +15,8 @@ type Props = {
 };
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
+// FIXME: President lineup card ui
+
 
 function LineupPlayerCard({ player, type, className, canEdit }: Props) {
   const isStarter = type === "starter";
