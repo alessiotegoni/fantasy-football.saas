@@ -216,12 +216,12 @@ export const premiumSections = [
     items: [
       {
         name: "Aste della lega",
-        href: "/leagues/:leagueId/auctions",
+        href: "/leagues/:leagueId/premium/auctions",
         icon: Shield,
       },
       {
         name: "Impostazioni asta",
-        href: "/leagues/:leagueId/auctions/settings",
+        href: "/leagues/:leagueId/premium/auctions/settings",
         icon: Settings,
       },
     ],
