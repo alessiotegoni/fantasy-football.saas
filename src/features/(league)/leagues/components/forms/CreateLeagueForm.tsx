@@ -4,7 +4,6 @@ import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
 import { createLeague } from "../../actions/league";
 import PasswordField from "./fields/PasswordField";
 import LeagueTypeField from "./fields/LeagueTypeField";
@@ -16,8 +15,11 @@ import { JOIN_CODE_LENGTH } from "../../schema/leagueBase";
 import LeagueNameField from "../../../../../components/NameField";
 import LeagueDescriptionField from "./fields/LeagueDescriptionField";
 import LeagueImageField from "../../../../../components/ImageField";
+import useActionToast from "@/hooks/useActionToast";
 
 export default function CreateLeagueForm() {
+  const toast = useActionToast();
+
   const form = useForm<CreateLeagueSchema>({
     resolver: zodResolver(createLeagueSchema),
     defaultValues: {
@@ -33,7 +35,7 @@ export default function CreateLeagueForm() {
   async function onSubmit(data: CreateLeagueSchema) {
     const res = await createLeague(data);
 
-    if (res.error) toast.error(res.message);
+    if (res?.error) toast(res);
   }
 
   return (
@@ -74,12 +76,12 @@ function generateJoinCode(length = JOIN_CODE_LENGTH) {
   return code;
 }
 
-async function handleCopyCode(code: string) {
-  try {
-    await navigator.clipboard.writeText(code);
-    toast.success("Codice copiato");
-  } catch (err) {
-    console.error(err);
-    toast.error("Errore, codice non copiato");
-  }
-}
+// async function handleCopyCode(code: string) {
+//   try {
+//     await navigator.clipboard.writeText(code);
+//     toast.success("Codice copiato");
+//   } catch (err) {
+//     console.error(err);
+//     toast.error("Errore, codice non copiato");
+//   }
+// }

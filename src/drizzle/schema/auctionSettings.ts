@@ -8,7 +8,7 @@ export const auctionSettings = pgTable("auction_settings", {
     .primaryKey()
     .references(() => auctions.id, { onDelete: "cascade" }),
   firstCallTime: smallint("first_call_time").notNull().default(20),
-  otherCallsTime: smallint("others_calls_time").notNull().default(10),
+  othersCallsTime: smallint("others_calls_time").notNull().default(10),
   initialCredits: smallint("initial_credits").notNull().default(500),
   playersPerRole: jsonb("players_per_role")
     .notNull()

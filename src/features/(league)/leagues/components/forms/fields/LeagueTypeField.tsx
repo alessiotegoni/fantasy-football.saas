@@ -37,7 +37,7 @@ export default function LeagueTypeField({
                 className="sr-only"
               />
               <Lock
-                className={`w-6 h-6 mb-2 ${
+                className={`size-6 mb-2 ${
                   field.value === "private"
                     ? "text-primary"
                     : "text-muted-foreground"

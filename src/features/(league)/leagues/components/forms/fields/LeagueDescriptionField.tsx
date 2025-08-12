@@ -25,9 +25,8 @@ export default function LeagueDescriptionField() {
             <FormItem>
               <FormControl>
                 <Textarea
-                  className="w-full bg-background border border-border rounded-xl py-4 px-4 focus:outline-none focus:border-primary transition-colors min-h-[100px] resize-none"
                   placeholder="Descrivi la tua lega..."
-                  value={value || ""}
+                  value={value ?? ""}
                   onChange={(e) => onChange(e.target.value || null)}
                   {...restField}
                 />

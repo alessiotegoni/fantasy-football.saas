@@ -2,12 +2,14 @@ import { z } from "zod";
 import { initialCredits, playersPerRole } from "../../settings/schema/setting";
 
 const baseAuctionSchema = z.object({
+  name: z.string().min(4).max(20),
+  description: z.string().min(10).max(500).nullable(),
   firstCallTime: z
     .number()
     .int()
     .min(10, "Il tempo minimo della prima chiamata e' di 10 secondi")
     .max(60, "Il tempo massimo della prima chiamata e' di 1 minuto"),
-  otherCallsTime: z
+  othersCallsTime: z
     .number()
     .int()
     .min(5, "Il tempo minimo della altre chiamate e' di 5 secondi")
@@ -30,4 +32,4 @@ export const auctionSchema = z.discriminatedUnion("type", [
   repairAuctionSchema,
 ]);
 
-export type AuctionSchema = z.infer<typeof auctionSchema>
+export type AuctionSchema = z.infer<typeof auctionSchema>;
