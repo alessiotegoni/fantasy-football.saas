@@ -25,6 +25,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import FormSliderField from "@/components/FormFieldSlider";
+import { useEffect } from "react";
 
 type Props = {
   auction: {
@@ -48,6 +50,8 @@ export default function AuctionForm({ auction }: Props) {
       ? auction
       : {
           type: "classic",
+          name: "",
+          description: null,
           initialCredits: auction.initialCredits,
           playersPerRole: auction.playersPerRole,
           firstCallTime: auction.firstCallTime ?? 20,
@@ -57,13 +61,19 @@ export default function AuctionForm({ auction }: Props) {
 
   const auctionType = form.watch("type");
 
+  useEffect(() => {
+    if (auctionType === "repair") form.setValue("creditsToAdd", 50);
+  }, [auctionType]);
+
+  console.log(auctionType);
+
   async function onSubmit(data: AuctionSchema) {}
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-3 sm:space-y-6"
+        className="space-y-3 sm:space-y-6 pb-12 sm:pb-0"
       >
         <FormField
           control={form.control}
@@ -142,6 +152,31 @@ export default function AuctionForm({ auction }: Props) {
                   />
                 </div>
               </div>
+              {auctionType === "classic" && (
+                <div>
+                  <FormSliderField<{ initialCredits: number }>
+                    name="initialCredits"
+                    label="Crediti iniziali per squadra"
+                    min={200}
+                    max={5000}
+                    step={50}
+                    unit="crediti"
+                  />
+                </div>
+              )}
+              {auctionType === "repair" && (
+                <div>
+                  <FormSliderField<{ creditsToAdd: number }>
+                    name="creditsToAdd"
+                    label="Crediti da aggiungere"
+                    tip="Crediti da aggiungere a tutte le squadre"
+                    min={0}
+                    max={auction.initialCredits}
+                    step={10}
+                    unit="crediti"
+                  />
+                </div>
+              )}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
