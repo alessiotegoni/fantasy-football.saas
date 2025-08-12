@@ -1,5 +1,7 @@
-import { MemberActionArgs } from "@/features/(league)/members/actions/memberActions";
-import { createAdminClient, createClient } from "@/services/supabase/server/supabase";
+import {
+  createAdminClient,
+  createClient,
+} from "@/services/supabase/server/supabase";
 import { SupabaseClient, User } from "@supabase/supabase-js";
 import { NextRequest } from "next/server";
 
@@ -14,7 +16,9 @@ export function getMetadataFromUser(user: User): UserMetadata {
   return user.user_metadata || {};
 }
 
-export async function getMetadataFromUserId(userId: string): Promise<UserMetadata> {
+export async function getMetadataFromUserId(
+  userId: string
+): Promise<UserMetadata> {
   const supabase = await createAdminClient();
   const { data, error } = await supabase.auth.admin.getUserById(userId);
 
@@ -32,7 +36,10 @@ export async function setUserMetadata(userId: string, metadata: UserMetadata) {
   });
 }
 
-export async function canAccessLeague(user: User, leagueId: string): Promise<boolean> {
+export async function canAccessLeague(
+  user: User,
+  leagueId: string
+): Promise<boolean> {
   if (!leagueId) return false;
 
   const { league_ids } = getMetadataFromUser(user);
@@ -54,14 +61,18 @@ export async function addUserLeaguesMetadata(user: User, leagueId: string) {
 export async function removeUserLeagueMetadata({
   userId,
   leagueId,
-}: Pick<MemberActionArgs, "leagueId" | "userId">) {
+}: {
+  userId: string;
+  leagueId: string;
+}) {
   const userMetadata = await getMetadataFromUserId(userId);
-  const league_ids = userMetadata.league_ids?.filter(id => id !== leagueId) ?? [];
+  const league_ids =
+    userMetadata.league_ids?.filter((id) => id !== leagueId) ?? [];
 
   const updatedMetadata: UserMetadata = {
     ...userMetadata,
     league_ids,
-    last_league_id: league_ids[0] || null
+    last_league_id: league_ids[0] || null,
   };
 
   return setUserMetadata(userId, updatedMetadata);

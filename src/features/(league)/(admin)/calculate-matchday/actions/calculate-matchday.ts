@@ -26,15 +26,13 @@ import {
 } from "@/features/(league)/settings/queries/setting";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
-import {
-  calculateLineupsTotalVote,
-  enrichLineupPlayers,
-} from "@/features/(league)/matches/utils/LineupPlayers";
+import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
 import {
   getGoals,
   getPoints,
 } from "@/features/(league)/matches/utils/matchResult";
+import { calculateLineupsTotalVote } from "@/features/(league)/matches/utils/Lineup";
 
 enum CALCULATION_MESSAGES {
   CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
