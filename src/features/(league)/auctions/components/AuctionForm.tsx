@@ -67,8 +67,6 @@ export default function AuctionForm({ auction, playersRoles }: Props) {
     if (auctionType === "repair") form.setValue("creditsToAdd", 50);
   }, [auctionType]);
 
-  console.log(auctionType);
-
   async function onSubmit(data: AuctionSchema) {}
 
   return (
