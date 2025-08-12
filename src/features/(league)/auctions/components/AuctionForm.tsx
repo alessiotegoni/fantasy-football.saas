@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useActionToast from "@/hooks/useActionToast";
 import { auctionSchema, AuctionSchema } from "../schema/auction";
-import { AuctionType, PlayersPerRole } from "@/drizzle/schema";
+import { AuctionType, playerRoles, PlayersPerRole } from "@/drizzle/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AuctionTypeField from "./AuctionTypeField";
@@ -40,9 +40,10 @@ type Props = {
     initialCredits: number;
     playersPerRole: PlayersPerRole;
   };
+  playersRoles?: (typeof playerRoles.$inferSelect)[];
 };
 
-export default function AuctionForm({ auction }: Props) {
+export default function AuctionForm({ auction, playersRoles }: Props) {
   const toast = useActionToast();
 
   const form = useForm<AuctionSchema>({
@@ -146,16 +147,16 @@ export default function AuctionForm({ auction }: Props) {
                         <FormControl>
                           <Input type="number" {...field} min={5} max={40} />
                         </FormControl>
-                        <FormDescription>Dalla altre chiamate</FormDescription>
+                        <FormDescription>Dalle altre chiamate</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
               </div>
-              {auctionType === "classic" && (
-                <div>
-                  <PlayersPerRoleField playersRoles={} />
+              {auctionType === "classic" && playersRoles && (
+                <div className="space-y-3 sm:space-y-6">
+                  <PlayersPerRoleField playersRoles={playersRoles} />
                   <FormSliderField<{ initialCredits: number }>
                     name="initialCredits"
                     label="Crediti iniziali per squadra"

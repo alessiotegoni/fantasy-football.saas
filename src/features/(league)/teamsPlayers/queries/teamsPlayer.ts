@@ -10,6 +10,7 @@ import {
   leagueMemberTeams,
   playerRoles,
   players,
+  PRESIDENT_ROLE_ID,
   teams,
 } from "@/drizzle/schema";
 import { count, eq, inArray } from "drizzle-orm";
@@ -19,6 +20,12 @@ export async function getPlayersRoles() {
   cacheTag(getPlayerRolesTag());
 
   return db.query.playerRoles.findMany();
+}
+
+export async function getRolesWithoutPresident() {
+  const roles = await getPlayersRoles();
+
+  return roles.filter((role) => role.id !== PRESIDENT_ROLE_ID);
 }
 
 export async function getTeamsPlayers(teamsIds: string[]) {
