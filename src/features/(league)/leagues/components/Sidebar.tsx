@@ -69,7 +69,7 @@ export default function LeagueSidebar({
           return <Suspense key={type}>{section}</Suspense>;
         })}
       </SidebarContent>
-      <SidebarFooter className="hidden lg:block">
+      <SidebarFooter className="hidden lg:block lg:border lg:border-border">
         <Suspense>
           <UserDropdown userPromise={getUser()} />
         </Suspense>
@@ -223,11 +223,6 @@ export const premiumSections = [
         name: "Impostazioni asta",
         href: "/leagues/:leagueId/auctions/settings",
         icon: Settings,
-      },
-      {
-        name: "Partecipanti",
-        href: "/leagues/:leagueId/participants",
-        icon: User,
       },
     ],
   },
