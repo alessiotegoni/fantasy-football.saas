@@ -8,6 +8,7 @@ import {
   Community,
   CoinsSwap,
   Coins,
+  Hammer,
 } from "iconoir-react";
 import { Star } from "iconoir-react/solid";
 import {
@@ -54,12 +55,12 @@ export default function LeagueSidebar({
         </div>
       </SidebarHeader>
       <SidebarContent className="custom-scrollbar">
-        {sidebarSection.map(({ type, items }) => {
+        {sidebarSections.map(({ type, sections }) => {
           const section = (
             <SidebarSection
               key={type}
-              items={items}
-              sectionType={type}
+              sections={sections}
+              type={type}
               leagueId={leagueId}
             />
           );
@@ -79,17 +80,17 @@ export default function LeagueSidebar({
 }
 
 async function SidebarSection({
-  items,
-  sectionType,
+  sections,
+  type,
   leagueId,
 }: {
-  items: (typeof publicSections)[number][];
-  sectionType?: "public" | "private" | "premium";
+  sections: (typeof sidebarSections)[number]["sections"];
+  type?: "public" | "private" | "premium";
   leagueId: string;
 }) {
   let isPremiumFeaturesUnlocked = true;
 
-  switch (sectionType) {
+  switch (type) {
     case "private":
       const userId = await getUserId();
       if (!userId) return;
@@ -101,7 +102,7 @@ async function SidebarSection({
       break;
   }
 
-  return items.map((section) => (
+  return sections.map((section) => (
     <SidebarGroup key={section.title} className="p-3">
       <SidebarGroupLabel
         className={cn(
@@ -142,7 +143,19 @@ async function SidebarSection({
   ));
 }
 
-export const publicSections = [
+export type SidebarSection = {
+  title: string;
+  isPrivate?: boolean;
+  items: {
+    name: string;
+    href: string;
+    icon: React.ElementType;
+    basePath?: string;
+    exact?: boolean;
+  }[];
+};
+
+export const publicSection: SidebarSection[] = [
   {
     title: "Setup lega",
     items: [
@@ -186,7 +199,7 @@ export const publicSections = [
   },
 ];
 
-export const privateSections = [
+export const privateSection: SidebarSection[] = [
   {
     title: "Gestione campionato",
     isPrivate: true,
@@ -210,26 +223,28 @@ export const privateSections = [
   },
 ];
 
-export const premiumSections = [
+export const premiumSection: SidebarSection[] = [
   {
     title: "Gestione aste",
     items: [
       {
         name: "Aste della lega",
         href: "/leagues/:leagueId/premium/auctions",
-        icon: Shield,
+        icon: Hammer,
+        exact: true,
       },
       {
-        name: "Impostazioni asta",
+        name: "Impostazioni aste",
         href: "/leagues/:leagueId/premium/auctions/settings",
         icon: Settings,
+        exact: true,
       },
     ],
   },
 ];
 
-const sidebarSection = [
-  { items: publicSections, type: "public" },
-  { items: privateSections, type: "private" },
-  { items: premiumSections, type: "premium" },
+export const sidebarSections = [
+  { sections: publicSection, type: "public" },
+  { sections: privateSection, type: "private" },
+  { sections: premiumSection, type: "premium" },
 ] as const;

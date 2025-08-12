@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { ComponentPropsWithoutRef } from "react";
 import { Button } from "./ui/button";
 
@@ -22,7 +22,7 @@ type Props = {
 export default function NavLink({
   href,
   activeBasePath,
-  exact,
+  exact = false,
   children,
   className,
   render,

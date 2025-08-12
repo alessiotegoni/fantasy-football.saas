@@ -4,18 +4,20 @@ import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import NavLink from "@/components/NavLink";
 import { getItemHref } from "@/lib/utils";
 import Link from "next/link";
-import { publicSections } from "./Sidebar";
 import { Button } from "@/components/ui/button";
+import { SidebarSection } from "./Sidebar";
+
+type Props = {
+  item: SidebarSection["items"][number];
+  leagueId: string;
+  showLink?: boolean;
+};
 
 export default function SidebarItem({
   item,
   leagueId,
   showLink = true,
-}: {
-  item: (typeof publicSections)[number]["items"][number];
-  leagueId: string;
-  showLink?: boolean;
-}) {
+}: Props) {
   const content = (
     <>
       <item.icon className="!size-5" />
@@ -41,6 +43,7 @@ export default function SidebarItem({
             )}
           </SidebarMenuButton>
         )}
+        exact={item.exact}
       />
     </SidebarMenuItem>
   );
