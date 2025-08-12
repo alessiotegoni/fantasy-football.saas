@@ -1,27 +1,35 @@
+import { getSerialIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 
 // Schema per impostazioni generali
+export const initialCredits = z
+  .number()
+  .int()
+  .min(200, "I crediti iniziali devono essere almeno 200")
+  .max(5000, "I crediti iniziali non possono superare 5000");
+
 export const generalSettingsSchema = z.object({
-  initialCredits: z
-    .number()
-    .min(200, "I crediti iniziali devono essere almeno 200")
-    .max(5000, "I crediti iniziali non possono superare 5000"),
+  initialCredits,
   maxMembers: z
     .number()
+    .int()
     .min(4, "Il numero minimo di membri è 4")
     .max(12, "Il numero massimo di membri è 12"),
 });
 
 // Schema per le rose e moduli
+export const playersPerRole = z.record(
+  z.string(),
+  z
+    .number()
+    .int()
+    .positive("Tutti i ruoli devono avere almeno 1 giocatore asegnato")
+);
+
 export const rosterModulesSchema = z.object({
-  playersPerRole: z.record(
-    z.string(),
-    z
-      .number()
-      .positive("Tutti i ruoli devono avere almeno 1 giocatore asegnato")
-  ),
+  playersPerRole,
   tacticalModules: z
-    .array(z.number().positive())
+    .array(getSerialIdSchema())
     .min(1, "Deve essere selezionato almeno un modulo tattico")
     .max(5, "Massimo 5 moduli tattici"),
 });
@@ -32,6 +40,7 @@ export const bonusMalusSchema = z.object({
     z.string(),
     z
       .number()
+      .int()
       .min(-10, "Il valore minimo è -10")
       .max(10, "Il valore massimo è 10")
   ),
@@ -58,6 +67,7 @@ export const marketSettingsSchema = z.object({
   isTradingMarketOpen: z.boolean(),
   releasePercentage: z
     .number({ message: "Deve essere un numero valido" })
+    .int()
     .min(0, "La percentuale di svincolo devono essere un valore tra 0 e 100")
     .max(100, "La percentuale di svincolo devono essere un valore tra 0 e 100"),
 });
