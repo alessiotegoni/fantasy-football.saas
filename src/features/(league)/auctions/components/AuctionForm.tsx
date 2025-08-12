@@ -19,6 +19,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import AuctionTypeField from "./AuctionTypeField";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 type Props = {
   auction: {
@@ -66,7 +72,11 @@ export default function AuctionForm({ auction }: Props) {
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="King del vintage" />
+                <Input
+                  {...field}
+                  placeholder="King del vintage"
+                  className="px-4"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -81,6 +91,7 @@ export default function AuctionForm({ auction }: Props) {
               <FormControl>
                 <Textarea
                   placeholder="Aura sorriset"
+                  className="rounded-2xl"
                   value={value ?? ""}
                   onChange={(e) => onChange(e.target.value || null)}
                   {...restField}
@@ -91,6 +102,49 @@ export default function AuctionForm({ auction }: Props) {
           )}
         />
         <AuctionTypeField />
+
+        <Accordion type="single" collapsible>
+          <AccordionItem value="advanced-settings">
+            <AccordionTrigger className="font-sans text-base font-medium p-0 py-3 sm:pt-0 aria-expanded:pb-6">
+              Impostazioni avanzate
+            </AccordionTrigger>
+            <AccordionContent className="space-y-3 sm:space-y-6">
+              <div>
+                <h3 className="text-base font-medium font-sans mb-3">
+                  Tempo (secondi)
+                </h3>
+                <div className="grid xs:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="firstCallTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} min={10} max={60} />
+                        </FormControl>
+                        <FormDescription>Dalla prima chiamata</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="othersCallsTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} min={5} max={40} />
+                        </FormControl>
+                        <FormDescription>Dalla altre chiamate</FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         <MobileButtonsContainer className="sm:w-full">
           <SubmitButton loadingText="Creo asta">Crea asta</SubmitButton>
