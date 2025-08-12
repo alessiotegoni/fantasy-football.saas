@@ -75,7 +75,11 @@ export default function ResetCreditsDialog({
               <DialogClose asChild className="sm:w-fit">
                 <Button variant="outline">Chiudi</Button>
               </DialogClose>
-              <SubmitButton className="sm:w-fit" loadingText="Resetto crediti">
+              <SubmitButton
+                variant="destructive"
+                className="sm:w-fit"
+                loadingText="Resetto crediti"
+              >
                 Resetta
               </SubmitButton>
             </DialogFooter>
