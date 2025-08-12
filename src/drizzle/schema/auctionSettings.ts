@@ -16,9 +16,12 @@ export const auctionSettings = pgTable("auction_settings", {
     .$type<PlayersPerRole>(),
 });
 
-export const auctionsRelations = relations(auctionSettings, ({ one }) => ({
-  auction: one(auctions, {
-    fields: [auctionSettings.auctionId],
-    references: [auctions.id],
-  }),
-}));
+export const auctionSettingsRelations = relations(
+  auctionSettings,
+  ({ one }) => ({
+    auction: one(auctions, {
+      fields: [auctionSettings.auctionId],
+      references: [auctions.id],
+    }),
+  })
+);

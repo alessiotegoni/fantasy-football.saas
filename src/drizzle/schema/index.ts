@@ -22,6 +22,7 @@ export * from "./leagueMatchResults";
 export * from "./leagueMatchTeamLineup";
 export * from "./leagueMatchLineupPlayers";
 export * from "./auctions";
+export * from "./auctionSettings";
 export * from "./auctionNominations";
 export * from "./auctionBids";
 export * from "./userSubscriptions";
