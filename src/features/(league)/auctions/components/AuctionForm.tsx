@@ -17,6 +17,8 @@ import { auctionSchema, AuctionSchema } from "../schema/auction";
 import { AuctionType, PlayersPerRole } from "@/drizzle/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import AuctionTypeField from "./AuctionTypeField";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 
 type Props = {
   auction: {
@@ -47,11 +49,16 @@ export default function AuctionForm({ auction }: Props) {
         },
   });
 
+  const auctionType = form.watch("type");
+
   async function onSubmit(data: AuctionSchema) {}
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-3 sm:space-y-6"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -73,6 +80,7 @@ export default function AuctionForm({ auction }: Props) {
               <FormLabel>Descrizione</FormLabel>
               <FormControl>
                 <Textarea
+                  placeholder="Aura sorriset"
                   value={value ?? ""}
                   onChange={(e) => onChange(e.target.value || null)}
                   {...restField}
@@ -82,8 +90,11 @@ export default function AuctionForm({ auction }: Props) {
             </FormItem>
           )}
         />
+        <AuctionTypeField />
 
-        <SubmitButton loadingText="Creo asta">Crea asta</SubmitButton>
+        <MobileButtonsContainer className="sm:w-full">
+          <SubmitButton loadingText="Creo asta">Crea asta</SubmitButton>
+        </MobileButtonsContainer>
       </form>
     </Form>
   );
