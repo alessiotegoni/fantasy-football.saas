@@ -9,6 +9,7 @@ import {
   CoinsSwap,
   Coins,
   Hammer,
+  DatabaseScriptPlus,
 } from "iconoir-react";
 import { Star } from "iconoir-react/solid";
 import {
@@ -151,7 +152,6 @@ export type SidebarSection = {
     href: string;
     icon: React.ElementType;
     basePath?: string;
-    exact?: boolean;
   }[];
 };
 
@@ -228,16 +228,15 @@ export const premiumSection: SidebarSection[] = [
     title: "Gestione aste",
     items: [
       {
+        name: "Crea asta",
+        href: "/leagues/:leagueId/premium/auctions/create",
+        icon: DatabaseScriptPlus,
+      },
+      {
         name: "Aste della lega",
         href: "/leagues/:leagueId/premium/auctions",
         icon: Hammer,
-        exact: true,
-      },
-      {
-        name: "Impostazioni aste",
-        href: "/leagues/:leagueId/premium/auctions/settings",
-        icon: Settings,
-        exact: true,
+        basePath: "/leagues/:leagueId/premium/auctions",
       },
     ],
   },
