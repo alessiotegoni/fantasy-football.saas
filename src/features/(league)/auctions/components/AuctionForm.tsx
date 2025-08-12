@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/accordion";
 import FormSliderField from "@/components/FormFieldSlider";
 import { useEffect } from "react";
+import PlayersPerRoleField from "@/components/PlayersPerRoleField";
 
 type Props = {
   auction: {
@@ -154,6 +155,7 @@ export default function AuctionForm({ auction }: Props) {
               </div>
               {auctionType === "classic" && (
                 <div>
+                  <PlayersPerRoleField playersRoles={} />
                   <FormSliderField<{ initialCredits: number }>
                     name="initialCredits"
                     label="Crediti iniziali per squadra"

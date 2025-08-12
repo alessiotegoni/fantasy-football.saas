@@ -17,6 +17,7 @@ import NumberInput from "@/components/ui/number-input";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
 import { playerRoles, PlayersPerRole, TacticalModule } from "@/drizzle/schema";
+import PlayersPerRoleField from "@/components/PlayersPerRoleField";
 
 type Props = {
   initialData: RosterModulesSchema;
@@ -41,8 +42,8 @@ export function RosterSettingsForm(rosterSettings: Props) {
         onSubmit={form.handleSubmit(saveRosterModuleSettings)}
         className="space-y-6"
       >
-        <LeaguePlayersPerRole {...rosterSettings} />
-        <LeagueTacticalModules {...rosterSettings} />
+        <PlayersPerRoleField {...rosterSettings} />
+        <TacticalModulesField {...rosterSettings} />
 
         <SubmitButton loadingText="Salvando opzioni" isLoading={loading}>
           Salva opzioni
@@ -52,43 +53,7 @@ export function RosterSettingsForm(rosterSettings: Props) {
   );
 }
 
-function LeaguePlayersPerRole({ playersRoles }: Props) {
-  const form = useFormContext<{ playersPerRole: PlayersPerRole }>();
-
-  return (
-    <div className="space-y-4">
-      <OptionTooltip
-        label="Giocatori per ruolo"
-        tip="Numero di giocatori che ogni squadra può avere per ruolo"
-      >
-        <div className="grid grid-cols-2 sm:flex flex-wrap gap-7">
-          {playersRoles.map((role) => (
-            <FormField
-              key={role.id}
-              control={form.control}
-              name={`playersPerRole.${role.id}`}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-sm">{role.name}</FormLabel>
-                  <FormControl>
-                    <NumberInput
-                      value={field.value}
-                      onChange={field.onChange}
-                      min={1}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
-        </div>
-      </OptionTooltip>
-    </div>
-  );
-}
-
-function LeagueTacticalModules({ tacticalModules }: Props) {
+function TacticalModulesField({ tacticalModules }: Props) {
   const form = useFormContext<Pick<RosterModulesSchema, "tacticalModules">>();
 
   return (
