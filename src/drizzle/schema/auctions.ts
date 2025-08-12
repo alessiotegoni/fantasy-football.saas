@@ -13,10 +13,19 @@ import { auctionNominations } from "./auctionNominations";
 import { splits } from "./splits";
 import { auctionSettings } from "./auctionSettings";
 
-export const auctionTypes = ["waiting", "active", "paused", "ended"] as const;
-export type AuctionType = (typeof auctionTypes)[number];
+export const auctionTypes = ["classic", "repair"] as const;
+export const auctionStatuses = [
+  "waiting",
+  "active",
+  "paused",
+  "ended",
+] as const;
 
-export const auctionTypesEnum = pgEnum("auction_types", auctionTypes);
+export type AuctionType = (typeof auctionTypes)[number];
+export type AuctionStatus = (typeof auctionStatuses)[number];
+
+export const auctionStatusEnum = pgEnum("auction_statuses", auctionStatuses);
+export const auctionTypeEnum = pgEnum("auction_types", auctionTypes);
 
 export const auctions = pgTable("auctions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -28,10 +37,11 @@ export const auctions = pgTable("auctions", {
     .references(() => splits.id, { onDelete: "restrict" }),
   name: text("name").notNull(),
   description: text("description"),
+  type: auctionTypeEnum("type").notNull().default("classic"),
   createdBy: uuid("created_by")
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
-  status: auctionTypesEnum("status").notNull().default("waiting"),
+  status: auctionStatusEnum("status").notNull().default("waiting"),
   startedAt: timestamp("started_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
