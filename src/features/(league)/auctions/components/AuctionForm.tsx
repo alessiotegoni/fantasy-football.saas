@@ -13,7 +13,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useActionToast from "@/hooks/useActionToast";
-import { auctionSchema, AuctionSchema } from "../schema/auction";
+import { auctionSchema, AuctionSchema } from "../schema/auctionSettings";
 import { AuctionType, playerRoles, PlayersPerRole } from "@/drizzle/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
