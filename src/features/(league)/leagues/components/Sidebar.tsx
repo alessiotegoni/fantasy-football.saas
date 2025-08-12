@@ -152,6 +152,7 @@ export type SidebarSection = {
     href: string;
     icon: React.ElementType;
     basePath?: string;
+    exact?: boolean;
   }[];
 };
 
@@ -236,7 +237,7 @@ export const premiumSection: SidebarSection[] = [
         name: "Aste della lega",
         href: "/leagues/:leagueId/premium/auctions",
         icon: Hammer,
-        basePath: "/leagues/:leagueId/premium/auctions",
+        exact: true,
       },
     ],
   },
