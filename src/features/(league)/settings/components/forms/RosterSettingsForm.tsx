@@ -16,15 +16,13 @@ import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import NumberInput from "@/components/ui/number-input";
 import SubmitButton from "@/components/SubmitButton";
 import OptionTooltip from "../../../../../components/FormFieldTooltip";
-import { getTacticalModules } from "../../queries/setting";
-import { Suspense, use } from "react";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { playerRoles, PlayersPerRole, TacticalModule } from "@/drizzle/schema";
 
 type Props = {
   initialData: RosterModulesSchema;
   leagueId: string;
-  tacticalModulesPromise: ReturnType<typeof getTacticalModules>;
-  playersRolesPromise: ReturnType<typeof getPlayersRoles>;
+  tacticalModules: TacticalModule[];
+  playersRoles: (typeof playerRoles.$inferSelect)[];
 };
 
 export function RosterSettingsForm(rosterSettings: Props) {
@@ -43,12 +41,8 @@ export function RosterSettingsForm(rosterSettings: Props) {
         onSubmit={form.handleSubmit(saveRosterModuleSettings)}
         className="space-y-6"
       >
-        <Suspense>
-          <LeaguePlayersPerRole {...rosterSettings} />
-        </Suspense>
-        <Suspense>
-          <LeagueTacticalModules {...rosterSettings} />
-        </Suspense>
+        <LeaguePlayersPerRole {...rosterSettings} />
+        <LeagueTacticalModules {...rosterSettings} />
 
         <SubmitButton loadingText="Salvando opzioni" isLoading={loading}>
           Salva opzioni
@@ -58,10 +52,8 @@ export function RosterSettingsForm(rosterSettings: Props) {
   );
 }
 
-function LeaguePlayersPerRole({ playersRolesPromise }: Props) {
-  const form = useFormContext<Pick<RosterModulesSchema, "playersPerRole">>();
-
-  const playersRoles = use(playersRolesPromise);
+function LeaguePlayersPerRole({ playersRoles }: Props) {
+  const form = useFormContext<{ playersPerRole: PlayersPerRole }>();
 
   return (
     <div className="space-y-4">
@@ -96,10 +88,8 @@ function LeaguePlayersPerRole({ playersRolesPromise }: Props) {
   );
 }
 
-function LeagueTacticalModules({ tacticalModulesPromise }: Props) {
+function LeagueTacticalModules({ tacticalModules }: Props) {
   const form = useFormContext<Pick<RosterModulesSchema, "tacticalModules">>();
-
-  const availableTacticalModules = use(tacticalModulesPromise);
 
   return (
     <div>
@@ -115,7 +105,7 @@ function LeagueTacticalModules({ tacticalModulesPromise }: Props) {
             <FormItem>
               <FormControl>
                 <div className="grid grid-cols-3 xl:grid-cols-5 gap-3">
-                  {availableTacticalModules.map((module) => (
+                  {tacticalModules.map((module) => (
                     <CheckboxCard
                       key={module.id}
                       label={module.name}

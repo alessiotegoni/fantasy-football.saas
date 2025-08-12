@@ -13,7 +13,11 @@ export default async function LeagueRosterSettingsPage({
 }) {
   const { leagueId } = await params;
 
-  const rosterSettings = await getRosterSettings(leagueId);
+  const [rosterSettings, tacticalModules, playersRoles] = await Promise.all([
+    getRosterSettings(leagueId),
+    getTacticalModules(),
+    getRolesWithoutPresident(),
+  ]);
 
   return (
     <div className="max-w-[700px] mx-auto">
@@ -23,8 +27,8 @@ export default async function LeagueRosterSettingsPage({
       <RosterSettingsForm
         leagueId={leagueId}
         initialData={rosterSettings}
-        tacticalModulesPromise={getTacticalModules()}
-        playersRolesPromise={getRolesWithoutPresident()}
+        tacticalModules={tacticalModules}
+        playersRoles={playersRoles}
       />
     </div>
   );
