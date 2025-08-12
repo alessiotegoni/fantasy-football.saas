@@ -1,7 +1,7 @@
 import { getIdTag, getLeagueTag } from "@/cache/helpers";
 import { revalidateTag } from "next/cache";
 
-export type AUCTION_TAG = "auctions" | "auctions-settings";
+export type AUCTION_TAG = "auctions" | "auction-settings";
 
 export const getLeagueAuctionsTag = (leagueId: string) =>
   getLeagueTag("auctions", leagueId);
@@ -9,8 +9,8 @@ export const getLeagueAuctionsTag = (leagueId: string) =>
 export const getAuctionIdTag = (auctionId: string) =>
   getIdTag("auctions", auctionId);
 
-export const getLeagueAuctionsSettingsTag = (leagueId: string) =>
-  getLeagueTag("auctions-settings", leagueId);
+export const getAuctionSettingTag = (auctionId: string) =>
+  getIdTag("auction-settings", auctionId);
 
 export const revalidateLeagueAuctionsCache = (
   leagueId: string,
@@ -20,6 +20,6 @@ export const revalidateLeagueAuctionsCache = (
   revalidateTag(getAuctionIdTag(auctionId));
 };
 
-export const revalidateLeagueAuctionsSettingsCache = (leagueId: string) => {
-  revalidateTag(getLeagueAuctionsSettingsTag(leagueId));
+export const revalidateAuctionSettingsCache = (auctionId: string) => {
+  revalidateTag(getAuctionSettingTag(auctionId));
 };
