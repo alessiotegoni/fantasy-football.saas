@@ -11,6 +11,7 @@ import { leagues } from "./leagues";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { auctionNominations } from "./auctionNominations";
 import { splits } from "./splits";
+import { auctionSettings } from "./auctionSettings";
 
 export const auctionTypes = ["waiting", "active", "paused", "ended"] as const;
 export type AuctionType = (typeof auctionTypes)[number];
@@ -25,16 +26,16 @@ export const auctions = pgTable("auctions", {
   splitId: smallint("split_id")
     .notNull()
     .references(() => splits.id, { onDelete: "restrict" }),
+  name: text("name").notNull(),
+  description: text("description"),
   createdBy: uuid("created_by")
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
+  status: auctionTypesEnum("status").notNull().default("waiting"),
   startedAt: timestamp("started_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
   endedAt: timestamp("ended_at", { withTimezone: true }).notNull().defaultNow(),
-  status: auctionTypesEnum("status").notNull().default("waiting"),
-  name: text("name").notNull(),
-  description: text("description"),
 });
 
 export const auctionsRelations = relations(auctions, ({ one, many }) => ({
@@ -51,4 +52,5 @@ export const auctionsRelations = relations(auctions, ({ one, many }) => ({
     references: [leagueMemberTeams.id],
   }),
   nominations: many(auctionNominations),
+  settings: many(auctionSettings),
 }));

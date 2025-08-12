@@ -1,4 +1,4 @@
-export async function getAuctionsSettings(leagueId: string) {
+export async function getAuctionsSettings(auctionId: string) {
     "use cache"
 
     
