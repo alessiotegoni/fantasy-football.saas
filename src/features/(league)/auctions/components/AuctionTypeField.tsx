@@ -5,10 +5,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { AuctionType } from "@/drizzle/schema";
+import { cn } from "@/lib/utils";
 import { Globe, Hammer } from "iconoir-react";
 import { useFormContext } from "react-hook-form";
 
-export default function AuctionTypeField() {
+export default function AuctionTypeField({
+  isSplitLive = false,
+}: {
+  isSplitLive: boolean | undefined;
+}) {
   const form = useFormContext<{ type: AuctionType }>();
 
   return (
@@ -20,18 +25,24 @@ export default function AuctionTypeField() {
           <FormLabel>Tipo di asta</FormLabel>
           <div className="grid grid-cols-2 gap-4">
             <label
-              className={`flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-colors ${
-                field.value === "classic"
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-muted/30"
-              }`}
+              className={cn(
+                `flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-colors ${
+                  field.value === "classic"
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-muted/30"
+                }`,
+                !isSplitLive
+                  ? "cursor-pointer"
+                  : "cursor-not-allowed select-none text-muted-foreground"
+              )}
             >
               <input
                 type="radio"
                 value="private"
                 checked={field.value === "classic"}
-                onChange={() => field.onChange("classic")}
+                onChange={() => !isSplitLive && field.onChange("classic")}
                 className="sr-only"
+                disabled={isSplitLive}
               />
               <Globe
                 className={`size-6 mb-2 ${
@@ -53,22 +64,28 @@ export default function AuctionTypeField() {
             </label>
 
             <label
-              className={`flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-colors ${
-                field.value === "repair"
-                  ? "border-primary bg-primary/5"
-                  : "border-border bg-muted/30"
-              }`}
+              className={cn(
+                `flex flex-col items-center p-4 border rounded-xl transition-colors ${
+                  field.value === "repair" && isSplitLive
+                    ? "border-primary bg-primary/5"
+                    : "border-border bg-muted/30"
+                }`,
+                isSplitLive
+                  ? "cursor-pointer"
+                  : "cursor-not-allowed select-none text-muted-foreground"
+              )}
             >
               <input
                 type="radio"
                 value="public"
                 checked={field.value === "repair"}
-                onChange={() => field.onChange("repair")}
+                onChange={() => isSplitLive && field.onChange("repair")}
                 className="sr-only"
+                disabled={!isSplitLive}
               />
               <Hammer
                 className={`size-6 mb-2 ${
-                  field.value === "repair"
+                  field.value === "repair" && isSplitLive
                     ? "text-primary"
                     : "text-muted-foreground"
                 }`}

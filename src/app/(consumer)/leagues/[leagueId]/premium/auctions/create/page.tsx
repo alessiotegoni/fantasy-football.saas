@@ -4,6 +4,7 @@ import AuctionForm from "@/features/(league)/auctions/components/AuctionForm";
 import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
 import { getGeneralSettings } from "@/features/(league)/settings/queries/setting";
 import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { getLiveSplit } from "@/features/splits/queries/split";
 import { Suspense } from "react";
 
 export default async function CreateAuctionPage({
@@ -31,7 +32,16 @@ export default async function CreateAuctionPage({
 async function SuspenseBoundary(props: {
   auction: { playersPerRole: PlayersPerRole; initialCredits: number };
 }) {
-  const playersRoles = await getRolesWithoutPresident();
+  const [playersRoles, isSplitLive] = await Promise.all([
+    getRolesWithoutPresident(),
+    getLiveSplit().then(Boolean),
+  ]);
 
-  return <AuctionForm {...props} playersRoles={playersRoles} />;
+  return (
+    <AuctionForm
+      {...props}
+      playersRoles={playersRoles}
+      isSplitLive={isSplitLive}
+    />
+  );
 }

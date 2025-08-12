@@ -41,9 +41,14 @@ type Props = {
     playersPerRole: PlayersPerRole;
   };
   playersRoles?: (typeof playerRoles.$inferSelect)[];
+  isSplitLive?: boolean;
 };
 
-export default function AuctionForm({ auction, playersRoles }: Props) {
+export default function AuctionForm({
+  auction,
+  playersRoles,
+  isSplitLive,
+}: Props) {
   const toast = useActionToast();
 
   const form = useForm<AuctionSchema>({
@@ -51,7 +56,7 @@ export default function AuctionForm({ auction, playersRoles }: Props) {
     defaultValues: auction.id
       ? auction
       : {
-          type: "classic",
+          type: isSplitLive ? "repair" : "classic",
           name: "",
           description: null,
           initialCredits: auction.initialCredits,
@@ -111,7 +116,7 @@ export default function AuctionForm({ auction, playersRoles }: Props) {
             </FormItem>
           )}
         />
-        <AuctionTypeField />
+        {!auction.id && <AuctionTypeField isSplitLive={isSplitLive} />}
 
         <Accordion type="single" collapsible>
           <AccordionItem value="advanced-settings">
@@ -183,7 +188,11 @@ export default function AuctionForm({ auction, playersRoles }: Props) {
         </Accordion>
 
         <MobileButtonsContainer className="sm:w-full">
-          <SubmitButton loadingText="Creo asta">Crea asta</SubmitButton>
+          <SubmitButton
+            loadingText={auction.id ? "Modifico asta" : "Creo asta"}
+          >
+            {auction.id ? "Modifica asta" : "Crea asta"}
+          </SubmitButton>
         </MobileButtonsContainer>
       </form>
     </Form>
