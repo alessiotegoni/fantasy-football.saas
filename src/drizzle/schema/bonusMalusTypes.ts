@@ -17,12 +17,6 @@ export const bonusMalusCategories = [
   "performance",
   "shotouts",
 ] as const;
-export type BonusMalusCategoriesType = (typeof bonusMalusCategories)[number];
-
-export const bonusMalusCategoriesEnum = pgEnum(
-  "bonus_malus_categories",
-  bonusMalusCategories
-);
 
 export const bonusMalusCodes = [
   "goals",
@@ -33,9 +27,15 @@ export const bonusMalusCodes = [
   "performance",
   "shotouts",
 ] as const;
-export type BonusMalusCodesType = (typeof bonusMalusCodes)[number];
 
-export const bonusMalusCodesEnum = pgEnum("bonus_malus_codes", bonusMalusCodes);
+export type BonusMalusCategory = (typeof bonusMalusCategories)[number];
+export type BonusMalusCode = (typeof bonusMalusCodes)[number];
+
+export const bonusMalusCategoryEnum = pgEnum(
+  "bonus_malus_category",
+  bonusMalusCategories
+);
+export const bonusMalusCodeEnum = pgEnum("bonus_malus_code", bonusMalusCodes);
 
 export const bonusMalusTypes = pgTable(
   "bonus_malus_types",
@@ -44,8 +44,8 @@ export const bonusMalusTypes = pgTable(
     name: text("name").notNull(),
     imageUrl: text("image_url").notNull(),
     value: smallint("value").notNull(),
-    category: bonusMalusCategoriesEnum("category").notNull(),
-    code: bonusMalusCodesEnum("code").notNull(),
+    category: bonusMalusCategoryEnum("category").notNull(),
+    code: bonusMalusCodeEnum("code").notNull(),
   },
   (t) => ({
     bonusMalusTypesCodeKey: uniqueIndex("bonus_malus_types_code_key").on(

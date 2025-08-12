@@ -24,8 +24,8 @@ export const auctionStatuses = [
 export type AuctionType = (typeof auctionTypes)[number];
 export type AuctionStatus = (typeof auctionStatuses)[number];
 
-export const auctionStatusEnum = pgEnum("auction_statuses", auctionStatuses);
-export const auctionTypeEnum = pgEnum("auction_types", auctionTypes);
+export const auctionStatusEnum = pgEnum("auction_status", auctionStatuses);
+export const auctionTypeEnum = pgEnum("auction_type", auctionTypes);
 
 export const auctions = pgTable("auctions", {
   id: uuid("id").defaultRandom().primaryKey(),
