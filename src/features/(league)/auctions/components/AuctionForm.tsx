@@ -30,6 +30,7 @@ import { useEffect } from "react";
 import PlayersPerRoleField from "@/components/PlayersPerRoleField";
 import { useParams } from "next/navigation";
 import { createAuction, updateAuction } from "../actions/auction";
+import NumberInputField from "@/components/NumberInputField";
 
 type Props = {
   auction: {
@@ -151,18 +152,7 @@ export default function AuctionForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            value={field.value ?? ""}
-                            onChange={(e) =>
-                              field.onChange(
-                                !e.target.value ? "" : Number(e.target.value)
-                              )
-                            }
-                            min={10}
-                            max={60}
-                          />
+                          <NumberInputField {...field} min={10} max={60} />
                         </FormControl>
                         <FormDescription>Dalla prima chiamata</FormDescription>
                         <FormMessage />
@@ -175,18 +165,7 @@ export default function AuctionForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
-                            value={field.value ?? ""}
-                            onChange={(e) =>
-                              field.onChange(
-                                !e.target.value ? "" : Number(e.target.value)
-                              )
-                            }
-                            min={5}
-                            max={40}
-                          />
+                          <NumberInputField {...field} min={5} max={40} />
                         </FormControl>
                         <FormDescription>Dalle altre chiamate</FormDescription>
                         <FormMessage />
