@@ -33,7 +33,7 @@ export default function AuctionTypeField({
                 }`,
                 !isSplitLive
                   ? "cursor-pointer"
-                  : "cursor-not-allowed select-none text-muted-foreground"
+                  : "cursor-not-allowed select-none *:text-muted-foreground/50"
               )}
             >
               <input
@@ -72,7 +72,7 @@ export default function AuctionTypeField({
                 }`,
                 isSplitLive
                   ? "cursor-pointer"
-                  : "cursor-not-allowed select-none text-muted-foreground"
+                  : "cursor-not-allowed select-none *:text-muted-foreground/50"
               )}
             >
               <input

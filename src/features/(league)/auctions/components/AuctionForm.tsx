@@ -28,10 +28,12 @@ import {
 import FormSliderField from "@/components/FormFieldSlider";
 import { useEffect } from "react";
 import PlayersPerRoleField from "@/components/PlayersPerRoleField";
+import { useParams } from "next/navigation";
 
 type Props = {
   auction: {
     id?: string;
+    leagueId?: string;
     name?: string;
     description?: string | null;
     type?: AuctionType;
@@ -51,11 +53,14 @@ export default function AuctionForm({
 }: Props) {
   const toast = useActionToast();
 
+  const { leagueId } = useParams<{ leagueId: string }>();
+
   const form = useForm<AuctionSchema>({
     resolver: zodResolver(auctionSchema),
     defaultValues: auction.id
       ? auction
       : {
+          leagueId,
           type: isSplitLive ? "repair" : "classic",
           name: "",
           description: null,

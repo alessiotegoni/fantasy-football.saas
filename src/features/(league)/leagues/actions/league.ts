@@ -3,14 +3,11 @@
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { db } from "@/drizzle/db";
-import { count, ilike } from "drizzle-orm";
-import { leagues } from "@/drizzle/schema";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { createError, createSuccess } from "@/lib/helpers";
 import { insertLeague, updateLeague } from "../db/league";
 import { canCreateLeague } from "../permissions/league";
 import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
-import { insertleagueSettings } from "@/features/(league)/settings/db/setting";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { insertLeagueMember } from "../../members/db/leagueMember";
 import { createLeagueSchema, CreateLeagueSchema } from "../schema/createLeague";
@@ -19,6 +16,7 @@ import {
   LeagueProfileSchema,
 } from "../schema/leagueProfile";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
+import { insertLeagueSettings } from "../../settings/db/setting";
 
 enum LEAGUE_MESSAGES {
   ADMIN_REQUIRED = "Per aggiornare il profilo della lega devi essere admin",
@@ -88,7 +86,7 @@ async function executeLeagueCreation(
       { ownerId: context.user.id, ...context.league },
       tx
     );
-    await insertleagueSettings({ leagueId }, tx);
+    await insertLeagueSettings({ leagueId }, tx);
     return leagueId;
   });
 }

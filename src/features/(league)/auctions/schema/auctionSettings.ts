@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { initialCredits, playersPerRole } from "../../settings/schema/setting";
+import { getUUIdSchema } from "@/schema/helpers";
 
 const baseAuctionSchema = z.object({
+  leagueId: getUUIdSchema(),
   name: z
     .string({ message: "Nome obbligatorio" })
     .min(4, "Il nome deve avere almeno 4 caratteri")
@@ -40,3 +42,12 @@ export const auctionSchema = z.discriminatedUnion("type", [
 ]);
 
 export type AuctionSchema = z.infer<typeof auctionSchema>;
+
+export const createAuctionSchema = auctionSchema;
+export const updateAuctionSchema = z.discriminatedUnion("type", [
+  classicAuctionSchema.omit({ leagueId: true, initialCredits: true }),
+  repairAuctionSchema.omit({ creditsToAdd: true, leagueId: true }),
+]);
+
+export type CreateAuctionSchema = z.infer<typeof createAuctionSchema>;
+export type UpdateAuctionSchema = z.infer<typeof updateAuctionSchema>;
