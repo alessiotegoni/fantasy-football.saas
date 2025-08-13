@@ -40,7 +40,6 @@ export const bonusMalusSchema = z.object({
     z.string(),
     z
       .number()
-      .int()
       .min(-10, "Il valore minimo è -10")
       .max(10, "Il valore massimo è 10")
   ),

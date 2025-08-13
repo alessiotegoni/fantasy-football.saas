@@ -30,7 +30,7 @@ import { useEffect } from "react";
 import PlayersPerRoleField from "@/components/PlayersPerRoleField";
 import { useParams } from "next/navigation";
 import { createAuction, updateAuction } from "../actions/auction";
-import NumberInputField from "@/components/NumberInputField";
+import NumberInput from "@/components/ui/number-input";
 
 type Props = {
   auction: {
@@ -142,36 +142,47 @@ export default function AuctionForm({
             </AccordionTrigger>
             <AccordionContent className="space-y-3 sm:space-y-6">
               <div>
-                <h3 className="text-base font-medium font-sans mb-3">
-                  Tempo (secondi)
-                </h3>
-                <div className="grid xs:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="firstCallTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <NumberInputField {...field} min={10} max={60} />
-                        </FormControl>
-                        <FormDescription>Dalla prima chiamata</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="othersCallsTime"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <NumberInputField {...field} min={5} max={40} />
-                        </FormControl>
-                        <FormDescription>Dalle altre chiamate</FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <h3 className="text-base font-medium font-sans mb-3">
+                      Tempo dalla prima chiamata
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="firstCallTime"
+                      render={({ field }) => (
+                        <FormItem className="flex justify-center sm:w-fit">
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <NumberInput {...field} min={10} max={60} />
+                            </FormControl>
+                            secondi
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-medium font-sans mb-3">
+                      Tempo dalle altre chiamate
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="othersCallsTime"
+                      render={({ field }) => (
+                        <FormItem className="flex justify-center sm:w-fit">
+                          <div className="flex items-center gap-2">
+                            <FormControl>
+                              <NumberInput {...field} min={5} max={40} />
+                            </FormControl>
+                            secondi
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </div>
               </div>
               {auctionType === "classic" && playersRoles && (
