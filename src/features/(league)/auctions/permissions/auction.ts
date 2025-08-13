@@ -36,5 +36,5 @@ export async function canCreateAuction(data: CreateAuctionSchema) {
 }
 
 export async function canUpdateAuction(data: UpdateAuctionSchema) {
-
+  
 }
