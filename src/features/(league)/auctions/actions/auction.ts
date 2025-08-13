@@ -1,6 +1,7 @@
+"use server"
+
 import { validateSchema } from "@/schema/helpers";
 import {
-  auctionSchema,
   AuctionSchema,
   createAuctionSchema,
   CreateAuctionSchema,

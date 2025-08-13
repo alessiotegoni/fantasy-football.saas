@@ -13,11 +13,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useActionToast from "@/hooks/useActionToast";
-import {
-  auctionSchema,
-  AuctionSchema,
-  UpdateAuctionSchema,
-} from "../schema/auctionSettings";
+import { auctionSchema, AuctionSchema } from "../schema/auctionSettings";
 import { AuctionType, playerRoles, PlayersPerRole } from "@/drizzle/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -77,6 +73,8 @@ export default function AuctionForm({
   });
 
   const auctionType = form.watch("type");
+
+  console.log(form.watch());
 
   useEffect(() => {
     if (auctionType === "repair") form.setValue("creditsToAdd", 50);
@@ -153,7 +151,18 @@ export default function AuctionForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field} min={10} max={60} />
+                          <Input
+                            type="number"
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) =>
+                              field.onChange(
+                                !e.target.value ? "" : Number(e.target.value)
+                              )
+                            }
+                            min={10}
+                            max={60}
+                          />
                         </FormControl>
                         <FormDescription>Dalla prima chiamata</FormDescription>
                         <FormMessage />
@@ -166,7 +175,18 @@ export default function AuctionForm({
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field} min={5} max={40} />
+                          <Input
+                            type="number"
+                            {...field}
+                            value={field.value ?? ""}
+                            onChange={(e) =>
+                              field.onChange(
+                                !e.target.value ? "" : Number(e.target.value)
+                              )
+                            }
+                            min={5}
+                            max={40}
+                          />
                         </FormControl>
                         <FormDescription>Dalle altre chiamate</FormDescription>
                         <FormMessage />

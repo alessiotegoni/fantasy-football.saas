@@ -43,7 +43,7 @@ export const auctionSchema = z.discriminatedUnion("type", [
 
 export type AuctionSchema = z.infer<typeof auctionSchema>;
 
-export const createAuctionSchema = auctionSchema
+export const createAuctionSchema = auctionSchema;
 export const updateAuctionSchema = z.discriminatedUnion("type", [
   classicAuctionSchema
     .omit({ leagueId: true, initialCredits: true })
