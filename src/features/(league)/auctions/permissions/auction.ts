@@ -71,7 +71,7 @@ export async function canCreateAuction({
   return createSuccess("", {
     ...permissions.data,
     splitId: splits.at(-1)!.id,
-    teamsIds: leagueTeams.map(team => team.id)
+    teamsIds: leagueTeams.map((team) => team.id),
   });
 }
 

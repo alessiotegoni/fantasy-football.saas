@@ -11,7 +11,7 @@ import ActionButton from "@/components/ActionButton";
 import { authUsers } from "drizzle-orm/supabase";
 import { Suspense } from "react";
 import LeagueModules from "@/features/(league)/leagues/components/LeagueModules";
-import { getleagueSettingsTag } from "@/features/(league)/settings/db/cache/setting";
+import { getLeagueSettingsTag } from "@/features/(league)/settings/db/cache/setting";
 import LeaguePlayersPerRole from "@/features/(league)/leagues/components/LeaguePlayersPerRole";
 import { Trophy } from "iconoir-react";
 import Avatar from "@/components/Avatar";
@@ -154,7 +154,7 @@ async function getPublicLeague(leagueId: string) {
   cacheTag(
     getLeagueIdTag(leagueId),
     getLeagueMembersTag(leagueId),
-    getleagueSettingsTag(leagueId)
+    getLeagueSettingsTag(leagueId)
   );
 
   const [league] = await db

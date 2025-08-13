@@ -38,8 +38,9 @@ export async function createLeagueTeam(
   const leagueMemberId = await getMemberId(userId, leagueId);
   if (!leagueMemberId) return createError(TEAM_ERROR_MESSAGES.NOT_MEMBER);
 
-  if (await memberHasTeam(leagueMemberId))
+  if (await memberHasTeam(leagueMemberId)) {
     return createError(TEAM_ERROR_MESSAGES.TEAM_EXISTS);
+  }
 
   const teamId = await insertLeagueTeam(
     {
@@ -99,7 +100,7 @@ async function updateTeamImage(teamId: string, leagueId: string, file: File) {
   if (imageUrl) await updateLeagueTeamsDb([teamId], leagueId, { imageUrl });
 }
 
-function getTeamMemberId(teamId: string) {
+async function getTeamMemberId(teamId: string) {
   return db
     .select({ id: leagueMemberTeams.leagueMemberId })
     .from(leagueMemberTeams)
@@ -107,7 +108,7 @@ function getTeamMemberId(teamId: string) {
     .then((res) => res[0].id);
 }
 
-function getMemberId(userId: string, leagueId: string) {
+async function getMemberId(userId: string, leagueId: string) {
   return db
     .select({ id: leagueMembers.id })
     .from(leagueMembers)

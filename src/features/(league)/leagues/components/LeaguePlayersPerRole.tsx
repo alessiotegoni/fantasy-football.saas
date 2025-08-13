@@ -32,7 +32,7 @@ export default async function LeaguePlayersPerRole({
         >
           <PlayerRoleBadge role={role} className="size-8 mr-3" />
           <span className="capitalize text-sm font-medium">
-            {formatPlural(playersPerRole[role.id], roleNames[role.name], {
+            {formatPlural(playersPerRole[role.id] ?? 1, roleNames[role.name], {
               includeCount: true,
             })}
           </span>

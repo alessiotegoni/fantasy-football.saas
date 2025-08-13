@@ -2,14 +2,11 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -21,6 +18,7 @@ import FormFieldTooltip from "@/components/FormFieldTooltip";
 import { createLeagueTeam, updateLeagueTeams } from "../actions/leagueTeam";
 import { useRouter, useSearchParams } from "next/navigation";
 import useActionToast from "@/hooks/useActionToast";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 
 type Props = {
   leagueId: string;
@@ -95,9 +93,13 @@ export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
           />
         </FormFieldTooltip>
 
-        <SubmitButton loadingText={(teamId ? "Modifico" : "Creo") + " squadra"}>
-          {teamId ? "Modifica" : "Crea"} squadra
-        </SubmitButton>
+        <MobileButtonsContainer className="!w-full">
+          <SubmitButton
+            loadingText={(teamId ? "Modifico" : "Creo") + " squadra"}
+          >
+            {teamId ? "Modifica" : "Crea"} squadra
+          </SubmitButton>
+        </MobileButtonsContainer>
       </form>
     </Form>
   );
