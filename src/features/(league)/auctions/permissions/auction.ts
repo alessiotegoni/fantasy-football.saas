@@ -5,6 +5,7 @@ import { getLeagueAdmin, getLeaguePremium } from "../../leagues/queries/league";
 import {
   CreateAuctionSchema,
   UpdateAuctionSchema,
+  UpdateAuctionStatusSchema,
 } from "../schema/auctionSettings";
 import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
@@ -22,6 +23,8 @@ enum AUCTION_ERRORS {
   AUCTION_NOT_FOUND = "Asta non trovata",
   INVALID_AUCTION = "Asta non valida",
   PASSED_AUCTION = "Non puoi modificare aste degli split passati",
+  AUCTION_SPLIT_ENDED = "Non puoi modificare lo stato di un'asta di uno split concluso",
+  AUCTION_STATUS = "Stato dell'asta gia modificato",
 }
 
 export async function basePermissions(leagueId: string) {
@@ -113,4 +116,34 @@ export async function canUpdateAuction({ id, type }: UpdateAuctionSchema) {
   }
 
   return createSuccess("", { auction });
+}
+
+export async function canUpdateAuctionStatus({
+  id,
+  status,
+}: UpdateAuctionStatusSchema) {
+  const auction = await getAuction(id);
+  if (!auction) {
+    return createError(AUCTION_ERRORS.AUCTION_NOT_FOUND);
+  }
+
+  if (auction.status === status) {
+    return createError(AUCTION_ERRORS.AUCTION_STATUS);
+  }
+
+  const permissions = await basePermissions(auction.leagueId);
+  if (permissions.error) return permissions;
+
+  const splits = await getSplits();
+  const auctionSplit = splits.find((split) => split.id === auction.splitId);
+
+  if (!auctionSplit) {
+    return createError(AUCTION_ERRORS.INVALID_AUCTION);
+  }
+
+  if (auctionSplit.status === "ended") {
+    return createError(AUCTION_ERRORS.AUCTION_SPLIT_ENDED);
+  }
+
+  return createSuccess("", null);
 }

@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { initialCredits, playersPerRole } from "../../settings/schema/setting";
 import { getUUIdSchema } from "@/schema/helpers";
+import { auctionStatuses } from "@/drizzle/schema";
+
+const auctionIdSchema = z.object({ id: getUUIdSchema() });
 
 const baseAuctionSchema = z.object({
   leagueId: getUUIdSchema(),
@@ -47,11 +50,18 @@ export const createAuctionSchema = auctionSchema;
 export const updateAuctionSchema = z.discriminatedUnion("type", [
   classicAuctionSchema
     .omit({ leagueId: true, initialCredits: true })
-    .merge(z.object({ id: getUUIdSchema() })),
+    .merge(auctionIdSchema),
   repairAuctionSchema
     .omit({ leagueId: true, creditsToAdd: true })
-    .merge(z.object({ id: getUUIdSchema() })),
+    .merge(auctionIdSchema),
 ]);
+
+export const updateAuctionStatusSchema = z
+  .object({ status: z.enum(auctionStatuses) })
+  .merge(auctionIdSchema);
 
 export type CreateAuctionSchema = z.infer<typeof createAuctionSchema>;
 export type UpdateAuctionSchema = z.infer<typeof updateAuctionSchema>;
+export type UpdateAuctionStatusSchema = z.infer<
+  typeof updateAuctionStatusSchema
+>;

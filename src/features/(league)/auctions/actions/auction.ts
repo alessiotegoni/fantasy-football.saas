@@ -7,6 +7,8 @@ import {
   CreateAuctionSchema,
   updateAuctionSchema,
   UpdateAuctionSchema,
+  updateAuctionStatusSchema,
+  UpdateAuctionStatusSchema,
 } from "../schema/auctionSettings";
 import { canCreateAuction, canUpdateAuction } from "../permissions/auction";
 import { createSuccess } from "@/lib/helpers";
@@ -23,6 +25,7 @@ import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
+    AUCTION_NOT_FOUND = "Asta non trovata",
 }
 
 export async function createAuction(values: AuctionSchema) {
@@ -92,3 +95,6 @@ export async function updateAuction(auctionId: string, values: AuctionSchema) {
 
   return createSuccess(AUCTION_MESSAGES.AUCTION_UPDATED_SUCCESFULLY, null);
 }
+
+
+// TODO: add deleteAuction action & deleteAuction db function
