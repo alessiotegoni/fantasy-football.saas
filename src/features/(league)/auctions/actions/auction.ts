@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import { validateSchema } from "@/schema/helpers";
 import {
@@ -9,10 +9,11 @@ import {
   UpdateAuctionSchema,
 } from "../schema/auctionSettings";
 import { canCreateAuction, canUpdateAuction } from "../permissions/auction";
+import { createSuccess } from "@/lib/helpers";
 
 enum AUCTION_MESSAGES {
-  ADMIN_REQUIRED = "Per aggiornare il profilo della lega devi essere admin",
-  PROFILE_UPDATED = "Profilo aggiornato con successo",
+  AUCTION_CREATED_SUCCESFULLY = "Profilo aggiornato con successo",
+  AUCTION_UPDATED_SUCCESFULLY = "Profilo aggiornato con successo",
 }
 
 export async function createAuction(values: AuctionSchema) {
@@ -24,7 +25,12 @@ export async function createAuction(values: AuctionSchema) {
 
   console.log(data);
 
-  const permissions = await canCreateAuction();
+  const permissions = await canCreateAuction(data);
+  if (permissions.error) return permissions
+
+  
+
+  return createSuccess(AUCTION_MESSAGES.AUCTION_CREATED_SUCCESFULLY, null);
 }
 
 export async function updateAuction(id: string, values: AuctionSchema) {
@@ -36,5 +42,7 @@ export async function updateAuction(id: string, values: AuctionSchema) {
 
   console.log(data);
 
-  const permissions = await canUpdateAuction();
+  const permissions = await canUpdateAuction(data);
+
+  return createSuccess(AUCTION_MESSAGES.AUCTION_UPDATED_SUCCESFULLY, null);
 }

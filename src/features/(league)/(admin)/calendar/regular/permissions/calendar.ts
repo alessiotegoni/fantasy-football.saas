@@ -27,7 +27,7 @@ export async function canGenerateCalendar(userId: string, leagueId: string) {
     return createError(GENERATE_CALENDAR_MESSAGES.SPLIT_NOT_UNCOMING);
   }
 
-  if (leagueTeams.length < 3) {
+  if (leagueTeams.length < 4) {
     return createError(GENERATE_CALENDAR_MESSAGES.INVALID_TEAMS_LENGTH);
   }
 
