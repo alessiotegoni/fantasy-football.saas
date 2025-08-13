@@ -42,10 +42,8 @@ export const auctions = pgTable("auctions", {
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
   status: auctionStatusEnum("status").notNull().default("waiting"),
-  startedAt: timestamp("started_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  endedAt: timestamp("ended_at", { withTimezone: true }).notNull().defaultNow(),
+  startedAt: timestamp("started_at", { withTimezone: true }),
+  endedAt: timestamp("ended_at", { withTimezone: true }),
 });
 
 export const auctionsRelations = relations(auctions, ({ one, many }) => ({
