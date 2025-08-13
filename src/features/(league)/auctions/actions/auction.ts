@@ -10,7 +10,11 @@ import {
   updateAuctionStatusSchema,
   UpdateAuctionStatusSchema,
 } from "../schema/auctionSettings";
-import { canCreateAuction, canUpdateAuction } from "../permissions/auction";
+import {
+  canCreateAuction,
+  canUpdateAuction,
+  canUpdateAuctionStatus,
+} from "../permissions/auction";
 import { createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
 import { insertAuction, updateAuction as updateAuctionDB } from "../db/auction";
@@ -25,7 +29,7 @@ import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
-    AUCTION_NOT_FOUND = "Asta non trovata",
+  AUCTION_STATUS_UPDATED_SUCCESFULLY = "Stato dell'asta aggiornato con successo",
 }
 
 export async function createAuction(values: AuctionSchema) {
@@ -96,5 +100,24 @@ export async function updateAuction(auctionId: string, values: AuctionSchema) {
   return createSuccess(AUCTION_MESSAGES.AUCTION_UPDATED_SUCCESFULLY, null);
 }
 
+export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
+  const { isValid, data, error } = validateSchema<UpdateAuctionStatusSchema>(
+    updateAuctionStatusSchema,
+    values
+  );
+  if (!isValid) return error;
+
+  const permissions = await canUpdateAuctionStatus(data);
+  if (permissions.error) return permissions;
+
+  const { id, status } = data;
+
+  await updateAuctionDB(id, { status });
+
+  return createSuccess(
+    AUCTION_MESSAGES.AUCTION_STATUS_UPDATED_SUCCESFULLY,
+    null
+  );
+}
 
 // TODO: add deleteAuction action & deleteAuction db function
