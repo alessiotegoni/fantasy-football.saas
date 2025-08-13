@@ -15,7 +15,7 @@ import { getUserTeamId } from "@/features/users/queries/user";
 enum AUCTION_ERRORS {
   PREMIUM_NOT_UNLOCKED = "Per gestire le aste almeno un membro della lega deve avere il premium",
   ADMIN_REQUIRED = "Per gestire le aste devi essere admin della lega",
-  USER_TEAM_NOT_FOUND = "Prima di creare l'asta devi creare una squadra",
+  USER_TEAM_NOT_FOUND = "Prima gestore le aste devi prima creare una squadra",
   INVALID_TEAMS_LENGTH = "Per creare un'asta la lega deve avere almeno 4 squadre",
   AUCTION_TYPE = "Non puoi modificare il tipo dell'asta",
   CREATE_CLASSIC_AUCTION = "Puoi creare un'asta classica solamente quando lo split verra annunciato",
@@ -144,6 +144,18 @@ export async function canUpdateAuctionStatus({
   if (auctionSplit.status === "ended") {
     return createError(AUCTION_ERRORS.AUCTION_SPLIT_ENDED);
   }
+
+  return createSuccess("", null);
+}
+
+export async function canDeleteAuction(id: string) {
+  const auction = await getAuction(id);
+  if (!auction) {
+    return createError(AUCTION_ERRORS.AUCTION_NOT_FOUND);
+  }
+
+  const permissions = await basePermissions(auction.leagueId);
+  if (permissions.error) return permissions;
 
   return createSuccess("", null);
 }

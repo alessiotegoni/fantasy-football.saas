@@ -1,6 +1,6 @@
 "use server";
 
-import { validateSchema } from "@/schema/helpers";
+import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import {
   AuctionSchema,
   createAuctionSchema,
@@ -12,12 +12,17 @@ import {
 } from "../schema/auctionSettings";
 import {
   canCreateAuction,
+  canDeleteAuction,
   canUpdateAuction,
   canUpdateAuctionStatus,
 } from "../permissions/auction";
 import { createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
-import { insertAuction, updateAuction as updateAuctionDB } from "../db/auction";
+import {
+  insertAuction,
+  updateAuction as updateAuctionDB,
+  deleteAuction as deleteAuctionDB,
+} from "../db/auction";
 import {
   insertAuctionSettings,
   updateAuctionSettings,
@@ -30,6 +35,7 @@ import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
   AUCTION_STATUS_UPDATED_SUCCESFULLY = "Stato dell'asta aggiornato con successo",
+  AUCTION_DELETED_SUCCESFULLY = "Asta eliminata con successo",
 }
 
 export async function createAuction(values: AuctionSchema) {
@@ -111,7 +117,6 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
   if (permissions.error) return permissions;
 
   const { id, status } = data;
-
   await updateAuctionDB(id, { status });
 
   return createSuccess(
@@ -119,5 +124,3 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
     null
   );
 }
-
-// TODO: add deleteAuction action & deleteAuction db function
