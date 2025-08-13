@@ -75,8 +75,6 @@ export default function AuctionForm({
 
   const auctionType = form.watch("type");
 
-  console.log(form.watch());
-
   useEffect(() => {
     if (auctionType === "repair") form.setValue("creditsToAdd", 50);
   }, [auctionType]);

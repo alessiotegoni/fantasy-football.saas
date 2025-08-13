@@ -8,14 +8,18 @@ import {
 } from "../schema/auctionSettings";
 import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
+import { getAuction } from "../queries/auction";
 
 enum AUCTION_ERRORS {
   PREMIUM_NOT_UNLOCKED = "Per gestire le aste almeno un membro della lega deve avere il premium",
   ADMIN_REQUIRED = "Per gestire le aste devi essere admin della lega",
   INVALID_TEAMS_LENGTH = "Per creare un'asta la lega deve avere almeno 4 squadre",
+  AUCTION_TYPE = "Non puoi modificare il tipo dell'asta",
   CLASSIC_AUCTION = "Puoi creare un'asta classica solamente quando lo split verra annunciato",
   REPAIR_AUCTION = "Puoi creare un'asta di riparazione solamente dopo l'inizio dello split",
-  INVALID_PLAYERS = "Alcuni giocatori scelti nella formazione non fanno parte della tua squadra",
+  AUCTION_NOT_FOUND = "Asta non trovata",
+  INVALID_AUCTION = "Asta non valida",
+  PASSED_AUCTION = "Non puoi modificare aste degli split passati",
 }
 
 export async function basePermissions(leagueId: string) {
@@ -67,4 +71,35 @@ export async function canCreateAuction({
   return createSuccess("", null);
 }
 
-export async function canUpdateAuction(auction: UpdateAuctionSchema) {}
+export async function canUpdateAuction({ id, type }: UpdateAuctionSchema) {
+  const auction = await getAuction(id);
+  if (!auction) {
+    return createError(AUCTION_ERRORS.AUCTION_NOT_FOUND);
+  }
+
+  if (auction.type !== type) {
+    return createError(AUCTION_ERRORS.AUCTION_TYPE);
+  }
+
+  const permissions = await basePermissions(auction.leagueId);
+  if (permissions.error) return permissions;
+
+  const splits = await getSplits();
+  const auctionSplit = splits.find((split) => split.id === auction.splitId);
+
+  if (!auctionSplit) {
+    return createError(AUCTION_ERRORS.INVALID_AUCTION);
+  }
+
+  const isAuctionSplitLive = auctionSplit.status === "live";
+  const isAuctionSplitUpcoming = auctionSplit.status === "upcoming";
+
+  if (
+    (type === "classic" && !isAuctionSplitUpcoming) ||
+    (type === "repair" && !isAuctionSplitLive)
+  ) {
+    return createError(AUCTION_ERRORS.PASSED_AUCTION);
+  }
+
+  return createSuccess("", null);
+}
