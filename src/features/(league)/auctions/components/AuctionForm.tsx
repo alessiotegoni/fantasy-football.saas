@@ -13,7 +13,11 @@ import SubmitButton from "@/components/SubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useActionToast from "@/hooks/useActionToast";
-import { auctionSchema, AuctionSchema } from "../schema/auctionSettings";
+import {
+  auctionSchema,
+  AuctionSchema,
+  UpdateAuctionSchema,
+} from "../schema/auctionSettings";
 import { AuctionType, playerRoles, PlayersPerRole } from "@/drizzle/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,6 +33,7 @@ import FormSliderField from "@/components/FormFieldSlider";
 import { useEffect } from "react";
 import PlayersPerRoleField from "@/components/PlayersPerRoleField";
 import { useParams } from "next/navigation";
+import { createAuction, updateAuction } from "../actions/auction";
 
 type Props = {
   auction: {
@@ -77,7 +82,15 @@ export default function AuctionForm({
     if (auctionType === "repair") form.setValue("creditsToAdd", 50);
   }, [auctionType]);
 
-  async function onSubmit(data: AuctionSchema) {}
+  async function onSubmit(data: AuctionSchema) {
+    const action = auction.id
+      ? updateAuction.bind(null, auction.id)
+      : createAuction;
+
+    const result = await action(data);
+
+    toast(result);
+  }
 
   return (
     <Form {...form}>
