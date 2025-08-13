@@ -11,8 +11,11 @@ import {
 import { canCreateAuction, canUpdateAuction } from "../permissions/auction";
 import { createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
-import { insertAuction } from "../db/auctions";
-import { insertAuctionSettings } from "../db/auctionSettings";
+import { insertAuction, updateAuction as updateAuctionDB } from "../db/auction";
+import {
+  insertAuctionSettings,
+  updateAuctionSettings,
+} from "../db/auctionSettings";
 import { redirect } from "next/navigation";
 import { updateLeagueSettings } from "../../settings/db/setting";
 import { getLeagueVisibility } from "../../leagues/queries/league";
@@ -58,14 +61,34 @@ export async function createAuction(values: AuctionSchema) {
   redirect(`/leagues/${data.leagueId}/premium/auctions`);
 }
 
-export async function updateAuction(id: string, values: AuctionSchema) {
+export async function updateAuction(auctionId: string, values: AuctionSchema) {
   const { isValid, data, error } = validateSchema<UpdateAuctionSchema>(
     updateAuctionSchema,
-    { id, ...values }
+    { auctionId, ...values }
   );
   if (!isValid) return error;
 
   const permissions = await canUpdateAuction(data);
+  if (permissions.error) return permissions;
+
+  const {
+    auction: { leagueId },
+  } = permissions.data;
+  const { id, type, ...updatedAuction } = data;
+
+  await db.transaction(async (tx) => {
+    await updateAuctionDB(id, updatedAuction, tx);
+    await updateAuctionSettings(id, updatedAuction, tx);
+
+    if (type === "classic") {
+      const visibility = await getLeagueVisibility(leagueId);
+      await updateLeagueSettings(
+        { playersPerRole: data.playersPerRole, leagueId },
+        visibility,
+        tx
+      );
+    }
+  });
 
   return createSuccess(AUCTION_MESSAGES.AUCTION_UPDATED_SUCCESFULLY, null);
 }

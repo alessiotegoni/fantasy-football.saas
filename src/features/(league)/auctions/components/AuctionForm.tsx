@@ -186,14 +186,16 @@ export default function AuctionForm({
               {auctionType === "classic" && playersRoles && (
                 <div className="space-y-3 sm:space-y-6">
                   <PlayersPerRoleField playersRoles={playersRoles} />
-                  <FormSliderField<{ initialCredits: number }>
-                    name="initialCredits"
-                    label="Crediti iniziali per squadra"
-                    min={200}
-                    max={5000}
-                    step={50}
-                    unit="crediti"
-                  />
+                  {!auction.id && (
+                    <FormSliderField<{ initialCredits: number }>
+                      name="initialCredits"
+                      label="Crediti iniziali per squadra"
+                      min={200}
+                      max={5000}
+                      step={50}
+                      unit="crediti"
+                    />
+                  )}
                 </div>
               )}
               {auctionType === "repair" && (

@@ -31,9 +31,10 @@ export async function insertAuctionSettings(
 
 export async function updateAuctionSettings(
   auctionId: string,
-  settings: Partial<typeof auctionSettings.$inferInsert>
+  settings: Partial<typeof auctionSettings.$inferInsert>,
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [result] = await db
+  const [result] = await tx
     .update(auctionSettings)
     .set(settings)
     .where(eq(auctionSettings.auctionId, auctionId))

@@ -27,7 +27,7 @@ export async function getUserTeamId(userId: string, leagueId: string) {
       leagueMembers,
       eq(leagueMembers.id, leagueMemberTeams.leagueMemberId)
     )
-    .innerJoin(authUsers, eq(authUsers.id, leagueMembers.userId))
+    .leftJoin(authUsers, eq(authUsers.id, leagueMembers.userId))
     .where(
       and(eq(leagueMemberTeams.leagueId, leagueId), eq(authUsers.id, userId))
     );

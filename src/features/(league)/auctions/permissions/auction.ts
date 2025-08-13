@@ -112,5 +112,5 @@ export async function canUpdateAuction({ id, type }: UpdateAuctionSchema) {
     return createError(AUCTION_ERRORS.PASSED_AUCTION);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", { auction });
 }
