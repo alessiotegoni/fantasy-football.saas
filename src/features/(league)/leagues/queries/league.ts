@@ -13,6 +13,8 @@ import {
 import { db } from "@/drizzle/db";
 import { getMemberIdTag } from "../../members/db/cache/leagueMember";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
+import { leagues } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 export async function getLeaguePremium(leagueId: string) {
   "use cache";
@@ -72,4 +74,13 @@ export async function getLeagueModules(leagueId: string) {
       where: (settings, { eq }) => eq(settings.leagueId, leagueId),
     })
     .then((res) => res!.tacticalModules);
+}
+
+export async function getLeagueVisibility(leagueId: string) {
+  const [league] = await db
+    .select({ visibility: leagues.visibility })
+    .from(leagues)
+    .where(eq(leagues.id, leagueId));
+
+  return league.visibility;
 }

@@ -10,6 +10,12 @@ import {
 } from "../schema/auctionSettings";
 import { canCreateAuction, canUpdateAuction } from "../permissions/auction";
 import { createSuccess } from "@/lib/helpers";
+import { db } from "@/drizzle/db";
+import { insertAuction } from "../db/auctions";
+import { insertAuctionSettings } from "../db/auctionSettings";
+import { redirect } from "next/navigation";
+import { updateLeagueSettings } from "../../settings/db/setting";
+import { getLeagueVisibility } from "../../leagues/queries/league";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
@@ -22,13 +28,25 @@ export async function createAuction(values: AuctionSchema) {
   );
   if (!isValid) return error;
 
-  console.log(data);
-
   const permissions = await canCreateAuction(data);
-  if (permissions.error) return permissions
+  if (permissions.error) return permissions;
 
+  const { userId, splitId } = permissions.data;
 
+  await db.transaction(async (tx) => {
+    const auctionId = await insertAuction(
+      { ...data, createdBy: userId, splitId },
+      tx
+    );
+    await insertAuctionSettings({ auctionId, ...data }, tx);
 
+    if (data.type === "classic") {
+      const visibility = await getLeagueVisibility(data.leagueId);
+      await updateLeagueSettings(data, visibility, tx);
+    }
+  });
+
+  redirect(`/leagues/${data.leagueId}/premium/auctions`);
 }
 
 export async function updateAuction(id: string, values: AuctionSchema) {

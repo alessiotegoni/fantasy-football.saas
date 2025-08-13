@@ -14,12 +14,12 @@ import {
   rosterModulesSchema,
   RosterModulesSchema,
 } from "../schema/setting";
-import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/lib/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 import { revalidateLeagueRosterSettingsCache } from "../db/cache/setting";
+import { getLeagueVisibility } from "../../leagues/queries/league";
 
 enum LEAGUE_SETTINGS_MESSAGES {
   REQUIRE_ADMIN = "Devi essere admin della lega per modificare le opzioni",
@@ -103,22 +103,9 @@ async function updateSettings(settings: typeof leagueSettings.$inferInsert) {
   }
 
   const visibility = await getLeagueVisibility(settings.leagueId);
-  if (!visibility)
-    return createError(LEAGUE_SETTINGS_MESSAGES.LEAGUE_NOT_FOUND);
 
   const leagueId = await updateleagueSettingsDb(settings, visibility);
   if (!leagueId) return createError(LEAGUE_SETTINGS_MESSAGES.LEAGUE_NOT_FOUND);
 
   return createSuccess("Opzioni aggiornate con successo", null);
-}
-
-async function getLeagueVisibility(leagueId: string) {
-  return db.query.leagues
-    .findFirst({
-      columns: {
-        visibility: true,
-      },
-      where: (league, { eq }) => eq(league.id, leagueId),
-    })
-    .then((league) => league?.visibility);
 }

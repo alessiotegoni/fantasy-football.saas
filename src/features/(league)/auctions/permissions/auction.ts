@@ -15,7 +15,7 @@ enum AUCTION_ERRORS {
   ADMIN_REQUIRED = "Per gestire le aste devi essere admin della lega",
   INVALID_TEAMS_LENGTH = "Per creare un'asta la lega deve avere almeno 4 squadre",
   AUCTION_TYPE = "Non puoi modificare il tipo dell'asta",
-  CLASSIC_AUCTION = "Puoi creare un'asta classica solamente quando lo split verra annunciato",
+  CREATE_CLASSIC_AUCTION = "Puoi creare un'asta classica solamente quando lo split verra annunciato",
   REPAIR_AUCTION = "Puoi creare un'asta di riparazione solamente dopo l'inizio dello split",
   AUCTION_NOT_FOUND = "Asta non trovata",
   INVALID_AUCTION = "Asta non valida",
@@ -39,7 +39,7 @@ export async function basePermissions(leagueId: string) {
     return createError(AUCTION_ERRORS.ADMIN_REQUIRED);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", { userId });
 }
 
 export async function canCreateAuction({
@@ -62,13 +62,13 @@ export async function canCreateAuction({
   const hasUpcomingSplit = splits.some((split) => split.status === "upcoming");
 
   if (type === "classic" && !hasUpcomingSplit) {
-    return createError(AUCTION_ERRORS.CLASSIC_AUCTION);
+    return createError(AUCTION_ERRORS.CREATE_CLASSIC_AUCTION);
   }
   if (type === "repair" && !hasLiveSplit) {
     return createError(AUCTION_ERRORS.REPAIR_AUCTION);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", { ...permissions.data, splitId: splits.at(-1)!.id });
 }
 
 export async function canUpdateAuction({ id, type }: UpdateAuctionSchema) {
