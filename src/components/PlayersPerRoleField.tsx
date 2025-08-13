@@ -39,6 +39,7 @@ export default function PlayersPerRoleField({
                       value={field.value}
                       onChange={field.onChange}
                       min={1}
+                      containerClassName="w-fit"
                     />
                   </FormControl>
                   <FormMessage />
