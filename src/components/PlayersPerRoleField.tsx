@@ -25,14 +25,14 @@ export default function PlayersPerRoleField({
         label="Giocatori per ruolo"
         tip="Numero di giocatori che ogni squadra può avere per ruolo"
       >
-        <div className="grid grid-cols-2 sm:flex flex-wrap gap-7">
+        <div className="flex flex-wrap gap-7 sm:gap-0">
           {playersRoles.map((role) => (
             <FormField
               key={role.id}
               control={form.control}
               name={`playersPerRole.${role.id}`}
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="basis-1/4">
                   <FormLabel className="text-sm">{role.name}</FormLabel>
                   <FormControl>
                     <NumberInput
