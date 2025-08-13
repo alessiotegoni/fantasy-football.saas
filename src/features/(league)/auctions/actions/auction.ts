@@ -124,3 +124,19 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
     null
   );
 }
+
+export async function deleteAuction(auctionId: string) {
+  const {
+    isValid,
+    data: id,
+    error,
+  } = validateSchema<string>(getUUIdSchema(), auctionId);
+  if (!isValid) return error;
+
+  const permissions = await canDeleteAuction(id);
+  if (permissions.error) return permissions;
+
+  await deleteAuctionDB(id);
+
+  return createSuccess(AUCTION_MESSAGES.AUCTION_DELETED_SUCCESFULLY, null);
+}
