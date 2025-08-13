@@ -32,11 +32,11 @@ export async function createAuction(values: AuctionSchema) {
   const permissions = await canCreateAuction(data);
   if (permissions.error) return permissions;
 
-  const { userId, splitId, teamsIds } = permissions.data;
+  const { userTeamId, splitId, teamsIds } = permissions.data;
 
   await db.transaction(async (tx) => {
     const auctionId = await insertAuction(
-      { ...data, createdBy: userId, splitId },
+      { ...data, createdBy: userTeamId, splitId },
       tx
     );
     await insertAuctionSettings({ auctionId, ...data }, tx);

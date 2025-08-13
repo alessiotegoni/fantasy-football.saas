@@ -9,10 +9,12 @@ import {
 import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 import { getAuction } from "../queries/auction";
+import { getUserTeamId } from "@/features/users/queries/user";
 
 enum AUCTION_ERRORS {
   PREMIUM_NOT_UNLOCKED = "Per gestire le aste almeno un membro della lega deve avere il premium",
   ADMIN_REQUIRED = "Per gestire le aste devi essere admin della lega",
+  USER_TEAM_NOT_FOUND = "Prima di creare l'asta devi creare una squadra",
   INVALID_TEAMS_LENGTH = "Per creare un'asta la lega deve avere almeno 4 squadre",
   AUCTION_TYPE = "Non puoi modificare il tipo dell'asta",
   CREATE_CLASSIC_AUCTION = "Puoi creare un'asta classica solamente quando lo split verra annunciato",
@@ -26,9 +28,10 @@ export async function basePermissions(leagueId: string) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const [isPremiumUnlocked, isLeagueAdmin] = await Promise.all([
+  const [isPremiumUnlocked, isLeagueAdmin, userTeamId] = await Promise.all([
     getLeaguePremium(leagueId),
     getLeagueAdmin(userId, leagueId),
+    getUserTeamId(userId, leagueId),
   ]);
 
   if (!isPremiumUnlocked) {
@@ -39,7 +42,11 @@ export async function basePermissions(leagueId: string) {
     return createError(AUCTION_ERRORS.ADMIN_REQUIRED);
   }
 
-  return createSuccess("", { userId });
+  if (!userTeamId) {
+    return createError(AUCTION_ERRORS.USER_TEAM_NOT_FOUND);
+  }
+
+  return createSuccess("", { userTeamId });
 }
 
 export async function canCreateAuction({
