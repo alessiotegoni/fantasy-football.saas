@@ -3,12 +3,16 @@ import { z } from "zod";
 
 const credits = z
   .number()
+  .int()
   .positive("I crediti devono essere un numero positivo")
   .max(5000, "I crediti non devono superare il numero 5.000");
 
-export const resetCreditsSchema = z.object({
-  leagueId: getUUIdSchema("Id della lega invalido"),
-  credits,
+export const addCreditsSchema = z.object({
+  leagueId: getUUIdSchema(),
+  creditsToAdd: z
+    .number()
+    .int()
+    .positive("I crediti devono essere un numero positivo"),
 });
 
 export const setCreditsSchema = z.object({
@@ -18,5 +22,11 @@ export const setCreditsSchema = z.object({
   ),
 });
 
-export type ResetCreditsSchema = z.infer<typeof resetCreditsSchema>;
+export const resetCreditsSchema = z.object({
+  leagueId: getUUIdSchema("Id della lega invalido"),
+  credits,
+});
+
+export type AddCreditsSchema = z.infer<typeof addCreditsSchema>;
 export type SetCreditsSchema = z.infer<typeof setCreditsSchema>;
+export type ResetCreditsSchema = z.infer<typeof resetCreditsSchema>;

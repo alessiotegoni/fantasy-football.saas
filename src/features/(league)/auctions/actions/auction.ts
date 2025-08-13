@@ -31,6 +31,7 @@ import { redirect } from "next/navigation";
 import { updateLeagueSettings } from "../../settings/db/setting";
 import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
+import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
@@ -61,13 +62,20 @@ export async function createAuction(values: AuctionSchema) {
       const visibility = await getLeagueVisibility(data.leagueId);
       await updateLeagueSettings(data, visibility, tx);
 
-      await updateLeagueTeams(teamsIds, data.leagueId, {
-        credits: data.initialCredits,
-      });
+      await updateLeagueTeams(
+        teamsIds,
+        data.leagueId,
+        {
+          credits: data.initialCredits,
+        },
+        tx
+      );
     }
 
-    if (data.type === "repair") {
-      // TODO: scegliere come aggiungere i crediti (creditsToAdd) a tutti i team
+    if (data.type === "repair" && data.creditsToAdd) {
+      await addTeamsCredits(teamsIds, data.leagueId, data.creditsToAdd, tx);
+      // FIXME: da gestire il caso in cui la somma dei crediti da aggiungere e
+      // quelli gia presenti nel team superasse gli initialCredits della lega
     }
   });
 

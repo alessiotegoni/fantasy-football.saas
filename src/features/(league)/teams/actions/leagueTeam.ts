@@ -3,7 +3,7 @@
 import { db } from "@/drizzle/db";
 import {
   insertLeagueTeam,
-  updateLeagueTeams as updateLeagueTeamsDb,
+  updateLeagueTeams as updateLeagueTeamsDB,
 } from "../db/leagueTeam";
 import { leagueTeamSchema, LeagueTeamSchema } from "../schema/leagueTeam";
 import { leagueMembers, leagueMemberTeams } from "@/drizzle/schema";
@@ -81,7 +81,7 @@ export async function updateLeagueTeams(
     return createError(TEAM_ERROR_MESSAGES.NOT_TEAM_OWNER);
   }
 
-  await updateLeagueTeamsDb([teamId], leagueId, data);
+  await updateLeagueTeamsDB([teamId], leagueId, data);
 
   if (data.image) {
     after(updateTeamImage.bind(null, teamId, leagueId, data.image));
@@ -97,7 +97,7 @@ async function updateTeamImage(teamId: string, leagueId: string, file: File) {
     name: teamId,
   });
 
-  if (imageUrl) await updateLeagueTeamsDb([teamId], leagueId, { imageUrl });
+  if (imageUrl) await updateLeagueTeamsDB([teamId], leagueId, { imageUrl });
 }
 
 async function getTeamMemberId(teamId: string) {
