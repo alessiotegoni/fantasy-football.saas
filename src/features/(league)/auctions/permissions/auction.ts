@@ -68,7 +68,11 @@ export async function canCreateAuction({
     return createError(AUCTION_ERRORS.REPAIR_AUCTION);
   }
 
-  return createSuccess("", { ...permissions.data, splitId: splits.at(-1)!.id });
+  return createSuccess("", {
+    ...permissions.data,
+    splitId: splits.at(-1)!.id,
+    teamsIds: leagueTeams.map(team => team.id)
+  });
 }
 
 export async function canUpdateAuction({ id, type }: UpdateAuctionSchema) {

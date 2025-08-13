@@ -18,7 +18,7 @@ import ImageField from "@/components/ImageField";
 import NameField from "@/components/NameField";
 import SubmitButton from "@/components/SubmitButton";
 import FormFieldTooltip from "@/components/FormFieldTooltip";
-import { createLeagueTeam, updateLeagueTeam } from "../actions/leagueTeam";
+import { createLeagueTeam, updateLeagueTeams } from "../actions/leagueTeam";
 import { useRouter, useSearchParams } from "next/navigation";
 import useActionToast from "@/hooks/useActionToast";
 
@@ -50,7 +50,7 @@ export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
 
   async function onSubmit(data: LeagueTeamSchema) {
     const action = teamId
-      ? updateLeagueTeam.bind(null, teamId)
+      ? updateLeagueTeams.bind(null, teamId)
       : createLeagueTeam;
 
     const res = await action(leagueId, data);

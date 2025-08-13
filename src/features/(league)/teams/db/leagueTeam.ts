@@ -31,7 +31,7 @@ export async function insertLeagueTeam(
   return res.teamId;
 }
 
-export async function updateLeagueTeam(
+export async function updateLeagueTeams(
   teamsIds: string[],
   leagueId: string,
   team: Partial<

@@ -3,7 +3,7 @@
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
 import { insertTeamPlayers, deleteTeamPlayers } from "../db/teamsPlayer";
-import { updateLeagueTeam } from "../../teams/db/leagueTeam";
+import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {
   insertTeamPlayerSchema,
   InsertTeamPlayerSchema,
@@ -48,7 +48,7 @@ export async function addTeamPlayer(values: InsertTeamPlayerSchema) {
   await db.transaction(async (tx) => {
     await Promise.all([
       insertTeamPlayers(leagueId, [{ playerId: player.id, ...restData }], tx),
-      updateLeagueTeam([data.memberTeamId], leagueId, { credits }, tx),
+      updateLeagueTeams([data.memberTeamId], leagueId, { credits }, tx),
     ]);
   });
 
@@ -79,7 +79,7 @@ export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
         },
         tx
       ),
-      updateLeagueTeam([data.memberTeamId], data.leagueId, { credits }, tx),
+      updateLeagueTeams([data.memberTeamId], data.leagueId, { credits }, tx),
     ]);
   });
 

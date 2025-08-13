@@ -9,7 +9,7 @@ import {
 } from "../schema/handle-credits";
 import { canUpdateCredits } from "../permissions/handle-credits";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
-import { updateLeagueTeam } from "@/features/(league)/teams/db/leagueTeam";
+import { updateLeagueTeams } from "@/features/(league)/teams/db/leagueTeam";
 import { createSuccess } from "@/lib/helpers";
 
 enum HANDLE_CREDITS_MESSAGES {
@@ -30,7 +30,7 @@ export async function resetCredits(values: ResetCreditsSchema) {
   const leagueTeams = await getLeagueTeams(data.leagueId);
   const leagueTeamsIds = leagueTeams.map((team) => team.id);
 
-  await updateLeagueTeam(leagueTeamsIds, data.leagueId, {
+  await updateLeagueTeams(leagueTeamsIds, data.leagueId, {
     credits: data.credits,
   });
 
@@ -49,7 +49,7 @@ export async function setTeamsCredits(values: SetCreditsSchema) {
 
   const updateCreditsPromise = data.updatedTeamsCredits.map(
     ({ teamId, credits }) =>
-      updateLeagueTeam([teamId], data.leagueId, { credits })
+      updateLeagueTeams([teamId], data.leagueId, { credits })
   );
 
   await Promise.all(updateCreditsPromise);

@@ -16,6 +16,7 @@ import { insertAuctionSettings } from "../db/auctionSettings";
 import { redirect } from "next/navigation";
 import { updateLeagueSettings } from "../../settings/db/setting";
 import { getLeagueVisibility } from "../../leagues/queries/league";
+import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
@@ -31,7 +32,7 @@ export async function createAuction(values: AuctionSchema) {
   const permissions = await canCreateAuction(data);
   if (permissions.error) return permissions;
 
-  const { userId, splitId } = permissions.data;
+  const { userId, splitId, teamsIds } = permissions.data;
 
   await db.transaction(async (tx) => {
     const auctionId = await insertAuction(
@@ -43,6 +44,14 @@ export async function createAuction(values: AuctionSchema) {
     if (data.type === "classic") {
       const visibility = await getLeagueVisibility(data.leagueId);
       await updateLeagueSettings(data, visibility, tx);
+
+      await updateLeagueTeams(teamsIds, data.leagueId, {
+        credits: data.initialCredits,
+      });
+    }
+
+    if (data.type === "repair") {
+      // TODO: scegliere come aggiungere i crediti (creditsToAdd) a tutti i team
     }
   });
 

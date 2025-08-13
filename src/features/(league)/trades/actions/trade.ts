@@ -25,7 +25,7 @@ import {
   getInvalidPlayersIds,
 } from "../permissions/trade";
 import { getTrade, type Trade } from "../queries/trade";
-import { updateLeagueTeam } from "../../teams/db/leagueTeam";
+import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {
   deleteTeamPlayers,
   insertTeamPlayers,
@@ -296,13 +296,13 @@ async function updateTeamCredits(
   }
 
   await Promise.all([
-    updateLeagueTeam(
+    updateLeagueTeams(
       [trade.proposerTeamId],
       trade.leagueId,
       { credits: proposerCredits },
       tx
     ),
-    updateLeagueTeam(
+    updateLeagueTeams(
       [trade.receiverTeamId],
       trade.leagueId,
       { credits: receiverCredits },

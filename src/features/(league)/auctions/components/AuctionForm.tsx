@@ -149,7 +149,7 @@ export default function AuctionForm({
                       control={form.control}
                       name="firstCallTime"
                       render={({ field }) => (
-                        <FormItem className="flex justify-center sm:w-fit">
+                        <FormItem className="sm:w-fit">
                           <div className="flex items-center gap-2">
                             <FormControl>
                               <NumberInput {...field} min={10} max={60} />
@@ -169,7 +169,7 @@ export default function AuctionForm({
                       control={form.control}
                       name="othersCallsTime"
                       render={({ field }) => (
-                        <FormItem className="flex justify-center sm:w-fit">
+                        <FormItem className="sm:w-fit">
                           <div className="flex items-center gap-2">
                             <FormControl>
                               <NumberInput {...field} min={5} max={40} />
