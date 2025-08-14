@@ -36,9 +36,7 @@ export default async function LeagueCalendarPage({
       headerLabel="Calendario"
       leagueId={leagueId}
       renderHeaderRight={() => (
-        <Suspense>
-          <SplitSelect splits={splits} defaultSplit={lastSplit} />
-        </Suspense>
+        <SplitSelect splits={splits} defaultSplit={lastSplit} />
       )}
     >
       <Suspense>
