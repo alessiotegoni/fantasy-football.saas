@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useOptimistic } from "react";
+import { useOptimistic } from "react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,11 +14,12 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { ChevronDown, MoreVertical, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { AuctionWithCreator } from "../queries/auction";
+import type { AuctionWithCreator } from "../queries/auction";
+import ActionButton from "@/components/ActionButton";
+import { AuctionStatus } from "@/drizzle/schema";
 
 type Props = {
   auction: AuctionWithCreator;
@@ -32,117 +34,105 @@ export default function AuctionCard({
   isLeagueAdmin,
   canChangeStatus,
 }: Props) {
-  const [showStatusSelect, setShowStatusSelect] = useState(false);
-  const statusInfo = statusConfig[auction.status];
+  const [optimisticStatus, updateOptimisticStatus] = useOptimistic(
+    auction.status
+  );
+
+  const statusInfo = statusConfig[optimisticStatus];
 
   return (
-    <div className="bg-card border border-border rounded-lg p-4 space-y-3">
+    <div className="bg-input/30 border border-border rounded-4xl p-5 min-h-40 flex flex-col justify-between">
       {/* Header with name and status */}
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="font-medium text-card-foreground flex-1 min-w-0">
-          {auction.name}
-        </h3>
+      <div>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-medium text-card-foreground flex-1 min-w-0">
+            {auction.name}
+          </h3>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {/* Status badge */}
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2 px-2 py-1 rounded-full bg-muted">
-              <div className={`w-2 h-2 rounded-full ${statusInfo.color}`} />
-              <span className="text-xs font-medium text-muted-foreground">
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {/* Status badge */}
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="gap-2">
+                <div className={`size-2 rounded-full ${statusInfo.color}`} />
                 {statusInfo.label}
-              </span>
+              </Badge>
+
+              {isLeagueAdmin && canChangeStatus && (
+                <Select
+                  value={optimisticStatus}
+                  onValueChange={(newStatus) =>
+                    updateOptimisticStatus(newStatus as AuctionStatus)
+                  }
+                >
+                  <SelectTrigger
+                    className="h-8 w-8 p-0 cursor-pointer !bg-transparent border-0
+                    hover:!bg-primary transition-colors justify-center"
+                    showChevron={false}
+                  >
+                    <ChevronDown className="size-5" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(statusConfig)
+                      .filter(([status]) => status !== "waiting")
+                      .map(([status, config]) => (
+                        <SelectItem key={status} value={status}>
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`size-2 rounded-full ${config.color}`}
+                            />
+                            {config.label}
+                          </div>
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
-            {/* Status change chevron */}
-            {canChangeStatus && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-                onClick={() => setShowStatusSelect(!showStatusSelect)}
-              >
-                <ChevronDown className="h-3 w-3" />
-              </Button>
+            {isLeagueAdmin && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="size-8 p-0 rounded-full">
+                    <MoreVertical className="size-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center" className="space-y-1">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/leagues/${leagueId}/premium/auctions/${auction.id}/edit`}
+                    >
+                      <Edit />
+                      Modifica asta
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <ActionButton variant="destructive" action={() => ""}>
+                      <Trash2 className="text-white" />
+                      Elimina asta
+                    </ActionButton>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
-
-          {/* Admin dropdown */}
-          {isLeagueAdmin && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                  <MoreVertical className="h-3 w-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link
-                    href={`/leagues/${leagueId}/premium/auctions/${auction.id}/edit`}
-                  >
-                    <Edit className="h-4 w-4 mr-2" />
-                    Modifica asta
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Elimina asta
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+        </div>
+        <div className="text-sm text-muted-foreground mt-1.5">
+          Creata da{" "}
+          <span className="font-medium">{auction.creator.managerName}</span>
         </div>
       </div>
 
-      {/* Status select dropdown */}
-      {showStatusSelect && canChangeStatus && (
-        <div className="pt-2 border-t border-border">
-          <Select
-            value={auction.status}
-            onValueChange={(value) => {
-              //   onStatusChange(auction.id, value);
-              setShowStatusSelect(false);
-            }}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(statusConfig)
-                .filter(([status]) => status !== "waiting")
-                .map(([status, config]) => (
-                  <SelectItem key={status} value={status}>
-                    <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${config.color}`} />
-                      {config.label}
-                    </div>
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-
-      {/* Creator info */}
-      <div className="text-sm text-muted-foreground">
-        Creata da{" "}
-        <span className="font-medium">{auction.creator.managerName}</span>
-      </div>
-
-      {/* Description */}
       {auction.description && (
         <p className="text-sm text-muted-foreground leading-relaxed">
           {auction.description}
         </p>
       )}
 
-      {/* Participate button */}
-      <div className="pt-2">
-        <Button asChild className="w-full sm:w-auto">
-          <Link href={`/leagues/${leagueId}/auctions/${auction.id}`}>
-            Partecipa
-          </Link>
-        </Button>
-      </div>
+      <Button asChild className="self-end sm:w-fit">
+        <Link href={`/leagues/${leagueId}/auctions/${auction.id}`}>
+          Partecipa
+        </Link>
+      </Button>
     </div>
   );
 }
