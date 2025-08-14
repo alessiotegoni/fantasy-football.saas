@@ -16,7 +16,7 @@ import {
   canUpdateAuction,
   canUpdateAuctionStatus,
 } from "../permissions/auction";
-import { createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
 import {
   insertAuction,
@@ -32,11 +32,14 @@ import { updateLeagueSettings } from "../../settings/db/setting";
 import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
+import { getGeneralSettings } from "../../settings/queries/setting";
+import { checkCreditsOverflow } from "../../(admin)/handle-credits/permissions/handle-credits";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
   AUCTION_STATUS_UPDATED_SUCCESFULLY = "Stato dell'asta aggiornato con successo",
   AUCTION_DELETED_SUCCESFULLY = "Asta eliminata con successo",
+  CREDITS_OVERFLOW = "L'aggiunta di crediti farebbe superare i crediti iniziali.",
 }
 
 export async function createAuction(values: AuctionSchema) {
@@ -49,7 +52,7 @@ export async function createAuction(values: AuctionSchema) {
   const permissions = await canCreateAuction(data);
   if (permissions.error) return permissions;
 
-  const { userTeamId, splitId, teamsIds } = permissions.data;
+  const { userTeamId, splitId, leagueTeams } = permissions.data;
 
   await db.transaction(async (tx) => {
     const auctionId = await insertAuction(
@@ -57,6 +60,8 @@ export async function createAuction(values: AuctionSchema) {
       tx
     );
     await insertAuctionSettings({ auctionId, ...data }, tx);
+
+    const teamsIds = leagueTeams.map((team) => team.id);
 
     if (data.type === "classic") {
       const visibility = await getLeagueVisibility(data.leagueId);
@@ -73,9 +78,13 @@ export async function createAuction(values: AuctionSchema) {
     }
 
     if (data.type === "repair" && data.creditsToAdd) {
+      const { initialCredits } = await getGeneralSettings(data.leagueId);
+      if (
+        checkCreditsOverflow(leagueTeams, data.creditsToAdd, initialCredits)
+      ) {
+        return createError(AUCTION_MESSAGES.CREDITS_OVERFLOW);
+      }
       await addTeamsCredits(teamsIds, data.leagueId, data.creditsToAdd, tx);
-      // FIXME: da gestire il caso in cui la somma dei crediti da aggiungere e
-      // quelli gia presenti nel team superasse gli initialCredits della lega
     }
   });
 
