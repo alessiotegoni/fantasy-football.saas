@@ -22,6 +22,7 @@ type Props = {
   params: Promise<{ leagueId: string }>;
   searchParams: Promise<{ splitId?: string }>;
 };
+
 export default async function LeagueCalendarPage({
   params,
   searchParams,
