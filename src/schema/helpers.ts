@@ -12,7 +12,7 @@ export function validateSchema<T>(
   values: unknown,
   errorMessage = VALIDATION_ERROR
 ): ValidateSchema<T> {
-  const { success, data } = schema.safeParse(values);
+  const { success, data, error } = schema.safeParse(values);
 
   if (!success) {
     return { isValid: false, error: createError(errorMessage) };

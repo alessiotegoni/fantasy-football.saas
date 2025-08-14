@@ -94,9 +94,11 @@ export async function createAuction(values: AuctionSchema) {
 export async function updateAuction(auctionId: string, values: AuctionSchema) {
   const { isValid, data, error } = validateSchema<UpdateAuctionSchema>(
     updateAuctionSchema,
-    { auctionId, ...values }
+    { id: auctionId, ...values }
   );
   if (!isValid) return error;
+
+  console.log(data);
 
   const permissions = await canUpdateAuction(data);
   if (permissions.error) return permissions;
@@ -120,7 +122,7 @@ export async function updateAuction(auctionId: string, values: AuctionSchema) {
     }
   });
 
-  return createSuccess(AUCTION_MESSAGES.AUCTION_UPDATED_SUCCESFULLY, null);
+  redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
 }
 
 export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {

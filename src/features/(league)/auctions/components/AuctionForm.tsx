@@ -72,8 +72,6 @@ export default function AuctionForm({
         },
   });
 
-  console.log(form.watch());
-
   const auctionType = form.watch("type");
 
   useEffect(() => {
