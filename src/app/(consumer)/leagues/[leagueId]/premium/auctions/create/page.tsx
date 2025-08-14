@@ -18,19 +18,19 @@ export default async function CreateAuctionPage({
     getGeneralSettings(leagueId),
   ]);
 
-  const auction = { playersPerRole, initialCredits };
+  const auctionSettings = { playersPerRole, initialCredits };
 
   return (
     <Container leagueId={leagueId} headerLabel="Crea asta">
-      <Suspense fallback={<AuctionForm auction={auction} />}>
-        <SuspenseBoundary auction={auction} />
+      <Suspense fallback={<AuctionForm auctionSettings={auctionSettings} />}>
+        <SuspenseBoundary auctionSettings={auctionSettings} />
       </Suspense>
     </Container>
   );
 }
 
 async function SuspenseBoundary(props: {
-  auction: { playersPerRole: PlayersPerRole; initialCredits: number };
+  auctionSettings: { playersPerRole: PlayersPerRole; initialCredits: number };
 }) {
   const [playersRoles, isSplitLive] = await Promise.all([
     getRolesWithoutPresident(),
