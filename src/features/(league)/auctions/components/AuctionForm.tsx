@@ -3,7 +3,6 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,8 +40,8 @@ type Props = {
     type: AuctionType;
   };
   auctionSettings: {
-    firstCallTime?: number;
-    othersCallsTime?: number;
+    firstCallTime: number;
+    othersCallsTime: number;
     initialCredits: number;
     playersPerRole: PlayersPerRole;
   };
@@ -60,28 +59,20 @@ export default function AuctionForm({
 
   const { leagueId } = useParams<{ leagueId: string }>();
 
-  const {
-    initialCredits,
-    playersPerRole,
-    firstCallTime = 20,
-    othersCallsTime = 10,
-  } = auctionSettings;
-
   const form = useForm<AuctionSchema>({
     resolver: zodResolver(auctionSchema),
     defaultValues: auction
-      ? auction
+      ? { ...auction, ...auctionSettings }
       : {
           leagueId,
           type: isSplitLive ? "repair" : "classic",
           name: "",
           description: null,
-          initialCredits,
-          playersPerRole,
-          firstCallTime,
-          othersCallsTime,
+          ...auctionSettings,
         },
   });
+
+  console.log(form.watch());
 
   const auctionType = form.watch("type");
 
@@ -215,7 +206,7 @@ export default function AuctionForm({
                     label="Crediti da aggiungere"
                     tip="Crediti da aggiungere a tutte le squadre"
                     min={0}
-                    max={initialCredits}
+                    max={auctionSettings.initialCredits}
                     step={10}
                     unit="crediti"
                   />
@@ -236,3 +227,9 @@ export default function AuctionForm({
     </Form>
   );
 }
+
+function getDefaultValues(
+  auction: Props["auction"],
+  auctionSettings: Props["auctionSettings"],
+  isSplitLive: boolean
+) {}
