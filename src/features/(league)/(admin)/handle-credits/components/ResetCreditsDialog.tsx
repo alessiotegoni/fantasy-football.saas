@@ -11,7 +11,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { use } from "react";
 import { resetCredits } from "../actions/handle-credits";
 import { useForm } from "react-hook-form";
 import {
@@ -26,10 +25,10 @@ import FormSliderField from "@/components/FormFieldSlider";
 
 export default function ResetCreditsDialog({
   leagueId,
-  defaultCreditsPromise,
+  initialCredits,
 }: {
   leagueId: string;
-  defaultCreditsPromise: Promise<number>;
+  initialCredits: number;
 }) {
   const toast = useActionToast();
 
@@ -37,7 +36,7 @@ export default function ResetCreditsDialog({
     resolver: zodResolver(resetCreditsSchema),
     defaultValues: {
       leagueId,
-      credits: use(defaultCreditsPromise) ?? 500,
+      credits: initialCredits,
     },
   });
 

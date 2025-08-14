@@ -23,14 +23,12 @@ export default function UpdateCreditsButton({
   }
 
   return (
-    <div className="w-full fixed left-1/2 -translate-x-1/2 bottom-[99px] sm:static sm:translate-0 z-50 px-4 sm:px-0">
-      <ActionButton
-        action={saveCredits}
-        loadingText="Salvo crediti"
-        className="h-fit py-3 sm:w-fit sm:min-w-[100px] rounded-xl"
-      >
-        Salva
-      </ActionButton>
-    </div>
+    <ActionButton
+      action={saveCredits}
+      loadingText="Salvo crediti"
+      className="h-fit py-3 sm:w-fit sm:min-w-[100px] rounded-xl"
+    >
+      Salva
+    </ActionButton>
   );
 }

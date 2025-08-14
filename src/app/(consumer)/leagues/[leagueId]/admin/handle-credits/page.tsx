@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import TeamsCreditsProvider from "@/contexts/TeamsCreditsProvider";
 import AddCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/AddCreditsDialog";
 import LeagueTeamCardWithCredits from "@/features/(league)/(admin)/handle-credits/components/LeagueTeamCardWithCredits";
@@ -21,7 +22,11 @@ export default async function HandleCreditsPage({
       <Container
         leagueId={leagueId}
         headerLabel="Gestisci crediti"
-        renderHeaderRight={() => <HeaderRightButtons leagueId={leagueId} />}
+        renderHeaderRight={() => (
+          <Suspense>
+            <HeaderRightButtons leagueId={leagueId} />
+          </Suspense>
+        )}
       >
         <div className="space-y-4 pb-16 sm:pb-0">
           {leagueTeams.map((team) => (
@@ -37,21 +42,16 @@ export default async function HandleCreditsPage({
   );
 }
 
-function HeaderRightButtons({ leagueId }: { leagueId: string }) {
-  const generalSettings = getGeneralSettings(leagueId);
+async function HeaderRightButtons(props: { leagueId: string }) {
+  const generalSettings = await getGeneralSettings(props.leagueId);
 
   return (
     <div className="flex gap-2">
-      <AddCreditsDialog leagueId={leagueId} />
-      <Suspense>
-        <ResetCreditsDialog
-          leagueId={leagueId}
-          defaultCreditsPromise={generalSettings.then(
-            (settings) => settings.initialCredits
-          )}
-        />
-      </Suspense>
-      <UpdateCreditsButton leagueId={leagueId} />
+      <MobileButtonsContainer>
+        <UpdateCreditsButton {...props} />
+        <AddCreditsDialog {...props} {...generalSettings} />
+      </MobileButtonsContainer>
+      <ResetCreditsDialog {...props} {...generalSettings} />
     </div>
   );
 }
