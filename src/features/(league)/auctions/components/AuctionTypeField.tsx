@@ -10,9 +10,9 @@ import { Globe, Hammer } from "iconoir-react";
 import { useFormContext } from "react-hook-form";
 
 export default function AuctionTypeField({
-  isSplitLive = false,
+  isSplitLive,
 }: {
-  isSplitLive: boolean | undefined;
+  isSplitLive: boolean;
 }) {
   const form = useFormContext<{ type: AuctionType }>();
 

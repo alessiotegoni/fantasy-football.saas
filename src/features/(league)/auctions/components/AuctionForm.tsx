@@ -33,12 +33,14 @@ import { createAuction, updateAuction } from "../actions/auction";
 import NumberInput from "@/components/ui/number-input";
 
 type Props = {
-  auction: {
-    id?: string;
-    leagueId?: string;
-    name?: string;
-    description?: string | null;
-    type?: AuctionType;
+  auction?: {
+    id: string;
+    leagueId: string;
+    name: string;
+    description: string | null;
+    type: AuctionType;
+  };
+  auctionSettings: {
     firstCallTime?: number;
     othersCallsTime?: number;
     initialCredits: number;
@@ -50,26 +52,34 @@ type Props = {
 
 export default function AuctionForm({
   auction,
+  auctionSettings,
   playersRoles,
-  isSplitLive,
+  isSplitLive = false,
 }: Props) {
   const toast = useActionToast();
 
   const { leagueId } = useParams<{ leagueId: string }>();
 
+  const {
+    initialCredits,
+    playersPerRole,
+    firstCallTime = 20,
+    othersCallsTime = 10,
+  } = auctionSettings;
+
   const form = useForm<AuctionSchema>({
     resolver: zodResolver(auctionSchema),
-    defaultValues: auction.id
+    defaultValues: auction
       ? auction
       : {
           leagueId,
           type: isSplitLive ? "repair" : "classic",
           name: "",
           description: null,
-          initialCredits: auction.initialCredits,
-          playersPerRole: auction.playersPerRole,
-          firstCallTime: auction.firstCallTime ?? 20,
-          othersCallsTime: auction.othersCallsTime ?? 10,
+          initialCredits,
+          playersPerRole,
+          firstCallTime,
+          othersCallsTime,
         },
   });
 
@@ -80,7 +90,7 @@ export default function AuctionForm({
   }, [auctionType]);
 
   async function onSubmit(data: AuctionSchema) {
-    const action = auction.id
+    const action = auction
       ? updateAuction.bind(null, auction.id)
       : createAuction;
 
@@ -131,7 +141,7 @@ export default function AuctionForm({
             </FormItem>
           )}
         />
-        {!auction.id && <AuctionTypeField isSplitLive={isSplitLive} />}
+        {!auction?.id && <AuctionTypeField isSplitLive={isSplitLive} />}
 
         <Accordion type="single" collapsible>
           <AccordionItem value="advanced-settings">
@@ -186,7 +196,7 @@ export default function AuctionForm({
               {auctionType === "classic" && playersRoles && (
                 <div className="space-y-3 sm:space-y-6">
                   <PlayersPerRoleField playersRoles={playersRoles} />
-                  {!auction.id && (
+                  {!auction?.id && (
                     <FormSliderField<{ initialCredits: number }>
                       name="initialCredits"
                       label="Crediti iniziali per squadra"
@@ -205,7 +215,7 @@ export default function AuctionForm({
                     label="Crediti da aggiungere"
                     tip="Crediti da aggiungere a tutte le squadre"
                     min={0}
-                    max={auction.initialCredits}
+                    max={initialCredits}
                     step={10}
                     unit="crediti"
                   />
@@ -217,9 +227,9 @@ export default function AuctionForm({
 
         <MobileButtonsContainer className="sm:w-full">
           <SubmitButton
-            loadingText={auction.id ? "Modifico asta" : "Creo asta"}
+            loadingText={auction?.id ? "Modifico asta" : "Creo asta"}
           >
-            {auction.id ? "Modifica asta" : "Crea asta"}
+            {auction?.id ? "Modifica asta" : "Crea asta"}
           </SubmitButton>
         </MobileButtonsContainer>
       </form>

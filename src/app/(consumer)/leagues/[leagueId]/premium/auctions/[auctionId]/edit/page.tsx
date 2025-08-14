@@ -18,24 +18,37 @@ export default async function EditAuctionPage({
   const auction = await getAuction(auctionId);
   if (!auction) notFound();
 
+  const { settings, ...restAuction } = auction;
+
   return (
     <Container leagueId={leagueId} headerLabel="Crea asta">
-      <Suspense fallback={<AuctionForm auction={auction} />}>
+      <Suspense
+        fallback={
+          <AuctionForm auction={restAuction} auctionSettings={settings} />
+        }
+      >
         <SuspenseBoundary auction={auction} />
       </Suspense>
     </Container>
   );
 }
 
-async function SuspenseBoundary(props: { auction: Auction }) {
+async function SuspenseBoundary({
+  auction,
+}: {
+  auction: NonNullable<Auction>;
+}) {
   const [playersRoles, isSplitLive] = await Promise.all([
     getRolesWithoutPresident(),
     getLiveSplit().then(Boolean),
   ]);
 
+  const { settings, ...restAuction } = auction;
+
   return (
     <AuctionForm
-      {...props}
+      auction={restAuction}
+      auctionSettings={settings}
       playersRoles={playersRoles}
       isSplitLive={isSplitLive}
     />
