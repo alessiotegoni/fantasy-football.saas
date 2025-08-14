@@ -22,6 +22,22 @@ export async function canUpdateCredits(leagueId: string) {
   return createSuccess("", null);
 }
 
+export async function canAddCredits(data: AddCreditsSchema) {
+  const permissions = await canUpdateCredits(data.leagueId);
+  if (permissions.error) return permissions;
+
+  const [leagueTeams, { initialCredits }] = await Promise.all([
+    getLeagueTeams(data.leagueId),
+    getGeneralSettings(data.leagueId),
+  ]);
+
+  if (checkCreditsOverflow(leagueTeams, data.creditsToAdd, initialCredits)) {
+    return createError(ERROR_MESSAGES.CREDITS_OVERFLOW);
+  }
+
+  return createSuccess("", { teamsIds: leagueTeams.map((team) => team.id) });
+}
+
 export function checkCreditsOverflow(
   leagueTeams: { credits: number }[],
   creditsToAdd: number,
