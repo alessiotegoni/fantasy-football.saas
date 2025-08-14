@@ -27,7 +27,14 @@ export default function Container({
             <Link href={`/leagues/${leagueId}`} className="mr-3">
               <ArrowLeft className="size-5" />
             </Link>
-            <h2 className="text-2xl font-heading">{headerLabel}</h2>
+            <h2
+              className={cn(
+                "text-2xl font-heading",
+                renderHeaderRight && "text-xl xs:text-2xl"
+              )}
+            >
+              {headerLabel}
+            </h2>
           </div>
           <h2 className="hidden md:block text-3xl font-heading">
             {headerLabel}

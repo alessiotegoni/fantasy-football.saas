@@ -25,7 +25,7 @@ export default async function LeagueAuctionsPage({
 
   return (
     <Container
-      headerLabel="Aste"
+      headerLabel="Aste della lega"
       leagueId={leagueId}
       renderHeaderRight={() => (
         <SplitSelect splits={splits} defaultSplit={lastSplit} />
@@ -94,7 +94,7 @@ async function SuspenseBoundary({
             <BackButton />
           ) : (
             <Button asChild className="min-w-36">
-              <Link href={`/leages/${leagueId}/premium/auctions/create`}>
+              <Link href={`/leagues/${leagueId}/premium/auctions/create`}>
                 Crea asta
                 <NavArrowRight className="size-5" />
               </Link>
