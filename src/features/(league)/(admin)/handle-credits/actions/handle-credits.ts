@@ -18,7 +18,7 @@ import { getGeneralSettings } from "@/features/(league)/settings/queries/setting
 
 enum HANDLE_CREDITS_MESSAGES {
   RESET_SUCCESS = "Crediti resettati con successo",
-  SET_CREDITS_SUCCESS = "Crediti settati con successo",
+  SET_SUCCESS = "Crediti settati con successo",
   ADD_SUCCESS = "Crediti aggiunti con successo",
 }
 
@@ -66,7 +66,7 @@ export async function setTeamsCredits(values: SetCreditsSchema) {
 
   await Promise.all(updateCreditsPromise);
 
-  return createSuccess(HANDLE_CREDITS_MESSAGES.SET_CREDITS_SUCCESS, null);
+  return createSuccess(HANDLE_CREDITS_MESSAGES.SET_SUCCESS, null);
 }
 
 export async function resetCredits(values: ResetCreditsSchema) {

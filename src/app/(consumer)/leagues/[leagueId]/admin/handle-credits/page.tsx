@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import TeamsCreditsProvider from "@/contexts/TeamsCreditsProvider";
+import AddCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/AddCreditsDialog";
 import LeagueTeamCardWithCredits from "@/features/(league)/(admin)/handle-credits/components/LeagueTeamCardWithCredits";
 import ResetCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/ResetCreditsDialog";
 import UpdateCreditsButton from "@/features/(league)/(admin)/handle-credits/components/UpdateCreditsButton";
@@ -22,7 +23,7 @@ export default async function HandleCreditsPage({
         headerLabel="Gestisci crediti"
         renderHeaderRight={() => <HeaderRightButtons leagueId={leagueId} />}
       >
-        <div className="space-y-4">
+        <div className="space-y-4 pb-16 sm:pb-0">
           {leagueTeams.map((team) => (
             <LeagueTeamCardWithCredits
               key={team.id}
@@ -37,16 +38,17 @@ export default async function HandleCreditsPage({
 }
 
 function HeaderRightButtons({ leagueId }: { leagueId: string }) {
-  const defaultCreditsPromise = getGeneralSettings(leagueId).then(
-    (settings) => settings?.initialCredits ?? 500
-  );
+  const generalSettings = getGeneralSettings(leagueId);
 
   return (
     <div className="flex gap-2">
+      <AddCreditsDialog leagueId={leagueId} />
       <Suspense>
         <ResetCreditsDialog
           leagueId={leagueId}
-          defaultCreditsPromise={defaultCreditsPromise}
+          defaultCreditsPromise={generalSettings.then(
+            (settings) => settings.initialCredits
+          )}
         />
       </Suspense>
       <UpdateCreditsButton leagueId={leagueId} />

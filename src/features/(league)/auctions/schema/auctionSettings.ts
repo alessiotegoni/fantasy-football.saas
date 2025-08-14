@@ -35,7 +35,7 @@ const classicAuctionSchema = z
 const repairAuctionSchema = z
   .object({
     type: z.literal("repair"),
-    creditsToAdd: z.number().int().min(0).max(5000),
+    creditsToAdd: z.number().int().positive().max(5000),
   })
   .merge(baseAuctionSchema);
 
