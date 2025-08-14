@@ -34,7 +34,7 @@ export default function AuctionsList({
                   auction={auction}
                   leagueId={leagueId}
                   isLeagueAdmin={isLeagueAdmin}
-                  canChangeStatus={selectedSplit.status !== "ended"}
+                  canEdit={selectedSplit.status !== "ended"}
                 />
               ))}
             </div>

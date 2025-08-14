@@ -18,6 +18,7 @@ export async function getLeagueAuctions(leagueId: string, splitId: number) {
     },
     where: (auction, { and, eq }) =>
       and(eq(auction.leagueId, leagueId), eq(auction.splitId, splitId)),
+    orderBy: (auction, { desc }) => [desc(auction.startedAt), desc(auction.id)],
   });
 
   return results;
