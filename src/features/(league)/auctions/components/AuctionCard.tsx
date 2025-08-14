@@ -44,8 +44,6 @@ export default function AuctionCard({
 }: Props) {
   const toast = useActionToast();
 
-  const [isDeleting, setIsDeleting] = useState(false);
-
   const [optimisticStatus, updateOptimisticStatus] = useOptimistic(
     auction.status,
     (_, newStatus: AuctionStatus) => newStatus
@@ -64,17 +62,6 @@ export default function AuctionCard({
       toast(res);
     });
   }
-
-  async function handleDeleteAuction() {
-    setIsDeleting(true);
-
-    const res = await deleteAuction(auction.id);
-    setIsDeleting(false);
-
-    return res;
-  }
-
-  console.log(isDeleting);
 
   const statusInfo = statusConfig[optimisticStatus];
   const canUpdateAuction = canEdit && auction.status !== "ended";
@@ -135,13 +122,17 @@ export default function AuctionCard({
             </div>
 
             {isLeagueAdmin && (
-              <DropdownMenu open={isDeleting ? true : undefined}>
+              <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="size-8 p-0 rounded-full">
                     <MoreVertical className="size-4" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="center" className="space-y-1">
+                <DropdownMenuContent
+                  align="center"
+                  className="space-y-1"
+                  onPointerDown={(e) => e.stopPropagation()}
+                >
                   {canUpdateAuction && (
                     <DropdownMenuItem asChild>
                       <Link
@@ -152,22 +143,24 @@ export default function AuctionCard({
                       </Link>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem asChild>
-                    <ActionButton
-                      variant="destructive"
-                      loadingText="Elimino"
-                      action={handleDeleteAuction}
-                    >
-                      <Trash2 className="text-white" />
-                      Elimina asta
-                    </ActionButton>
-                  </DropdownMenuItem>
+
+                  <ActionButton
+                    variant="destructive"
+                    loadingText="Elimino"
+                    action={deleteAuction.bind(null, auction.id)}
+                    requireAreYouSure
+                    areYouSureDescription="Sei sicuro di voler eliminare l'asta ? L'azione e' irreversibile"
+                    className="text-white px-2 py-1.5 rounded-lg text-sm"
+                  >
+                    <Trash2 />
+                    Elimina asta
+                  </ActionButton>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
           </div>
         </div>
-        <div className="text-sm text-muted-foreground mt-1">
+        <div className="text-sm text-muted-foreground sm:mt-1">
           Creata da{" "}
           <span className="font-medium">{auction.creator.managerName}</span>
         </div>
@@ -179,7 +172,7 @@ export default function AuctionCard({
         </p>
       )}
 
-      <Button asChild className="self-end sm:w-fit">
+      <Button asChild className="self-end w-fit mt-3 sm:mt-0">
         <Link href={`/leagues/${leagueId}/auctions/${auction.id}`}>
           Partecipa
         </Link>
