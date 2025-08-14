@@ -25,6 +25,7 @@ enum AUCTION_ERRORS {
   PASSED_AUCTION = "Non puoi modificare aste degli split passati",
   AUCTION_SPLIT_ENDED = "Non puoi modificare lo stato di un'asta di uno split concluso",
   AUCTION_STATUS = "Stato dell'asta gia modificato",
+  ENDED_AUCTION = "Non puoi modificare lo stato di un'asta gia conclusa",
 }
 
 export async function basePermissions(leagueId: string) {
@@ -129,6 +130,10 @@ export async function canUpdateAuctionStatus({
 
   if (auction.status === status) {
     return createError(AUCTION_ERRORS.AUCTION_STATUS);
+  }
+
+  if (auction.status === "ended") {
+    return createError(AUCTION_ERRORS.ENDED_AUCTION);
   }
 
   const permissions = await basePermissions(auction.leagueId);
