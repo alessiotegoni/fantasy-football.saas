@@ -16,7 +16,7 @@ import {
   canUpdateAuction,
   canUpdateAuctionStatus,
 } from "../permissions/auction";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createSuccess } from "@/lib/helpers";
 import { db } from "@/drizzle/db";
 import {
   insertAuction,
@@ -33,13 +33,11 @@ import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
 import { getGeneralSettings } from "../../settings/queries/setting";
-import { checkCreditsOverflow } from "../../(admin)/handle-credits/permissions/handle-credits";
 
 enum AUCTION_MESSAGES {
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
   AUCTION_STATUS_UPDATED_SUCCESFULLY = "Stato dell'asta aggiornato con successo",
   AUCTION_DELETED_SUCCESFULLY = "Asta eliminata con successo",
-  CREDITS_OVERFLOW = "L'aggiunta di crediti farebbe superare i crediti iniziali.",
 }
 
 export async function createAuction(values: AuctionSchema) {
@@ -79,12 +77,14 @@ export async function createAuction(values: AuctionSchema) {
 
     if (data.type === "repair" && data.creditsToAdd) {
       const { initialCredits } = await getGeneralSettings(data.leagueId);
-      if (
-        checkCreditsOverflow(leagueTeams, data.creditsToAdd, initialCredits)
-      ) {
-        return createError(AUCTION_MESSAGES.CREDITS_OVERFLOW);
-      }
-      await addTeamsCredits(teamsIds, data.leagueId, data.creditsToAdd, tx);
+
+      await addTeamsCredits(
+        teamsIds,
+        data.leagueId,
+        data.creditsToAdd,
+        initialCredits,
+        tx
+      );
     }
   });
 

@@ -12,12 +12,19 @@ export async function addTeamsCredits(
   teamsIds: string[],
   leagueId: string,
   creditsToAdd: number,
+  initialCredits: number,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const updatedTeams = await tx
     .update(leagueMemberTeams)
     .set({
-      credits: sql`${leagueMemberTeams.credits} + ${creditsToAdd}`,
+      credits: sql`
+      CASE
+        WHEN ${leagueMemberTeams.credits} + ${creditsToAdd} > ${initialCredits}
+        THEN ${initialCredits}
+        ELSE ${leagueMemberTeams.credits} + ${creditsToAdd}
+      END
+    `,
     })
     .where(
       and(
