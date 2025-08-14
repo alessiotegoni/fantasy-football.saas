@@ -23,6 +23,10 @@ export async function getLeagueAuctions(leagueId: string, splitId: number) {
   return results;
 }
 
+export type AuctionWithCreator = Awaited<
+  ReturnType<typeof getLeagueAuctions>
+>[number];
+
 export async function getAuction(id: string) {
   "use cache";
   cacheTag(getAuctionIdTag(id));

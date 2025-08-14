@@ -1,14 +1,20 @@
 import Container from "@/components/Container";
 import SplitSelect from "@/features/splits/components/SplitSelect";
-import { getSplits, Split } from "@/features/splits/queries/split";
+import { getSplits, type Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { NavArrowRight } from "iconoir-react";
 import { Suspense } from "react";
 import EmptyState from "@/components/EmptyState";
 import BackButton from "@/components/BackButton";
-import { getLeagueAuctions } from "@/features/(league)/auctions/queries/auction";
+import {
+  type AuctionWithCreator,
+  getLeagueAuctions,
+} from "@/features/(league)/auctions/queries/auction";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getUserId } from "@/features/users/utils/user";
+import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
@@ -66,7 +72,7 @@ async function SuspenseBoundary({
     );
   }
 
-  const selectedSplitId = parseInt((await selectedSplitPromise) ?? "0");
+  const selectedSplitId = Number.parseInt((await selectedSplitPromise) ?? "0");
   if (selectedSplitId && validateSerialId(selectedSplitId).success) {
     selectedSplit = splits.find((split) => split.id === selectedSplitId);
   }
@@ -105,9 +111,49 @@ async function SuspenseBoundary({
     );
   }
 
-  const groupedMatches = Object.groupBy(auctions, (match) => match.type);
+  const groupedAuctions = Object.groupBy(auctions, (match) => match.type);
 
-  console.log(groupedMatches);
+  return (
+    <div className="space-y-8">
+      <Suspense
+        fallback={
+          <AuctionsList
+            leagueId={leagueId}
+            groupedAuctions={groupedAuctions}
+            selectedSplit={selectedSplit}
+          />
+        }
+      >
+        <SuspendedAuctionsList
+          leagueId={leagueId}
+          groupedAuctions={groupedAuctions}
+          selectedSplit={selectedSplit}
+        />
+      </Suspense>
+    </div>
+  );
+}
 
-  return <div className="space-y-8"></div>;
+async function SuspendedAuctionsList({
+  leagueId,
+  groupedAuctions,
+  selectedSplit,
+}: {
+  leagueId: string;
+  groupedAuctions: Partial<Record<"classic" | "repair", AuctionWithCreator[]>>;
+  selectedSplit: Split;
+}) {
+  const userId = await getUserId();
+  if (!userId) return null;
+
+  const isLeagueAdmin = await getLeagueAdmin(userId, leagueId);
+
+  return (
+    <AuctionsList
+      leagueId={leagueId}
+      groupedAuctions={groupedAuctions}
+      isLeagueAdmin={isLeagueAdmin}
+      selectedSplit={selectedSplit}
+    />
+  );
 }
