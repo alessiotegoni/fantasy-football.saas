@@ -6,15 +6,17 @@ import {
 } from "@/features/(league)/auctions/queries/auction";
 import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getLiveSplit } from "@/features/splits/queries/split";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-export default async function EditActionPage({
+export default async function EditAuctionPage({
   params,
 }: {
   params: Promise<{ leagueId: string; auctionId: string }>;
 }) {
   const { leagueId, auctionId } = await params;
   const auction = await getAuction(auctionId);
+  if (!auction) notFound();
 
   return (
     <Container leagueId={leagueId} headerLabel="Crea asta">
