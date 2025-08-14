@@ -47,13 +47,13 @@ export default function AddCreditsDialog({
       <Button
         variant="outline"
         asChild
-        className="w-fit h-fit py-3 sm:px-4 min-w-[100px] rounded-xl"
+        className="sm:w-fit h-fit py-3 sm:px-4 min-w-[100px] rounded-xl !bg-input/90 sm:!bg-input/30"
       >
         <DialogTrigger>Aggiungi</DialogTrigger>
       </Button>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Vuoi davvero aggiungere i crediti ?</DialogTitle>
+          <DialogTitle>Vuoi aggiungere i crediti ?</DialogTitle>
           <DialogDescription>
             I crediti che sceglierai verranno aggiunti a quelli gia in possesso
             delle squadre. Se la somma dei crediti di una squadra ed i crediti
@@ -73,11 +73,7 @@ export default function AddCreditsDialog({
               <DialogClose asChild className="sm:w-fit">
                 <Button variant="outline">Chiudi</Button>
               </DialogClose>
-              <SubmitButton
-                variant="outline"
-                className="sm:w-fit"
-                loadingText="Aggiungo crediti"
-              >
+              <SubmitButton className="sm:w-fit" loadingText="Aggiungo crediti">
                 Aggiungi
               </SubmitButton>
             </DialogFooter>

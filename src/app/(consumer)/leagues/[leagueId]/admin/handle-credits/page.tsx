@@ -28,7 +28,7 @@ export default async function HandleCreditsPage({
           </Suspense>
         )}
       >
-        <div className="space-y-4 pb-16 sm:pb-0">
+        <div className="space-y-4 pb-28 sm:pb-0">
           {leagueTeams.map((team) => (
             <LeagueTeamCardWithCredits
               key={team.id}
@@ -47,7 +47,7 @@ async function HeaderRightButtons(props: { leagueId: string }) {
 
   return (
     <div className="flex gap-2">
-      <MobileButtonsContainer>
+      <MobileButtonsContainer className="flex flex-col-reverse sm:flex-row gap-2">
         <UpdateCreditsButton {...props} />
         <AddCreditsDialog {...props} {...generalSettings} />
       </MobileButtonsContainer>
