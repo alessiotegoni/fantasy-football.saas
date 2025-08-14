@@ -111,22 +111,20 @@ async function SuspenseBoundary({
     );
   }
 
-  const groupedAuctions = Object.groupBy(auctions, (match) => match.type);
-
   return (
     <div className="space-y-8">
       <Suspense
         fallback={
           <AuctionsList
             leagueId={leagueId}
-            groupedAuctions={groupedAuctions}
+            auctions={auctions}
             selectedSplit={selectedSplit}
           />
         }
       >
         <SuspendedAuctionsList
           leagueId={leagueId}
-          groupedAuctions={groupedAuctions}
+          auctions={auctions}
           selectedSplit={selectedSplit}
         />
       </Suspense>
@@ -136,11 +134,11 @@ async function SuspenseBoundary({
 
 async function SuspendedAuctionsList({
   leagueId,
-  groupedAuctions,
+  auctions,
   selectedSplit,
 }: {
   leagueId: string;
-  groupedAuctions: Partial<Record<"classic" | "repair", AuctionWithCreator[]>>;
+  auctions: AuctionWithCreator[];
   selectedSplit: Split;
 }) {
   const userId = await getUserId();
@@ -151,7 +149,7 @@ async function SuspendedAuctionsList({
   return (
     <AuctionsList
       leagueId={leagueId}
-      groupedAuctions={groupedAuctions}
+      auctions={auctions}
       isLeagueAdmin={isLeagueAdmin}
       selectedSplit={selectedSplit}
     />
