@@ -134,7 +134,15 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
   if (permissions.error) return permissions;
 
   const { id, status } = data;
-  await updateAuctionDB(id, { status });
+
+  const timestampts: { startedAt: Date | null; endedAt: Date | null } = {
+    startedAt: null,
+    endedAt: null,
+  };
+  if (status === "active") timestampts.startedAt = new Date();
+  if (status === "ended") timestampts.endedAt = new Date();
+
+  await updateAuctionDB(id, { status, ...timestampts });
 
   return createSuccess(
     AUCTION_MESSAGES.AUCTION_STATUS_UPDATED_SUCCESFULLY,
