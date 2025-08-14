@@ -2,6 +2,7 @@ import { z } from "zod";
 import { initialCredits, playersPerRole } from "../../settings/schema/setting";
 import { getUUIdSchema } from "@/schema/helpers";
 import { auctionStatuses } from "@/drizzle/schema";
+import { addCreditsSchema } from "../../(admin)/handle-credits/schema/handle-credits";
 
 const auctionIdSchema = z.object({ id: getUUIdSchema() });
 
@@ -35,8 +36,8 @@ const classicAuctionSchema = z
 const repairAuctionSchema = z
   .object({
     type: z.literal("repair"),
-    creditsToAdd: z.number().int().positive().max(5000),
   })
+  .merge(addCreditsSchema)
   .merge(baseAuctionSchema);
 
 export const auctionSchema = z.discriminatedUnion("type", [

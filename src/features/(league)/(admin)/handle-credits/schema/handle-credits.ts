@@ -9,10 +9,7 @@ const credits = z
 
 export const addCreditsSchema = z.object({
   leagueId: getUUIdSchema(),
-  creditsToAdd: z
-    .number()
-    .int()
-    .positive("I crediti devono essere un numero positivo"),
+  creditsToAdd: credits,
 });
 
 export const setCreditsSchema = z.object({

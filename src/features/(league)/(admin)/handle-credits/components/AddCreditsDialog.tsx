@@ -11,31 +11,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { use } from "react";
-import { addTeamsCredits, resetCredits } from "../actions/handle-credits";
+import { addTeamsCredits } from "../actions/handle-credits";
 import { useForm } from "react-hook-form";
-import {
-  resetCreditsSchema,
-  ResetCreditsSchema,
-} from "../schema/handle-credits";
+import { addCreditsSchema, AddCreditsSchema } from "../schema/handle-credits";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
 import useActionToast from "@/hooks/useActionToast";
 import FormSliderField from "@/components/FormFieldSlider";
 
-export default function AddCreditsDialog({ leagueId }: { leagueId: string }) {
+export default function AddCreditsDialog({
+  leagueId,
+  initialCredits,
+}: {
+  leagueId: string;
+  initialCredits: number;
+}) {
   const toast = useActionToast();
 
-  const form = useForm<ResetCreditsSchema>({
-    resolver: zodResolver(resetCreditsSchema),
+  const form = useForm<AddCreditsSchema>({
+    resolver: zodResolver(addCreditsSchema),
     defaultValues: {
       leagueId,
       creditsToAdd: 50,
     },
   });
 
-  async function onSubmit(data: ResetCreditsSchema) {
+  async function onSubmit(data: AddCreditsSchema) {
     const res = await addTeamsCredits(data);
     toast(res);
   }
@@ -55,16 +57,16 @@ export default function AddCreditsDialog({ leagueId }: { leagueId: string }) {
           <DialogDescription>
             I crediti che sceglierai verranno aggiunti a quelli gia in possesso
             delle squadre. Se la somma dei crediti di una squadra ed i crediti
-            aggiunti e' maggiore dei crediti iniziali della lega (), verranno
-            settati a quel numero
+            aggiunti e' maggiore dei crediti iniziali della lega (
+            {initialCredits}), verranno settati a quel numero
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <FormSliderField<ResetCreditsSchema>
+            <FormSliderField<AddCreditsSchema>
               label="Crediti da aggiungere"
-              min={200}
-              max={5000}
+              min={1}
+              max={initialCredits}
               name="creditsToAdd"
             />
             <DialogFooter className="mt-4">
