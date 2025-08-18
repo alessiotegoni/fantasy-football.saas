@@ -22,7 +22,7 @@ export default function useHandleSubmit<T>(
       const result = await submitFn(args);
       toast(result);
 
-      handleRedirect();
+      if (!result.error) handleRedirect();
     });
   }
 

@@ -18,11 +18,14 @@ import { useEmailLogin } from "@/hooks/useLoginEmail";
 import SubmitButton from "@/components/SubmitButton";
 import useActionToast from "@/hooks/useActionToast";
 import SocialLogin from "./SocialLogin";
+import { useTransition } from "react";
 
 export default function LoginForm() {
   const toast = useActionToast();
 
   const { email, saveEmail } = useEmailLogin();
+
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,13 +42,15 @@ export default function LoginForm() {
     form.setValue("type", type);
   }
 
-  async function emailLogin(data: LoginSchemaType) {
-    const res = await login(data, { redirectUrl: searchParams.get("next") });
-    if (res.error) toast(res);
+  function emailLogin(data: LoginSchemaType) {
+    startTransition(async () => {
+      const res = await login(data, { redirectUrl: searchParams.get("next") });
+      if (res.error) toast(res);
 
-    if (data.type === "email") saveEmail(data.email);
+      if (data.type === "email") saveEmail(data.email);
 
-    if (!res.error) router.push(res.data.url);
+      if (!res.error) router.push(res.data.url);
+    });
   }
 
   return (
@@ -72,8 +77,10 @@ export default function LoginForm() {
             )}
           />
           <SubmitButton
+            isLoading={isPending}
             loadingText="Invio codice"
             variant="gradient"
+            disabled={!form.watch("email")}
             onClick={changeLoginType.bind(null, "email")}
           >
             Continua
