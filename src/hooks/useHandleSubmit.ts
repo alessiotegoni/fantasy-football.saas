@@ -10,6 +10,7 @@ export default function useHandleSubmit<T>(
     redirectTo?: string;
     isLeaguePrefix?: boolean;
     onSuccess?: () => void;
+    onError?: () => void;
     isDialogControlled?: boolean;
     displayToast?: boolean;
   }
@@ -26,6 +27,7 @@ export default function useHandleSubmit<T>(
     redirectTo,
     isLeaguePrefix = true,
     onSuccess,
+    onError,
     isDialogControlled = false,
     displayToast = true,
   } = options ?? {};
@@ -39,7 +41,10 @@ export default function useHandleSubmit<T>(
         handleRedirect();
         onSuccess?.();
         if (isDialogControlled) setDialogOpen(false);
+        return
       }
+
+      onError?.();
     });
   }
 
