@@ -34,10 +34,6 @@ export default function SubmitButton({
     disabled ||
     (!form?.formState?.errors && form?.formState?.isSubmitSuccessful);
 
-  //   console.log(form.formState.errors, form.formState.isSubmitSuccessful);
-
-  // console.log(isPending, disabled);
-
   return (
     <Button
       type="submit"

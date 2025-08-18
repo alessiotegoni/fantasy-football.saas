@@ -15,7 +15,7 @@ export default function useHandleSubmit<T>(
   const { leagueId } = useParams<{ leagueId?: string }>();
   const router = useRouter();
 
-  const { pushTo, isLeaguePrefix } = options ?? {};
+  const { pushTo, isLeaguePrefix = true } = options ?? {};
 
   function onSubmit(args: T) {
     startTransition(async () => {
