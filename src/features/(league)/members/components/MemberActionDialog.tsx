@@ -25,8 +25,6 @@ type Props = {
 };
 
 export default function MemberActionDialog({ action }: Props) {
-//   const { isPending, onSubmit: handleMember } = useHandleSubmit(action.fn);
-
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
