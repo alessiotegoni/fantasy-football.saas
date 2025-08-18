@@ -164,12 +164,12 @@ export default function AuctionCard({
         </div>
         <div className="text-sm text-muted-foreground sm:mt-1">
           Creata da{" "}
-          <span className="font-medium">{auction.creator.managerName}</span>
+          <span className="font-semibold">{auction.creator.managerName}</span>
         </div>
       </div>
 
       {auction.description && (
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-sm text-muted-foreground leading-relaxed sm:mb-3 mt-1.5">
           {auction.description}
         </p>
       )}
