@@ -15,6 +15,7 @@ import Link from "next/link";
 import { getUserId } from "@/features/users/utils/user";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
+import Disclaimer from "@/components/Disclaimer";
 
 type Props = {
   params: Promise<{ leagueId: string }>;
@@ -45,6 +46,7 @@ export default async function LeagueAuctionsPage({
           lastSplit={lastSplit}
         />
       </Suspense>
+      <Disclaimer />
     </Container>
   );
 }

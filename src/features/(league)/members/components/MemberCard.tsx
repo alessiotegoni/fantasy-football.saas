@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Shield,
   ShieldXmark,
@@ -10,27 +8,16 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { useCallback, useMemo, useState } from "react";
-import { MoreHorizontal } from "lucide-react";
-import ActionButton from "@/components/ActionButton";
-import {
-  AlertDialog,
-  AlertDialogDescription,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogCancel,
-} from "../../../../components/ui/alert-dialog";
+import { MoreVertical } from "lucide-react";
 import { banMember, kickMember, setMemberRole } from "../actions/memberActions";
 import Avatar from "@/components/Avatar";
 import { SetRoleMemberSchema } from "../schema/leagueMember";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import MemberActionDialog from "./MemberActionDialog";
 
 type Props = {
   member: {
@@ -113,88 +100,27 @@ export function MemberActionsDropdown({
   member,
   leagueId,
 }: Pick<Props, "member" | "leagueId">) {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedAction, setSelectedAction] = useState<
-    ReturnType<typeof getMemberActions>[number] | null
-  >(null);
-
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const actions = useMemo(
-    () =>
-      getMemberActions({
-        leagueId,
-        memberId: member.id,
-        role: member.role,
-        userId: member.user.id,
-      }),
-    [leagueId, member]
-  );
-
-  const handleItemClick = useCallback(
-    (action: ReturnType<typeof getMemberActions>[number]) => {
-      setSelectedAction(action);
-      setIsDialogOpen(true);
-      setMenuOpen(false);
-    },
-    []
-  );
+  const actions = getMemberActions({
+    leagueId,
+    memberId: member.id,
+    role: member.role,
+    userId: member.user.id,
+  });
 
   return (
-    <>
-      <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8">
-            <MoreHorizontal className="size-4" />
-            <span className="sr-only">Apri menu azioni</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="rounded-xl">
-          {actions.map((a) => (
-            <DropdownMenuItem
-              key={a.name}
-              className="flex items-center gap-2"
-              onClick={handleItemClick.bind(null, a)}
-            >
-              <a.icon className="size-4" />
-              {a.name}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {selectedAction && (
-        <AlertDialog
-          open={isLoading ? true : isDialogOpen}
-          onOpenChange={setIsDialogOpen}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Sei sicuro?</AlertDialogTitle>
-              <AlertDialogDescription>
-                {selectedAction?.description ||
-                  "Questa azione non può essere annullata."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel> Annulla </AlertDialogCancel>
-              <ActionButton
-                action={selectedAction.action}
-                onPendingChange={setIsLoading}
-                loadingText={selectedAction.loadingText}
-                variant="destructive"
-                toastData={{ position: "bottom-right" }}
-              >
-                <selectedAction.icon />
-                {selectedAction.name}
-              </ActionButton>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-    </>
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="size-8">
+          <MoreVertical className="size-4" />
+          <span className="sr-only">Apri menu azioni</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="rounded-2xl flex flex-col">
+        {actions.map((action) => (
+          <MemberActionDialog key={action.name} action={action} />
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -205,7 +131,7 @@ function getMemberActions({ role, ...args }: SetRoleMemberSchema) {
     role === "admin"
       ? {
           name: "Setta come membro",
-          action: setMemberRole.bind(null, { ...args, role: "member" }),
+          fn: setMemberRole.bind(null, { ...args, role: "member" }),
           icon: ShieldXmark,
           loadingText: "Setto ruolo membro",
           description:
@@ -213,7 +139,7 @@ function getMemberActions({ role, ...args }: SetRoleMemberSchema) {
         }
       : {
           name: "Setta come admin",
-          action: setMemberRole.bind(null, { ...args, role: "admin" }),
+          fn: setMemberRole.bind(null, { ...args, role: "admin" }),
           icon: Shield,
           loadingText: "Setto ruolo admin",
           description:
@@ -223,7 +149,7 @@ function getMemberActions({ role, ...args }: SetRoleMemberSchema) {
   return [
     {
       name: "Espelli membro",
-      action: kickMember.bind(null, args),
+      fn: kickMember.bind(null, args),
       icon: UserXmark,
       loadingText: "Espello membro",
       description:
@@ -231,7 +157,7 @@ function getMemberActions({ role, ...args }: SetRoleMemberSchema) {
     },
     {
       name: "Banna membro",
-      action: banMember.bind(null, { ...args, reason: "" }),
+      fn: banMember.bind(null, { ...args, reason: "" }),
       icon: UserBadgeCheck,
       loadingText: "Banno membro",
       description:

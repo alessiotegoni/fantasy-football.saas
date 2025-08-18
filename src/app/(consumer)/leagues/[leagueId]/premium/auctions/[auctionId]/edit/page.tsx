@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import Disclaimer from "@/components/Disclaimer";
 import AuctionForm from "@/features/(league)/auctions/components/AuctionForm";
 import {
   Auction,
@@ -15,6 +16,7 @@ export default async function EditAuctionPage({
   params: Promise<{ leagueId: string; auctionId: string }>;
 }) {
   const { leagueId, auctionId } = await params;
+
   const auction = await getAuction(auctionId);
   if (!auction) notFound();
 
@@ -29,6 +31,7 @@ export default async function EditAuctionPage({
       >
         <SuspenseBoundary auction={auction} />
       </Suspense>
+      <Disclaimer />
     </Container>
   );
 }

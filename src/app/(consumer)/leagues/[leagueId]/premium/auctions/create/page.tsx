@@ -1,4 +1,5 @@
 import Container from "@/components/Container";
+import Disclaimer from "@/components/Disclaimer";
 import { PlayersPerRole } from "@/drizzle/schema";
 import AuctionForm from "@/features/(league)/auctions/components/AuctionForm";
 import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
@@ -30,6 +31,7 @@ export default async function CreateAuctionPage({
       <Suspense fallback={<AuctionForm auctionSettings={auctionSettings} />}>
         <SuspenseBoundary auctionSettings={auctionSettings} />
       </Suspense>
+      <Disclaimer />
     </Container>
   );
 }
