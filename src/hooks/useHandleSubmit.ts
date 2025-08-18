@@ -6,7 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 
 export default function useHandleSubmit<T>(
   submitFn: (args: T) => Promise<{ error: boolean; message: string }>,
-  options?: { pushTo?: string; isLeaguePrefix?: boolean }
+  options?: { redirectTo?: string; isLeaguePrefix?: boolean }
 ) {
   const toast = useActionToast();
 
@@ -15,7 +15,7 @@ export default function useHandleSubmit<T>(
   const { leagueId } = useParams<{ leagueId?: string }>();
   const router = useRouter();
 
-  const { pushTo, isLeaguePrefix = true } = options ?? {};
+  const { redirectTo, isLeaguePrefix = true } = options ?? {};
 
   function onSubmit(args: T) {
     startTransition(async () => {
@@ -27,14 +27,14 @@ export default function useHandleSubmit<T>(
   }
 
   function handleRedirect() {
-    if (!pushTo) return;
+    if (!redirectTo) return;
 
     if (isLeaguePrefix && leagueId) {
-      router.push(`/leagues/${leagueId}${pushTo}`);
+      router.push(`/leagues/${leagueId}${redirectTo}`);
       return;
     }
 
-    router.push(pushTo);
+    router.push(redirectTo);
   }
 
   return { isPending, onSubmit };

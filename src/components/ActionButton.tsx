@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, useEffect, useTransition } from "react";
 import { ExternalToast } from "sonner";
 import useActionToast from "@/hooks/useActionToast";
+import { useRouter } from "next/navigation";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   action: () => Promise<{ error: boolean; message: string }>;
@@ -25,7 +26,8 @@ type Props = ComponentPropsWithoutRef<typeof Button> & {
   requireAreYouSure?: boolean;
   areYouSureDescription?: string;
   displayToast?: boolean;
-  toastData?: ExternalToast
+  toastData?: ExternalToast;
+  redirectTo?: string;
 };
 
 export default function ActionButton({
@@ -35,13 +37,15 @@ export default function ActionButton({
   requireAreYouSure = false,
   areYouSureDescription = "Questa azione non può essere annullata",
   displayToast = true,
+  redirectTo,
   toastData,
   className,
   disabled,
   children,
   ...props
 }: Props) {
-  const toast = useActionToast()
+  const router = useRouter();
+  const toast = useActionToast();
 
   const [isPending, startTransition] = useTransition();
 
@@ -49,6 +53,7 @@ export default function ActionButton({
     startTransition(async () => {
       const res = await action();
       if (displayToast) toast(res, toastData);
+      if (redirectTo) router.push(redirectTo);
     });
   }
 

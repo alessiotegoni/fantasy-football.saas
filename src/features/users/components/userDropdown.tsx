@@ -18,11 +18,10 @@ import {
   User as UserIcon,
 } from "iconoir-react";
 import { User } from "@supabase/supabase-js";
-import { use, useState } from "react";
+import { use } from "react";
 import { logout } from "@/features/auth/actions/login";
-import { useRouter } from "next/navigation";
-import SubmitButton from "@/components/SubmitButton";
 import Avatar from "@/components/Avatar";
+import ActionButton from "@/components/ActionButton";
 
 export default function UserDropdown({
   userPromise,
@@ -31,28 +30,16 @@ export default function UserDropdown({
   userPromise: Promise<User | null>;
   variant?: "sidebar" | "topbar";
 }) {
-  const router = useRouter();
-
-  const [isSigninOut, setIsSigninOut] = useState(false);
-
   const user = use(userPromise);
-  if (!user) return;
+  if (!user) return null;
 
   const { name, avatar_url } = getMetadataFromUser(user);
-
-  async function handleLogout() {
-    setIsSigninOut(true);
-    await logout();
-
-    router.push("/auth/login");
-    setIsSigninOut(false);
-  }
 
   const triggerClass =
     variant === "sidebar" ? "w-full px-3 py-2" : "p-0 m-0 rounded-full gap-1";
 
   return (
-    <DropdownMenu open={isSigninOut ? true : undefined}>
+    <DropdownMenu>
       <DropdownMenuTrigger
         className={`relative group flex justify-between rounded-xl items-center gap-3 ${triggerClass}`}
       >
@@ -60,7 +47,7 @@ export default function UserDropdown({
           <Avatar
             imageUrl={avatar_url}
             name={name || "user avatar"}
-            size={8}
+            className="size-8"
             renderFallback={() =>
               (name?.charAt(0) ?? user.email?.charAt(0))?.toUpperCase()
             }
@@ -101,18 +88,15 @@ export default function UserDropdown({
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <SubmitButton
-            onClick={handleLogout}
-            loaderCircleClassName="!size-4 text-white"
-            isLoading={isSigninOut}
-            variant="destructive"
-            size="sm"
-            className="justify-start"
-          >
-            <LogOut className="size-4 text-white" /> Esci
-          </SubmitButton>
-        </DropdownMenuItem>
+        <ActionButton
+          action={logout}
+          redirectTo="/auth/login"
+          variant="destructive"
+          size="sm"
+          className="justify-start"
+        >
+          <LogOut className="size-4 text-white" /> Esci
+        </ActionButton>
       </DropdownMenuContent>
     </DropdownMenu>
   );

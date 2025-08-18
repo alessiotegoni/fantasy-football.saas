@@ -61,7 +61,7 @@ export default function AuctionForm({
     ? updateAuction.bind(null, auction.id)
     : createAuction;
   const { isPending, onSubmit } = useHandleSubmit(submitFn, {
-    pushTo: "/premium/auctions",
+    redirectTo: "/premium/auctions",
   });
 
   const form = useForm<AuctionSchema>({
