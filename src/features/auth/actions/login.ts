@@ -23,6 +23,7 @@ enum AUTH_ERRORS {
 }
 
 enum AUTH_SUCCESS {
+  CODE_SENT = "Codice inviato con successo alla tua email",
   LOGIN = "Login effettuato con successo",
   LOGOUT = "Logout effettuato con successo",
 }
@@ -40,9 +41,9 @@ export async function login(
   const redirectUrl = options?.redirectUrl ? `next=${options.redirectUrl}` : "";
 
   if (data.type === "email") {
-    return await emailLogin(data.email, redirectUrl);
+    return emailLogin(data.email, redirectUrl);
   } else {
-    return await oauthLogin(data.type, redirectUrl);
+    return oauthLogin(data.type, redirectUrl);
   }
 }
 
@@ -58,7 +59,7 @@ async function emailLogin(email: string, redirectTo: string) {
 
   if (error) return createError(AUTH_ERRORS.LOGIN);
 
-  return createSuccess(AUTH_SUCCESS.LOGIN, {
+  return createSuccess(AUTH_SUCCESS.CODE_SENT, {
     url: `/auth/verify-otp?${redirectTo}`,
   });
 }
@@ -100,6 +101,8 @@ export async function verifyOtp(values: OtpSchema) {
   });
 
   if (result.error) return createError(AUTH_ERRORS.INVALID_CODE);
+
+  return createSuccess(AUTH_SUCCESS.LOGIN, null);
 }
 
 export async function logout() {

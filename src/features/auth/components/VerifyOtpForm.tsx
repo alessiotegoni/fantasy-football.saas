@@ -11,7 +11,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormField } from "@/components/ui/form";
 import { useEmailLogin } from "@/hooks/useLoginEmail";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import ActionButton from "@/components/ActionButton";
 import SubmitButton from "@/components/SubmitButton";
 import Link from "next/link";
@@ -19,43 +18,44 @@ import { Edit } from "iconoir-react";
 import { Button } from "@/components/ui/button";
 import { otpSchema, OtpSchema } from "../schema/login";
 import { verifyOtp } from "../actions/login";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
 
 export default function VerifyOtpForm() {
   const { email, clearEmail, resendCode } = useEmailLogin();
 
-  const router = useRouter();
   const searchParams = useSearchParams();
+
+  const { isPending, onSubmit: handleVerifyOtp } = useHandleSubmit(onSubmit, {
+    isLeaguePrefix: false,
+    redirectTo: searchParams.get("next") || "/",
+  });
+
+  async function onSubmit(data: OtpSchema) {
+    const result = await verifyOtp(data);
+    clearEmail();
+
+    return result;
+  }
 
   const form = useForm<OtpSchema>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
+      email,
       token: "",
     },
   });
 
   useEffect(() => {
-    if (!email) return router.push("/auth/login");
     form.setValue("email", email);
-  }, []);
-
-  async function onSubmit(data: OtpSchema) {
-    const res = await verifyOtp(data);
-
-    if (res?.error) {
-      toast.error(res.message);
-      return;
-    }
-
-    const redirectUrl = searchParams.get("next");
-    router.push(redirectUrl || "/");
-
-    clearEmail();
-  }
+  }, [email]);
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(handleVerifyOtp)}
+          className="space-y-8"
+        >
           <FormField
             control={form.control}
             name="token"
@@ -98,6 +98,7 @@ export default function VerifyOtpForm() {
             </Button>
           </div>
           <SubmitButton
+            isLoading={isPending}
             loadingText="Verifico codice"
             variant="gradient"
             disabled={form.watch("token").length !== 6 || !email}
