@@ -35,6 +35,7 @@ import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits"
 import { getGeneralSettings } from "../../settings/queries/setting";
 
 enum AUCTION_MESSAGES {
+  AUCTION_CREATED_SUCCESFULLY = "Asta creata con successo",
   AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
   AUCTION_STATUS_UPDATED_SUCCESFULLY = "Stato dell'asta aggiornato con successo",
   AUCTION_DELETED_SUCCESFULLY = "Asta eliminata con successo",
@@ -88,7 +89,7 @@ export async function createAuction(values: AuctionSchema) {
     }
   });
 
-  redirect(`/leagues/${data.leagueId}/premium/auctions`);
+  return createSuccess(AUCTION_MESSAGES.AUCTION_CREATED_SUCCESFULLY, null);
 }
 
 export async function updateAuction(auctionId: string, values: AuctionSchema) {

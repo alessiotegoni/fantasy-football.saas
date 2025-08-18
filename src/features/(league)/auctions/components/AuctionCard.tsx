@@ -66,6 +66,8 @@ export default function AuctionCard({
   const statusInfo = statusConfig[optimisticStatus];
   const canUpdateAuction = canEdit && auction.status !== "ended";
 
+  // FIXME: quando elimino un'asta l'overlay dell'alert dialog di ActionButton rimane aperto
+
   return (
     <div className="bg-input/30 border border-border rounded-4xl p-5 min-h-40 flex flex-col justify-between">
       <div>

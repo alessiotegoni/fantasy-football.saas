@@ -25,13 +25,18 @@ export default function SubmitButton({
   const form = useFormContext();
   const { pending } = useFormStatus();
 
-  const isSubmitWithoutError =
-    !form?.formState?.errors && form?.formState?.isSubmitSuccessful;
-
   const isPending =
     isLoading !== undefined
       ? isLoading
-      : isSubmitWithoutError || form?.formState?.isSubmitting || pending;
+      : form?.formState?.isSubmitting || pending;
+
+  disabled =
+    disabled ||
+    (!form?.formState?.errors && form?.formState?.isSubmitSuccessful);
+
+  //   console.log(form.formState.errors, form.formState.isSubmitSuccessful);
+
+  // console.log(isPending, disabled);
 
   return (
     <Button

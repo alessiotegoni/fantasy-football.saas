@@ -20,8 +20,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
-import useActionToast from "@/hooks/useActionToast";
 import FormSliderField from "@/components/FormFieldSlider";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
 
 export default function ResetCreditsDialog({
   leagueId,
@@ -30,7 +30,7 @@ export default function ResetCreditsDialog({
   leagueId: string;
   initialCredits: number;
 }) {
-  const toast = useActionToast();
+  const { isPending, onSubmit } = useHandleSubmit(resetCredits);
 
   const form = useForm<ResetCreditsSchema>({
     resolver: zodResolver(resetCreditsSchema),
@@ -40,20 +40,19 @@ export default function ResetCreditsDialog({
     },
   });
 
-  async function onSubmit(data: ResetCreditsSchema) {
-    const res = await resetCredits(data);
-    toast(res);
-  }
+  console.log(isPending);
+
 
   return (
-    <Dialog open={form.formState.isSubmitting ? true : undefined}>
-      <Button
-        variant="destructive"
-        asChild
-        className="w-fit h-fit py-3 sm:px-4 min-w-[100px] rounded-xl"
-      >
-        <DialogTrigger>Resetta</DialogTrigger>
-      </Button>
+    <Dialog open={isPending ? true : undefined}>
+      <DialogTrigger asChild>
+        <Button
+          variant="destructive"
+          className="w-fit h-fit py-3 sm:px-4 min-w-[100px] rounded-xl"
+        >
+          Resetta
+        </Button>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Vuoi davvero resettare i crediti ?</DialogTitle>
@@ -75,6 +74,7 @@ export default function ResetCreditsDialog({
                 <Button variant="outline">Chiudi</Button>
               </DialogClose>
               <SubmitButton
+                isLoading={isPending}
                 variant="destructive"
                 className="sm:w-fit"
                 loadingText="Resetto crediti"
