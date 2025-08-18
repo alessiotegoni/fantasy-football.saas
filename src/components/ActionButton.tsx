@@ -20,6 +20,8 @@ import useHandleSubmit from "@/hooks/useHandleSubmit";
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   action: () => Promise<{ error: boolean; message: string }>;
   onPendingChange?: (pending: boolean) => void;
+  onSuccess?: () => void;
+  onError?: () => void;
   loadingText?: string;
   requireAreYouSure?: boolean;
   areYouSureDescription?: string;
@@ -31,6 +33,8 @@ type Props = ComponentPropsWithoutRef<typeof Button> & {
 export default function ActionButton({
   action,
   onPendingChange,
+  onSuccess,
+  onError,
   loadingText = "Caricamento",
   requireAreYouSure = false,
   areYouSureDescription = "Questa azione non può essere annullata",
@@ -51,6 +55,8 @@ export default function ActionButton({
     displayToast,
     isDialogControlled: requireAreYouSure,
     isLeaguePrefix: redirectTo?.includes("/leagues"),
+    onSuccess,
+    onError,
   });
 
   useEffect(() => {
@@ -71,6 +77,7 @@ export default function ActionButton({
       <AlertDialog {...dialogProps}>
         <AlertDialogTrigger asChild>
           <Button
+            variant="destructive"
             disabled={isPending || disabled}
             className={cn("w-full", className)}
             {...props}
