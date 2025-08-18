@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
-  DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogContent,
 } from "@/components/ui/dialog";
 import { addTeamsCredits } from "../actions/handle-credits";
 import { useForm } from "react-hook-form";
@@ -17,8 +17,8 @@ import { addCreditsSchema, AddCreditsSchema } from "../schema/handle-credits";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
-import useActionToast from "@/hooks/useActionToast";
 import FormSliderField from "@/components/FormFieldSlider";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
 
 export default function AddCreditsDialog({
   leagueId,
@@ -27,8 +27,6 @@ export default function AddCreditsDialog({
   leagueId: string;
   initialCredits: number;
 }) {
-  const toast = useActionToast();
-
   const form = useForm<AddCreditsSchema>({
     resolver: zodResolver(addCreditsSchema),
     defaultValues: {
@@ -37,13 +35,15 @@ export default function AddCreditsDialog({
     },
   });
 
-  async function onSubmit(data: AddCreditsSchema) {
-    const res = await addTeamsCredits(data);
-    toast(res);
-  }
+  const { isPending, onSubmit, dialogProps } = useHandleSubmit(
+    addTeamsCredits,
+    {
+      isDialogControlled: true,
+    }
+  );
 
   return (
-    <Dialog open={form.formState.isSubmitting ? true : undefined}>
+    <Dialog {...dialogProps}>
       <Button
         variant="outline"
         asChild
@@ -73,7 +73,11 @@ export default function AddCreditsDialog({
               <DialogClose asChild className="sm:w-fit">
                 <Button variant="outline">Chiudi</Button>
               </DialogClose>
-              <SubmitButton className="sm:w-fit" loadingText="Aggiungo crediti">
+              <SubmitButton
+                isLoading={isPending}
+                className="sm:w-fit"
+                loadingText="Aggiungo crediti"
+              >
                 Aggiungi
               </SubmitButton>
             </DialogFooter>

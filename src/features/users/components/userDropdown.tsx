@@ -93,7 +93,7 @@ export default function UserDropdown({
           redirectTo="/auth/login"
           variant="destructive"
           size="sm"
-          className="justify-start"
+          className="justify-start !px-2 !py-1.5 gap-2 text-sm"
         >
           <LogOut className="size-4 text-white" /> Esci
         </ActionButton>

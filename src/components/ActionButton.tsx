@@ -9,15 +9,13 @@ import {
   AlertDialogTrigger,
   AlertDialogFooter,
   AlertDialogCancel,
-  AlertDialogAction,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ComponentPropsWithoutRef, useEffect, useTransition } from "react";
+import { ComponentPropsWithoutRef, useEffect } from "react";
 import { ExternalToast } from "sonner";
-import useActionToast from "@/hooks/useActionToast";
-import { useRouter } from "next/navigation";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
   action: () => Promise<{ error: boolean; message: string }>;
@@ -44,18 +42,16 @@ export default function ActionButton({
   children,
   ...props
 }: Props) {
-  const router = useRouter();
-  const toast = useActionToast();
-
-  const [isPending, startTransition] = useTransition();
-
-  function performAction() {
-    startTransition(async () => {
-      const res = await action();
-      if (displayToast) toast(res, toastData);
-      if (redirectTo) router.push(redirectTo);
-    });
-  }
+  const {
+    isPending,
+    onSubmit: performAction,
+    dialogProps,
+  } = useHandleSubmit(action, {
+    redirectTo,
+    displayToast,
+    isDialogControlled: requireAreYouSure,
+    isLeaguePrefix: redirectTo?.includes("/leagues"),
+  });
 
   useEffect(() => {
     onPendingChange?.(isPending);
@@ -72,9 +68,13 @@ export default function ActionButton({
 
   if (requireAreYouSure) {
     return (
-      <AlertDialog open={isPending ? true : undefined}>
+      <AlertDialog {...dialogProps}>
         <AlertDialogTrigger asChild>
-          <Button {...props} className={cn("w-full", className)}>
+          <Button
+            disabled={isPending || disabled}
+            className={cn("w-full", className)}
+            {...props}
+          >
             {content}
           </Button>
         </AlertDialogTrigger>
@@ -87,13 +87,14 @@ export default function ActionButton({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annulla</AlertDialogCancel>
-            <AlertDialogAction
-              disabled={isPending}
+            <Button
+              variant="destructive"
+              disabled={isPending || disabled}
               onClick={performAction}
-              className="bg-destructive hover:bg-destructive/90"
+              {...props}
             >
               {content}
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

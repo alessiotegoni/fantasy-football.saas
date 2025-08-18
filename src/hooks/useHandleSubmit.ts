@@ -11,6 +11,7 @@ export default function useHandleSubmit<T>(
     isLeaguePrefix?: boolean;
     onSuccess?: () => void;
     isDialogControlled?: boolean;
+    displayToast?: boolean;
   }
 ) {
   const toast = useActionToast();
@@ -26,12 +27,13 @@ export default function useHandleSubmit<T>(
     isLeaguePrefix = true,
     onSuccess,
     isDialogControlled = false,
+    displayToast = true,
   } = options ?? {};
 
   function onSubmit(args: T) {
     startTransition(async () => {
       const result = await submitFn(args);
-      toast(result);
+      if (displayToast) toast(result);
 
       if (!result.error) {
         handleRedirect();
