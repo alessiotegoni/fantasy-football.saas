@@ -30,7 +30,9 @@ export default function ResetCreditsDialog({
   leagueId: string;
   initialCredits: number;
 }) {
-  const { isPending, onSubmit } = useHandleSubmit(resetCredits);
+  const { isPending, onSubmit, dialogProps } = useHandleSubmit(resetCredits, {
+    isDialogControlled: true,
+  });
 
   const form = useForm<ResetCreditsSchema>({
     resolver: zodResolver(resetCreditsSchema),
@@ -40,11 +42,8 @@ export default function ResetCreditsDialog({
     },
   });
 
-  console.log(isPending);
-
-
   return (
-    <Dialog open={isPending ? true : undefined}>
+    <Dialog {...dialogProps}>
       <DialogTrigger asChild>
         <Button
           variant="destructive"

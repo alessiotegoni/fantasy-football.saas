@@ -1,28 +1,43 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import useActionToast from "./useActionToast";
 import { useParams, useRouter } from "next/navigation";
 
 export default function useHandleSubmit<T>(
   submitFn: (args: T) => Promise<{ error: boolean; message: string }>,
-  options?: { redirectTo?: string; isLeaguePrefix?: boolean }
+  options?: {
+    redirectTo?: string;
+    isLeaguePrefix?: boolean;
+    onSuccess?: () => void;
+    isDialogControlled?: boolean;
+  }
 ) {
   const toast = useActionToast();
 
   const [isPending, startTransition] = useTransition();
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const { leagueId } = useParams<{ leagueId?: string }>();
   const router = useRouter();
 
-  const { redirectTo, isLeaguePrefix = true } = options ?? {};
+  const {
+    redirectTo,
+    isLeaguePrefix = true,
+    onSuccess,
+    isDialogControlled = false,
+  } = options ?? {};
 
   function onSubmit(args: T) {
     startTransition(async () => {
       const result = await submitFn(args);
       toast(result);
 
-      if (!result.error) handleRedirect();
+      if (!result.error) {
+        handleRedirect();
+        onSuccess?.();
+        if (isDialogControlled) setDialogOpen(false);
+      }
     });
   }
 
@@ -37,5 +52,9 @@ export default function useHandleSubmit<T>(
     router.push(redirectTo);
   }
 
-  return { isPending, onSubmit };
+  const dialogProps = isDialogControlled
+    ? { open: dialogOpen, onOpenChange: setDialogOpen }
+    : undefined;
+
+  return { isPending, onSubmit, dialogProps };
 }
