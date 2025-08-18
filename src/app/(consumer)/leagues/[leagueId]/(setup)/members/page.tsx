@@ -20,6 +20,7 @@ import {
   getLeagueMembersTeamsTag,
 } from "@/features/(league)/members/db/cache/leagueMember";
 import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
+import Container from "@/components/Container";
 
 export default async function LeagueMembersPage({
   params,
@@ -29,21 +30,12 @@ export default async function LeagueMembersPage({
   const { leagueId } = await params;
 
   return (
-    <div className="max-w-[700px] mx-auto md:p-4">
-      <div className="flex items-center mb-6 md:mb-8 md:hidden">
-        <Link href={`/leagues/${leagueId}`} className="mr-3">
-          <ArrowLeft className="size-5" />
-        </Link>
-        <h2 className="text-2xl font-heading">Membri della lega</h2>
-      </div>
-      <h2 className="hidden md:block text-3xl font-heading mb-8">
-        Membri della lega
-      </h2>
+    <Container leagueId={leagueId} headerLabel="Membri della lega">
       <Suspense>
         <SuspenseBoundary leagueId={leagueId} />
       </Suspense>
       <Disclaimer />
-    </div>
+    </Container>
   );
 }
 
