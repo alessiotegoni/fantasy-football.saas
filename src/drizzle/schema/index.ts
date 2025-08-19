@@ -27,3 +27,4 @@ export * from "./auctionNominations";
 export * from "./auctionBids";
 export * from "./userSubscriptions";
 export * from "./auctionParticipants";
+export * from "./auctionAcquisitions";
