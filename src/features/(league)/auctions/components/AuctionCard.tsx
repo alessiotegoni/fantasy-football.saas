@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { AuctionWithCreator } from "../queries/auction";
 import AuctionStatus from "../components/AuctionStatus";
 import AuctionDropdownMenu from "./AuctionDropdownMenu";
+import { NavArrowRight } from "iconoir-react";
 
 type Props = {
   auction: AuctionWithCreator;
@@ -19,9 +20,8 @@ export default function AuctionCard({
   isLeagueAdmin,
   canEdit,
 }: Props) {
-  const canUpdateAuction = canEdit && auction.status !== "ended";
-
-  // FIXME: quando elimino un'asta l'overlay dell'alert dialog di ActionButton rimane aperto
+  const isEnded = auction.status === "ended";
+  const canUpdateAuction = canEdit && !isEnded;
 
   return (
     <div className="bg-input/30 border border-border rounded-4xl p-5 min-h-40 flex flex-col justify-between">
@@ -58,11 +58,21 @@ export default function AuctionCard({
         </p>
       )}
 
-      <Button asChild className="self-end w-fit mt-3 sm:mt-0">
-        <Link href={`/leagues/${leagueId}/auctions/${auction.id}`}>
+      {!isEnded ? (
+        <Button
+          className="self-end w-fit mt-3 sm:mt-0"
+          disabled={!["waiting", "active"].includes(auction.status)}
+        >
           Partecipa
-        </Link>
-      </Button>
+        </Button>
+      ) : (
+        <Button asChild className="self-end w-fit mt-3 sm:mt-0">
+          <Link href={`/leagues/${leagueId}/premium/auctions/${auction.id}`}>
+            Vedi asta
+            <NavArrowRight className="size-5" />
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }
