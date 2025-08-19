@@ -83,6 +83,20 @@ export async function updateAuctionParticipantCredits(
   }
 }
 
+export async function setAuctionTurn(auctionId: string, participantId: string) {
+  await db.transaction(async (tx) => {
+    await tx
+      .update(auctionParticipants)
+      .set({ isCurrent: false })
+      .where(eq(auctionParticipants.auctionId, auctionId));
+
+    await tx
+      .update(auctionParticipants)
+      .set({ isCurrent: true })
+      .where(eq(auctionParticipants.id, participantId));
+  });
+}
+
 export async function deleteAuctionParticipant(participantId: string) {
   const [result] = await db
     .delete(auctionParticipants)
