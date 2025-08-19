@@ -1,23 +1,17 @@
 import { z } from "zod";
 import { getUUIdSchema } from "@/schema/helpers";
 
-const participantActionSchema = z.object({
+export const auctionParticipantSchema = z.object({
   auctionId: getUUIdSchema(),
   teamId: getUUIdSchema(),
 });
 
-export const updateAuctionParticipantSchema = z
-  .object({
-    order: z.number().int().positive(),
-    isCurrent: z.boolean(),
-  })
-  .merge(participantActionSchema);
-
-export const deleteAuctionParticipantSchema = participantActionSchema;
+export const updateParticipantsOrderSchema = z.object({
+  auctionId: getUUIdSchema(),
+  participantsIds: z.array(getUUIdSchema()),
+});
 
 export type UpdateAuctionParticipantSchema = z.infer<
-  typeof updateAuctionParticipantSchema
+  typeof updateParticipantsOrderSchema
 >;
-export type DeleteAuctionParticipantSchema = z.infer<
-  typeof deleteAuctionParticipantSchema
->;
+export type AuctionParticipantSchema = z.infer<typeof auctionParticipantSchema>;

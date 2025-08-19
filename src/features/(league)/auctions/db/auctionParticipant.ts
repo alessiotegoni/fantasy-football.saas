@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { auctionParticipants } from "@/drizzle/schema";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, inArray, SQL, sql } from "drizzle-orm";
 import { createError } from "@/lib/helpers";
 
 enum DB_ERROR_MESSAGES {
@@ -34,16 +34,47 @@ export async function insertAuctionParticipant(
   return result.participantId;
 }
 
-export async function updateAuctionParticipant(
+export async function updateParticipantsOrder(
+  auctionId: string,
+  participantsIds: string[]
+) {
+  if (!participantsIds.length) return;
+
+  const sqlChunks: SQL[] = [];
+  const ids: string[] = [];
+
+  sqlChunks.push(sql`(case`);
+
+  participantsIds.forEach((participantId, index) => {
+    sqlChunks.push(
+      sql`when ${auctionParticipants.id} = ${participantId} then ${index + 1}`
+    );
+    ids.push(participantId);
+  });
+
+  sqlChunks.push(sql`end)`);
+
+  const finalSql: SQL = sql.join(sqlChunks, sql.raw(" "));
+
+  await db
+    .update(auctionParticipants)
+    .set({ order: finalSql })
+    .where(
+      and(
+        eq(auctionParticipants.auctionId, auctionId),
+        inArray(auctionParticipants.id, ids)
+      )
+    );
+}
+
+export async function updateAuctionParticipantCredits(
   participantId: string,
-  participant: Partial<
-    Pick<typeof auctionParticipants.$inferInsert, "order" | "isCurrent">
-  >,
+  amount: number,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [result] = await tx
     .update(auctionParticipants)
-    .set(participant)
+    .set({ credits: sql`${auctionParticipants.credits} + ${amount}` })
     .where(eq(auctionParticipants.id, participantId))
     .returning(participantInfo);
 
@@ -60,21 +91,5 @@ export async function deleteAuctionParticipant(participantId: string) {
 
   if (!result?.participantId) {
     throw new Error(createError(DB_ERROR_MESSAGES.DELETION_FAILED).message);
-  }
-}
-
-export async function updateAuctionParticipantCredits(
-  participantId: string,
-  amount: number,
-  tx: Omit<typeof db, "$client"> = db
-) {
-  const [result] = await tx
-    .update(auctionParticipants)
-    .set({ credits: sql`${auctionParticipants.credits} + ${amount}` })
-    .where(eq(auctionParticipants.id, participantId))
-    .returning(participantInfo);
-
-  if (!result?.participantId) {
-    throw new Error(createError(DB_ERROR_MESSAGES.UPDATE_FAILED).message);
   }
 }

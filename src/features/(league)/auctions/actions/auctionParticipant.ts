@@ -13,9 +13,8 @@ import {
 } from "../db/auctionParticipant";
 import { redirect } from "next/navigation";
 import {
-  deleteAuctionParticipantSchema,
-  DeleteAuctionParticipantSchema,
-  updateAuctionParticipantSchema,
+  auctionParticipantSchema,
+  AuctionParticipantSchema,
   UpdateAuctionParticipantSchema,
 } from "../schema/auctionParticipant";
 
@@ -69,13 +68,12 @@ export async function updateAuctionParticipant(
 }
 
 export async function deleteAuctionParticipant(
-  values: DeleteAuctionParticipantSchema
+  values: AuctionParticipantSchema
 ) {
-  const { isValid, data, error } =
-    validateSchema<DeleteAuctionParticipantSchema>(
-      deleteAuctionParticipantSchema,
-      values
-    );
+  const { isValid, data, error } = validateSchema<AuctionParticipantSchema>(
+    auctionParticipantSchema,
+    values
+  );
   if (!isValid) return error;
 
   const permissions = await participantActionPermissions(data);
