@@ -39,16 +39,19 @@ export async function canJoinAuction(auctionId: string) {
   });
 }
 
-export async function participantActionPermissions(
-  auctionId: string,
-  teamId: string
-) {
+export async function participantActionPermissions({
+  auctionId,
+  teamId,
+}: {
+  auctionId: string;
+  teamId: string;
+}) {
   const permissions = await basePermissions(auctionId);
   if (permissions.error) return permissions;
 
   const { auction, userId } = permissions.data;
 
-  const [isLeagueAdmin, existingParticipant] = await Promise.all([
+  const [isLeagueAdmin, participant] = await Promise.all([
     getLeagueAdmin(userId, auction.leagueId),
     getAuctionParticipant(auctionId, teamId),
   ]);
@@ -57,7 +60,7 @@ export async function participantActionPermissions(
     return createError(AUCTION_PARTICIPANT_ERRORS.ADMIN_REQUIRED);
   }
 
-  if (!existingParticipant) {
+  if (!participant) {
     return createError(AUCTION_PARTICIPANT_ERRORS.PARTICIPANT_NOT_FOUND);
   }
 
@@ -67,6 +70,7 @@ export async function participantActionPermissions(
 
   return createSuccess("", {
     auction,
+    participant
   });
 }
 

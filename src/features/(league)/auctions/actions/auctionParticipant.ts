@@ -2,9 +2,19 @@
 
 import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import { createSuccess } from "@/lib/helpers";
-import { canJoinAuction } from "../permissions/auctionParticipant";
-import { insertAuctionParticipant } from "../db/auctionParticipant";
+import {
+  canJoinAuction,
+  participantActionPermissions,
+} from "../permissions/auctionParticipant";
+import {
+  insertAuctionParticipant,
+  deleteAuctionParticipant as deleteAuctionParticipantDB,
+} from "../db/auctionParticipant";
 import { redirect } from "next/navigation";
+import {
+  deleteAuctionParticipantSchema,
+  DeleteAuctionParticipantSchema,
+} from "../schema/auctionParticipant";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
   JOINED_SUCCESSFULLY = "Ti sei unito all'asta con successo",
@@ -48,7 +58,7 @@ export async function updateAuctionParticipant(
     );
   if (!isValid) return error;
 
-  const permissions = await canUpdateAuctionParticipant(data);
+  const permissions = await participantActionPermissions(data);
   if (permissions.error) return permissions;
 
   const { participantId, ...updateData } = data;
@@ -68,10 +78,10 @@ export async function deleteAuctionParticipant(
     );
   if (!isValid) return error;
 
-  const permissions = await canDeleteAuctionParticipant(data);
+  const permissions = await participantActionPermissions(data);
   if (permissions.error) return permissions;
 
-  await deleteAuctionParticipantDB(data.participantId);
+  await deleteAuctionParticipantDB(permissions.data.participant.id);
 
   return createSuccess(AUCTION_PARTICIPANT_MESSAGES.DELETED_SUCCESSFULLY, null);
 }

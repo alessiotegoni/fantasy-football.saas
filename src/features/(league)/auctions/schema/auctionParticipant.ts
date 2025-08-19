@@ -1,11 +1,10 @@
-// import { z } from "zod";
-// import { getUUIdSchema } from "@/schema/helpers";
+import { z } from "zod";
+import { getUUIdSchema } from "@/schema/helpers";
 
-// export const joinAuctionSchema = z.object({
-//   auctionId: getUUIdSchema(),
-//   credits: z.number(),
-//   order: z.number(),
-// });
+const participantActionSchema = z.object({
+  auctionId: getUUIdSchema(),
+  teamId: getUUIdSchema(),
+});
 
 // export const updateAuctionParticipantSchema = z.object({
 //   participantId: getUUIdSchema(),
@@ -15,14 +14,12 @@
 //   isCurrent: z.boolean().optional(),
 // });
 
-// export const deleteAuctionParticipantSchema = z.object({
-//   participantId: getUUIdSchema(),
-// });
+export const deleteAuctionParticipantSchema = participantActionSchema;
 
 // export type JoinAuctionSchema = z.infer<typeof joinAuctionSchema>;
 // export type UpdateAuctionParticipantSchema = z.infer<
 //   typeof updateAuctionParticipantSchema
 // >;
-// export type DeleteAuctionParticipantSchema = z.infer<
-//   typeof deleteAuctionParticipantSchema
-// >;
+export type DeleteAuctionParticipantSchema = z.infer<
+  typeof deleteAuctionParticipantSchema
+>;
