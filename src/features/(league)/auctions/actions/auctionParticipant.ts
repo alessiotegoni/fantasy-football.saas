@@ -8,12 +8,15 @@ import {
 } from "../permissions/auctionParticipant";
 import {
   insertAuctionParticipant,
+  updateAuctionParticipant as updateAuctionParticipantDB,
   deleteAuctionParticipant as deleteAuctionParticipantDB,
 } from "../db/auctionParticipant";
 import { redirect } from "next/navigation";
 import {
   deleteAuctionParticipantSchema,
   DeleteAuctionParticipantSchema,
+  updateAuctionParticipantSchema,
+  UpdateAuctionParticipantSchema,
 } from "../schema/auctionParticipant";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
@@ -61,9 +64,7 @@ export async function updateAuctionParticipant(
   const permissions = await participantActionPermissions(data);
   if (permissions.error) return permissions;
 
-  const { participantId, ...updateData } = data;
-
-  await updateAuctionParticipantDB(participantId, updateData);
+  await updateAuctionParticipantDB(permissions.data.participant.id, data);
 
   return createSuccess(AUCTION_PARTICIPANT_MESSAGES.UPDATED_SUCCESSFULLY, null);
 }

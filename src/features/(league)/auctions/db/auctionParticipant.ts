@@ -55,11 +55,8 @@ export async function updateAuctionParticipant(
   }
 }
 
-export async function deleteAuctionParticipant(
-  participantId: string,
-  tx: Omit<typeof db, "$client"> = db
-) {
-  const [result] = await tx
+export async function deleteAuctionParticipant(participantId: string) {
+  const [result] = await db
     .delete(auctionParticipants)
     .where(eq(auctionParticipants.id, participantId))
     .returning(participantInfo);
