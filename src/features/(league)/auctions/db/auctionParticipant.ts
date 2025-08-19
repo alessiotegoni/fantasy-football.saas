@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { auctionParticipants } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { createError } from "@/lib/helpers";
 
 enum DB_ERROR_MESSAGES {
@@ -63,5 +63,21 @@ export async function deleteAuctionParticipant(participantId: string) {
 
   if (!result?.participantId) {
     throw new Error(createError(DB_ERROR_MESSAGES.DELETION_FAILED).message);
+  }
+}
+
+export async function updateAuctionParticipantCredits(
+  participantId: string,
+  amount: number,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [result] = await tx
+    .update(auctionParticipants)
+    .set({ credits: sql`${auctionParticipants.credits} + ${amount}` })
+    .where(eq(auctionParticipants.id, participantId))
+    .returning(participantInfo);
+
+  if (!result?.participantId) {
+    throw new Error(createError(DB_ERROR_MESSAGES.UPDATE_FAILED).message);
   }
 }
