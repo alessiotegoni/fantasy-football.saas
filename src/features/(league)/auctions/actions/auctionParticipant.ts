@@ -4,22 +4,26 @@ import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import { createSuccess } from "@/lib/helpers";
 import {
   canJoinAuction,
+  canUpdateParticipantsOrder,
   participantActionPermissions,
 } from "../permissions/auctionParticipant";
 import {
   insertAuctionParticipant,
-  updateAuctionParticipant as updateAuctionParticipantDB,
   deleteAuctionParticipant as deleteAuctionParticipantDB,
+  setAuctionTurn as setAuctionTurnDB,
+  updateParticipantsOrder as updateParticipantsOrderDB,
 } from "../db/auctionParticipant";
 import { redirect } from "next/navigation";
 import {
   auctionParticipantSchema,
   AuctionParticipantSchema,
-  UpdateAuctionParticipantSchema,
+  updateParticipantsOrderSchema,
+  UpdateParticipantsOrderSchema,
 } from "../schema/auctionParticipant";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
-  UPDATED_SUCCESSFULLY = "Partecipante aggiornato con successo",
+  TURN_SET_SUCCESSFULLY = "Turno impostato con successo",
+  ORDER_UPDATED_SUCCESSFULLY = "Ordine aggiornato con successo",
   DELETED_SUCCESSFULLY = "Partecipante eliminato con successo",
 }
 
@@ -49,22 +53,46 @@ export async function joinAuction(auctionId: string) {
   redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
 }
 
-export async function updateAuctionParticipant(
-  values: UpdateAuctionParticipantSchema
+export async function updateParticipantsOrder(
+  values: UpdateParticipantsOrderSchema
 ) {
   const { isValid, data, error } =
-    validateSchema<UpdateAuctionParticipantSchema>(
-      updateAuctionParticipantSchema,
+    validateSchema<UpdateParticipantsOrderSchema>(
+      updateParticipantsOrderSchema,
       values
     );
+  if (!isValid) return error;
+
+  const permissions = await canUpdateParticipantsOrder(data.auctionId);
+  if (permissions.error) return permissions;
+
+  await updateParticipantsOrderDB(data.auctionId, data.participantsIds);
+
+  return createSuccess(
+    AUCTION_PARTICIPANT_MESSAGES.ORDER_UPDATED_SUCCESSFULLY,
+    null
+  );
+}
+
+export async function setAuctionTurn(values: AuctionParticipantSchema) {
+  const { isValid, data, error } = validateSchema<AuctionParticipantSchema>(
+    auctionParticipantSchema,
+    values
+  );
   if (!isValid) return error;
 
   const permissions = await participantActionPermissions(data);
   if (permissions.error) return permissions;
 
-  await updateAuctionParticipantDB(permissions.data.participant.id, data);
+  await setAuctionTurnDB(
+    permissions.data.participant.auctionId,
+    permissions.data.participant.id
+  );
 
-  return createSuccess(AUCTION_PARTICIPANT_MESSAGES.UPDATED_SUCCESSFULLY, null);
+  return createSuccess(
+    AUCTION_PARTICIPANT_MESSAGES.TURN_SET_SUCCESSFULLY,
+    null
+  );
 }
 
 export async function deleteAuctionParticipant(

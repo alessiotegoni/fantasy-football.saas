@@ -9,7 +9,7 @@ import { getAuctionParticipant } from "../queries/auctionParticipant";
 enum AUCTION_PARTICIPANT_ERRORS {
   USER_TEAM_NOT_FOUND = "Devi prima creare una squadra per partecipare all'asta",
   AUCTION_NOT_FOUND = "Asta non trovata",
-  AUCTION_ENDED = "Non puoi gestire partecipanti di un'asta terminata",
+  AUCTION_ENDED = "Non puoi gestire i partecipanti di un'asta terminata",
   JOIN_INVALID_STATUS = "Puoi entrare solamente in aste in attesa o in corso",
   ADMIN_REQUIRED = "Per gestire i partecipanti della lega devi essere admin",
   ALREADY_PARTICIPANT = "Sei già un partecipante di questa asta",
@@ -39,6 +39,27 @@ export async function canJoinAuction(auctionId: string) {
   });
 }
 
+export async function canUpdateParticipantsOrder(auctionId: string) {
+  const permissions = await basePermissions(auctionId);
+  if (permissions.error) return permissions;
+
+  const { auction, userId } = permissions.data;
+
+  const isLeagueAdmin = await getLeagueAdmin(userId, auction.leagueId);
+
+  if (!isLeagueAdmin) {
+    return createError(AUCTION_PARTICIPANT_ERRORS.ADMIN_REQUIRED);
+  }
+
+  if (auction.status === "ended") {
+    return createError(AUCTION_PARTICIPANT_ERRORS.AUCTION_ENDED);
+  }
+
+  return createSuccess("", {
+    auction,
+  });
+}
+
 export async function participantActionPermissions({
   auctionId,
   teamId,
@@ -53,7 +74,7 @@ export async function participantActionPermissions({
 
   const [isLeagueAdmin, participant] = await Promise.all([
     getLeagueAdmin(userId, auction.leagueId),
-    getAuctionParticipant(auctionId, teamId),
+    getAuctionParticipant(auctionId, teamId)
   ]);
 
   if (!isLeagueAdmin) {
@@ -70,7 +91,7 @@ export async function participantActionPermissions({
 
   return createSuccess("", {
     auction,
-    participant
+    participant,
   });
 }
 
