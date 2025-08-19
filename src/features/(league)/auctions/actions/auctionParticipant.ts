@@ -20,7 +20,6 @@ import {
 } from "../schema/auctionParticipant";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
-  JOINED_SUCCESSFULLY = "Ti sei unito all'asta con successo",
   UPDATED_SUCCESSFULLY = "Partecipante aggiornato con successo",
   DELETED_SUCCESSFULLY = "Partecipante eliminato con successo",
 }
@@ -48,7 +47,7 @@ export async function joinAuction(auctionId: string) {
     });
   }
 
-  redirect(`/leagues/${leagueId}/premium/actions/${id}`);
+  redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
 }
 
 export async function updateAuctionParticipant(

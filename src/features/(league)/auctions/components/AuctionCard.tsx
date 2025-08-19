@@ -6,6 +6,8 @@ import type { AuctionWithCreator } from "../queries/auction";
 import AuctionStatus from "../components/AuctionStatus";
 import AuctionDropdownMenu from "./AuctionDropdownMenu";
 import { NavArrowRight } from "iconoir-react";
+import ActionButton from "@/components/ActionButton";
+import { joinAuction } from "../actions/auctionParticipant";
 
 type Props = {
   auction: AuctionWithCreator;
@@ -59,12 +61,14 @@ export default function AuctionCard({
       )}
 
       {!isEnded ? (
-        <Button
+        <ActionButton
+        loadingText="Partecipo"
+          action={joinAuction.bind(null, auction.id)}
           className="self-end w-fit mt-3 sm:mt-0"
           disabled={!["waiting", "active"].includes(auction.status)}
         >
           Partecipa
-        </Button>
+        </ActionButton>
       ) : (
         <Button asChild className="self-end w-fit mt-3 sm:mt-0">
           <Link href={`/leagues/${leagueId}/premium/auctions/${auction.id}`}>

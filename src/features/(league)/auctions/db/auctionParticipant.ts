@@ -14,7 +14,7 @@ const participantInfo = {
 };
 
 // credits e order sono inseriti automaticamente tramite due funzioni
-// postgres chiamate da un trigger
+// chiamate da due trigger
 
 export async function insertAuctionParticipant(
   participant: Pick<
