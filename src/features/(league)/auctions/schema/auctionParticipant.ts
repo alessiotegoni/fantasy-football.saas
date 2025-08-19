@@ -8,7 +8,6 @@ const participantActionSchema = z.object({
 
 export const updateAuctionParticipantSchema = z
   .object({
-    isOnline: z.boolean(),
     order: z.number().int().positive(),
     isCurrent: z.boolean(),
   })

@@ -37,10 +37,7 @@ export async function insertAuctionParticipant(
 export async function updateAuctionParticipant(
   participantId: string,
   participant: Partial<
-    Pick<
-      typeof auctionParticipants.$inferInsert,
-      "credits" | "isOnline" | "order" | "isCurrent"
-    >
+    Pick<typeof auctionParticipants.$inferInsert, "order" | "isCurrent">
   >,
   tx: Omit<typeof db, "$client"> = db
 ) {

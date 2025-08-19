@@ -22,7 +22,6 @@ export const auctionParticipants = pgTable(
       onDelete: "set null",
     }),
     credits: smallint("credits").notNull().default(500),
-    isOnline: boolean("is_online").default(true).notNull(),
     order: smallint("order").notNull().default(1),
     isCurrent: boolean("is_current").default(false).notNull(),
     joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow(),
