@@ -11,9 +11,6 @@ export const getMemberIdTag = (memberId: string) =>
 export const getLeagueMembersTag = (leagueId: string) =>
   getLeagueTag("league-members", leagueId);
 
-export const getLeagueMembersTeamsTag = (leagueId: string) =>
-  getLeagueTag("league-members-teams", leagueId);
-
 export const revalidateLeagueMembersCache = ({
   leagueId,
   userId,

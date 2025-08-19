@@ -1,7 +1,6 @@
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { ArrowLeft, Community, Shield } from "iconoir-react";
-import Link from "next/link";
+import { Community, Shield } from "iconoir-react";
 import { InviteButton } from "@/features/(league)/leagues/components/InviteButton";
 import {
   getLeagueAdmin,
@@ -15,11 +14,11 @@ import { getUserId } from "@/features/users/utils/user";
 import Disclaimer from "@/components/Disclaimer";
 import BannedUsersSection from "@/features/(league)/members/components/BannedUsersSection";
 import { MemberCard } from "@/features/(league)/members/components/MemberCard";
+import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
 import {
-  getLeagueMembersTag,
-  getLeagueMembersTeamsTag,
-} from "@/features/(league)/members/db/cache/leagueMember";
-import { getTeamIdTag } from "@/features/(league)/teams/db/cache/leagueTeam";
+  getLeagueTeamsTag,
+  getTeamIdTag,
+} from "@/features/(league)/teams/db/cache/leagueTeam";
 import Container from "@/components/Container";
 
 export default async function LeagueMembersPage({
@@ -141,7 +140,7 @@ function MemberSection({
 
 export async function getLeagueMembers(leagueId: string) {
   "use cache";
-  cacheTag(getLeagueMembersTag(leagueId), getLeagueMembersTeamsTag(leagueId));
+  cacheTag(getLeagueMembersTag(leagueId), getLeagueTeamsTag(leagueId));
 
   const results = await db
     .select({

@@ -21,19 +21,21 @@ type Props = {
   canUpdate: boolean;
 };
 
-export default function AuctionStatus({
-  auction: { id, status },
-  canUpdate,
-}: Props) {
+export default function AuctionStatus({ auction, canUpdate }: Props) {
   const [optimisticStatus, updateOptimisticStatus] = useOptimistic(
-    status,
+    auction.status,
     (_, newStatus: AuctionStatus) => newStatus
   );
 
+  async function handleUpdateStatus(status: AuctionStatus) {
+    updateOptimisticStatus(status);
+    return updateAuctionStatus({ id: auction.id, status });
+  }
+
   const { isPending, onSubmit: updateStatus } = useHandleSubmit(
-    updateAuctionStatus.bind(null, { id, status }),
+    handleUpdateStatus,
     {
-      onError: () => updateOptimisticStatus(status),
+      onError: () => updateOptimisticStatus(auction.status),
     }
   );
 

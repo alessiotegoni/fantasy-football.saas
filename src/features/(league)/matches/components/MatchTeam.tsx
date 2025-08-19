@@ -47,7 +47,7 @@ export default function MatchTeam({
         />
       ) : (
         <div className="size-12 sm:size-20 rounded-full bg-muted flex items-center justify-center">
-          <AlertTriangle className="size-10 text-destructive" />
+          <AlertTriangle className="size-6 sm:size-10 text-destructive" />
         </div>
       )}
       {module !== undefined && (

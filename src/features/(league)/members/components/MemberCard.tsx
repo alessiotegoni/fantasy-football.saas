@@ -157,7 +157,7 @@ function getMemberActions({ role, ...args }: SetRoleMemberSchema) {
     },
     {
       name: "Banna membro",
-      fn: banMember.bind(null, { ...args, reason: "" }),
+      fn: banMember.bind(null, { ...args, reason: null }),
       icon: UserBadgeCheck,
       loadingText: "Banno membro",
       description:

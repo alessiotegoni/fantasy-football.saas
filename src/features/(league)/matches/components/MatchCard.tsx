@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { Match } from "../../(admin)/calendar/queries/calendar";
 import MatchTeam from "./MatchTeam";
 import MatchPoints from "./MatchPoints";
 import MatchScores from "./MatchScores";
 import { cn } from "@/lib/utils";
 import ScoresSeparator from "./ScoresSeparator";
+import { Match } from "../../(admin)/calendar/regular/queries/calendar";
 
 type Props = Omit<Match, "splitMatchday"> & {
   leagueId: string;
