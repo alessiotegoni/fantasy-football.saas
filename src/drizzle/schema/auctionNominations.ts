@@ -1,12 +1,5 @@
-import {
-  pgTable,
-  uuid,
-  smallint,
-  timestamp,
-  pgEnum,
-  integer,
-} from "drizzle-orm/pg-core";
-import { relations, sql } from "drizzle-orm";
+import { pgTable, uuid, smallint, pgEnum, integer } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import { auctions } from "./auctions";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 import { players } from "./players";
@@ -25,20 +18,12 @@ export const auctionNominations = pgTable("auction_nominations", {
     .references(() => auctions.id, { onDelete: "cascade" }),
   nominatedBy: uuid("nominated_by")
     .notNull()
-    .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
+    .references(() => leagueMemberTeams.id, { onDelete: "set null" }),
   playerId: integer("player_id")
     .notNull()
     .references(() => players.id, { onDelete: "cascade" }),
   initialPrice: smallint("initial_price").notNull().default(1),
-  finalPrice: smallint("final_price"),
-  winningTeamId: uuid("winning_team_id").references(
-    () => leagueMemberTeams.id,
-    { onDelete: "cascade" }
-  ),
   status: auctionNominationStatusEnum("status").notNull().default("bidding"),
-  endAt: timestamp("end_at", { withTimezone: true })
-    .notNull()
-    .default(sql`now() + '00:00:25'::interval`),
 });
 
 export const auctionNominationsRelations = relations(
@@ -55,10 +40,6 @@ export const auctionNominationsRelations = relations(
     player: one(players, {
       fields: [auctionNominations.playerId],
       references: [players.id],
-    }),
-    winningTeam: one(leagueMemberTeams, {
-      fields: [auctionNominations.winningTeamId],
-      references: [leagueMemberTeams.id],
     }),
     bids: many(auctionBids),
   })

@@ -13,6 +13,8 @@ import { auctionNominations } from "./auctionNominations";
 import { splits } from "./splits";
 import { auctionSettings } from "./auctionSettings";
 
+import { auctionParticipants } from "./auctionParticipants";
+
 export const auctionTypes = ["classic", "repair"] as const;
 export const auctionStatuses = [
   "waiting",

@@ -10,7 +10,7 @@ export const auctionBids = pgTable("auction_bids", {
   teamId: uuid("team_id")
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
-  amount: smallint("amount").notNull().default(2),
+  amount: smallint("amount").notNull(),
 });
 
 export const auctionBidsRelations = relations(auctionBids, ({ one }) => ({
