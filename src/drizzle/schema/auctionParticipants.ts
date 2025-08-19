@@ -1,6 +1,5 @@
 import {
   boolean,
-  jsonb,
   pgTable,
   smallint,
   timestamp,
@@ -22,11 +21,10 @@ export const auctionParticipants = pgTable(
     teamId: uuid("team_id").references(() => leagueMemberTeams.id, {
       onDelete: "set null",
     }),
-    credits: smallint("credits").notNull(),
+    credits: smallint("credits").notNull().default(500),
     isOnline: boolean("is_online").default(true).notNull(),
-    order: smallint("order").notNull(),
+    order: smallint("order").notNull().default(1),
     isCurrent: boolean("is_current").default(false).notNull(),
-    metadata: jsonb("metadata").default('{}').notNull(),
     joinedAt: timestamp("joined_at", { withTimezone: true }).defaultNow(),
   },
   (table) => ({
@@ -58,6 +56,6 @@ export const auctionParticipantsRelations = relations(
       fields: [auctionParticipants.teamId],
       references: [leagueMemberTeams.id],
     }),
-    acquisitions: many(auctionAcquisitions)
+    acquisitions: many(auctionAcquisitions),
   })
 );

@@ -13,11 +13,16 @@ const participantInfo = {
   participantId: auctionParticipants.id,
 };
 
+// credits e order sono inseriti automaticamente tramite due funzioni
+// postgres chiamate da un trigger
+
 export async function insertAuctionParticipant(
-  participant: typeof auctionParticipants.$inferInsert,
-  tx: Omit<typeof db, "$client"> = db
+  participant: Pick<
+    typeof auctionParticipants.$inferInsert,
+    "auctionId" | "teamId"
+  >
 ) {
-  const [result] = await tx
+  const [result] = await db
     .insert(auctionParticipants)
     .values(participant)
     .returning(participantInfo);

@@ -1,25 +1,10 @@
 "use server";
 
-import { validateSchema } from "@/schema/helpers";
-import {
-  joinAuctionSchema,
-  JoinAuctionSchema,
-  updateAuctionParticipantSchema,
-  UpdateAuctionParticipantSchema,
-  deleteAuctionParticipantSchema,
-  DeleteAuctionParticipantSchema,
-} from "../schema/auctionParticipant";
-import {
-  canJoinAuction,
-  canUpdateAuctionParticipant,
-  canDeleteAuctionParticipant,
-} from "../permissions/auctionParticipant";
+import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import { createSuccess } from "@/lib/helpers";
-import {
-  insertAuctionParticipant,
-  updateAuctionParticipant as updateAuctionParticipantDB,
-  deleteAuctionParticipant as deleteAuctionParticipantDB,
-} from "../db/auctionParticipants";
+import { canJoinAuction } from "../permissions/auctionParticipant";
+import { insertAuctionParticipant } from "../db/auctionParticipant";
+import { redirect } from "next/navigation";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
   JOINED_SUCCESSFULLY = "Ti sei unito all'asta con successo",
@@ -27,33 +12,40 @@ enum AUCTION_PARTICIPANT_MESSAGES {
   DELETED_SUCCESSFULLY = "Partecipante eliminato con successo",
 }
 
-export async function joinAuction(values: JoinAuctionSchema) {
-  const { isValid, data, error } = validateSchema<JoinAuctionSchema>(
-    joinAuctionSchema,
-    values
+export async function joinAuction(auctionId: string) {
+  const { isValid, data, error } = validateSchema<string>(
+    getUUIdSchema(),
+    auctionId
   );
   if (!isValid) return error;
 
   const permissions = await canJoinAuction(data);
   if (permissions.error) return permissions;
 
-  const { userTeamId } = permissions.data;
+  const {
+    auction: { id, leagueId },
+    userTeamId,
+    isAlreadyParticipant,
+  } = permissions.data;
 
-  await insertAuctionParticipant({
-    ...data,
-    teamId: userTeamId,
-  });
+  if (!isAlreadyParticipant) {
+    await insertAuctionParticipant({
+      auctionId,
+      teamId: userTeamId,
+    });
+  }
 
-  return createSuccess(AUCTION_PARTICIPANT_MESSAGES.JOINED_SUCCESSFULLY, null);
+  redirect(`/leagues/${leagueId}/premium/actions/${id}`);
 }
 
 export async function updateAuctionParticipant(
   values: UpdateAuctionParticipantSchema
 ) {
-  const { isValid, data, error } = validateSchema<UpdateAuctionParticipantSchema>(
-    updateAuctionParticipantSchema,
-    values
-  );
+  const { isValid, data, error } =
+    validateSchema<UpdateAuctionParticipantSchema>(
+      updateAuctionParticipantSchema,
+      values
+    );
   if (!isValid) return error;
 
   const permissions = await canUpdateAuctionParticipant(data);
@@ -69,10 +61,11 @@ export async function updateAuctionParticipant(
 export async function deleteAuctionParticipant(
   values: DeleteAuctionParticipantSchema
 ) {
-  const { isValid, data, error } = validateSchema<DeleteAuctionParticipantSchema>(
-    deleteAuctionParticipantSchema,
-    values
-  );
+  const { isValid, data, error } =
+    validateSchema<DeleteAuctionParticipantSchema>(
+      deleteAuctionParticipantSchema,
+      values
+    );
   if (!isValid) return error;
 
   const permissions = await canDeleteAuctionParticipant(data);
