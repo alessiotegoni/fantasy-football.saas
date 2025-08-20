@@ -17,6 +17,7 @@ import { auctionAcquisitions } from "@/drizzle/schema/auctionAcquisitions";
 import { and, eq } from "drizzle-orm";
 import { players } from "@/drizzle/schema/players";
 import { sql } from "drizzle-orm";
+import { getPlayer } from "@/features/players/queries/player";
 
 enum AUCTION_NOMINATION_ERRORS {
   NOT_A_PARTICIPANT = "Non sei un partecipante di questa asta",
@@ -41,7 +42,7 @@ export async function canCreateNomination({
   const { auction, participant } = permissions.data;
 
   const [player, existingNomination, { playersPerRole }] = await Promise.all([
-    getPlayerRole(playerId),
+    getPlayer(playerId),
     getNominationByPlayer(auctionId, playerId),
     getAuctionSettings(auctionId),
   ]);
@@ -59,7 +60,7 @@ export async function canCreateNomination({
     participant.id
   );
 
-  if (!checkMaxPlayersPerRole(playerCounts, playersPerRole, player.roleId)) {
+  if (!checkMaxPlayersPerRole(playerCounts, playersPerRole, player.role.id)) {
     return createError(AUCTION_NOMINATION_ERRORS.MAX_PLAYERS_REACHED);
   }
 
