@@ -3,37 +3,56 @@ import { getAuction } from "../queries/auction";
 import { createError, createSuccess } from "@/lib/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getLeagueAdmin } from "../../leagues/queries/league";
-import { getNomination } from "../queries/auctionNomination";
-import { AUCTION_PERMISSION_ERRORS } from "./shared";
-import { getAcquisition } from "../queries/auctionAcquisition";
+import { AUCTION_PERMISSION_ERRORS, validatePlayerAndCredits } from "./shared";
+import {
+  getAcquisition,
+  getAcquisitionByPlayer,
+} from "../queries/auctionAcquisition";
+import { AddAcquisitionPlayerSchema } from "../schema/auctionAcquisition";
+import { db } from "@/drizzle/db";
+import { auctionParticipants } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 enum ACQUISITION_ERRORS {
-  NOMINATION_NOT_FOUND = "Nomina non trovata",
-  NOMINATION_ALREADY_SOLD = "Questo giocatore è già stato venduto",
-  ACQUISITION_NOT_FOUND = "Acquisto non trovato",
+  ACQUISITION_NOT_FOUND = "Acquisizione non trovata",
   ADMIN_REQUIRED = "Solo un admin può eseguire questa azione",
+  INVALID_PARTICIPANT = "Partecipante non valido per questa asta",
+  PLAYER_ALREADY_ACQUIRED = "Questo giocatore è già stato acquistato",
 }
 
-export async function canAcquirePlayer(nominationId: string) {
-  const nomination = await getNomination(nominationId);
-  if (!nomination) {
-    return createError(ACQUISITION_ERRORS.NOMINATION_NOT_FOUND);
-  }
-
-  if (nomination.status === "sold") {
-    return createError(ACQUISITION_ERRORS.NOMINATION_ALREADY_SOLD);
-  }
-
-  const adminPermissions = await basePermissions(nomination.auctionId);
+export async function canAddAcquisitionPlayer(
+  data: AddAcquisitionPlayerSchema
+) {
+  const adminPermissions = await basePermissions(data.auctionId);
   if (adminPermissions.error) return adminPermissions;
 
-  return createSuccess("", {
-    nomination,
-    auction: adminPermissions.data.auction,
+  const participant = await getAuctionParticipantById(data.participantId);
+  if (!participant || participant.auctionId !== data.auctionId) {
+    return createError(ACQUISITION_ERRORS.INVALID_PARTICIPANT);
+  }
+
+  const existingAcquisition = await getAcquisitionByPlayer(
+    data.auctionId,
+    data.playerId
+  );
+  if (existingAcquisition) {
+    return createError(ACQUISITION_ERRORS.PLAYER_ALREADY_ACQUIRED);
+  }
+
+  const playerAndCreditValidation = await validatePlayerAndCredits({
+    playerId: data.playerId,
+    auctionId: data.auctionId,
+    participantId: data.participantId,
+    bidAmount: data.price,
+    currentCredits: participant.credits,
   });
+
+  if (playerAndCreditValidation.error) return playerAndCreditValidation;
+
+  return createSuccess("", { participant });
 }
 
-export async function canDeleteAcquisition(acquisitionId: string) {
+export async function canRemoveAcquiredPlayer(acquisitionId: string) {
   const acquisition = await getAcquisition(acquisitionId);
   if (!acquisition) {
     return createError(ACQUISITION_ERRORS.ACQUISITION_NOT_FOUND);
@@ -60,4 +79,13 @@ async function basePermissions(auctionId: string) {
   }
 
   return createSuccess("", { auction, userId });
+}
+
+async function getAuctionParticipantById(participantId: string) {
+  const [participant] = await db
+    .select()
+    .from(auctionParticipants)
+    .where(eq(auctionParticipants.id, participantId));
+
+  return participant;
 }

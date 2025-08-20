@@ -34,3 +34,17 @@ export async function getAcquisition(id: string) {
   });
   return acquisition;
 }
+
+export async function getAcquisitionByPlayer(
+  auctionId: string,
+  playerId: number
+) {
+  const [acquisition] = await db.query.auctionAcquisitions.findMany({
+    where: and(
+      eq(auctionAcquisitions.auctionId, auctionId),
+      eq(auctionAcquisitions.playerId, playerId)
+    ),
+    limit: 1,
+  });
+  return acquisition;
+}

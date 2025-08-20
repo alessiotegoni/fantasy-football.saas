@@ -9,82 +9,52 @@ import {
 } from "../db/auctionAcquisition";
 import { updateParticipantCredits } from "../db/auctionParticipant";
 import {
-  canAcquirePlayer,
-  canDeleteAcquisition,
+  canAddAcquisitionPlayer,
+  canRemoveAcquiredPlayer,
 } from "../permissions/auctionAcquisition";
-import { getHighestBid } from "../queries/auctionBid";
 import {
-  AcquirePlayerSchema,
-  acquirePlayerSchema,
+  addAcquisitionPlayerSchema,
+  AddAcquisitionPlayerSchema,
 } from "../schema/auctionAcquisition";
-import {
-  deleteNomination,
-  updateNominationStatus,
-} from "../db/auctionNomination";
+import { deleteNomination } from "../db/auctionNomination";
 import { getNominationByPlayer } from "../queries/auctionNomination";
 
 enum ACQUISITION_MESSAGES {
-  PLAYER_ACQUIRED_SUCCESSFULLY = "Giocatore acquistato con successo",
-  ACQUISITION_DELETED_SUCCESSFULLY = "Acquisto eliminato con successo",
+  PLAYER_ACQUIRED_SUCCESSFULLY = "Giocatore acquisito con successo",
+  ACQUISITION_DELETED_SUCCESSFULLY = "Acquisizione eliminata con successo",
 }
 
-export async function acquirePlayer(values: AcquirePlayerSchema) {
-  const { isValid, data, error } = validateSchema<AcquirePlayerSchema>(
-    acquirePlayerSchema,
+export async function addAcquisitionPlayer(values: AddAcquisitionPlayerSchema) {
+  const { isValid, data, error } = validateSchema<AddAcquisitionPlayerSchema>(
+    addAcquisitionPlayerSchema,
     values
   );
   if (!isValid) return error;
 
-  const permissions = await canAcquirePlayer(data.nominationId);
+  const permissions = await canAddAcquisitionPlayer(data);
   if (permissions.error) return permissions;
 
-  const { nomination } = permissions.data;
+  const { participant } = permissions.data;
 
-  const result = await db.transaction(async (tx) => {
-    const highestBid = await getHighestBid(nomination.id);
+  await db.transaction(async (tx) => {
+    await insertAcquisition(data, tx);
 
-    let winnerId: string;
-    let price: number;
+    await updateParticipantCredits(participant.id, -data.price, tx);
 
-    if (highestBid) {
-      winnerId = highestBid.participantId;
-      price = highestBid.amount;
-    } else {
-      winnerId = nomination.nominatedBy;
-      price = nomination.initialPrice;
-    }
-
-    await insertAcquisition(
-      {
-        auctionId: nomination.auctionId,
-        participantId: winnerId,
-        playerId: nomination.playerId,
-        price: price,
-      },
-      tx
-    );
-
-    await updateParticipantCredits(winnerId, -price, tx);
-
-    await updateNominationStatus(nomination.id, "sold", tx);
-
-    return { winnerId, price };
+    await deleteNominationIfExists(data, tx);
   });
 
-  return createSuccess(
-    ACQUISITION_MESSAGES.PLAYER_ACQUIRED_SUCCESSFULLY,
-    result
-  );
+  return createSuccess(ACQUISITION_MESSAGES.PLAYER_ACQUIRED_SUCCESSFULLY, null);
 }
 
-export async function deleteAcquisition(acquisitionId: string) {
+export async function removeAcquiredPlayer(acquisitionId: string) {
   const { isValid, error } = validateSchema<string>(
     getUUIdSchema(),
     acquisitionId
   );
   if (!isValid) return error;
 
-  const permissions = await canDeleteAcquisition(acquisitionId);
+  const permissions = await canRemoveAcquiredPlayer(acquisitionId);
   if (permissions.error) return permissions;
 
   const { acquisition } = permissions.data;
@@ -98,15 +68,25 @@ export async function deleteAcquisition(acquisitionId: string) {
       tx
     );
 
-    const nomination = await getNominationByPlayer(
-      acquisition.auctionId,
-      acquisition.playerId
-    );
-    if (nomination) await deleteNomination(nomination.id, tx);
+    await deleteNominationIfExists(acquisition, tx);
   });
 
   return createSuccess(
     ACQUISITION_MESSAGES.ACQUISITION_DELETED_SUCCESSFULLY,
     null
   );
+}
+
+async function deleteNominationIfExists(
+  {
+    auctionId,
+    playerId,
+  }: {
+    auctionId: string;
+    playerId: number;
+  },
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const nomination = await getNominationByPlayer(auctionId, playerId);
+  if (nomination) await deleteNomination(nomination.id, tx);
 }

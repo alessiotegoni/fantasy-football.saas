@@ -1,7 +1,13 @@
-import { getUUIdSchema } from "@/schema/helpers";
+import { getSerialIdSchema, getUUIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 
-export const acquirePlayerSchema = z.object({
-  nominationId: getUUIdSchema(),
+export const addAcquisitionPlayerSchema = z.object({
+  auctionId: getUUIdSchema(),
+  participantId: getUUIdSchema(),
+  playerId: getSerialIdSchema(),
+  price: z.number().int().min(0, "Il prezzo non può essere negativo"),
 });
-export type AcquirePlayerSchema = z.infer<typeof acquirePlayerSchema>;
+
+export type AddAcquisitionPlayerSchema = z.infer<
+  typeof addAcquisitionPlayerSchema
+>;
