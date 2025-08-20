@@ -1,13 +1,13 @@
 import { PlayersPerRole } from "@/drizzle/schema";
 
-export function checkMaxPlayersPerRole(
+export function isRoleFull(
   playerCounts: Record<number, number>,
   playersPerRole: PlayersPerRole,
   playerRoleId: number
 ) {
   const currentRoleCount = playerCounts[playerRoleId] || 0;
   const maxRoleCount = playersPerRole[playerRoleId] || 0;
-  return currentRoleCount < maxRoleCount;
+  return currentRoleCount >= maxRoleCount;
 }
 
 type CreditsValidation =
