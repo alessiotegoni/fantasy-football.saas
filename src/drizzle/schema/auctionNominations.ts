@@ -1,4 +1,11 @@
-import { pgTable, uuid, smallint, pgEnum, integer } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  smallint,
+  pgEnum,
+  integer,
+  timestamp,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { auctions } from "./auctions";
 import { players } from "./players";
@@ -6,7 +13,7 @@ import { auctionBids } from "./auctionBids";
 import { auctionParticipants } from "./auctionParticipants";
 
 export const auctionNominationStatuses = ["bidding", "sold"] as const;
-export type NominationStatus = (typeof auctionNominationStatuses)[number]
+export type NominationStatus = (typeof auctionNominationStatuses)[number];
 
 export const auctionNominationStatusEnum = pgEnum(
   "auction_nomination_status",
@@ -26,6 +33,7 @@ export const auctionNominations = pgTable("auction_nominations", {
     .references(() => players.id, { onDelete: "cascade" }),
   initialPrice: smallint("initial_price").notNull().default(1),
   status: auctionNominationStatusEnum("status").notNull().default("bidding"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
 });
 
 export const auctionNominationsRelations = relations(
