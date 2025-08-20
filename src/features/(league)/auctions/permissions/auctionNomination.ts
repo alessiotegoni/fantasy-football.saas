@@ -11,6 +11,7 @@ import {
 } from "../queries/auctionNomination";
 import { getAuction } from "../queries/auction";
 import { getUserTeamId } from "@/features/users/queries/user";
+import { getAuctionSettings } from "../queries/auctionSettings";
 
 enum AUCTION_NOMINATION_ERRORS {
   NOT_A_PARTICIPANT = "Non sei un partecipante di questa asta",
@@ -56,6 +57,17 @@ export async function canCreateNomination({
 
   const { auction, userTeamId } = permissions.data;
 
+    const [{ playersPerRole }] = await Promise.all([
+    getAuctionSettings(auctionId)
+  ]);
+
+  if (!player) {
+    return createError(AUCTION_NOMINATION_ERRORS.PLAYER_NOT_FOUND);
+  }
+  if (!settings) {
+    return createError(AUCTION_NOMINATION_ERRORS.SETTINGS_NOT_FOUND);
+  }
+
   const maxPlayerCheck = await checkMaxPlayersPerRole(
     userTeamId,
     auction.leagueId,
@@ -93,35 +105,35 @@ export async function canDeleteNomination(nominationId: string) {
   return createSuccess("", { nomination });
 }
 
-// export async function checkMaxPlayersPerRole(
-//   teamId: string,
-//   leagueId: string,
-//   playerId: number
-// ) {
-//   const [player, teamPlayers, settings] = await Promise.all([
-//     getPlayer(playerId),
-//     getLeagueMemberTeamPlayers(teamId),
-//     getGeneralSettings(leagueId),
-//   ]);
+export async function checkMaxPlayersPerRole(
+  teamId: string,
+  leagueId: string,
+  playerId: number
+) {
+  const [player, teamPlayers, settings] = await Promise.all([
+    getPlayer(playerId),
+    getLeagueMemberTeamPlayers(teamId),
+    getGeneralSettings(leagueId),
+  ]);
 
-//   if (!player) {
-//     return createError(AUCTION_NOMINATION_ERRORS.PLAYER_NOT_FOUND);
-//   }
-//   if (!settings) {
-//     return createError(AUCTION_NOMINATION_ERRORS.SETTINGS_NOT_FOUND);
-//   }
+  if (!player) {
+    return createError(AUCTION_NOMINATION_ERRORS.PLAYER_NOT_FOUND);
+  }
+  if (!settings) {
+    return createError(AUCTION_NOMINATION_ERRORS.SETTINGS_NOT_FOUND);
+  }
 
-//   const role = player.role as keyof typeof settings.playersPerRole;
-//   const maxForRole = settings.playersPerRole[role];
-//   const currentForRole = teamPlayers.filter(
-//     (p) => p.player.role === role
-//   ).length;
+  const role = player.role as keyof typeof settings.playersPerRole;
+  const maxForRole = settings.playersPerRole[role];
+  const currentForRole = teamPlayers.filter(
+    (p) => p.player.role === role
+  ).length;
 
-//   if (currentForRole >= maxForRole) {
-//     return createError(
-//       `Hai già raggiunto il numero massimo di ${role} (${maxForRole})`
-//     );
-//   }
+  if (currentForRole >= maxForRole) {
+    return createError(
+      `Hai già raggiunto il numero massimo di ${role} (${maxForRole})`
+    );
+  }
 
-//   return createSuccess("", null);
-// }
+  return createSuccess("", null);
+}

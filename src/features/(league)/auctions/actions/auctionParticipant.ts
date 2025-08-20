@@ -20,6 +20,7 @@ import {
   UpdateParticipantsOrderSchema,
   updateParticipantsOrderSchema,
 } from "../schema/auctionParticipant";
+import { db } from "@/drizzle/db";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
   TURN_SET_SUCCESSFULLY = "Turno impostato con successo",
@@ -84,10 +85,11 @@ export async function setAuctionTurn(values: AuctionParticipantSchema) {
   const permissions = await participantActionPermissions(data);
   if (permissions.error) return permissions;
 
-  await setAuctionTurnDB(
-    permissions.data.participant.auctionId,
-    permissions.data.participant.id
-  );
+  const { participant } = permissions.data;
+
+  await db.transaction(async (tx) => {
+    await setAuctionTurnDB(participant.auctionId, participant.id, tx);
+  });
 
   return createSuccess(
     AUCTION_PARTICIPANT_MESSAGES.TURN_SET_SUCCESSFULLY,
@@ -95,9 +97,7 @@ export async function setAuctionTurn(values: AuctionParticipantSchema) {
   );
 }
 
-export async function deleteParticipant(
-  values: AuctionParticipantSchema
-) {
+export async function deleteParticipant(values: AuctionParticipantSchema) {
   const { isValid, data, error } = validateSchema<AuctionParticipantSchema>(
     auctionParticipantSchema,
     values

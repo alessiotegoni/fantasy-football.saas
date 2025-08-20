@@ -83,18 +83,20 @@ export async function updateParticipantCredits(
   }
 }
 
-export async function setAuctionTurn(auctionId: string, participantId: string) {
-  await db.transaction(async (tx) => {
-    await tx
-      .update(auctionParticipants)
-      .set({ isCurrent: false })
-      .where(eq(auctionParticipants.auctionId, auctionId));
+export async function setAuctionTurn(
+  auctionId: string,
+  participantId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  await tx
+    .update(auctionParticipants)
+    .set({ isCurrent: false })
+    .where(eq(auctionParticipants.auctionId, auctionId));
 
-    await tx
-      .update(auctionParticipants)
-      .set({ isCurrent: true })
-      .where(eq(auctionParticipants.id, participantId));
-  });
+  await tx
+    .update(auctionParticipants)
+    .set({ isCurrent: true })
+    .where(eq(auctionParticipants.id, participantId));
 }
 
 export async function deleteParticipant(participantId: string) {
