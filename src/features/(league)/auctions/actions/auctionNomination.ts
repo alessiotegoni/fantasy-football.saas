@@ -2,8 +2,8 @@
 
 import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import {
-  createAuctionNominationSchema,
-  CreateAuctionNominationSchema,
+  createNominationSchema,
+  CreateNominationSchema,
 } from "../schema/auctionNomination";
 import {
   canCreateNomination,
@@ -20,12 +20,11 @@ enum AUCTION_NOMINATION_MESSAGES {
   NOMINATION_DELETED_SUCCESSFULLY = "Nomina eliminata con successo",
 }
 
-export async function createNomination(values: CreateAuctionNominationSchema) {
-  const { isValid, data, error } =
-    validateSchema<CreateAuctionNominationSchema>(
-      createAuctionNominationSchema,
-      values
-    );
+export async function createNomination(values: CreateNominationSchema) {
+  const { isValid, data, error } = validateSchema<CreateNominationSchema>(
+    createNominationSchema,
+    values
+  );
   if (!isValid) return error;
 
   const permissions = await canCreateNomination(data);

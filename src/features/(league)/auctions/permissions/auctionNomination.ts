@@ -2,7 +2,7 @@ import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/lib/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getAuctionParticipant } from "../queries/auctionParticipant";
-import { CreateAuctionNominationSchema } from "../schema/auctionNomination";
+import { CreateNominationSchema } from "../schema/auctionNomination";
 import { getLeagueAdmin } from "../../leagues/queries/league";
 import { getGeneralSettings } from "../../settings/queries/setting";
 import {
@@ -50,7 +50,7 @@ async function basePermissions(auctionId: string) {
 export async function canCreateNomination({
   auctionId,
   playerId,
-}: CreateAuctionNominationSchema) {
+}: CreateNominationSchema) {
   const permissions = await basePermissions(auctionId);
   if (permissions.error) return permissions;
 
