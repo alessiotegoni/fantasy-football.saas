@@ -1,10 +1,8 @@
 import { createError, createSuccess } from "@/lib/helpers";
 import { CreateBidSchema } from "../schema/auctionBid";
 import { getNomination } from "../queries/auctionNomination";
-import { db } from "@/drizzle/db";
-import { desc, eq } from "drizzle-orm";
-import { auctionBids } from "@/drizzle/schema";
 import { baseAuctionPermissions, validatePlayerAndCredits } from "./shared";
+import { getHighestBid } from "../queries/auctionBid";
 
 enum BID_ERRORS {
   INSUFFICENT_CREDITS = "Non hai abbastanza crediti",
@@ -41,15 +39,4 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
 
   return createSuccess("", { participant });
-}
-
-async function getHighestBid(nominationId: string) {
-  const [highestBid] = await db
-    .select()
-    .from(auctionBids)
-    .where(eq(auctionBids.nominationId, nominationId))
-    .orderBy(desc(auctionBids.amount))
-    .limit(1);
-
-  return highestBid;
 }
