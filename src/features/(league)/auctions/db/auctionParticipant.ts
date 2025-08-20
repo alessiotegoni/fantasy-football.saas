@@ -16,7 +16,7 @@ const participantInfo = {
 // credits e order sono inseriti automaticamente tramite due funzioni
 // chiamate da due trigger
 
-export async function insertAuctionParticipant(
+export async function insertParticipant(
   participant: Pick<
     typeof auctionParticipants.$inferInsert,
     "auctionId" | "teamId"
@@ -67,7 +67,7 @@ export async function updateParticipantsOrder(
     );
 }
 
-export async function updateAuctionParticipantCredits(
+export async function updateParticipantCredits(
   participantId: string,
   amount: number,
   tx: Omit<typeof db, "$client"> = db
@@ -97,7 +97,7 @@ export async function setAuctionTurn(auctionId: string, participantId: string) {
   });
 }
 
-export async function deleteAuctionParticipant(participantId: string) {
+export async function deleteParticipant(participantId: string) {
   const [result] = await db
     .delete(auctionParticipants)
     .where(eq(auctionParticipants.id, participantId))

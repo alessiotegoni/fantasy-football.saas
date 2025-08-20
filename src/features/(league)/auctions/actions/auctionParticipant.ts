@@ -8,8 +8,8 @@ import {
   participantActionPermissions,
 } from "../permissions/auctionParticipant";
 import {
-  insertAuctionParticipant,
-  deleteAuctionParticipant as deleteAuctionParticipantDB,
+  insertParticipant,
+  deleteParticipant as deleteParticipantDB,
   setAuctionTurn as setAuctionTurnDB,
   updateParticipantsOrder as updateParticipantsOrderDB,
 } from "../db/auctionParticipant";
@@ -44,7 +44,7 @@ export async function joinAuction(auctionId: string) {
   } = permissions.data;
 
   if (!isAlreadyParticipant) {
-    await insertAuctionParticipant({
+    await insertParticipant({
       auctionId,
       teamId: userTeamId,
     });
@@ -95,7 +95,7 @@ export async function setAuctionTurn(values: AuctionParticipantSchema) {
   );
 }
 
-export async function deleteAuctionParticipant(
+export async function deleteParticipant(
   values: AuctionParticipantSchema
 ) {
   const { isValid, data, error } = validateSchema<AuctionParticipantSchema>(
@@ -107,7 +107,7 @@ export async function deleteAuctionParticipant(
   const permissions = await participantActionPermissions(data);
   if (permissions.error) return permissions;
 
-  await deleteAuctionParticipantDB(permissions.data.participant.id);
+  await deleteParticipantDB(permissions.data.participant.id);
 
   return createSuccess(AUCTION_PARTICIPANT_MESSAGES.DELETED_SUCCESSFULLY, null);
 }
