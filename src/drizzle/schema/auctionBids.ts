@@ -1,16 +1,20 @@
-import { pgTable, uuid, smallint } from "drizzle-orm/pg-core";
+import { pgTable, uuid, smallint, timestamp } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { auctionNominations } from "./auctionNominations";
 import { leagueMemberTeams } from "./leagueMemberTeams";
 
 export const auctionBids = pgTable("auction_bids", {
+  id: uuid("id").defaultRandom().primaryKey(),
   auctionNominationId: uuid("auction_nomination_id")
-    .primaryKey()
+    .notNull()
     .references(() => auctionNominations.id, { onDelete: "cascade" }),
   teamId: uuid("team_id")
     .notNull()
     .references(() => leagueMemberTeams.id, { onDelete: "cascade" }),
   amount: smallint("amount").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
 });
 
 export const auctionBidsRelations = relations(auctionBids, ({ one }) => ({
