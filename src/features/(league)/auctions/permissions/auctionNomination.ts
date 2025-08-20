@@ -17,7 +17,7 @@ enum AUCTION_NOMINATION_ERRORS {
   PERMISSION_DENIED = "Non hai i permessi per eseguire questa azione",
   MAX_PLAYERS_REACHED = "Hai già raggiunto il numero massimo di giocatori per questo ruolo",
   PLAYER_ALREADY_NOMINATED = "Questo giocatore è già stato nominato",
-  NOMINATION_NOT_FOUND = "Giocatore nominato non trovato",
+  NOMINATION_NOT_FOUND = "Nomina non trovata",
   ADMIN_REQUIRED = "Solo un admin può eliminare una nomina",
   AUCTION_NOT_FOUND = "Asta non trovata",
   PLAYER_NOT_FOUND = "Giocatore non trovato",

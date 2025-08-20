@@ -33,7 +33,9 @@ export const auctionNominations = pgTable("auction_nominations", {
     .references(() => players.id, { onDelete: "cascade" }),
   initialPrice: smallint("initial_price").notNull().default(1),
   status: auctionNominationStatusEnum("status").notNull().default("bidding"),
-  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const auctionNominationsRelations = relations(
