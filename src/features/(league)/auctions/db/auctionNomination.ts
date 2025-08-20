@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { auctionNominations, NominationStatus } from "@/drizzle/schema";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { createError } from "@/lib/helpers";
 
 enum DB_ERROR_MESSAGES {
