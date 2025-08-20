@@ -21,6 +21,10 @@ import {
   updateParticipantsOrderSchema,
 } from "../schema/auctionParticipant";
 import { db } from "@/drizzle/db";
+import { auctionParticipants } from "@/drizzle/schema";
+import { count, eq } from "drizzle-orm";
+import { getLeagueTeams } from "../../teams/queries/leagueTeam";
+import { updateAuctionStatus } from "./auction";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
   TURN_SET_SUCCESSFULLY = "Turno impostato con successo",
@@ -39,7 +43,7 @@ export async function joinAuction(auctionId: string) {
   if (permissions.error) return permissions;
 
   const {
-    auction: { id, leagueId },
+    auction: { id, leagueId, status },
     userTeamId,
     isAlreadyParticipant,
   } = permissions.data;
@@ -50,6 +54,8 @@ export async function joinAuction(auctionId: string) {
       teamId: userTeamId,
     });
   }
+
+  if (status === "waiting") await setAuctionActive(id, leagueId);
 
   redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
 }
@@ -110,4 +116,24 @@ export async function deleteParticipant(values: AuctionParticipantSchema) {
   await deleteParticipantDB(permissions.data.participant.id);
 
   return createSuccess(AUCTION_PARTICIPANT_MESSAGES.DELETED_SUCCESSFULLY, null);
+}
+
+async function setAuctionActive(id: string, leagueId: string) {
+  const [leagueTeams, participantsCount] = await Promise.all([
+    getLeagueTeams(leagueId),
+    getParticipantCount(id),
+  ]);
+
+  if (leagueTeams.length === participantsCount) {
+    await updateAuctionStatus({ id, status: "active" });
+  }
+}
+
+async function getParticipantCount(auctionId: string) {
+  const [res] = await db
+    .select({ count: count() })
+    .from(auctionParticipants)
+    .where(eq(auctionParticipants.auctionId, auctionId));
+
+  return res.count;
 }
