@@ -31,63 +31,6 @@ enum AUCTION_NOMINATION_ERRORS {
   USER_TEAM_NOT_FOUND = "Squadra utente non trovata",
 }
 
-async function basePermissions(auctionId: string) {
-  const userId = await getUserId();
-  if (!userId) return createError(VALIDATION_ERROR);
-
-  const auction = await getAuction(auctionId);
-  if (!auction) {
-    return createError(AUCTION_NOMINATION_ERRORS.AUCTION_NOT_FOUND);
-  }
-
-  const userTeamId = await getUserTeamId(userId, auction.leagueId);
-  if (!userTeamId) {
-    return createError(AUCTION_NOMINATION_ERRORS.USER_TEAM_NOT_FOUND);
-  }
-
-  const participant = await getAuctionParticipant(auctionId, userTeamId);
-  if (!participant) {
-    return createError(AUCTION_NOMINATION_ERRORS.NOT_A_PARTICIPANT);
-  }
-
-  return createSuccess("", { participant, auction, userId, userTeamId });
-}
-
-export async function getParticipantPlayersCountByRole(
-  auctionId: string,
-  participantId: string
-) {
-  const playerCounts = await db
-    .select({
-      roleId: players.roleId,
-      count: sql`count(${players.id})`.mapWith(Number),
-    })
-    .from(auctionAcquisitions)
-    .innerJoin(players, eq(auctionAcquisitions.playerId, players.id))
-    .where(
-      and(
-        eq(auctionAcquisitions.auctionId, auctionId),
-        eq(auctionAcquisitions.participantId, participantId)
-      )
-    )
-    .groupBy(players.roleId);
-
-  return playerCounts.reduce((acc, { roleId, count }) => {
-    acc[roleId] = count;
-    return acc;
-  }, {} as Record<number, number>);
-}
-
-export function checkMaxPlayersPerRole(
-  playerCounts: Record<number, number>,
-  playersPerRole: Record<number, number>,
-  playerRoleId: number
-) {
-  const currentRoleCount = playerCounts[playerRoleId] || 0;
-  const maxRoleCount = playersPerRole[playerRoleId] || 0;
-  return currentRoleCount < maxRoleCount;
-}
-
 export async function canCreateNomination({
   auctionId,
   playerId,
@@ -95,29 +38,29 @@ export async function canCreateNomination({
   const permissions = await basePermissions(auctionId);
   if (permissions.error) return permissions;
 
-  const { auction, userTeamId } = permissions.data;
+  const { auction, participant } = permissions.data;
 
-  const [{ playersPerRole }] = await Promise.all([
+  const [player, existingNomination, { playersPerRole }] = await Promise.all([
+    getPlayerRole(playerId),
+    getNominationByPlayer(auctionId, playerId),
     getAuctionSettings(auctionId),
   ]);
 
   if (!player) {
     return createError(AUCTION_NOMINATION_ERRORS.PLAYER_NOT_FOUND);
   }
-  if (!settings) {
-    return createError(AUCTION_NOMINATION_ERRORS.SETTINGS_NOT_FOUND);
-  }
 
-  const maxPlayerCheck = await checkMaxPlayersPerRole(
-    userTeamId,
-    auction.leagueId,
-    playerId
-  );
-  if (maxPlayerCheck.error) return maxPlayerCheck;
-
-  const existingNomination = await getNominationByPlayer(auctionId, playerId);
   if (existingNomination) {
     return createError(AUCTION_NOMINATION_ERRORS.PLAYER_ALREADY_NOMINATED);
+  }
+
+  const playerCounts = await getParticipantPlayersCountByRole(
+    auctionId,
+    participant.id
+  );
+
+  if (!checkMaxPlayersPerRole(playerCounts, playersPerRole, player.roleId)) {
+    return createError(AUCTION_NOMINATION_ERRORS.MAX_PLAYERS_REACHED);
   }
 
   return createSuccess("", {
@@ -143,4 +86,64 @@ export async function canDeleteNomination(nominationId: string) {
   }
 
   return createSuccess("", { nomination });
+}
+
+async function getParticipantPlayersCountByRole(
+  auctionId: string,
+  participantId: string
+) {
+  const playerCounts = await db
+    .select({
+      roleId: players.roleId,
+      count: sql`count(${players.id})`.mapWith(Number),
+    })
+    .from(auctionAcquisitions)
+    .innerJoin(players, eq(auctionAcquisitions.playerId, players.id))
+    .where(
+      and(
+        eq(auctionAcquisitions.auctionId, auctionId),
+        eq(auctionAcquisitions.participantId, participantId)
+      )
+    )
+    .groupBy(players.roleId);
+
+  return playerCounts.reduce(
+    (acc: Record<number, number>, { roleId, count }) => {
+      acc[roleId] = count;
+      return acc;
+    },
+    {}
+  );
+}
+
+export function checkMaxPlayersPerRole(
+  playerCounts: Record<number, number>,
+  playersPerRole: Record<number, number>,
+  playerRoleId: number
+) {
+  const currentRoleCount = playerCounts[playerRoleId] || 0;
+  const maxRoleCount = playersPerRole[playerRoleId] || 0;
+  return currentRoleCount < maxRoleCount;
+}
+
+async function basePermissions(auctionId: string) {
+  const userId = await getUserId();
+  if (!userId) return createError(VALIDATION_ERROR);
+
+  const auction = await getAuction(auctionId);
+  if (!auction) {
+    return createError(AUCTION_NOMINATION_ERRORS.AUCTION_NOT_FOUND);
+  }
+
+  const userTeamId = await getUserTeamId(userId, auction.leagueId);
+  if (!userTeamId) {
+    return createError(AUCTION_NOMINATION_ERRORS.USER_TEAM_NOT_FOUND);
+  }
+
+  const participant = await getAuctionParticipant(auctionId, userTeamId);
+  if (!participant) {
+    return createError(AUCTION_NOMINATION_ERRORS.NOT_A_PARTICIPANT);
+  }
+
+  return createSuccess("", { participant, auction, userId, userTeamId });
 }

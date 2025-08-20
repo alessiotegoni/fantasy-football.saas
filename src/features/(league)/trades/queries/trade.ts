@@ -14,7 +14,7 @@ import {
   getTradePlayersIdTag,
 } from "../db/cache/trade";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
-import { getPlayersIdTag } from "@/features/players/db/cache/player";
+import { getPlayerIdTag } from "@/features/players/db/cache/player";
 import { TradeContext } from "../components/TradesList";
 
 export async function getUserTrades(
@@ -143,7 +143,7 @@ function getTradesTeamsTags(trades: Trades) {
 }
 function getTradesPlayersTags(trades: Trades) {
   return trades.flatMap((trade) =>
-    trade.proposedPlayers.map(({ player }) => getPlayersIdTag(player.id))
+    trade.proposedPlayers.map(({ player }) => getPlayerIdTag(player.id))
   );
 }
 
