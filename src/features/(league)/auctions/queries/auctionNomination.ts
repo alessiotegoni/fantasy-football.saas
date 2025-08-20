@@ -7,6 +7,7 @@ export async function getNomination(nominationId: string) {
     .select()
     .from(auctionNominations)
     .where(eq(auctionNominations.id, nominationId));
+
   return nomination;
 }
 
