@@ -5,7 +5,7 @@ import { leagueMemberTeams } from "./leagueMemberTeams";
 
 export const auctionBids = pgTable("auction_bids", {
   id: uuid("id").defaultRandom().primaryKey(),
-  auctionNominationId: uuid("auction_nomination_id")
+  nominationId: uuid("nomination_id")
     .notNull()
     .references(() => auctionNominations.id, { onDelete: "cascade" }),
   teamId: uuid("team_id")
@@ -19,7 +19,7 @@ export const auctionBids = pgTable("auction_bids", {
 
 export const auctionBidsRelations = relations(auctionBids, ({ one }) => ({
   auctionNomination: one(auctionNominations, {
-    fields: [auctionBids.auctionNominationId],
+    fields: [auctionBids.nominationId],
     references: [auctionNominations.id],
   }),
   team: one(leagueMemberTeams, {

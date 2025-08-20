@@ -13,7 +13,7 @@ const nominationInfo = {
   nominationId: auctionNominations.id,
 };
 
-export async function insertAuctionNomination(
+export async function insertNomination(
   nomination: typeof auctionNominations.$inferInsert
 ) {
   const [result] = await db
@@ -28,7 +28,7 @@ export async function insertAuctionNomination(
   return result.nominationId;
 }
 
-export async function updateAuctionNominationStatus(
+export async function updateNominationStatus(
   nominationId: string,
   status: NominationStatus,
   tx: Omit<typeof db, "$client"> = db
@@ -44,10 +44,21 @@ export async function updateAuctionNominationStatus(
   }
 }
 
-export async function deleteAuctionNomination(nominationId: string) {
+export async function deleteNomination(nominationId: string) {
   const [result] = await db
     .delete(auctionNominations)
     .where(eq(auctionNominations.id, nominationId))
+    .returning(nominationInfo);
+
+  if (!result?.nominationId) {
+    throw new Error(createError(DB_ERROR_MESSAGES.DELETION_FAILED).message);
+  }
+}
+
+export async function deleteAuctionNominations(auctionId: string) {
+  const [result] = await db
+    .delete(auctionNominations)
+    .where(eq(auctionNominations.auctionId, auctionId))
     .returning(nominationInfo);
 
   if (!result?.nominationId) {
