@@ -44,8 +44,11 @@ export async function updateNominationStatus(
   }
 }
 
-export async function deleteNomination(nominationId: string) {
-  const [result] = await db
+export async function deleteNomination(
+  nominationId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [result] = await tx
     .delete(auctionNominations)
     .where(eq(auctionNominations.id, nominationId))
     .returning(nominationInfo);

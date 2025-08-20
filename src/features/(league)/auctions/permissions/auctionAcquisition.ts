@@ -10,7 +10,7 @@ import { getAcquisition } from "../queries/auctionAcquisition";
 enum ACQUISITION_ERRORS {
   NOMINATION_NOT_FOUND = "Nomina non trovata",
   NOMINATION_ALREADY_SOLD = "Questo giocatore è già stato venduto",
-  ACQUISITION_NOT_FOUND = "Acquisto del giocatore non trovato",
+  ACQUISITION_NOT_FOUND = "Acquisto non trovato",
   ADMIN_REQUIRED = "Solo un admin può eseguire questa azione",
 }
 
