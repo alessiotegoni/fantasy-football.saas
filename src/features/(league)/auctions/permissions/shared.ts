@@ -10,11 +10,16 @@ import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
 import { getPlayer } from "@/features/players/queries/player";
 import { getAuctionSettings } from "../queries/auctionSettings";
-import { getRemainingSlots, isRoleFull, validateBidCredits } from "../utils/auctionParticipant";
+import {
+  getRemainingSlots,
+  isRoleFull,
+  validateBidCredits,
+} from "../utils/auctionParticipant";
 
 export enum AUCTION_PERMISSION_ERRORS {
   NOT_A_PARTICIPANT = "Non sei un partecipante di questa asta",
   AUCTION_NOT_FOUND = "Asta non trovata",
+  AUCTION_NOT_ACTIVE = "Puoi fare offerte solamente nelle aste in corso",
   USER_TEAM_NOT_FOUND = "Squadra utente non trovata",
   INSUFFICENT_CREDITS = "Non hai abbastanza crediti",
   MAX_PLAYERS_REACHED = "Hai già raggiunto il numero massimo di giocatori per questo ruolo",
@@ -56,6 +61,10 @@ export async function baseAuctionPermissions(auctionId: string) {
   const auction = await getAuction(auctionId);
   if (!auction) {
     return createError(AUCTION_PERMISSION_ERRORS.AUCTION_NOT_FOUND);
+  }
+
+  if (auction.status !== "active") {
+    return createError(AUCTION_PERMISSION_ERRORS.AUCTION_NOT_ACTIVE);
   }
 
   const userTeamId = await getUserTeamId(userId, auction.leagueId);
