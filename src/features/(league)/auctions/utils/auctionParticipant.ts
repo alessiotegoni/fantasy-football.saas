@@ -17,12 +17,20 @@ export function validateBidCredits({
   bidAmount: number;
   slotsRemaining: number;
 }) {
-  if (currentCredits - bidAmount >= slotsRemaining) {
-    return { valid: true };
+  const MIN_PRICE_PER_SLOT = 1;
+  const remainingCredits = currentCredits - bidAmount;
+  const minRequired = slotsRemaining * MIN_PRICE_PER_SLOT;
+
+  if (bidAmount > currentCredits) {
+    return { valid: false, reason: "Non hai abbastanza crediti disponibili." };
   }
 
-  return {
-    valid: false,
-    reason: "Crediti insufficienti per completare la rosa.",
-  };
+  if (remainingCredits < minRequired) {
+    return {
+      valid: false,
+      reason: `Devi conservare almeno ${minRequired} crediti per completare la rosa.`,
+    };
+  }
+
+  return { valid: true };
 }

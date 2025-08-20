@@ -15,7 +15,6 @@ import { db } from "@/drizzle/db";
 import { auctionAcquisitions } from "@/drizzle/schema/auctionAcquisitions";
 import { and, count, eq } from "drizzle-orm";
 import { players } from "@/drizzle/schema/players";
-import { sql } from "drizzle-orm";
 import { getPlayer } from "@/features/players/queries/player";
 import { checkMaxPlayersPerRole } from "../utils/auctionParticipant";
 
