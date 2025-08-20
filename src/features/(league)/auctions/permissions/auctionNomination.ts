@@ -16,7 +16,11 @@ import { auctionAcquisitions } from "@/drizzle/schema/auctionAcquisitions";
 import { and, count, eq } from "drizzle-orm";
 import { players } from "@/drizzle/schema/players";
 import { getPlayer } from "@/features/players/queries/player";
-import { checkMaxPlayersPerRole } from "../utils/auctionParticipant";
+import {
+  checkMaxPlayersPerRole,
+  getRemainingSlots,
+  validateBidCredits,
+} from "../utils/auctionParticipant";
 
 enum NOMINATION_ERRORS {
   INSUFFICENT_CREDITS = "Non hai abbastanza crediti",
@@ -42,10 +46,6 @@ export async function canCreateNomination({
 
   const { auction, participant } = permissions.data;
 
-  if (initialPrice > participant.credits) {
-    return createError(NOMINATION_ERRORS.INSUFFICENT_CREDITS);
-  }
-
   const [player, existingNomination, { playersPerRole }, playerCounts] =
     await Promise.all([
       getPlayer(playerId),
@@ -65,6 +65,13 @@ export async function canCreateNomination({
   if (!checkMaxPlayersPerRole(playerCounts, playersPerRole, player.role.id)) {
     return createError(NOMINATION_ERRORS.MAX_PLAYERS_REACHED);
   }
+
+  const { isValid, reason } = validateBidCredits({
+    currentCredits: participant.credits,
+    bidAmount: initialPrice,
+    slotsRemaining: getRemainingSlots(playerCounts, playersPerRole),
+  });
+  if (!isValid) return createError(reason);
 
   return createSuccess("", {
     participant: permissions.data.participant,
