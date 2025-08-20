@@ -39,27 +39,6 @@ export async function canJoinAuction(auctionId: string) {
   });
 }
 
-export async function canUpdateParticipantsOrder(auctionId: string) {
-  const permissions = await basePermissions(auctionId);
-  if (permissions.error) return permissions;
-
-  const { auction, userId } = permissions.data;
-
-  const isLeagueAdmin = await getLeagueAdmin(userId, auction.leagueId);
-
-  if (!isLeagueAdmin) {
-    return createError(AUCTION_PARTICIPANT_ERRORS.ADMIN_REQUIRED);
-  }
-
-  if (auction.status === "ended") {
-    return createError(AUCTION_PARTICIPANT_ERRORS.AUCTION_ENDED);
-  }
-
-  return createSuccess("", {
-    auction,
-  });
-}
-
 export async function participantActionPermissions({
   auctionId,
   teamId,
@@ -92,6 +71,28 @@ export async function participantActionPermissions({
   return createSuccess("", {
     auction,
     participant,
+  });
+}
+
+
+export async function canUpdateParticipantsOrder(auctionId: string) {
+  const permissions = await basePermissions(auctionId);
+  if (permissions.error) return permissions;
+
+  const { auction, userId } = permissions.data;
+
+  const isLeagueAdmin = await getLeagueAdmin(userId, auction.leagueId);
+
+  if (!isLeagueAdmin) {
+    return createError(AUCTION_PARTICIPANT_ERRORS.ADMIN_REQUIRED);
+  }
+
+  if (auction.status === "ended") {
+    return createError(AUCTION_PARTICIPANT_ERRORS.AUCTION_ENDED);
+  }
+
+  return createSuccess("", {
+    auction,
   });
 }
 

@@ -17,8 +17,8 @@ import { redirect } from "next/navigation";
 import {
   auctionParticipantSchema,
   AuctionParticipantSchema,
-  updateParticipantsOrderSchema,
   UpdateParticipantsOrderSchema,
+  updateParticipantsOrderSchema,
 } from "../schema/auctionParticipant";
 
 enum AUCTION_PARTICIPANT_MESSAGES {

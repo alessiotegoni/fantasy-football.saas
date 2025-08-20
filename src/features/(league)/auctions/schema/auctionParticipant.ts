@@ -11,7 +11,7 @@ export const updateParticipantsOrderSchema = z.object({
   participantsIds: z.array(getUUIdSchema()),
 });
 
+export type AuctionParticipantSchema = z.infer<typeof auctionParticipantSchema>;
 export type UpdateParticipantsOrderSchema = z.infer<
   typeof updateParticipantsOrderSchema
 >;
-export type AuctionParticipantSchema = z.infer<typeof auctionParticipantSchema>;
