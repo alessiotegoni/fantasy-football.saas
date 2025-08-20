@@ -4,7 +4,6 @@ import {
   getLeaguePremiumTag,
   getLeagueProfileTag,
 } from "../db/cache/league";
-import { isPremiumUnlocked } from "../permissions/league";
 import {
   getLeagueGeneralSettingsTag,
   getLeagueModulesTag,
@@ -12,22 +11,48 @@ import {
 } from "@/features/(league)/settings/db/cache/setting";
 import { db } from "@/drizzle/db";
 import { getMemberIdTag } from "../../members/db/cache/leagueMember";
-import { isLeagueAdmin } from "../../members/permissions/leagueMember";
-import { leagues } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
+import {
+  leagueMembers,
+  leagues,
+  leagueSettings,
+  userSubscriptions,
+} from "@/drizzle/schema";
+import { and, count, eq } from "drizzle-orm";
+import { isValidSubscription } from "@/features/users/permissions/user";
 
 export async function getLeaguePremium(leagueId: string) {
   "use cache";
   cacheTag(getLeaguePremiumTag(leagueId));
 
-  return await isPremiumUnlocked(leagueId);
+  const [result] = await db
+    .select({ count: count() })
+    .from(userSubscriptions)
+    .innerJoin(
+      leagueMembers,
+      eq(leagueMembers.userId, userSubscriptions.userId)
+    )
+    .innerJoin(leagues, eq(leagues.id, leagueMembers.leagueId))
+    .where(and(eq(leagues.id, leagueId), isValidSubscription));
+
+  return result.count > 0;
 }
 
 export async function getLeagueAdmin(userId: string, leagueId: string) {
   "use cache";
   cacheTag(getMemberIdTag(leagueId));
 
-  return await isLeagueAdmin(userId, leagueId);
+  const [result] = await db
+    .select({ count: count() })
+    .from(leagueMembers)
+    .where(
+      and(
+        eq(leagueMembers.leagueId, leagueId),
+        eq(leagueMembers.userId, userId),
+        eq(leagueMembers.role, "admin")
+      )
+    );
+
+  return result.count === 1;
 }
 
 export async function getLeagueInviteCredentials(leagueId: string) {
@@ -38,42 +63,44 @@ export async function getLeagueInviteCredentials(leagueId: string) {
     getLeagueProfileTag(leagueId)
   );
 
-  return db.query.leagues.findFirst({
-    columns: {
-      visibility: true,
-      joinCode: true,
-      password: true,
-    },
-    where: (league, { eq }) => eq(league.id, leagueId),
-  });
+  const [league] = await db
+    .select({
+      visibility: leagues.visibility,
+      joinCode: leagues.joinCode,
+      password: leagues.password,
+    })
+    .from(leagues)
+    .where(eq(leagues.id, leagueId));
+
+  return league;
 }
 
 export async function getLeaguePlayersPerRole(leagueId: string) {
   "use cache";
   cacheTag(getLeaguePlayersPerRoleTag(leagueId));
 
-  return db.query.leagueSettings
-    .findFirst({
-      columns: {
-        playersPerRole: true,
-      },
-      where: (settings, { eq }) => eq(settings.leagueId, leagueId),
+  const [settings] = await db
+    .select({
+      playersPerRole: leagueSettings.playersPerRole,
     })
-    .then((res) => res!.playersPerRole);
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
+
+  return settings.playersPerRole;
 }
 
 export async function getLeagueModules(leagueId: string) {
   "use cache";
   cacheTag(getLeagueModulesTag(leagueId));
 
-  return db.query.leagueSettings
-    .findFirst({
-      columns: {
-        tacticalModules: true,
-      },
-      where: (settings, { eq }) => eq(settings.leagueId, leagueId),
+  const [settings] = await db
+    .select({
+      tacticalModules: leagueSettings.tacticalModules,
     })
-    .then((res) => res!.tacticalModules);
+    .from(leagueSettings)
+    .where(eq(leagueSettings.leagueId, leagueId));
+
+  return settings.tacticalModules;
 }
 
 export async function getLeagueVisibility(leagueId: string) {

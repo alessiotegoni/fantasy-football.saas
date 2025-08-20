@@ -12,6 +12,11 @@ import {
 import { getAuction } from "../queries/auction";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getAuctionSettings } from "../queries/auctionSettings";
+import { db } from "@/drizzle/db";
+import { auctionAcquisitions } from "@/drizzle/schema/auctionAcquisitions";
+import { and, eq } from "drizzle-orm";
+import { players } from "@/drizzle/schema/players";
+import { sql } from "drizzle-orm";
 
 enum AUCTION_NOMINATION_ERRORS {
   NOT_A_PARTICIPANT = "Non sei un partecipante di questa asta",
@@ -48,6 +53,41 @@ async function basePermissions(auctionId: string) {
   return createSuccess("", { participant, auction, userId, userTeamId });
 }
 
+export async function getParticipantPlayersCountByRole(
+  auctionId: string,
+  participantId: string
+) {
+  const playerCounts = await db
+    .select({
+      roleId: players.roleId,
+      count: sql`count(${players.id})`.mapWith(Number),
+    })
+    .from(auctionAcquisitions)
+    .innerJoin(players, eq(auctionAcquisitions.playerId, players.id))
+    .where(
+      and(
+        eq(auctionAcquisitions.auctionId, auctionId),
+        eq(auctionAcquisitions.participantId, participantId)
+      )
+    )
+    .groupBy(players.roleId);
+
+  return playerCounts.reduce((acc, { roleId, count }) => {
+    acc[roleId] = count;
+    return acc;
+  }, {} as Record<number, number>);
+}
+
+export function checkMaxPlayersPerRole(
+  playerCounts: Record<number, number>,
+  playersPerRole: Record<number, number>,
+  playerRoleId: number
+) {
+  const currentRoleCount = playerCounts[playerRoleId] || 0;
+  const maxRoleCount = playersPerRole[playerRoleId] || 0;
+  return currentRoleCount < maxRoleCount;
+}
+
 export async function canCreateNomination({
   auctionId,
   playerId,
@@ -57,8 +97,8 @@ export async function canCreateNomination({
 
   const { auction, userTeamId } = permissions.data;
 
-    const [{ playersPerRole }] = await Promise.all([
-    getAuctionSettings(auctionId)
+  const [{ playersPerRole }] = await Promise.all([
+    getAuctionSettings(auctionId),
   ]);
 
   if (!player) {
@@ -103,37 +143,4 @@ export async function canDeleteNomination(nominationId: string) {
   }
 
   return createSuccess("", { nomination });
-}
-
-export async function checkMaxPlayersPerRole(
-  teamId: string,
-  leagueId: string,
-  playerId: number
-) {
-  const [player, teamPlayers, settings] = await Promise.all([
-    getPlayer(playerId),
-    getLeagueMemberTeamPlayers(teamId),
-    getGeneralSettings(leagueId),
-  ]);
-
-  if (!player) {
-    return createError(AUCTION_NOMINATION_ERRORS.PLAYER_NOT_FOUND);
-  }
-  if (!settings) {
-    return createError(AUCTION_NOMINATION_ERRORS.SETTINGS_NOT_FOUND);
-  }
-
-  const role = player.role as keyof typeof settings.playersPerRole;
-  const maxForRole = settings.playersPerRole[role];
-  const currentForRole = teamPlayers.filter(
-    (p) => p.player.role === role
-  ).length;
-
-  if (currentForRole >= maxForRole) {
-    return createError(
-      `Hai già raggiunto il numero massimo di ${role} (${maxForRole})`
-    );
-  }
-
-  return createSuccess("", null);
 }
