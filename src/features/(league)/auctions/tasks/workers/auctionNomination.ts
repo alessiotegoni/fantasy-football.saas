@@ -1,6 +1,9 @@
 import { getNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
-import { getNominationExpiryJobName } from "../jobs/auctionNomination";
+import {
+  getNominationExpiryJobName,
+  NominationExpiryJobData,
+} from "../jobs/auctionNomination";
 import { boss } from "@/lib/pg-boss";
 import { updateNomination } from "../../db/auctionNomination";
 import { db } from "@/drizzle/db";
@@ -19,29 +22,22 @@ import {
 import { isRoleFull } from "../../utils/auctionParticipant";
 import { setAuctionTurn } from "../../db/auctionParticipant";
 
-type NominationExpiryData = {
-  nominationId: string;
-  auctionSettings: typeof auctionSettings.$inferSelect;
-  player: { roleId: number };
-};
-
-const handler: WorkHandler<NominationExpiryData> = async ([job]) => {
+const handler: WorkHandler<NominationExpiryJobData> = async ([job]) => {
   const {
-    nominationId,
+    nomination,
     auctionSettings: { playersPerRole },
     player,
   } = job.data;
 
-  const nomination = await getNomination(nominationId);
   if (!nomination || nomination.status !== "bidding") return;
 
-  const highestBid = await getHighestBid(nominationId);
+  const highestBid = await getHighestBid(nomination.id);
 
   await db.transaction(async (tx) => {
     const acquisitionData = getAcquisitionData(nomination, highestBid);
 
     await insertAcquisition(acquisitionData, tx);
-    await updateNomination(nominationId, { status: "sold" }, tx);
+    await updateNomination(nomination.id, { status: "sold" }, tx);
 
     const participants = await getAuctionParticipants(nomination.auctionId);
 
@@ -56,7 +52,7 @@ const handler: WorkHandler<NominationExpiryData> = async ([job]) => {
         nomination.auctionId,
         nextParticipant.id
       );
-      if (!isRoleFull(playerCounts, playersPerRole, player.roleId)) {
+      if (!isRoleFull(playerCounts, playersPerRole, player.role.id)) {
         break;
       }
       nextIndex = (nextIndex + 1) % participants.length;

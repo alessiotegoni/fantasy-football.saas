@@ -26,7 +26,7 @@ export async function createBid(values: CreateBidSchema) {
   const permissions = await canCreateBid(data);
   if (permissions.error) return permissions;
 
-  const { nomination, auctionSettings } = permissions.data;
+  const { nomination, auctionSettings, player } = permissions.data;
 
   await db.transaction(async (tx) => {
     await insertBid(data, tx);
@@ -46,7 +46,7 @@ export async function createBid(values: CreateBidSchema) {
 
     await cancelExpiryJob(data.nominationId);
     await scheduleExpiryJob(
-      { nominationId: nomination.id, auctionSettings },
+      { nomination, auctionSettings, player },
       newExpiresAt
     );
   });

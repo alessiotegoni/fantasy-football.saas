@@ -43,6 +43,7 @@ export async function canCreateNomination({
   return createSuccess("", {
     participant: permissions.data.participant,
     auction,
+    ...playerAndCreditValidation.data
   });
 }
 
