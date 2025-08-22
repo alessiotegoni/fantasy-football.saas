@@ -2,7 +2,7 @@ import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getLeagueAdmin } from "../../leagues/queries/league";
-import { getAuction } from "../queries/auction";
+import { getAuctionWithSettings } from "../queries/auction";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getAuctionParticipant } from "../queries/auctionParticipant";
 
@@ -99,7 +99,7 @@ async function basePermissions(auctionId: string) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const auction = await getAuction(auctionId);
+  const auction = await getAuctionWithSettings(auctionId);
   if (!auction) {
     return createError(AUCTION_PARTICIPANT_ERRORS.AUCTION_NOT_FOUND);
   }

@@ -9,7 +9,7 @@ import {
 } from "../schema/auctionSettings";
 import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
-import { getAuction } from "../queries/auction";
+import { getAuctionWithSettings } from "../queries/auction";
 import { getUserTeamId } from "@/features/users/queries/user";
 
 enum AUCTION_ERRORS {
@@ -87,7 +87,7 @@ export async function canCreateAuction({
 }
 
 export async function canUpdateAuction({ id, type }: UpdateAuctionSchema) {
-  const auction = await getAuction(id);
+  const auction = await getAuctionWithSettings(id);
   if (!auction) {
     return createError(AUCTION_ERRORS.AUCTION_NOT_FOUND);
   }
@@ -123,7 +123,7 @@ export async function canUpdateAuctionStatus({
   id,
   status,
 }: UpdateAuctionStatusSchema) {
-  const auction = await getAuction(id);
+  const auction = await getAuctionWithSettings(id);
   if (!auction) {
     return createError(AUCTION_ERRORS.AUCTION_NOT_FOUND);
   }
@@ -154,7 +154,7 @@ export async function canUpdateAuctionStatus({
 }
 
 export async function canDeleteAuction(id: string) {
-  const auction = await getAuction(id);
+  const auction = await getAuctionWithSettings(id);
   if (!auction) {
     return createError(AUCTION_ERRORS.AUCTION_NOT_FOUND);
   }

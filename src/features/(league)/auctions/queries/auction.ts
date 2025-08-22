@@ -33,7 +33,7 @@ export type AuctionWithCreator = Awaited<
   ReturnType<typeof getLeagueAuctions>
 >[number];
 
-export async function getAuction(id: string) {
+export async function getAuctionWithSettings(id: string) {
   "use cache";
   cacheTag(getAuctionIdTag(id), getAuctionSettingTag(id));
 
@@ -51,4 +51,4 @@ export async function getAuction(id: string) {
   return result ? { ...result, settings: result.settings[0] } : undefined;
 }
 
-export type Auction = Awaited<ReturnType<typeof getAuction>>;
+export type AuctionWithSettings = Awaited<ReturnType<typeof getAuctionWithSettings>>;
