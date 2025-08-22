@@ -79,5 +79,9 @@ async function getLeagueAvailablePlayers(leagueId: string) {
       )
     );
 
-  return availablePlayers;
+  return availablePlayers.map((player) => ({
+    ...player,
+    purchaseCost: 0,
+    leagueTeamId: "",
+  }));
 }

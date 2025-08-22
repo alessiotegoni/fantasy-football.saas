@@ -1,5 +1,6 @@
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import {
+  getAuctionAvailablePlayersTag,
   getAuctionIdTag,
   getAuctionSettingTag,
   getLeagueAuctionsTag,
@@ -12,6 +13,7 @@ import {
   teams,
 } from "@/drizzle/schema";
 import { eq, notInArray } from "drizzle-orm";
+import { getPlayersTag } from "@/cache/global";
 
 export async function getLeagueAuctions(leagueId: string, splitId: number) {
   "use cache";
@@ -64,6 +66,7 @@ export type AuctionWithSettings = Awaited<
 
 export async function getAuctionAvailablePlayers(auctionId: string) {
   "use cache";
+  cacheTag(getPlayersTag(), getAuctionAvailablePlayersTag(auctionId));
 
   const takenPlayersSubquery = await db
     .select({
