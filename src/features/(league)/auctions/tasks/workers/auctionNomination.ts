@@ -40,9 +40,10 @@ const handler: WorkHandler<NominationExpiryJobData> = async ([job]) => {
     await updateNomination(nomination.id, { status: "sold" }, tx);
 
     const participants = await getAuctionParticipants(nomination.auctionId);
+    if (!participants.length) return;
 
     const currentIndex = participants.findIndex((p) => p.isCurrent);
-    let nextIndex = currentIndex + 1;
+    let nextIndex = (currentIndex + 1) % participants.length;
 
     let nextParticipant = participants[nextIndex];
     let attempts = 0;
@@ -50,7 +51,8 @@ const handler: WorkHandler<NominationExpiryJobData> = async ([job]) => {
     while (attempts < participants.length) {
       const playerCounts = await getParticipantPlayersCountByRole(
         nomination.auctionId,
-        nextParticipant.id
+        nextParticipant.id,
+        tx
       );
       if (!isRoleFull(playerCounts, playersPerRole, player.role.id)) {
         break;

@@ -1,10 +1,6 @@
 import { getJobKey, getJobName } from "@/jobs/helpers";
 import { boss } from "@/lib/pg-boss";
-import {
-  auctionNominations,
-  auctionSettings,
-  PlayersPerRole,
-} from "@/drizzle/schema";
+import { auctionNominations, auctionSettings } from "@/drizzle/schema";
 
 export const getNominationExpiryJobName = () => getJobName("nomination-expiry");
 
