@@ -28,14 +28,14 @@ export async function insertNomination(
   return result;
 }
 
-export async function updateNominationStatus(
+export async function updateNomination(
   nominationId: string,
-  status: NominationStatus,
+  nomination: Partial<typeof auctionNominations.$inferSelect>,
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [result] = await tx
     .update(auctionNominations)
-    .set({ status })
+    .set(nomination)
     .where(eq(auctionNominations.id, nominationId))
     .returning(nominationInfo);
 

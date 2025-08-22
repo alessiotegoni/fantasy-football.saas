@@ -6,8 +6,11 @@ enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione dell'offerta all'asta",
 }
 
-export async function insertBid(bid: typeof auctionBids.$inferInsert) {
-  const [result] = await db.insert(auctionBids).values(bid).returning({
+export async function insertBid(
+  bid: typeof auctionBids.$inferInsert,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const [result] = await tx.insert(auctionBids).values(bid).returning({
     bidId: auctionBids.id,
   });
 

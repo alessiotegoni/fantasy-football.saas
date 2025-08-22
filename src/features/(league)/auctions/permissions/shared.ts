@@ -93,7 +93,7 @@ export async function validatePlayerAndCredits({
   bidAmount: number;
   currentCredits: number;
 }) {
-  const [player, { playersPerRole }, playerCounts] = await Promise.all([
+  const [player, auctionSettings, playerCounts] = await Promise.all([
     getPlayer(playerId),
     getAuctionSettings(auctionId),
     getParticipantPlayersCountByRole(auctionId, participantId),
@@ -103,17 +103,22 @@ export async function validatePlayerAndCredits({
     return createError(AUCTION_PERMISSION_ERRORS.PLAYER_NOT_FOUND);
   }
 
-  if (isRoleFull(playerCounts, playersPerRole, player.role.id)) {
+  if (
+    isRoleFull(playerCounts, auctionSettings.playersPerRole, player.role.id)
+  ) {
     return createError(AUCTION_PERMISSION_ERRORS.MAX_PLAYERS_REACHED);
   }
 
   const { isValid, reason } = validateBidCredits({
     currentCredits: currentCredits,
     bidAmount: bidAmount,
-    slotsRemaining: getRemainingSlots(playerCounts, playersPerRole),
+    slotsRemaining: getRemainingSlots(
+      playerCounts,
+      auctionSettings.playersPerRole
+    ),
   });
 
   if (!isValid) return createError(reason);
 
-  return createSuccess("", { player, playersPerRole, playerCounts });
+  return createSuccess("", { player, auctionSettings, playerCounts });
 }

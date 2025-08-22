@@ -8,6 +8,7 @@ enum BID_ERRORS {
   INSUFFICENT_CREDITS = "Non hai abbastanza crediti",
   NOMINATION_NOT_FOUND = "Nomina non trovata",
   BID_TOO_LOW = "La tua offerta è troppo bassa",
+  NOMINATION_EXPIRED = "Nomina gia scaduta",
 }
 
 export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
@@ -38,5 +39,19 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
 
-  return createSuccess("", { participant });
+  const now = new Date();
+  const remainingTime = nomination.expiresAt.getTime() - now.getTime();
+
+  const othersCallsTime =
+    playerAndCreditValidation.data.auctionSettings.othersCallsTime;
+
+  if (remainingTime >= othersCallsTime * 1000) {
+    return createError(BID_ERRORS.NOMINATION_EXPIRED);
+  }
+
+  return createSuccess("", {
+    participant,
+    nomination,
+    othersCallsTime,
+  });
 }
