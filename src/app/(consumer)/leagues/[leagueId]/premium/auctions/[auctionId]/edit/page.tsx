@@ -2,8 +2,8 @@ import Container from "@/components/Container";
 import Disclaimer from "@/components/Disclaimer";
 import AuctionForm from "@/features/(league)/auctions/components/AuctionForm";
 import {
-  Auction,
-  getAuction,
+  AuctionWithSettings,
+  getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
 import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getLiveSplit } from "@/features/splits/queries/split";
@@ -17,7 +17,7 @@ export default async function EditAuctionPage({
 }) {
   const { leagueId, auctionId } = await params;
 
-  const auction = await getAuction(auctionId);
+  const auction = await getAuctionWithSettings(auctionId);
   if (!auction) notFound();
 
   const { settings, ...restAuction } = auction;
@@ -39,7 +39,7 @@ export default async function EditAuctionPage({
 async function SuspenseBoundary({
   auction,
 }: {
-  auction: NonNullable<Auction>;
+  auction: NonNullable<AuctionWithSettings>;
 }) {
   const [playersRoles, isSplitLive] = await Promise.all([
     getRolesWithoutPresident(),
