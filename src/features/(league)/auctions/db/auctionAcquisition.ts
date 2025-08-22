@@ -2,6 +2,7 @@ import { db } from "@/drizzle/db";
 import { auctionAcquisitions } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { createError } from "@/utils/helpers";
+import { revalidateAuctionPlayersCache } from "./cache/auction";
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione dell'acquisizione all'asta",
@@ -10,6 +11,7 @@ enum DB_ERROR_MESSAGES {
 
 const acquisitionInfo = {
   acquisitionId: auctionAcquisitions.id,
+  auctionId: auctionAcquisitions.auctionId,
 };
 
 export async function insertAcquisition(
@@ -24,6 +26,8 @@ export async function insertAcquisition(
   if (!result?.acquisitionId) {
     throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
   }
+
+  revalidateAuctionPlayersCache(acquisition.auctionId);
 
   return result.acquisitionId;
 }
@@ -40,4 +44,6 @@ export async function deleteAcquisition(
   if (!result?.acquisitionId) {
     throw new Error(createError(DB_ERROR_MESSAGES.DELETION_FAILED).message);
   }
+
+  revalidateAuctionPlayersCache(result.auctionId);
 }
