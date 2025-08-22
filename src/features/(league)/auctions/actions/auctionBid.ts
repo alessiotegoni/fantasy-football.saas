@@ -5,11 +5,12 @@ import { validateSchema } from "@/schema/helpers";
 import { insertBid } from "../db/auctionBid";
 import { canCreateBid } from "../permissions/auctionBid";
 import { CreateBidSchema, createBidSchema } from "../schema/auctionBid";
-import { getAuctionSettings } from "../queries/auctionSettings";
-import { getNomination } from "../queries/auctionNomination";
-import { cancelExpiryJob, scheduleExpiryJob } from "../utils/pg-boss";
 import { db } from "@/drizzle/db";
 import { updateNomination } from "../db/auctionNomination";
+import {
+  cancelExpiryJob,
+  scheduleExpiryJob,
+} from "../tasks/jobs/auctionNomination";
 
 enum AUCTION_BID_MESSAGES {
   BID_CREATED_SUCCESSFULLY = "Offerta piazzata con successo",
@@ -31,9 +32,7 @@ export async function createBid(values: CreateBidSchema) {
     await insertBid(data, tx);
 
     const newExpiresAt = new Date();
-    newExpiresAt.setSeconds(
-      newExpiresAt.getSeconds() + othersCallsTime
-    );
+    newExpiresAt.setSeconds(newExpiresAt.getSeconds() + othersCallsTime);
 
     await updateNomination(
       data.nominationId,

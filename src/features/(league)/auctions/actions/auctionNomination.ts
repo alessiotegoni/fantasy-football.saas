@@ -14,7 +14,10 @@ import {
   insertNomination,
   deleteNomination as deleteNominationDB,
 } from "../db/auctionNomination";
-import { cancelExpiryJob, scheduleExpiryJob } from "../utils/pg-boss";
+import {
+  cancelExpiryJob,
+  scheduleExpiryJob,
+} from "../tasks/jobs/auctionNomination";
 
 enum AUCTION_NOMINATION_MESSAGES {
   NOMINATION_CREATED_SUCCESSFULLY = "Nomina creata con successo",
