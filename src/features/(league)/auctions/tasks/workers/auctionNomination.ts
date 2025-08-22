@@ -10,14 +10,27 @@ import {
   auctionAcquisitions,
   auctionBids,
   auctionNominations,
+  auctionSettings,
 } from "@/drizzle/schema";
+import {
+  getAuctionParticipants,
+  getParticipantPlayersCountByRole,
+} from "../../queries/auctionParticipant";
+import { isRoleFull } from "../../utils/auctionParticipant";
+import { setAuctionTurn } from "../../db/auctionParticipant";
 
 type NominationExpiryData = {
   nominationId: string;
+  auctionSettings: typeof auctionSettings.$inferSelect;
+  player: { roleId: number };
 };
 
 const handler: WorkHandler<NominationExpiryData> = async ([job]) => {
-  const { nominationId } = job.data;
+  const {
+    nominationId,
+    auctionSettings: { playersPerRole },
+    player,
+  } = job.data;
 
   const nomination = await getNomination(nominationId);
   if (!nomination || nomination.status !== "bidding") return;
@@ -26,9 +39,34 @@ const handler: WorkHandler<NominationExpiryData> = async ([job]) => {
 
   await db.transaction(async (tx) => {
     const acquisitionData = getAcquisitionData(nomination, highestBid);
-    
+
     await insertAcquisition(acquisitionData, tx);
     await updateNomination(nominationId, { status: "sold" }, tx);
+
+    const participants = await getAuctionParticipants(nomination.auctionId);
+
+    const currentIndex = participants.findIndex((p) => p.isCurrent);
+    let nextIndex = currentIndex + 1;
+
+    let nextParticipant = participants[nextIndex];
+    let attempts = 0;
+
+    while (attempts < participants.length) {
+      const playerCounts = await getParticipantPlayersCountByRole(
+        nomination.auctionId,
+        nextParticipant.id
+      );
+      if (!isRoleFull(playerCounts, playersPerRole, player.roleId)) {
+        break;
+      }
+      nextIndex = (nextIndex + 1) % participants.length;
+      nextParticipant = participants[nextIndex];
+      attempts++;
+    }
+
+    if (attempts < participants.length) {
+      await setAuctionTurn(nomination.auctionId, nextParticipant.id, tx);
+    }
   });
 };
 

@@ -34,7 +34,7 @@ export async function createNomination(values: CreateNominationSchema) {
   const permissions = await canCreateNomination(data);
   if (permissions.error) return permissions;
 
-  const { participant } = permissions.data;
+  const { participant, auction } = permissions.data;
 
   // expiresAt e' calcolato automaticamente in base ai settaggi dell'asta
   // tramite un trigger chiamato prima dell'inserimento della nomination
@@ -44,7 +44,10 @@ export async function createNomination(values: CreateNominationSchema) {
     nominatedBy: participant.id,
   });
 
-  await scheduleExpiryJob(nomination.id, nomination.expiresAt);
+  await scheduleExpiryJob(
+    { nominationId: nomination.id, auctionSettings: auction.settings },
+    nomination.expiresAt
+  );
 
   return createSuccess(
     AUCTION_NOMINATION_MESSAGES.NOMINATION_CREATED_SUCCESSFULLY,

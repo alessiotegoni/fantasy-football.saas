@@ -40,16 +40,19 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
 
-  const othersCallsTime =
-    playerAndCreditValidation.data.auctionSettings.othersCallsTime;
-
-  if (isTimeExpired({ ...nomination, othersCallsTime })) {
+  if (
+    isTimeExpired({
+      ...nomination,
+      othersCallsTime:
+        playerAndCreditValidation.data.auctionSettings.othersCallsTime,
+    })
+  ) {
     return createError(BID_ERRORS.NOMINATION_EXPIRED);
   }
 
   return createSuccess("", {
     participant,
     nomination,
-    othersCallsTime,
+    ...playerAndCreditValidation.data,
   });
 }

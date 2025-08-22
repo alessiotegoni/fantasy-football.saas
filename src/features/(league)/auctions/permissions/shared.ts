@@ -1,13 +1,9 @@
-import { db } from "@/drizzle/db";
-import { auctionAcquisitions } from "@/drizzle/schema/auctionAcquisitions";
-import { players } from "@/drizzle/schema/players";
-import { getAuction } from "../queries/auction";
-import { getAuctionParticipant } from "../queries/auctionParticipant";
+import { getAuctionWithSettings } from "../queries/auction";
+import { getAuctionParticipant, getParticipantPlayersCountByRole } from "../queries/auctionParticipant";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { and, count, eq } from "drizzle-orm";
 import { getPlayer } from "@/features/players/queries/player";
 import { getAuctionSettings } from "../queries/auctionSettings";
 import { getRemainingSlots, isRoleFull } from "../utils/auctionParticipant";
@@ -23,39 +19,11 @@ export enum AUCTION_PERMISSION_ERRORS {
   PLAYER_NOT_FOUND = "Giocatore non trovato",
 }
 
-export async function getParticipantPlayersCountByRole(
-  auctionId: string,
-  participantId: string
-) {
-  const playerCounts = await db
-    .select({
-      roleId: players.roleId,
-      count: count(players.id),
-    })
-    .from(auctionAcquisitions)
-    .innerJoin(players, eq(auctionAcquisitions.playerId, players.id))
-    .where(
-      and(
-        eq(auctionAcquisitions.auctionId, auctionId),
-        eq(auctionAcquisitions.participantId, participantId)
-      )
-    )
-    .groupBy(players.roleId);
-
-  return playerCounts.reduce(
-    (acc: Record<number, number>, { roleId, count }) => {
-      acc[roleId] = count;
-      return acc;
-    },
-    {}
-  );
-}
-
 export async function baseAuctionPermissions(auctionId: string) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const auction = await getAuction(auctionId);
+  const auction = await getAuctionWithSettings(auctionId);
   if (!auction) {
     return createError(AUCTION_PERMISSION_ERRORS.AUCTION_NOT_FOUND);
   }

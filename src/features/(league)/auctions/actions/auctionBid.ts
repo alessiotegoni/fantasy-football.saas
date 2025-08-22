@@ -26,13 +26,15 @@ export async function createBid(values: CreateBidSchema) {
   const permissions = await canCreateBid(data);
   if (permissions.error) return permissions;
 
-  const { nomination, othersCallsTime } = permissions.data;
+  const { nomination, auctionSettings } = permissions.data;
 
   await db.transaction(async (tx) => {
     await insertBid(data, tx);
 
     const newExpiresAt = new Date();
-    newExpiresAt.setSeconds(newExpiresAt.getSeconds() + othersCallsTime);
+    newExpiresAt.setSeconds(
+      newExpiresAt.getSeconds() + auctionSettings.othersCallsTime
+    );
 
     await updateNomination(
       data.nominationId,
@@ -43,7 +45,10 @@ export async function createBid(values: CreateBidSchema) {
     );
 
     await cancelExpiryJob(data.nominationId);
-    await scheduleExpiryJob(nomination.id, newExpiresAt);
+    await scheduleExpiryJob(
+      { nominationId: nomination.id, auctionSettings },
+      newExpiresAt
+    );
   });
 
   return createSuccess(AUCTION_BID_MESSAGES.BID_CREATED_SUCCESSFULLY, null);

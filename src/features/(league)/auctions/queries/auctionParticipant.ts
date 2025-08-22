@@ -1,6 +1,18 @@
 import { db } from "@/drizzle/db";
-import { auctionParticipants } from "@/drizzle/schema";
-import { and, eq } from "drizzle-orm";
+import {
+  auctionAcquisitions,
+  auctionParticipants,
+  players,
+} from "@/drizzle/schema";
+import { and, asc, count, eq } from "drizzle-orm";
+
+export async function getAuctionParticipants(auctionId: string) {
+  return db
+    .select()
+    .from(auctionParticipants)
+    .where(eq(auctionParticipants.auctionId, auctionId))
+    .orderBy(asc(auctionParticipants.order));
+}
 
 export async function getAuctionParticipant(auctionId: string, teamId: string) {
   const [participant] = await db
@@ -14,4 +26,32 @@ export async function getAuctionParticipant(auctionId: string, teamId: string) {
     );
 
   return participant;
+}
+
+export async function getParticipantPlayersCountByRole(
+  auctionId: string,
+  participantId: string
+) {
+  const playerCounts = await db
+    .select({
+      roleId: players.roleId,
+      count: count(players.id),
+    })
+    .from(auctionAcquisitions)
+    .innerJoin(players, eq(auctionAcquisitions.playerId, players.id))
+    .where(
+      and(
+        eq(auctionAcquisitions.auctionId, auctionId),
+        eq(auctionAcquisitions.participantId, participantId)
+      )
+    )
+    .groupBy(players.roleId);
+
+  return playerCounts.reduce(
+    (acc: Record<number, number>, { roleId, count }) => {
+      acc[roleId] = count;
+      return acc;
+    },
+    {}
+  );
 }
