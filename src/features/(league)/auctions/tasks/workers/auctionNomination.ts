@@ -1,4 +1,3 @@
-import { getNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
 import {
   getNominationExpiryJobName,
@@ -13,7 +12,7 @@ import {
   auctionAcquisitions,
   auctionBids,
   auctionNominations,
-  auctionSettings,
+  PlayersPerRole,
 } from "@/drizzle/schema";
 import {
   getAuctionParticipants,
@@ -43,30 +42,49 @@ const handler: WorkHandler<NominationExpiryJobData> = async ([job]) => {
     if (!participants.length) return;
 
     const currentIndex = participants.findIndex((p) => p.isCurrent);
-    let nextIndex = (currentIndex + 1) % participants.length;
 
-    let nextParticipant = participants[nextIndex];
-    let attempts = 0;
+    const nextParticipant = await findNextParticipant(
+      participants,
+      currentIndex,
+      playersPerRole,
+      nomination.auctionId,
+      player.role.id
+    );
 
-    while (attempts < participants.length) {
-      const playerCounts = await getParticipantPlayersCountByRole(
-        nomination.auctionId,
-        nextParticipant.id,
-        tx
-      );
-      if (!isRoleFull(playerCounts, playersPerRole, player.role.id)) {
-        break;
-      }
-      nextIndex = (nextIndex + 1) % participants.length;
-      nextParticipant = participants[nextIndex];
-      attempts++;
-    }
-
-    if (attempts < participants.length) {
+    if (nextParticipant) {
       await setAuctionTurn(nomination.auctionId, nextParticipant.id, tx);
     }
   });
 };
+
+async function findNextParticipant(
+  participants: { id: string; isCurrent: boolean }[],
+  currentIndex: number,
+  playersPerRole: PlayersPerRole,
+  auctionId: string,
+  playerRoleId: number
+) {
+  let nextIndex = (currentIndex + 1) % participants.length;
+  let attempts = 0;
+
+  while (attempts < participants.length) {
+    const nextParticipant = participants[nextIndex];
+
+    const playerCounts = await getParticipantPlayersCountByRole(
+      auctionId,
+      nextParticipant.id
+    );
+
+    if (!isRoleFull(playerCounts, playersPerRole, playerRoleId)) {
+      return nextParticipant;
+    }
+
+    nextIndex = (nextIndex + 1) % participants.length;
+    attempts++;
+  }
+
+  return null;
+}
 
 function getAcquisitionData(
   nomination: typeof auctionNominations.$inferSelect,
@@ -89,7 +107,7 @@ function getAcquisitionData(
   }
 }
 
-export async function registerNominationExpiryWorker() {
+async function registerNominationExpiryWorker() {
   const jobName = getNominationExpiryJobName();
 
   await boss.work(jobName, handler);
