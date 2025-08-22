@@ -2,12 +2,11 @@
 
 import { Home, Shield, Calendar, Medal1st } from "iconoir-react";
 import NavLink from "@/components/NavLink";
-import { cn, getItemHref } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/useMobile";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Split } from "@/features/splits/queries/split";
-import { Suspense, use } from "react";
+import { getItemHref } from "@/utils/helpers";
 
 export function LeagueNav({ leagueId }: { leagueId: string }) {
   const isMobile = useIsMobile(1024);

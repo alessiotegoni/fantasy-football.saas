@@ -2,10 +2,10 @@
 
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import NavLink from "@/components/NavLink";
-import { getItemHref } from "@/lib/utils";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SidebarSection } from "./Sidebar";
+import { getItemHref } from "@/utils/helpers";
 
 type Props = {
   item: SidebarSection["items"][number];

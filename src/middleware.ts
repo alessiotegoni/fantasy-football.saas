@@ -1,12 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "./services/supabase/utils/supabase";
-import { createRouteMatcher, getRedirectUrl } from "./lib/utils";
+import { createRouteMatcher } from "./lib/utils";
 import {
   addUserLastLeagueMetadata,
   getCanRedirectUserToLeague,
   canAccessLeague,
   isAdmin,
 } from "./features/users/utils/user";
+import { getRedirectUrl } from "./utils/helpers";
 
 const ROUTE_MATCHERS = {
   auth: createRouteMatcher(["/auth/*rest"]),
