@@ -5,6 +5,13 @@ import {
   getLeagueAuctionsTag,
 } from "../db/cache/auction";
 import { db } from "@/drizzle/db";
+import {
+  auctionAcquisitions,
+  playerRoles,
+  players,
+  teams,
+} from "@/drizzle/schema";
+import { eq, notInArray } from "drizzle-orm";
 
 export async function getLeagueAuctions(leagueId: string, splitId: number) {
   "use cache";
@@ -51,4 +58,34 @@ export async function getAuctionWithSettings(id: string) {
   return result ? { ...result, settings: result.settings[0] } : undefined;
 }
 
-export type AuctionWithSettings = Awaited<ReturnType<typeof getAuctionWithSettings>>;
+export type AuctionWithSettings = Awaited<
+  ReturnType<typeof getAuctionWithSettings>
+>;
+
+export async function getAuctionAvailablePlayers(auctionId: string) {
+  "use cache";
+
+  const takenPlayersSubquery = await db
+    .select({
+      playerId: auctionAcquisitions.playerId,
+    })
+    .from(auctionAcquisitions)
+    .where(eq(auctionAcquisitions.auctionId, auctionId));
+
+  const playersIds = takenPlayersSubquery.map(({ playerId }) => playerId);
+
+  const availablePlayers = await db
+    .select({
+      id: players.id,
+      displayName: players.displayName,
+      avatarUrl: players.avatarUrl,
+      role: playerRoles,
+      team: teams,
+    })
+    .from(players)
+    .innerJoin(playerRoles, eq(playerRoles.id, players.roleId))
+    .innerJoin(teams, eq(teams.id, players.teamId))
+    .where(notInArray(players.id, playersIds));
+
+  return availablePlayers;
+}
