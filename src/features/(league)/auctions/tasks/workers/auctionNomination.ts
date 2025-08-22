@@ -5,6 +5,7 @@ import { boss } from "@/lib/pg-boss";
 import { updateNomination } from "../../db/auctionNomination";
 import { db } from "@/drizzle/db";
 import { insertAcquisition } from "../../db/auctionAcquisition";
+import { Job, WorkHandler } from "pg-boss";
 
 export async function registerNominationExpiryWorker() {
   const jobName = getNominationExpiryJobName();
@@ -14,7 +15,11 @@ export async function registerNominationExpiryWorker() {
 
 registerNominationExpiryWorker();
 
-async function handler(job: any) {
+type NominationExpiryData = {
+  nominationId: string;
+};
+
+const handler: WorkHandler<NominationExpiryData> = async ([job]) => {
   const { nominationId } = job.data;
 
   const nomination = await getNomination(nominationId);
@@ -47,4 +52,4 @@ async function handler(job: any) {
 
     await updateNomination(nominationId, { status: "sold" }, tx);
   });
-}
+};
