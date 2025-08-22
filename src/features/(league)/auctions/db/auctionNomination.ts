@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { auctionNominations, NominationStatus } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione della nomina all'asta",

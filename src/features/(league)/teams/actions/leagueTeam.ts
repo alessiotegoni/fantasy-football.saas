@@ -13,7 +13,7 @@ import { memberHasTeam } from "../permissions/leagueTeam";
 import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { redirect } from "next/navigation";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 
 enum TEAM_ERROR_MESSAGES {

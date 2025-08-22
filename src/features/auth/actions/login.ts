@@ -13,7 +13,7 @@ import { authUsers } from "drizzle-orm/supabase";
 import { db } from "@/drizzle/db";
 import { eq, isNotNull } from "drizzle-orm";
 import { validateSchema } from "@/schema/helpers";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 
 enum AUTH_ERRORS {
   LOGIN = "Errore nel login, riprovare",

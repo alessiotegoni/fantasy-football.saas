@@ -3,7 +3,7 @@ import { leagueMemberTeams } from "@/drizzle/schema";
 import { revalidateLeagueTeamsCache } from "./cache/leagueTeam";
 import { and, eq, inArray } from "drizzle-orm";
 import { revalidateUserTeam } from "@/features/users/db/cache/user";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione della squadra",

@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { auctionParticipants } from "@/drizzle/schema";
 import { and, eq, inArray, SQL, sql } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione del partecipante all'asta",

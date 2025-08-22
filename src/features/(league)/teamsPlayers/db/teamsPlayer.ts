@@ -3,7 +3,7 @@ import { leagueMemberTeamPlayers } from "@/drizzle/schema";
 import { revalidateLeaguePlayersCache } from "../../leagues/db/cache/league";
 import { revalidateTeamPlayersCache } from "./cache/teamsPlayer";
 import { and, eq, inArray } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   INSERT_PLAYERS = "Errore nell'inserimento dei giocatori nel team",

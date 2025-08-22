@@ -19,7 +19,11 @@ export default function PlayerRoleBadge({ role, className }: Props) {
         badgeStyle
       )}
     >
-      {role.id === PRESIDENT_ROLE_ID ? <Crown className="text-primary size-4" /> : role.shortName}
+      {role.id === PRESIDENT_ROLE_ID ? (
+        <Crown className="text-primary size-4" />
+      ) : (
+        role.shortName
+      )}
     </div>
   );
 }

@@ -15,7 +15,7 @@ import {
   isLeagueMember,
   isMemberOfALeague,
 } from "../../members/permissions/leagueMember";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { getLiveSplit } from "@/features/splits/queries/split";
 
 enum JOIN_LEAGUE_MESSAGES {

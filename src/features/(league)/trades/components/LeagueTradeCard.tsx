@@ -5,7 +5,7 @@ import TeamInfo from "./TradeTeamInfo";
 import { cn } from "@/lib/utils";
 import TradeStatusBadge from "./TradeStatusBadge";
 import PlayersSection from "./TradePlayerSection";
-import { formatPlural } from "@/lib/formatters";
+import { formatPlural } from "@/utils/formatters";
 
 export default function LeagueTradeCard({
   trade,

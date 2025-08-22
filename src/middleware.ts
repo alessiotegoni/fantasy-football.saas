@@ -15,9 +15,9 @@ const ROUTE_MATCHERS = {
     "/",
     "/leagues/create",
     "/leagues/join",
-    "/leagues/join/*rest"
+    "/leagues/join/*rest",
   ]),
-  league: createRouteMatcher(["/leagues/*rest"])
+  league: createRouteMatcher(["/leagues/*rest"]),
 } as const;
 
 export async function middleware(request: NextRequest) {
@@ -56,7 +56,10 @@ async function handlePrivateRoute(request: NextRequest, user: any) {
     );
   }
 
-  const { isRedirectable, redirectUrl } = getCanRedirectUserToLeague(request, user);
+  const { isRedirectable, redirectUrl } = getCanRedirectUserToLeague(
+    request,
+    user
+  );
   return isRedirectable ? NextResponse.redirect(redirectUrl) : null;
 }
 

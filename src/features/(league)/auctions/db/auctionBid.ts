@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { auctionBids } from "@/drizzle/schema";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione dell'offerta all'asta",

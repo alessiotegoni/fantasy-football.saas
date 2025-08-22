@@ -1,6 +1,6 @@
 "use server";
 
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { matchLineupSchema, MatchLineupSchema } from "../schema/match";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getUserId } from "@/features/users/utils/user";
@@ -14,7 +14,9 @@ import {
 } from "../db/match";
 
 export async function saveLineup(values: MatchLineupSchema) {
-  const { success, data, error } = await matchLineupSchema.safeParseAsync(values);
+  const { success, data, error } = await matchLineupSchema.safeParseAsync(
+    values
+  );
   console.log(error);
 
   if (!success) return createError(VALIDATION_ERROR);

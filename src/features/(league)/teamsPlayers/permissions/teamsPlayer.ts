@@ -5,7 +5,7 @@ import { and, count, eq } from "drizzle-orm";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { getTeamPlayerPerRoles } from "../queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "../../leagues/queries/league";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 
 enum TEAM_PLAYER_MESSAGES {
   ADMIN_REQUIRED = "Per aggiungere giocatori alle squadre devi essere admin della lega",

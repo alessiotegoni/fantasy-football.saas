@@ -1,7 +1,7 @@
 "use server";
 
 import { getUUIdSchema, validateSchema } from "@/schema/helpers";
-import { createSuccess } from "@/lib/helpers";
+import { createSuccess } from "@/utils/helpers";
 import {
   canJoinAuction,
   canUpdateParticipantsOrder,

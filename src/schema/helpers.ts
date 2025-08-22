@@ -1,4 +1,4 @@
-import { createError, ErrorResult } from "@/lib/helpers";
+import { createError, ErrorResult } from "@/utils/helpers";
 import { z, ZodSchema } from "zod";
 
 export type ValidateSchema<T> =

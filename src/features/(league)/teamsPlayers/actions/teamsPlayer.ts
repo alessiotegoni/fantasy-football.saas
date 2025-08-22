@@ -12,7 +12,7 @@ import {
 } from "../schema/teamsPlayer";
 import { canInsertPlayer } from "../permissions/teamsPlayer";
 import { getTeamCredits } from "../queries/teamsPlayer";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 

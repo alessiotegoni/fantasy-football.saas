@@ -12,7 +12,7 @@ import {
 import { canUpdateCredits } from "../permissions/handle-credits";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { updateLeagueTeams } from "@/features/(league)/teams/db/leagueTeam";
-import { createSuccess } from "@/lib/helpers";
+import { createSuccess } from "@/utils/helpers";
 import { addTeamsCredits as addTeamsCreditsDB } from "../db/handle-credits";
 import { getGeneralSettings } from "@/features/(league)/settings/queries/setting";
 

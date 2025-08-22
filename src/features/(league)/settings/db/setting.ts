@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { leagueSettings, LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { revalidateLeagueSettingsCache } from "./cache/setting";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   INSERT = "Errore nell'inserimento dei settaggi della lega",

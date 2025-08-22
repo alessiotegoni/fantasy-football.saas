@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { leagueMemberTeams } from "@/drizzle/schema";
 import { revalidateLeagueTeamsCache } from "@/features/(league)/teams/db/cache/leagueTeam";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
 enum DB_ERROR_MESSAGES {

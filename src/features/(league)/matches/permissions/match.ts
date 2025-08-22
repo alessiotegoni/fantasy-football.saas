@@ -2,7 +2,7 @@ import { getUserTeamId } from "@/features/users/queries/user";
 import { MatchLineupSchema } from "../schema/match";
 import { getMatchInfo } from "../queries/match";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 
 enum LINEUP_ERRORS {
   MATCH_NOT_FOUND = "Partita non trovata",

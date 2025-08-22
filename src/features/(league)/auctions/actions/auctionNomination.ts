@@ -9,7 +9,7 @@ import {
   canCreateNomination,
   canDeleteNomination,
 } from "../permissions/auctionNomination";
-import { createSuccess } from "@/lib/helpers";
+import { createSuccess } from "@/utils/helpers";
 import {
   insertNomination,
   deleteNomination as deleteNominationDB,

@@ -1,5 +1,5 @@
 import { getUserId } from "@/features/users/utils/user";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getLeagueAdmin } from "../../leagues/queries/league";
 import { getAuction } from "../queries/auction";
@@ -53,7 +53,7 @@ export async function participantActionPermissions({
 
   const [isLeagueAdmin, participant] = await Promise.all([
     getLeagueAdmin(userId, auction.leagueId),
-    getAuctionParticipant(auctionId, teamId)
+    getAuctionParticipant(auctionId, teamId),
   ]);
 
   if (!isLeagueAdmin) {
@@ -73,7 +73,6 @@ export async function participantActionPermissions({
     participant,
   });
 }
-
 
 export async function canUpdateParticipantsOrder(auctionId: string) {
   const permissions = await basePermissions(auctionId);

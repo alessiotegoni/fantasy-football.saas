@@ -1,6 +1,6 @@
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getUserId } from "@/features/users/utils/user";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 
 enum ERROR_MESSAGES {
@@ -15,5 +15,5 @@ export async function canUpdateCredits(leagueId: string) {
     return createError(ERROR_MESSAGES.NOT_ADMIN);
   }
 
-  return createSuccess("", null)
+  return createSuccess("", null);
 }

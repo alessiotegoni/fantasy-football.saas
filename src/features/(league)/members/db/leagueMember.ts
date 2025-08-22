@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { LeagueMemberRoleType, leagueMembers } from "@/drizzle/schema";
 import { revalidateLeagueMembersCache } from "./cache/leagueMember";
 import { eq } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   INSERT = "Errore nell'inserimento del membro nella lega",

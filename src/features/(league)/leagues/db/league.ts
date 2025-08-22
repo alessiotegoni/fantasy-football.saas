@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { leagues, leagueUserBans } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { revalidateLeagueProfileCache } from "./cache/league";
 import { revalidateLeagueMembersCache } from "../../members/db/cache/leagueMember";
 

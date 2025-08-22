@@ -16,7 +16,7 @@ import {
 } from "../schema/setting";
 import { getUserId } from "@/features/users/utils/user";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 import { revalidateLeagueRosterSettingsCache } from "../db/cache/setting";
 import { getLeagueVisibility } from "../../leagues/queries/league";

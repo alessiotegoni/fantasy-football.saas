@@ -1,6 +1,6 @@
 "use server";
 
-import { createSuccess } from "@/lib/helpers";
+import { createSuccess } from "@/utils/helpers";
 import { validateSchema } from "@/schema/helpers";
 import { insertBid } from "../db/auctionBid";
 import { canCreateBid } from "../permissions/auctionBid";

@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMatches } from "@/drizzle/schema";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { revalidateLeagueCalendarsCache } from "./cache/calendar";
 import { and, eq, inArray } from "drizzle-orm";
 

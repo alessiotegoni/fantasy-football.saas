@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { formatPlural } from "@/lib/formatters";
+import { formatPlural } from "@/utils/formatters";
 import { cn } from "@/lib/utils";
 import { Coins } from "iconoir-react";
 

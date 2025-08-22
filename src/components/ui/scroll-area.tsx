@@ -15,7 +15,9 @@ export default function ScrollArea({
     <div
       className={cn(
         "space-y-2 custom-scrollbar",
-        direction === "vertical" ? "overflow-y-auto pr-2" : "overflow-x-auto pb-2",
+        direction === "vertical"
+          ? "overflow-y-auto pr-2"
+          : "overflow-x-auto pb-2",
         className
       )}
     >

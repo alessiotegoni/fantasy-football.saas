@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMatchdayCalculations } from "@/drizzle/schema/leagueMatchdayCalculations";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { and, eq } from "drizzle-orm";
 import { revalidateLeagueCalculationsCache } from "./cache/calculate-matchday";
 

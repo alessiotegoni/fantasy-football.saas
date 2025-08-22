@@ -6,7 +6,7 @@ import {
 } from "@/drizzle/schema";
 import { revalidateLeagueTradesCache } from "./cache/trade";
 import { eq, inArray } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum DB_ERROR_MESSAGES {
   TRADE_CREATION_FAILED = "Errore nella creazione dello scambio",

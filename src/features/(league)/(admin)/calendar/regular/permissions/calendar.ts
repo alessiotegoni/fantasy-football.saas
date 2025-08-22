@@ -3,7 +3,7 @@ import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { and, count, eq } from "drizzle-orm";
 
 enum GENERATE_CALENDAR_MESSAGES {

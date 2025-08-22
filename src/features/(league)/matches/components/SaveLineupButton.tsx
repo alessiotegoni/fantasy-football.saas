@@ -3,7 +3,7 @@
 import ActionButton from "@/components/ActionButton";
 import useMyLineup from "@/hooks/useMyLineup";
 import { saveLineup } from "../actions/match";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { useIsMobile } from "@/hooks/useMobile";
 import { MatchLineupSchema } from "../schema/match";
 import { LineupPlayer } from "../queries/match";

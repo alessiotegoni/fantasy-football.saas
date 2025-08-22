@@ -9,7 +9,7 @@ type Props = {
   max: number;
   step?: number;
   unit?: string;
-  className?: string
+  className?: string;
   renderNumberInput?: (props: NumberInputProps) => React.ReactNode;
 };
 

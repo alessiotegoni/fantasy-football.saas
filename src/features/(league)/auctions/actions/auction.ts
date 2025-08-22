@@ -16,7 +16,7 @@ import {
   canUpdateAuction,
   canUpdateAuctionStatus,
 } from "../permissions/auction";
-import { createSuccess } from "@/lib/helpers";
+import { createSuccess } from "@/utils/helpers";
 import { db } from "@/drizzle/db";
 import {
   insertAuction,

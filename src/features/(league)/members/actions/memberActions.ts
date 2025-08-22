@@ -9,7 +9,7 @@ import {
 } from "@/features/(league)/leagues/db/league";
 import { canPerformMemberAction } from "../permissions/leagueMember";
 import { removeUserLeagueMetadata } from "@/features/users/utils/user";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 import { validateSchema } from "@/schema/helpers";
 import {
   banMemberSchema,

@@ -1,7 +1,7 @@
 import { db } from "@/drizzle/db";
 import { auctionSettings } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { revalidateAuctionSettingsCache } from "./cache/auction";
 
 enum DB_ERROR_MESSAGES {

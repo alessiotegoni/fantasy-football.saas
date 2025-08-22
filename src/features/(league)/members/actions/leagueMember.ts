@@ -14,7 +14,7 @@ import {
   validateSchema,
   VALIDATION_ERROR,
 } from "@/schema/helpers";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 
 enum LEAGUE_MEMBER_MESSAGES {
   LEAGUE_CODE_ERROR = "Codice o password della lega errati",

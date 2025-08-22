@@ -3,7 +3,7 @@ import {
   leagueMatchLineupPlayers,
   leagueMatchTeamLineup,
 } from "@/drizzle/schema";
-import { createError } from "@/lib/helpers";
+import { createError } from "@/utils/helpers";
 import { revalidateMatchLinuepsCache } from "./cache/match";
 import { eq } from "drizzle-orm";
 

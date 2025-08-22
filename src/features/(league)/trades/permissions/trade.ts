@@ -12,7 +12,7 @@ import { CreateTradeProposalSchema } from "../schema/trade";
 import { getTradeStatus } from "../queries/trade";
 import { isTeamRoleSlotFull } from "../../teamsPlayers/permissions/teamsPlayer";
 import { groupTradePlayers } from "../utils/trade";
-import { createError, createSuccess } from "@/lib/helpers";
+import { createError, createSuccess } from "@/utils/helpers";
 
 type TradePermissionParams = {
   userId: string;
