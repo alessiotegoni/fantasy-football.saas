@@ -10,11 +10,8 @@ import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
 import { getPlayer } from "@/features/players/queries/player";
 import { getAuctionSettings } from "../queries/auctionSettings";
-import {
-  getRemainingSlots,
-  isRoleFull,
-  validateBidCredits,
-} from "../utils/auctionParticipant";
+import { getRemainingSlots, isRoleFull } from "../utils/auctionParticipant";
+import { validateBidCredits } from "../utils/auctionBid";
 
 export enum AUCTION_PERMISSION_ERRORS {
   NOT_A_PARTICIPANT = "Non sei un partecipante di questa asta",

@@ -3,6 +3,7 @@ import { CreateBidSchema } from "../schema/auctionBid";
 import { getNomination } from "../queries/auctionNomination";
 import { baseAuctionPermissions, validatePlayerAndCredits } from "./shared";
 import { getHighestBid } from "../queries/auctionBid";
+import { isTimeExpired } from "../utils/auctionBid";
 
 enum BID_ERRORS {
   INSUFFICENT_CREDITS = "Non hai abbastanza crediti",
@@ -39,13 +40,10 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
 
-  const now = new Date();
-  const remainingTime = nomination.expiresAt.getTime() - now.getTime();
-
   const othersCallsTime =
     playerAndCreditValidation.data.auctionSettings.othersCallsTime;
 
-  if (remainingTime >= othersCallsTime * 1000) {
+  if (isTimeExpired({ ...nomination, othersCallsTime })) {
     return createError(BID_ERRORS.NOMINATION_EXPIRED);
   }
 
