@@ -19,13 +19,13 @@ export async function insertNomination(
   const [result] = await db
     .insert(auctionNominations)
     .values(nomination)
-    .returning(nominationInfo);
+    .returning();
 
-  if (!result?.nominationId) {
+  if (!result?.id) {
     throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
   }
 
-  return result.nominationId;
+  return result;
 }
 
 export async function updateNominationStatus(

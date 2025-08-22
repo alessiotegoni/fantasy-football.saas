@@ -34,8 +34,7 @@ export const auctionNominations = pgTable("auction_nominations", {
   initialPrice: smallint("initial_price").notNull().default(1),
   status: auctionNominationStatusEnum("status").notNull().default("bidding"),
   expiresAt: timestamp("expires_at", { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+    .notNull().defaultNow(),
 });
 
 export const auctionNominationsRelations = relations(
