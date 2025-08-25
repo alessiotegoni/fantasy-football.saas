@@ -64,17 +64,8 @@ export async function createAuction(values: AuctionSchema) {
 
     if (data.type === "classic") createClassicAuction(data, teamsIds, tx);
 
-    if (data.type === "repair" && data.creditsToAdd) {
-      const { initialCredits } = await getGeneralSettings(data.leagueId);
-
-      await addTeamsCredits(
-        teamsIds,
-        data.leagueId,
-        data.creditsToAdd,
-        initialCredits,
-        tx
-      );
-    }
+    if (data.type === "repair" && data.creditsToAdd)
+      createRepairAuction(data, teamsIds, tx);
   });
 
   return createSuccess(AUCTION_MESSAGES.AUCTION_CREATED_SUCCESFULLY, null);
@@ -171,6 +162,22 @@ async function createClassicAuction(
     {
       credits: data.initialCredits,
     },
+    tx
+  );
+}
+
+async function createRepairAuction(
+  data: Extract<CreateAuctionSchema, { type: "repair" }>,
+  teamsIds: string[],
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const { initialCredits } = await getGeneralSettings(data.leagueId);
+
+  await addTeamsCredits(
+    teamsIds,
+    data.leagueId,
+    data.creditsToAdd,
+    initialCredits,
     tx
   );
 }
