@@ -1,22 +1,29 @@
-import { User } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+"use client";
 
-interface Player {
-  id: number
-  name: string
-  team: string
-  role: string
-  price: number
-  image: string | null
-}
+import { User } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuctionPlayer } from "@/contexts/AuctionPlayerProvider";
+import { Player } from "@/features/players/queries/player";
+import { useEffect } from "react";
 
-interface PlayerDetailsProps {
-  selectedPlayer: Player | null
-  currentBid: number
-}
+type Props = {
+  nominatedPlayer: Player | null;
+};
 
-export function PlayerDetails({ selectedPlayer, currentBid }: PlayerDetailsProps) {
+export function PlayerDetails({ nominatedPlayer }: Props) {
+  const { selectedPlayer, toggleSelectPlayer } = useAuctionPlayer();
+
+  useEffect(() => {
+    if (
+      selectedPlayer &&
+      nominatedPlayer &&
+      selectedPlayer.id === nominatedPlayer.id
+    ) {
+      toggleSelectPlayer(null);
+    }
+  }, [nominatedPlayer]);
+
   return (
     <div className="bg-card border rounded-lg h-full">
       <div className="p-6">
@@ -24,12 +31,16 @@ export function PlayerDetails({ selectedPlayer, currentBid }: PlayerDetailsProps
           <div className="text-center space-y-4">
             <Avatar className="h-20 w-20 mx-auto">
               <AvatarImage src={selectedPlayer.image || undefined} />
-              <AvatarFallback className="text-lg">{selectedPlayer.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback className="text-lg">
+                {selectedPlayer.name.charAt(0)}
+              </AvatarFallback>
             </Avatar>
 
             <div>
               <h3 className="font-heading font-bold">{selectedPlayer.name}</h3>
-              <p className="text-sm text-muted-foreground">{selectedPlayer.team}</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedPlayer.team}
+              </p>
               <Badge className="mt-2">{selectedPlayer.role}</Badge>
             </div>
 
@@ -54,5 +65,5 @@ export function PlayerDetails({ selectedPlayer, currentBid }: PlayerDetailsProps
         )}
       </div>
     </div>
-  )
+  );
 }

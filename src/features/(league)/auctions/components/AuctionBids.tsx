@@ -27,6 +27,9 @@ export function AuctionBids({
   currentBid,
   setCurrentBid,
 }: AuctionStatusProps) {
+
+    // TODO: Here add bids realtime
+
   return (
     <div className="bg-card border rounded-lg h-full">
       <div className="p-6">

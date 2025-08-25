@@ -7,10 +7,12 @@ import { PlayerDetails } from "@/features/(league)/auctions/components/PlayerDet
 import { PlayerSearch } from "@/features/(league)/auctions/components/PlayerSearch";
 import {
   AuctionWithSettings,
+  getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
+import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
@@ -86,23 +88,17 @@ async function SuspenseBoundary({
 
       <div className="flex">
         <main className="flex-1">
-          {/* Top Section - 3 Columns */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
-            {/* Left Column - Player Search & List */}
             <AuctionPlayerProvider>
               <div className="lg:col-span-3">
-                <PlayerSearch />
+                <Suspense>
+                  <AuctionAvailablePlayers {...auction} />
+                </Suspense>
               </div>
 
-              {/* Center Column - Auction Status */}
-              <div className="lg:col-span-6">
-                <AuctionBids />
-              </div>
-
-              {/* Right Column - Player Details */}
-              <div className="lg:col-span-3">
-                <PlayerDetails />
-              </div>
+              <Suspense>
+                <BidWrapper />
+              </Suspense>
             </AuctionPlayerProvider>
           </div>
 
@@ -116,5 +112,41 @@ async function SuspenseBoundary({
         </main>
       </div>
     </div>
+  );
+}
+
+async function BidWrapper() {
+
+  // TODO: here add nomination realtime to pass to both components
+
+  return (
+    <>
+      <div className="lg:col-span-6">
+        <AuctionBids />
+      </div>
+      <div className="lg:col-span-3">
+        <PlayerDetails />
+      </div>
+      ;
+    </>
+  );
+}
+
+async function AuctionAvailablePlayers({
+  id,
+  leagueId,
+}: {
+  id: string;
+  leagueId: string;
+}) {
+  const players = await getAuctionAvailablePlayers(id);
+
+  return (
+    <PlayersList
+      leagueId={leagueId}
+      players={players}
+      virtualized
+      showSelectionButton={false}
+    />
   );
 }
