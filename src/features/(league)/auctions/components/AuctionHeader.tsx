@@ -21,7 +21,7 @@ export default function AuctionHeader({ auction, isAdmin }: Props) {
         <Button variant="ghost" size="icon" onClick={toggleSidebar}>
           <Menu className="size-5" />
         </Button>
-        <h1 className="text-xl font-heading font-bold">{auction.name}</h1>
+        <h2 className="text-2xl font-heading font-bold">{auction.name}</h2>
       </div>
       <AuctionStatus auction={auction} canUpdate={isAdmin} />
       {isAdmin && (

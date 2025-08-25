@@ -1,6 +1,7 @@
 import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
+import { PlayerSearch } from "@/features/(league)/auctions/components/PlayerSearch";
 import { AuctionWithSettings, getAuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
