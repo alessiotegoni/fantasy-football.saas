@@ -1,5 +1,6 @@
 import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
+import { AuctionPlayerProvider } from "@/contexts/AuctionPlayerProvider";
 import { AuctionBids } from "@/features/(league)/auctions/components/AuctionBids";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
 import { PlayerDetails } from "@/features/(league)/auctions/components/PlayerDetailts";
@@ -88,19 +89,21 @@ async function SuspenseBoundary({
           {/* Top Section - 3 Columns */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
             {/* Left Column - Player Search & List */}
-            <div className="lg:col-span-3">
-              <PlayerSearch />
-            </div>
+            <AuctionPlayerProvider>
+              <div className="lg:col-span-3">
+                <PlayerSearch />
+              </div>
 
-            {/* Center Column - Auction Status */}
-            <div className="lg:col-span-6">
-              <AuctionBids />
-            </div>
+              {/* Center Column - Auction Status */}
+              <div className="lg:col-span-6">
+                <AuctionBids />
+              </div>
 
-            {/* Right Column - Player Details */}
-            <div className="lg:col-span-3">
-              <PlayerDetails />
-            </div>
+              {/* Right Column - Player Details */}
+              <div className="lg:col-span-3">
+                <PlayerDetails />
+              </div>
+            </AuctionPlayerProvider>
           </div>
 
           {/* <div className="px-6 pb-6">

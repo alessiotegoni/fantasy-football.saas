@@ -20,3 +20,5 @@ export async function getPlayer(playerId: number) {
 
   return player;
 }
+
+export type Player = NonNullable<Awaited<ReturnType<typeof getPlayer>>>;
