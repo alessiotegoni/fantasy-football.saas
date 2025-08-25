@@ -1,17 +1,14 @@
 import { getUserId } from "@/features/users/utils/user";
-import { getAuction } from "../queries/auction";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getLeagueAdmin } from "../../leagues/queries/league";
 import { AUCTION_PERMISSION_ERRORS, validatePlayerAndCredits } from "./shared";
-import {
-  getAcquisition,
-  getAcquisitionByPlayer,
-} from "../queries/auctionAcquisition";
 import { AddAcquisitionPlayerSchema } from "../schema/auctionAcquisition";
 import { db } from "@/drizzle/db";
 import { auctionParticipants } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
+import { getAuctionWithSettings } from "../queries/auction";
+import { getAcquisition, getAcquisitionByPlayer } from "../queries/auctionAcquisition";
 
 enum ACQUISITION_ERRORS {
   ACQUISITION_NOT_FOUND = "Acquisizione non trovata",
@@ -68,7 +65,7 @@ async function basePermissions(auctionId: string) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const auction = await getAuction(auctionId);
+  const auction = await getAuctionWithSettings(auctionId);
   if (!auction) {
     return createError(AUCTION_PERMISSION_ERRORS.AUCTION_NOT_FOUND);
   }

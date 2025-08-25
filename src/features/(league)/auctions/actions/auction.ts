@@ -35,6 +35,8 @@ import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits"
 import { getGeneralSettings } from "../../settings/queries/setting";
 import { getAuctionParticipants } from "../queries/auctionParticipant";
 import { deleteTeamsPlayers } from "../../teamsPlayers/db/teamsPlayer";
+import { auctionAcquisitions, auctionParticipants } from "@/drizzle/schema";
+import { eq } from "drizzle-orm";
 
 enum AUCTION_MESSAGES {
   AUCTION_CREATED_SUCCESFULLY = "Asta creata con successo",
