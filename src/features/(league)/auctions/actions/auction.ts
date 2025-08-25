@@ -62,19 +62,7 @@ export async function createAuction(values: AuctionSchema) {
 
     const teamsIds = leagueTeams.map((team) => team.id);
 
-    if (data.type === "classic") {
-      const visibility = await getLeagueVisibility(data.leagueId);
-      await updateLeagueSettings(data, visibility, tx);
-
-      await updateLeagueTeams(
-        teamsIds,
-        data.leagueId,
-        {
-          credits: data.initialCredits,
-        },
-        tx
-      );
-    }
+    if (data.type === "classic") createClassicAuction(data, teamsIds, tx);
 
     if (data.type === "repair" && data.creditsToAdd) {
       const { initialCredits } = await getGeneralSettings(data.leagueId);
@@ -167,4 +155,22 @@ export async function deleteAuction(auctionId: string) {
   await deleteAuctionDB(id);
 
   return createSuccess(AUCTION_MESSAGES.AUCTION_DELETED_SUCCESFULLY, null);
+}
+
+async function createClassicAuction(
+  data: Extract<CreateAuctionSchema, { type: "classic" }>,
+  teamsIds: string[],
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const visibility = await getLeagueVisibility(data.leagueId);
+  await updateLeagueSettings(data, visibility, tx);
+
+  await updateLeagueTeams(
+    teamsIds,
+    data.leagueId,
+    {
+      credits: data.initialCredits,
+    },
+    tx
+  );
 }
