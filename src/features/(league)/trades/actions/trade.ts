@@ -27,7 +27,7 @@ import {
 import { getTrade, type Trade } from "../queries/trade";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {
-  deleteTeamPlayers,
+  deleteTeamsPlayers,
   insertTeamPlayers,
 } from "../../teamsPlayers/db/teamsPlayer";
 import { groupTradePlayers } from "../utils/trade";
@@ -256,9 +256,9 @@ async function movePlayersToTeam({
 }) {
   const playerIds = players.map((player) => player.id);
 
-  await deleteTeamPlayers(
+  await deleteTeamsPlayers(
     leagueId,
-    { memberTeamId: fromTeamId, playersIds: playerIds },
+    { membersTeamsIds: [fromTeamId], playersIds: playerIds },
     tx
   );
 

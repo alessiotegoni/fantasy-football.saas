@@ -5,7 +5,7 @@ import { createSuccess } from "@/utils/helpers";
 import { getUUIdSchema, validateSchema } from "@/schema/helpers";
 import {
   deleteAcquisition as deleteAcquisitionDB,
-  insertAcquisition,
+  insertAcquisitions,
 } from "../db/auctionAcquisition";
 import { updateParticipantCredits } from "../db/auctionParticipant";
 import {
@@ -37,7 +37,7 @@ export async function addAcquisitionPlayer(values: AddAcquisitionPlayerSchema) {
   const { participant } = permissions.data;
 
   await db.transaction(async (tx) => {
-    await insertAcquisition(data, tx);
+    await insertAcquisitions([data], tx);
 
     await updateParticipantCredits(participant.id, -data.price, tx);
 

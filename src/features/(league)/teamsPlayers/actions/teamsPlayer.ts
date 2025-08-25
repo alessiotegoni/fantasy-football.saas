@@ -2,7 +2,7 @@
 
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/users/utils/user";
-import { insertTeamPlayers, deleteTeamPlayers } from "../db/teamsPlayer";
+import { insertTeamPlayers, deleteTeamsPlayers } from "../db/teamsPlayer";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {
   insertTeamPlayerSchema,
@@ -70,17 +70,15 @@ export async function releaseTeamPlayer(values: ReleaseTeamPlayerSchema) {
   const credits = teamCredits + data.releaseCost;
 
   await db.transaction(async (tx) => {
-    await Promise.all([
-      deleteTeamPlayers(
-        data.leagueId,
-        {
-          memberTeamId: data.memberTeamId,
-          playersIds: [data.playerId],
-        },
-        tx
-      ),
-      updateLeagueTeams([data.memberTeamId], data.leagueId, { credits }, tx),
-    ]);
+    deleteTeamsPlayers(
+      data.leagueId,
+      {
+        membersTeamsIds: [data.memberTeamId],
+        playersIds: [data.playerId],
+      },
+      tx
+    ),
+      updateLeagueTeams([data.memberTeamId], data.leagueId, { credits }, tx);
   });
 
   return createSuccess(TEAM_PLAYERS_MESSAGES.RELEASED, null);

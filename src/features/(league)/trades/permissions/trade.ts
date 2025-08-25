@@ -221,7 +221,9 @@ export async function getInvalidPlayersIds({
     "requested"
   );
 
-  return [...proposedPlayersIds, ...requestedPlayersIds];
+  return [...proposedPlayersIds, ...requestedPlayersIds].filter(
+    (id) => id !== undefined
+  );
 }
 
 function getTeamInvalidPlayersIds(
@@ -233,11 +235,11 @@ function getTeamInvalidPlayersIds(
   const teamPlayers = teamsPlayers.filter(
     (player) => player.leagueTeamId === teamId
   );
+  const teamPlayersIds = new Set(teamPlayers.map((player) => player.id));
 
   const invalidPlayers =
     tradePlayers[playersType]?.filter(
-      (tradePlayer) =>
-        !teamPlayers.some((teamPlayer) => teamPlayer.id === tradePlayer.id)
+      (tradePlayer) => tradePlayer.id && !teamPlayersIds.has(tradePlayer.id)
     ) ?? [];
 
   return invalidPlayers.map((player) => player.id);

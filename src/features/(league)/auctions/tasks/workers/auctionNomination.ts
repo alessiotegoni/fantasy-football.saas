@@ -6,7 +6,7 @@ import {
 import { boss } from "@/lib/pg-boss";
 import { updateNomination } from "../../db/auctionNomination";
 import { db } from "@/drizzle/db";
-import { insertAcquisition } from "../../db/auctionAcquisition";
+import { insertAcquisitions } from "../../db/auctionAcquisition";
 import { WorkHandler } from "pg-boss";
 import {
   auctionAcquisitions,
@@ -35,7 +35,7 @@ const handler: WorkHandler<NominationExpiryJobData> = async ([job]) => {
   await db.transaction(async (tx) => {
     const acquisitionData = getAcquisitionData(nomination, highestBid);
 
-    await insertAcquisition(acquisitionData, tx);
+    await insertAcquisitions([acquisitionData], tx);
     await updateNomination(nomination.id, { status: "sold" }, tx);
 
     const participants = await getAuctionParticipants(nomination.auctionId);

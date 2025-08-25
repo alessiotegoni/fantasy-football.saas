@@ -150,7 +150,7 @@ export async function canUpdateAuctionStatus({
     return createError(AUCTION_ERRORS.AUCTION_SPLIT_ENDED);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", { auction });
 }
 
 export async function canDeleteAuction(id: string) {

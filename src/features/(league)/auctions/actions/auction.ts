@@ -33,6 +33,8 @@ import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
 import { getGeneralSettings } from "../../settings/queries/setting";
+import { getAuctionParticipants } from "../queries/auctionParticipant";
+import { deleteTeamsPlayers } from "../../teamsPlayers/db/teamsPlayer";
 
 enum AUCTION_MESSAGES {
   AUCTION_CREATED_SUCCESFULLY = "Asta creata con successo",
@@ -117,7 +119,8 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
   const permissions = await canUpdateAuctionStatus(data);
   if (permissions.error) return permissions;
 
-  const { id, status } = data;
+  const { status } = data;
+  const { auction } = permissions.data;
 
   const timestampts: { startedAt: Date | null; endedAt: Date | null } = {
     startedAt: null,
@@ -126,7 +129,11 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
   if (status === "active") timestampts.startedAt = new Date();
   if (status === "ended") timestampts.endedAt = new Date();
 
-  await updateAuctionDB(id, { status, ...timestampts });
+  await db.transaction(async (tx) => {
+    await updateAuctionDB(auction.id, { status, ...timestampts }, tx);
+
+    if (status === "ended") await importTeamsPlayers(auction, tx);
+  });
 
   return createSuccess(
     AUCTION_MESSAGES.AUCTION_STATUS_UPDATED_SUCCESFULLY,

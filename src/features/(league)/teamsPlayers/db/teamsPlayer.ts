@@ -32,14 +32,14 @@ export async function insertTeamPlayers(
   revalidateTeamPlayersCache(players[0].memberTeamId);
 }
 
-export async function deleteTeamPlayers(
+export async function deleteTeamsPlayers(
   leagueId: string,
   {
-    memberTeamId,
+    membersTeamsIds,
     playersIds,
   }: {
-    memberTeamId: string;
-    playersIds: number[];
+    membersTeamsIds: string[];
+    playersIds?: number[];
   },
   tx: Omit<typeof db, "$client"> = db
 ) {
@@ -47,8 +47,10 @@ export async function deleteTeamPlayers(
     .delete(leagueMemberTeamPlayers)
     .where(
       and(
-        eq(leagueMemberTeamPlayers.memberTeamId, memberTeamId),
-        inArray(leagueMemberTeamPlayers.playerId, playersIds)
+        inArray(leagueMemberTeamPlayers.memberTeamId, membersTeamsIds),
+        playersIds
+          ? inArray(leagueMemberTeamPlayers.playerId, playersIds)
+          : undefined
       )
     )
     .returning({ playerId: leagueMemberTeamPlayers.playerId });
@@ -58,5 +60,5 @@ export async function deleteTeamPlayers(
   }
 
   revalidateLeaguePlayersCache(leagueId);
-  revalidateTeamPlayersCache(memberTeamId);
+  membersTeamsIds.forEach(revalidateTeamPlayersCache);
 }
