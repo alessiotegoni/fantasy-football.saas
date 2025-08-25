@@ -1,8 +1,13 @@
 import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
+import { AuctionBids } from "@/features/(league)/auctions/components/AuctionBids";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
+import { PlayerDetails } from "@/features/(league)/auctions/components/PlayerDetailts";
 import { PlayerSearch } from "@/features/(league)/auctions/components/PlayerSearch";
-import { AuctionWithSettings, getAuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
+import {
+  AuctionWithSettings,
+  getAuctionWithSettings,
+} from "@/features/(league)/auctions/queries/auction";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
@@ -36,9 +41,12 @@ export default async function AuctionPage({ params }: Props) {
   // con suspense
   return (
     <div>
-
       <Suspense>
-        <SuspenseBoundary {...ids} auction={auction} playerRoles={playerRoles} />
+        <SuspenseBoundary
+          {...ids}
+          auction={auction}
+          playerRoles={playerRoles}
+        />
       </Suspense>
     </div>
   );
@@ -48,7 +56,7 @@ async function SuspenseBoundary({
   leagueId,
   auctionId,
   auction,
-  playerRoles
+  playerRoles,
 }: {
   leagueId: string;
   auctionId: string;
@@ -57,7 +65,7 @@ async function SuspenseBoundary({
     id: number;
     name: string;
     shortName: string;
-}[]
+  }[];
 }) {
   const userId = await getUserId();
   if (!userId) return null;
@@ -71,55 +79,39 @@ async function SuspenseBoundary({
   ]);
   if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
 
-  return <div>
+  return (
+    <div>
       <AuctionHeader auction={auction} isAdmin={isAdmin} />
 
       <div className="flex">
-
         <main className="flex-1">
           {/* Top Section - 3 Columns */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
             {/* Left Column - Player Search & List */}
             <div className="lg:col-span-3">
-              <PlayerSearch
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                roleFilter={roleFilter}
-                setRoleFilter={setRoleFilter}
-                filteredPlayers={filteredPlayers}
-                selectedPlayer={selectedPlayer}
-                setSelectedPlayer={setSelectedPlayer}
-              />
+              <PlayerSearch />
             </div>
 
             {/* Center Column - Auction Status */}
             <div className="lg:col-span-6">
-              <AuctionStatus
-                isUserTurn={isUserTurn}
-                selectedPlayer={selectedPlayer}
-                timeLeft={timeLeft}
-                currentBid={currentBid}
-                setCurrentBid={setCurrentBid}
-              />
+              <AuctionBids />
             </div>
 
             {/* Right Column - Player Details */}
             <div className="lg:col-span-3">
-              <PlayerDetails selectedPlayer={selectedPlayer} currentBid={currentBid} />
+              <PlayerDetails />
             </div>
           </div>
 
-          {/* Participants Section */}
-          <div className="px-6 pb-6">
+          {/* <div className="px-6 pb-6">
             <ParticipantsList participants={participants} />
           </div>
 
-          {/* Player Roster by Role */}
           <div className="px-6 pb-6">
             <PlayerRoster roles={roles} />
-          </div>
+          </div> */}
         </main>
       </div>
     </div>
-  )
+  );
 }
