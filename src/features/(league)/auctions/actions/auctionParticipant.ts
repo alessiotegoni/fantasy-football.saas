@@ -25,6 +25,9 @@ import { auctionParticipants } from "@/drizzle/schema";
 import { count, eq } from "drizzle-orm";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 import { updateAuctionStatus } from "./auction";
+import { updateAuction } from "../db/auction";
+import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
+import { insertAcquisitions } from "../db/auctionAcquisition";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
   TURN_SET_SUCCESSFULLY = "Turno impostato con successo",
@@ -43,19 +46,34 @@ export async function joinAuction(auctionId: string) {
   if (permissions.error) return permissions;
 
   const {
-    auction: { id, leagueId, status },
+    auction: { id, leagueId, status, type },
     userTeamId,
-    isAlreadyParticipant,
+    participant,
   } = permissions.data;
 
-  if (!isAlreadyParticipant) {
-    await insertParticipant({
-      auctionId,
-      teamId: userTeamId,
-    });
-  }
+  await db.transaction(async (tx) => {
+    let participantId = participant.id;
+    if (!participant) {
+      participantId = await insertParticipant(
+        {
+          auctionId,
+          teamId: userTeamId,
+        },
+        tx
+      );
+    }
 
-  if (status === "waiting") await setAuctionActive(id, leagueId);
+    if (type === "repair") {
+      await setParticipantAcquisitions(
+        userTeamId,
+        auctionId,
+        participantId,
+        tx
+      );
+    }
+
+    if (status === "waiting") await setAuctionActive(id, leagueId, tx);
+  });
 
   redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
 }
@@ -118,14 +136,37 @@ export async function deleteParticipant(values: AuctionParticipantSchema) {
   return createSuccess(AUCTION_PARTICIPANT_MESSAGES.DELETED_SUCCESSFULLY, null);
 }
 
-async function setAuctionActive(id: string, leagueId: string) {
+async function setParticipantAcquisitions(
+  userTeamId: string,
+  auctionId: string,
+  participantId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const participantPlayers = await getTeamsPlayers([userTeamId]);
+  if (!participantPlayers.length) return;
+
+  const newAcquisitions = participantPlayers.map((player) => ({
+    playerId: player.id,
+    auctionId,
+    participantId,
+    price: player.purchaseCost,
+  }));
+
+  await insertAcquisitions(newAcquisitions, tx);
+}
+
+async function setAuctionActive(
+  id: string,
+  leagueId: string,
+  tx: Omit<typeof db, "$client"> = db
+) {
   const [leagueTeams, participantsCount] = await Promise.all([
     getLeagueTeams(leagueId),
     getParticipantCount(id),
   ]);
 
   if (leagueTeams.length === participantsCount) {
-    await updateAuctionStatus({ id, status: "active" });
+    await updateAuction(id, { status: "active" }, tx);
   }
 }
 

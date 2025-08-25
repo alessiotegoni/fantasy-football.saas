@@ -62,10 +62,12 @@ export async function createAuction(values: AuctionSchema) {
 
     const teamsIds = leagueTeams.map((team) => team.id);
 
-    if (data.type === "classic") createClassicAuction(data, teamsIds, tx);
-
-    if (data.type === "repair" && data.creditsToAdd)
-      createRepairAuction(data, teamsIds, tx);
+    if (data.type === "classic") {
+      await createClassicAuction(data, teamsIds, tx);
+    }
+    if (data.type === "repair" && data.creditsToAdd) {
+      await createRepairAuction(data, teamsIds, tx);
+    }
   });
 
   return createSuccess(AUCTION_MESSAGES.AUCTION_CREATED_SUCCESFULLY, null);

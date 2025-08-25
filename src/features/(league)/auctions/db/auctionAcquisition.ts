@@ -14,20 +14,20 @@ const acquisitionInfo = {
   auctionId: auctionAcquisitions.auctionId,
 };
 
-export async function insertAcquisition(
-  acquisition: typeof auctionAcquisitions.$inferInsert,
+export async function insertAcquisitions(
+  acquisitions: (typeof auctionAcquisitions.$inferInsert)[],
   tx: Omit<typeof db, "$client"> = db
 ) {
   const [result] = await tx
     .insert(auctionAcquisitions)
-    .values(acquisition)
+    .values(acquisitions)
     .returning(acquisitionInfo);
 
   if (!result?.acquisitionId) {
     throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
   }
 
-  revalidateAuctionPlayersCache(acquisition.auctionId);
+  revalidateAuctionPlayersCache(acquisitions[0].auctionId);
 
   return result.acquisitionId;
 }

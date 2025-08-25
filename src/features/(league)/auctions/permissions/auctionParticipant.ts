@@ -28,14 +28,11 @@ export async function canJoinAuction(auctionId: string) {
     return createError(AUCTION_PARTICIPANT_ERRORS.JOIN_INVALID_STATUS);
   }
 
-  const existingParticipant = await getAuctionParticipant(
-    auctionId,
-    userTeamId
-  );
+  const participant = await getAuctionParticipant(auctionId, userTeamId);
 
   return createSuccess("", {
     ...permissions.data,
-    isAlreadyParticipant: !!existingParticipant,
+    participant,
   });
 }
 

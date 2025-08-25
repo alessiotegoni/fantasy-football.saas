@@ -20,9 +20,10 @@ export async function insertParticipant(
   participant: Pick<
     typeof auctionParticipants.$inferInsert,
     "auctionId" | "teamId"
-  >
+  >,
+  tx: Omit<typeof db, "$client"> = db
 ) {
-  const [result] = await db
+  const [result] = await tx
     .insert(auctionParticipants)
     .values(participant)
     .returning(participantInfo);
