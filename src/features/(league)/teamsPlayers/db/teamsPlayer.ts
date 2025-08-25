@@ -43,7 +43,7 @@ export async function deleteTeamsPlayers(
   },
   tx: Omit<typeof db, "$client"> = db
 ) {
-  const [res] = await tx
+  await tx
     .delete(leagueMemberTeamPlayers)
     .where(
       and(
@@ -52,7 +52,7 @@ export async function deleteTeamsPlayers(
           ? inArray(leagueMemberTeamPlayers.playerId, playersIds)
           : undefined
       )
-    )
+    );
 
   revalidateLeaguePlayersCache(leagueId);
   membersTeamsIds.forEach(revalidateTeamPlayersCache);

@@ -15,7 +15,7 @@ export async function insertBid(
   });
 
   if (!result?.bidId) {
-    throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
+    throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED)  .message);
   }
 
   return result.bidId;

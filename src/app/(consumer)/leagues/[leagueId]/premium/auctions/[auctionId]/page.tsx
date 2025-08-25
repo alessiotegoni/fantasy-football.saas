@@ -1,9 +1,13 @@
 import Container from "@/components/Container";
-import { getAuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
+import { Button } from "@/components/ui/button";
+import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
+import { AuctionWithSettings, getAuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
+import { Menu } from "iconoir-react";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -30,28 +34,91 @@ export default async function AuctionPage({ params }: Props) {
   // mentre per i players dei partecipanti fare la query in un componente apparte wrappato
   // con suspense
   return (
-    <Container {...ids} headerLabel={auction.name} className="max-w-full">
+    <div>
+
       <Suspense>
-        <SuspenseBoundary {...ids} />
+        <SuspenseBoundary {...ids} auction={auction} playerRoles={playerRoles} />
       </Suspense>
-    </Container>
+    </div>
   );
 }
 
 async function SuspenseBoundary({
   leagueId,
   auctionId,
+  auction,
+  playerRoles
 }: {
   leagueId: string;
   auctionId: string;
+  auction: NonNullable<AuctionWithSettings>;
+  playerRoles: {
+    id: number;
+    name: string;
+    shortName: string;
+}[]
 }) {
   const userId = await getUserId();
   if (!userId) return null;
 
   const userTeamId = await getUserTeamId(userId, leagueId);
+  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
-  const userParticipant = await getAuctionParticipant(auctionId, userTeamId);
+  const [userParticipant, isAdmin] = await Promise.all([
+    getAuctionParticipant(auctionId, userTeamId),
+    isLeagueAdmin(userId, leagueId),
+  ]);
   if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
 
-  return <></>;
+  return <div>
+      <AuctionHeader auction={auction} isAdmin={isAdmin} />
+
+      <div className="flex">
+
+        <main className="flex-1">
+          {/* Top Section - 3 Columns */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
+            {/* Left Column - Player Search & List */}
+            <div className="lg:col-span-3">
+              <PlayerSearch
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                roleFilter={roleFilter}
+                setRoleFilter={setRoleFilter}
+                filteredPlayers={filteredPlayers}
+                selectedPlayer={selectedPlayer}
+                setSelectedPlayer={setSelectedPlayer}
+              />
+            </div>
+
+            {/* Center Column - Auction Status */}
+            <div className="lg:col-span-6">
+              <AuctionStatus
+                isUserTurn={isUserTurn}
+                selectedPlayer={selectedPlayer}
+                timeLeft={timeLeft}
+                currentBid={currentBid}
+                setCurrentBid={setCurrentBid}
+              />
+            </div>
+
+            {/* Right Column - Player Details */}
+            <div className="lg:col-span-3">
+              <PlayerDetails selectedPlayer={selectedPlayer} currentBid={currentBid} />
+            </div>
+          </div>
+
+          {/* Participants Section */}
+          <div className="px-6 pb-6">
+            <ParticipantsList participants={participants} />
+          </div>
+
+          {/* Player Roster by Role */}
+          <div className="px-6 pb-6">
+            <PlayerRoster roles={roles} />
+          </div>
+        </main>
+      </div>
+    </div>
+  )
 }
