@@ -28,7 +28,7 @@ import { getTrade, type Trade } from "../queries/trade";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {
   deleteTeamsPlayers,
-  insertTeamPlayers,
+  insertTeamsPlayers,
 } from "../../teamsPlayers/db/teamsPlayer";
 import { groupTradePlayers } from "../utils/trade";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
@@ -268,7 +268,7 @@ async function movePlayersToTeam({
     purchaseCost: 1,
   }));
 
-  await insertTeamPlayers(leagueId, newTeamPlayers, tx);
+  await insertTeamsPlayers(leagueId, newTeamPlayers, tx);
 }
 
 async function updateTeamCredits(

@@ -34,7 +34,10 @@ import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
 import { getGeneralSettings } from "../../settings/queries/setting";
 import { getAuctionParticipants } from "../queries/auctionParticipant";
-import { deleteTeamsPlayers } from "../../teamsPlayers/db/teamsPlayer";
+import {
+  deleteTeamsPlayers,
+  insertTeamsPlayers,
+} from "../../teamsPlayers/db/teamsPlayer";
 import { auctionAcquisitions, auctionParticipants } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 
@@ -191,4 +194,49 @@ async function createRepairAuction(
     initialCredits,
     tx
   );
+}
+
+async function importTeamsPlayers(
+  auction: { id: string; leagueId: string },
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const auctionParticipants = await getAuctionParticipants(auction.id);
+
+  const teamsIds = auctionParticipants
+    .map((p) => p.teamId)
+    .filter((teamId) => teamId !== null);
+  if (!teamsIds.length) return;
+
+  await deleteTeamsPlayers(auction.leagueId, { membersTeamsIds: teamsIds }, tx);
+
+  const acquisitions = await getAuctionAcquisitions(auction.id);
+  if (!acquisitions.length) return;
+
+  const newTeamsPlayers = acquisitions
+    .filter((a) => a.teamId !== null)
+    .map((a) => ({
+      playerId: a.playerId,
+      purchaseCost: a.price,
+      memberTeamId: a.teamId!,
+    }));
+
+  await insertTeamsPlayers(auction.leagueId, newTeamsPlayers, tx);
+}
+
+async function getAuctionAcquisitions(auctionId: string) {
+  const acquisitions = await db.query.auctionAcquisitions.findMany({
+    where: eq(auctionAcquisitions.auctionId, auctionId),
+    with: {
+      participant: {
+        columns: {
+          teamId: true,
+        },
+      },
+    },
+  });
+
+  return acquisitions.map(({ participant, ...rest }) => ({
+    ...rest,
+    teamId: participant?.teamId ?? null,
+  }));
 }

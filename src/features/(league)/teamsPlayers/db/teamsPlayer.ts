@@ -10,7 +10,7 @@ enum DB_ERROR_MESSAGES {
   DELETE_PLAYERS = "Errore nell'eliminazione dei giocatori nel team",
 }
 
-export async function insertTeamPlayers(
+export async function insertTeamsPlayers(
   leagueId: string,
   players: {
     playerId: number;
@@ -53,11 +53,6 @@ export async function deleteTeamsPlayers(
           : undefined
       )
     )
-    .returning({ playerId: leagueMemberTeamPlayers.playerId });
-
-  if (!res.playerId) {
-    throw new Error(createError(DB_ERROR_MESSAGES.DELETE_PLAYERS).message);
-  }
 
   revalidateLeaguePlayersCache(leagueId);
   membersTeamsIds.forEach(revalidateTeamPlayersCache);
