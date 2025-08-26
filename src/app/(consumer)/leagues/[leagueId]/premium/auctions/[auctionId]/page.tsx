@@ -86,7 +86,7 @@ async function SuspenseBoundary({
 
       <div className="flex">
         <main className="flex-1">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-0 sm:p-6">
             <AuctionPlayerProvider>
               <div className="lg:col-span-3">
                 {/* <Suspense>

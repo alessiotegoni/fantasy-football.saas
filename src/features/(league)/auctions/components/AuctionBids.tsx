@@ -8,7 +8,6 @@ import { useCurrentBid } from "@/hooks/useCurrentBid";
 import { useAuctionPlayer } from "@/contexts/AuctionPlayerProvider";
 import ActionButton from "@/components/ActionButton";
 import { createNomination } from "../actions/auctionNomination";
-import { Input } from "@/components/ui/input";
 import NumberInput from "@/components/ui/number-input";
 
 type Props = {
@@ -24,8 +23,7 @@ export function AuctionBids({ auction, currentNomination, isAdmin }: Props) {
 
   const player = currentNomination?.player || selectedPlayer;
   return (
-    <div className="bg-card border rounded-3xl h-full">
-      <div className="p-6">
+    <div className="bg-card border rounded-3xl h-full p-4 sm:p-6">
         <div className="text-center space-y-6">
           {true ? (
             <>
@@ -114,7 +112,6 @@ export function AuctionBids({ auction, currentNomination, isAdmin }: Props) {
             </>
           )}
         </div>
-      </div>
     </div>
   );
 }

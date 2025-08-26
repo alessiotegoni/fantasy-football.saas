@@ -22,16 +22,20 @@ export default function AuctionHeader({ auction, isAdmin }: Props) {
     return () => setOpen(true);
   }, []);
 
-
   return (
-    <header className="flex items-center justify-between gap-4 p-4">
+    <header className="flex items-center justify-between gap-2 sm:gap-4 sm:p-4">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={toggleSidebar}>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          className="hidden lg:block"
+        >
           <Menu className="size-5" />
         </Button>
-        <h2 className="text-2xl font-heading font-bold">{auction.name}</h2>
+        <h2 className="text-lg lg:text-2xl font-heading font-bold">{auction.name}</h2>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         <AuctionStatus auction={auction} canUpdate={isAdmin} />
         {isAdmin && (
           <AuctionDropdownMenu
