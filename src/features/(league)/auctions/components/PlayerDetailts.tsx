@@ -5,14 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuction } from "@/contexts/AuctionProvider";
 import { useEffect } from "react";
-import { CurrentNomination} from "../queries/auctionNomination";
 
-type Props = {
-  currentNomination: CurrentNomination | null;
-};
-
-export default function PlayerDetails({ currentNomination }: Props) {
-  const { selectedPlayer, toggleSelectPlayer } = useAuction();
+export default function PlayerDetails() {
+  const { selectedPlayer, toggleSelectPlayer, currentNomination } =
+    useAuction();
 
   useEffect(() => {
     if (

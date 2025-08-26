@@ -48,4 +48,4 @@ export async function getCurrentNomination(auctionId: string) {
   return nomination;
 }
 
-export type CurrentNomination = Awaited<ReturnType<typeof getCurrentNomination>>
+export type CurrentNomination = Awaited<ReturnType<typeof getCurrentNomination>> | null

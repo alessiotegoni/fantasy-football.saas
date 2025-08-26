@@ -2,19 +2,13 @@
 
 import { Trophy, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AuctionWithSettings } from "../queries/auction";
-import { useCurrentBid } from "@/hooks/useCurrentBid";
 import { useAuction } from "@/contexts/AuctionProvider";
 import ActionButton from "@/components/ActionButton";
 import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
-import { CurrentNomination } from "../queries/auctionNomination";
-import { AuctionParticipant } from "../queries/auctionParticipant";
-
 
 export default function AuctionBids() {
-
-  const { selectedPlayer,  } = useAuction();
+  const { selectedPlayer, currentNomination } = useAuction();
 
   const player = currentNomination?.player || selectedPlayer;
 

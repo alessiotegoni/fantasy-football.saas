@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/services/supabase/client/supabase";
-import { Bid } from "@/features/(league)/auctions/queries/auctionBid";
+import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
 type Args = {
-  currentNomination: CurrentNomination | null;
-  defaultBid: Bid | null;
+  currentNomination: CurrentNomination;
+  defaultBid: CurrentBid;
 };
 
 export function useCurrentBid({ currentNomination, defaultBid }: Args) {
@@ -15,7 +15,7 @@ export function useCurrentBid({ currentNomination, defaultBid }: Args) {
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
-  async function getCurrentBid(): Promise<Bid | null> {
+  async function getCurrentBid(): Promise<CurrentBid | null> {
     const { data, error } = await supabase
       .from("auction_bids")
       .select("*")

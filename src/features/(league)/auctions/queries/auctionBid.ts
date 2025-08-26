@@ -13,4 +13,4 @@ export async function getHighestBid(nominationId: string) {
   return highestBid;
 }
 
-export type Bid = typeof auctionBids.$inferSelect;
+export type CurrentBid = Awaited<ReturnType<typeof getHighestBid>> | null;

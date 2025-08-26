@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from "react";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
-  defaultNomination: CurrentNomination | null;
+  defaultNomination: CurrentNomination;
 };
 
 export default function useCurrentNomination({

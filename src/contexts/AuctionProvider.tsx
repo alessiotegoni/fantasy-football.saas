@@ -1,7 +1,7 @@
 "use client";
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { Bid } from "@/features/(league)/auctions/queries/auctionBid";
+import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { Player } from "@/features/players/queries/player";
@@ -10,8 +10,8 @@ import useCurrentNomination from "@/hooks/useCurrentNomination";
 import { createContext, useCallback, useContext, useState } from "react";
 
 type AuctionContextType = {
-  currentNomination: CurrentNomination | null;
-  currentBid: Bid | null;
+  currentNomination: CurrentNomination;
+  currentBid: CurrentBid;
   participants: AuctionParticipant[];
   handleSetParticipants: (participants: AuctionParticipant[]) => void;
   selectedPlayer: Player | null;
@@ -26,8 +26,8 @@ type Props = {
   isLeagueAdmin: boolean;
   userParticipant: AuctionParticipant;
   auction: NonNullable<AuctionWithSettings>;
-  defaultNomination: CurrentNomination | null;
-  defaultBid: Bid | null;
+  defaultNomination: CurrentNomination;
+  defaultBid: CurrentBid;
 };
 
 export default function AuctionProvider({ children, ...props }: Props) {
