@@ -4,21 +4,9 @@ import { User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuction } from "@/contexts/AuctionProvider";
-import { useEffect } from "react";
 
 export default function PlayerDetails() {
-  const { selectedPlayer, toggleSelectPlayer, currentNomination } =
-    useAuction();
-
-  useEffect(() => {
-    if (
-      selectedPlayer &&
-      currentNomination &&
-      selectedPlayer.id === currentNomination.player.id
-    ) {
-      toggleSelectPlayer(null);
-    }
-  }, [currentNomination]);
+  const { selectedPlayer, currentNomination } = useAuction();
 
   const player = currentNomination?.player || selectedPlayer;
 

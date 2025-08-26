@@ -35,7 +35,7 @@ export async function canCreateNomination({
     auctionId: auctionId,
     participantId: participant.id,
     bidAmount: initialPrice,
-    currentCredits: participant.credits,
+    participantCredits: participant.credits,
   });
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
@@ -43,7 +43,7 @@ export async function canCreateNomination({
   return createSuccess("", {
     participant: permissions.data.participant,
     auction,
-    ...playerAndCreditValidation.data
+    ...playerAndCreditValidation.data,
   });
 }
 

@@ -1,16 +1,46 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/services/supabase/client/supabase";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { RealtimeChannel } from "@supabase/supabase-js";
+import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
 
 type Args = {
+  userParticipant: AuctionParticipant | undefined;
   currentNomination: CurrentNomination;
   defaultBid: CurrentBid;
 };
 
-export default function useAuctionBid({ currentNomination, defaultBid }: Args) {
+export default function useAuctionBid({
+  userParticipant,
+  currentNomination,
+  defaultBid,
+}: Args) {
   const [currentBid, setCurrentBid] = useState(defaultBid);
+
+  const defaultBidAmount =
+    currentBid?.amount || currentNomination?.initialPrice || 1;
+  const [bidAmount, setBidAmount] = useState(defaultBidAmount);
+
+  useEffect(() => {
+    setBidAmount(defaultBidAmount);
+  }, [currentBid]);
+
+  const canBid =
+    userParticipant &&
+    validateBidCredits({
+      bidAmount,
+      participantCredits: userParticipant.credits,
+      slotsRemaining: 2,
+    }).isValid;
+
+  const handleSetBidAmount = useCallback(
+    (amount: number) => {
+      if (canBid) setBidAmount(amount);
+    },
+    [bidAmount]
+  );
 
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
@@ -69,5 +99,5 @@ export default function useAuctionBid({ currentNomination, defaultBid }: Args) {
     return () => unsubscribeBids();
   }, [currentNomination]);
 
-  return { currentBid };
+  return { currentBid, canBid, bidAmount, handleSetBidAmount };
 }

@@ -76,8 +76,9 @@ async function SuspenseBoundary({
     getCurrentNomination(auction.id),
     isLeagueAdmin(userId, leagueId),
   ]);
-  const userParticipant = participants.find((p) => p.team?.id === userTeamId);
-  if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
+  if (!participants.find((p) => p.team?.id === userTeamId)) {
+    redirect(`/leagues/${leagueId}/premium/auctions`);
+  }
 
   const currentBid = currentNomination
     ? await getHighestBid(currentNomination.id)
@@ -95,7 +96,7 @@ async function SuspenseBoundary({
             defaultBid={currentBid}
             auction={auction}
             isLeagueAdmin={isAdmin}
-            userParticipant={userParticipant}
+            userTeamId={userTeamId}
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-0 sm:p-6">
               <div className="lg:col-span-3">

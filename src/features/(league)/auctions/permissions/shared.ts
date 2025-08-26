@@ -50,13 +50,13 @@ export async function validatePlayerAndCredits({
   auctionId,
   participantId,
   bidAmount,
-  currentCredits,
+  participantCredits,
 }: {
   playerId: number;
   auctionId: string;
   participantId: string;
   bidAmount: number;
-  currentCredits: number;
+  participantCredits: number;
 }) {
   const [player, auctionSettings, playerCounts] = await Promise.all([
     getPlayer(playerId),
@@ -75,7 +75,7 @@ export async function validatePlayerAndCredits({
   }
 
   const { isValid, reason } = validateBidCredits({
-    currentCredits: currentCredits,
+    participantCredits,
     bidAmount: bidAmount,
     slotsRemaining: getRemainingSlots(
       playerCounts,

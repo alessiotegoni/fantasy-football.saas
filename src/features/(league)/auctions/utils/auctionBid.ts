@@ -3,19 +3,19 @@ type CreditsValidation =
   | { isValid: false; reason: string };
 
 export function validateBidCredits({
-  currentCredits,
+  participantCredits,
   bidAmount,
   slotsRemaining,
 }: {
-  currentCredits: number;
+  participantCredits: number;
   bidAmount: number;
   slotsRemaining: number;
 }): CreditsValidation {
   const MIN_PRICE_PER_SLOT = 1;
-  const remainingCredits = currentCredits - bidAmount;
+  const remainingCredits = participantCredits - bidAmount;
   const minRequired = slotsRemaining * MIN_PRICE_PER_SLOT;
 
-  if (bidAmount > currentCredits) {
+  if (bidAmount > participantCredits) {
     return {
       isValid: false,
       reason: "Non hai abbastanza crediti disponibili.",

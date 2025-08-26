@@ -8,7 +8,16 @@ import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
 
 export default function AuctionBids() {
-  const { selectedPlayer, currentNomination, currentBid, isLeagueAdmin } = useAuction();
+  const {
+    selectedPlayer,
+    currentNomination,
+    currentBid,
+    isLeagueAdmin,
+    canBid,
+    bidAmount,
+    handleSetBidAmount,
+    userParticipant,
+  } = useAuction();
 
   const player = currentNomination?.player || selectedPlayer;
 
@@ -39,8 +48,10 @@ export default function AuctionBids() {
 
               <div className="flex justify-center">
                 <NumberInput
-                  defaultValue={currentBid?.amount ?? 1}
-                  min={currentBid?.amount ?? 1}
+                  value={bidAmount}
+                  onChange={handleSetBidAmount}
+                  min={bidAmount}
+                  max={userParticipant?.credits}
                 />
               </div>
 

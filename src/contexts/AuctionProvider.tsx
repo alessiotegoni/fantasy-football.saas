@@ -7,16 +7,16 @@ import { AuctionParticipant } from "@/features/(league)/auctions/queries/auction
 import { Player } from "@/features/players/queries/player";
 import useAuctionBid from "@/hooks/useAuctionBid";
 import useAuctionNomination from "@/hooks/useAuctionNomination";
+import useAuctionParticipants from "@/hooks/useAuctionParticipants";
 import { createContext, useCallback, useContext, useState } from "react";
 
 type AuctionContextType = {
-  currentNomination: CurrentNomination;
-  currentBid: CurrentBid;
-  participants: AuctionParticipant[];
-  handleSetParticipants: (participants: AuctionParticipant[]) => void;
   selectedPlayer: Player | null;
   toggleSelectPlayer: (player: Player | null) => void;
-} & Pick<Props, "auction" | "userParticipant" | "isLeagueAdmin">;
+} & Pick<Props, "auction" | "isLeagueAdmin"> &
+  ReturnType<typeof useAuctionParticipants> &
+  ReturnType<typeof useAuctionNomination> &
+  ReturnType<typeof useAuctionBid>;
 
 const AuctionContext = createContext<AuctionContextType | null>(null);
 
@@ -24,33 +24,31 @@ type Props = {
   children: React.ReactNode;
   defaultParticipants: AuctionParticipant[];
   isLeagueAdmin: boolean;
-  userParticipant: AuctionParticipant;
+  userTeamId: string;
   auction: NonNullable<AuctionWithSettings>;
   defaultNomination: CurrentNomination;
   defaultBid: CurrentBid;
 };
 
 export default function AuctionProvider({ children, ...props }: Props) {
-  const nomination = useAuctionNomination(props);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const toggleSelectPlayer = useCallback(setSelectedPlayer, [selectedPlayer]);
+
+  const participants = useAuctionParticipants(props);
+  const nomination = useAuctionNomination({ ...props, toggleSelectPlayer });
   const bid = useAuctionBid({
     ...nomination,
+    ...participants,
     ...props,
   });
-
-  const [participants, setParticipants] = useState(props.defaultParticipants);
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
-
-  const handleSetParticipants = useCallback(setParticipants, []);
-  const toggleSelectPlayer = useCallback(setSelectedPlayer, []);
 
   return (
     <AuctionContext.Provider
       value={{
+        ...participants,
         ...nomination,
         ...bid,
         ...props,
-        participants,
-        handleSetParticipants,
         selectedPlayer,
         toggleSelectPlayer,
       }}

@@ -41,7 +41,7 @@ export async function canAddAcquisitionPlayer(
     auctionId: data.auctionId,
     participantId: data.participantId,
     bidAmount: data.price,
-    currentCredits: participant.credits,
+    teamCredits: participant.credits,
   });
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;

@@ -9,11 +9,13 @@ import { useEffect, useRef, useState } from "react";
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
   defaultNomination: CurrentNomination;
+  toggleSelectPlayer: (player: null) => void;
 };
 
 export default function useAuctionNomination({
   auction,
   defaultNomination,
+  toggleSelectPlayer,
 }: Args) {
   const [currentNomination, setCurrentNomination] = useState(defaultNomination);
 
@@ -37,17 +39,12 @@ export default function useAuctionNomination({
     return data;
   }
 
-  async function handleSetNomination(
-    eventType: "INSERT" | "UPDATE" | "DELETE"
-  ) {
-    if (eventType === "DELETE") {
-      setCurrentNomination(null);
-      return;
-    }
-
+  async function handleSetNomination() {
     const currentNomination = await getCurrentNomination();
     const nomination =
       currentNomination?.status === "bidding" ? currentNomination : null;
+
+    if (!nomination || nomination.status === "sold") toggleSelectPlayer(null);
 
     setCurrentNomination(nomination);
   }
@@ -58,7 +55,7 @@ export default function useAuctionNomination({
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "auction_nominations" },
-        (payload) => handleSetNomination(payload.eventType)
+        handleSetNomination
       )
       .subscribe();
 

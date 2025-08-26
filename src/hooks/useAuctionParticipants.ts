@@ -4,14 +4,16 @@ import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auctio
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Args = {
+  userTeamId: string;
   auction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
 };
 
 export default function useAuctionParticipants({
+  userTeamId,
   auction,
   defaultParticipants,
 }: Args) {
@@ -68,5 +70,10 @@ export default function useAuctionParticipants({
     return () => unsubscribeParticipants();
   }, []);
 
-  return { participants };
+  const userParticipant = useMemo(
+    () => participants.find((p) => p.team?.id === userTeamId),
+    [participants]
+  );
+
+  return { participants, userParticipant };
 }

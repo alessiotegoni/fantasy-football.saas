@@ -35,7 +35,7 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
     auctionId: auction.id,
     participantId: participant.id,
     bidAmount: amount,
-    currentCredits: participant.credits,
+    participantCredits: participant.credits,
   });
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
