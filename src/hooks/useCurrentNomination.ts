@@ -28,18 +28,10 @@ export default function useCurrentNomination({
     }
 
     const lastNomination = use(lastNominationPromise);
-    if (!lastNomination) {
-      setCurrentNomination(null);
-      return;
-    }
+    const currentNomination =
+      lastNomination?.status === "bidding" ? lastNomination : null;
 
-    if (lastNomination.status === "sold") {
-      setCurrentNomination(null);
-      unsubscribeNominations();
-      return;
-    }
-
-    setCurrentNomination(lastNomination);
+    setCurrentNomination(currentNomination);
   }
 
   function subscribeNominations() {
@@ -70,5 +62,5 @@ export default function useCurrentNomination({
     return () => unsubscribeNominations();
   }, []);
 
-  return { currentNomination, setCurrentNomination };
+  return { currentNomination };
 }

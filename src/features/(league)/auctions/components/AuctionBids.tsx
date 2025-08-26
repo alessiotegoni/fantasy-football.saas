@@ -3,10 +3,8 @@
 import { Trophy, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Nomination } from "../queries/auctionNomination";
-import { useEffect, useState } from "react";
-import { createClient } from "@/services/supabase/client/supabase";
 import { AuctionWithSettings } from "../queries/auction";
-import { Bid } from "../queries/auctionBid";
+import { useCurrentBid } from "@/hooks/useCurrentBid";
 
 type Props = {
   auction: NonNullable<AuctionWithSettings>;
@@ -14,7 +12,8 @@ type Props = {
 };
 
 export function AuctionBids({ auction, currentNomination }: Props) {
-  // TODO: Here add bids realtime
+
+  const { currentBid } = useCurrentBid(currentNomination)
 
   return (
     <div className="bg-card border rounded-lg h-full">
@@ -112,52 +111,4 @@ export function AuctionBids({ auction, currentNomination }: Props) {
       </div>
     </div>
   );
-}
-
-function useCurrentBid(nominationId: string | null) {
-  const [currentBid, setCurrentBid] = useState<Bid | null>(null);
-
-  const supabase = createClient();
-
-  function getCurrentBid(): Bid {
-    const { data } = supabase
-      .from("auction_bids")
-      .select()
-      .eq("nomination_id", nominationId)
-      .order("amount", { ascending: false })
-      .order("created_at", { ascending: true })
-      .limit(1);
-
-    return data;
-  }
-
-  function subscribeBids() {
-    const subscription = supabase
-      .channel(`id:${nominationId}-nomination-bids`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "auction_bids" },
-        (payload) => {
-          const bid =
-            payload.eventType === "INSERT" ? getCurrentBid() : null;
-
-          setCurrentBid(bid);
-        }
-      )
-      .subscribe();
-
-    return subscription;
-  }
-
-  useEffect(() => {
-    if (!nominationId) return;
-
-    const subscription = subscribeBids();
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [nominationId]);
-
-  return { currentBid, setCurrentBid };
 }
