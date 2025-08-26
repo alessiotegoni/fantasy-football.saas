@@ -10,14 +10,15 @@ import { useEffect, useState } from "react";
 
 export default function AuctionBids() {
   const {
+    auction,
     selectedPlayer,
     currentNomination,
     currentBid,
-    isLeagueAdmin,
     canBid,
     bidAmount,
     handleSetBidAmount,
     userParticipant,
+    isLeagueAdmin,
   } = useAuction();
 
   const [timeLeft, setTimeLeft] = useState(0);
@@ -39,6 +40,7 @@ export default function AuctionBids() {
 
   const player = currentNomination?.player || selectedPlayer;
   const isMyTurn = userParticipant?.isCurrent ?? false;
+  const canPerformAction = auction.status === "active" && canBid && !!player
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6">
@@ -46,7 +48,7 @@ export default function AuctionBids() {
         {isMyTurn ? (
           <>
             <div className="space-y-2">
-              <Trophy className="h-8 w-8 mx-auto text-primary" />
+              <Trophy className="size-8 mx-auto text-primary" />
               <h2 className="text-lg font-heading font-bold">È IL TUO TURNO</h2>
               <p className="text-sm text-muted-foreground">
                 Seleziona un giocatore dal menu alla tua sinistra e chiamalo
@@ -82,6 +84,7 @@ export default function AuctionBids() {
                 <ActionButton
                   className="flex-1 max-w-32"
                   loadingText="Chiamo"
+                  disabled={auction.status === "active" && canBid && !!player}
                   action={
                     player
                       ? createNomination.bind(null, {

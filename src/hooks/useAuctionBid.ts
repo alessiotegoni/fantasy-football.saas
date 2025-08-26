@@ -5,14 +5,18 @@ import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionN
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
+import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
+import { Player } from "@/features/players/queries/player";
 
 type Args = {
+  auction: NonNullable<AuctionWithSettings>;
   userParticipant: AuctionParticipant | undefined;
   currentNomination: CurrentNomination;
   defaultBid: CurrentBid;
 };
 
 export default function useAuctionBid({
+  auction,
   userParticipant,
   currentNomination,
   defaultBid,
@@ -27,23 +31,19 @@ export default function useAuctionBid({
     setBidAmount(defaultBidAmount);
   }, [currentBid]);
 
-  const canBid = useMemo(
-    () =>
-      !!userParticipant &&
-      validateBidCredits({
-        bidAmount,
-        participantCredits: userParticipant.credits,
-        slotsRemaining: 2,
-      }).isValid,
-    [userParticipant]
-  );
+  const canBid = useMemo(() => {
+    const hasValidCredits = validateBidCredits({
+      bidAmount,
+      participantCredits: userParticipant?.credits ?? 0,
+      slotsRemaining: 2,
+    }).isValid;
+    const isValidAuction = auction.status === "active";
+    const isValidPlayer = !!currentNomination?.player;
 
-  const handleSetBidAmount = useCallback(
-    (amount: number) => {
-      if (canBid) setBidAmount(amount);
-    },
-    [bidAmount]
-  );
+    return hasValidCredits && isValidAuction && isValidPlayer;
+  }, [userParticipant, bidAmount, auction]);
+
+  const handleSetBidAmount = useCallback(setBidAmount, []);
 
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
