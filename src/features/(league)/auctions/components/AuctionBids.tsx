@@ -8,7 +8,7 @@ import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
 
 export default function AuctionBids() {
-  const { selectedPlayer, currentNomination } = useAuction();
+  const { selectedPlayer, currentNomination, currentBid, isLeagueAdmin } = useAuction();
 
   const player = currentNomination?.player || selectedPlayer;
 
@@ -45,7 +45,7 @@ export default function AuctionBids() {
               </div>
 
               <div className="flex gap-3 justify-center">
-                {isAdmin && (
+                {isLeagueAdmin && (
                   <Button variant="destructive" className="flex-1 max-w-32">
                     Assegna
                   </Button>

@@ -1,7 +1,6 @@
 import AuctionProvider from "@/contexts/AuctionProvider";
 import AuctionBids from "@/features/(league)/auctions/components/AuctionBids";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
-import BidWrapper from "@/features/(league)/auctions/components/BidWrapper";
 import PlayerDetails from "@/features/(league)/auctions/components/PlayerDetailts";
 import {
   AuctionWithSettings,

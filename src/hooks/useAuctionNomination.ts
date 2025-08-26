@@ -30,11 +30,11 @@ export default function useAuctionNomination({
       .maybeSingle();
 
     if (error) {
-      console.error("Errore getCurrentBid:", error);
+      console.error("Errore gettting current nomination:", error);
       return null;
     }
 
-    return data as unknown as CurrentNomination;
+    return data;
   }
 
   async function handleSetNomination(
