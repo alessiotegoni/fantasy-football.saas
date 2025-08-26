@@ -11,7 +11,7 @@ export async function getNomination(nominationId: string) {
   return nomination;
 }
 
-export type Nomination = typeof auctionNominations.$inferSelect
+export type Nomination = typeof auctionNominations.$inferSelect;
 
 export async function getNominationByPlayer(
   auctionId: string,
@@ -30,16 +30,11 @@ export async function getNominationByPlayer(
   return nomination;
 }
 
-export async function getCurrentNomination(auctionId: string) {
+export async function getLastNomination(auctionId: string) {
   const [nomination] = await db
     .select()
     .from(auctionNominations)
-    .where(
-      and(
-        eq(auctionNominations.auctionId, auctionId),
-        eq(auctionNominations.status, "bidding")
-      )
-    )
+    .where(eq(auctionNominations.auctionId, auctionId))
     .orderBy(asc(auctionNominations.expiresAt))
     .limit(1);
 

@@ -6,7 +6,7 @@ import {
   getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
-import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { getLastNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
@@ -94,8 +94,7 @@ async function SuspenseBoundary({
 
               <BidWrapper
                 auction={auction}
-                currentNominationPromise={getCurrentNomination(auction.id)}
-                
+                lastNominationPromise={getLastNomination(auction.id)}
               />
             </AuctionPlayerProvider>
           </div>
