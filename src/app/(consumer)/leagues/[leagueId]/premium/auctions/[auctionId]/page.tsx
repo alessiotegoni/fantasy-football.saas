@@ -1,4 +1,4 @@
-import { AuctionPlayerProvider } from "@/contexts/AuctionPlayerProvider";
+import AuctionProvider from "@/contexts/AuctionProvider";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
 import BidWrapper from "@/features/(league)/auctions/components/BidWrapper";
 import {
@@ -6,7 +6,7 @@ import {
   getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
-import { getLastNomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
@@ -78,8 +78,6 @@ async function SuspenseBoundary({
   ]);
   if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
 
-
-
   return (
     <div>
       <AuctionHeader auction={auction} isAdmin={isAdmin} />
@@ -87,7 +85,7 @@ async function SuspenseBoundary({
       <div className="flex">
         <main className="flex-1">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-0 sm:p-6">
-            <AuctionPlayerProvider>
+            <AuctionProvider>
               <div className="lg:col-span-3">
                 {/* <Suspense>
                   <AuctionAvailablePlayers {...auction} />
@@ -97,9 +95,9 @@ async function SuspenseBoundary({
               <BidWrapper
                 isAdmin={isAdmin}
                 auction={auction}
-                lastNominationPromise={getLastNomination(auction.id)}
+                lastNominationPromise={getCurrentNomination(auction.id)}
               />
-            </AuctionPlayerProvider>
+            </AuctionProvider>
           </div>
 
           {/* <div className="px-6 pb-6">

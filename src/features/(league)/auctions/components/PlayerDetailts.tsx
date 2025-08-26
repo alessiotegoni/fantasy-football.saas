@@ -3,12 +3,12 @@
 import { User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuctionPlayer } from "@/contexts/AuctionPlayerProvider";
+import { useAuctionPlayer } from "@/contexts/AuctionProvider";
 import { useEffect } from "react";
-import { NominationWithPlayer } from "../queries/auctionNomination";
+import { CurrentNomination} from "../queries/auctionNomination";
 
 type Props = {
-  currentNomination: NominationWithPlayer | null;
+  currentNomination: CurrentNomination | null;
 };
 
 export function PlayerDetails({ currentNomination }: Props) {

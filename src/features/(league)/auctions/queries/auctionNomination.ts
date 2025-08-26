@@ -1,7 +1,6 @@
 import { db } from "@/drizzle/db";
 import { auctionNominations } from "@/drizzle/schema";
-import { Player } from "@/features/players/queries/player";
-import { and, asc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function getNomination(nominationId: string) {
   const [nomination] = await db
@@ -31,9 +30,18 @@ export async function getNominationByPlayer(
   return nomination;
 }
 
-export async function getLastNomination(auctionId: string) {
+export async function getCurrentNomination(auctionId: string) {
   const [nomination] = await db.query.auctionNominations.findMany({
     with: {
+      nominatedBy: {
+        with: {
+          team: {
+            columns: {
+              name: true,
+            },
+          },
+        },
+      },
       player: {
         with: {
           role: true,
@@ -49,4 +57,4 @@ export async function getLastNomination(auctionId: string) {
   return nomination;
 }
 
-export type NominationWithPlayer = Nomination & { player: Player };
+export type CurrentNomination = Awaited<ReturnType<typeof getCurrentNomination>>

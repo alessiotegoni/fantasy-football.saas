@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/services/supabase/client/supabase";
 import { Bid } from "@/features/(league)/auctions/queries/auctionBid";
-import { Nomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
-export function useCurrentBid(nomination: Nomination | null) {
+export function useCurrentBid(nomination: CurrentNomination | null) {
   const [currentBid, setCurrentBid] = useState<Bid | null>(null);
 
   const supabase = createClient();

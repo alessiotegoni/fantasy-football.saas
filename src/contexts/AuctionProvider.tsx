@@ -8,10 +8,11 @@ type AuctionPlayerContextType = {
   toggleSelectPlayer: (player: Player | null) => void;
 };
 
-export const AuctionPlayerContext =
-  createContext<AuctionPlayerContextType | null>(null);
+const AuctionPlayerContext = createContext<AuctionPlayerContextType | null>(
+  null
+);
 
-export function AuctionPlayerProvider({
+export default function AuctionProvider({
   children,
 }: {
   children: React.ReactNode;

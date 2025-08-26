@@ -3,13 +3,13 @@
 import { AuctionBids } from "./AuctionBids";
 import { PlayerDetails } from "./PlayerDetailts";
 import { AuctionWithSettings } from "../queries/auction";
-import { NominationWithPlayer } from "../queries/auctionNomination";
 import useCurrentNomination from "@/hooks/useCurrentNomination";
+import { CurrentNomination } from "../queries/auctionNomination";
 
 type Props = {
   isAdmin: boolean;
   auction: NonNullable<AuctionWithSettings>;
-  lastNominationPromise: Promise<NominationWithPlayer>;
+  lastNominationPromise: Promise<CurrentNomination>;
 };
 
 export default function BidWrapper(props: Props) {
