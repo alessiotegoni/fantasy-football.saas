@@ -4,57 +4,46 @@ import { User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuctionPlayer } from "@/contexts/AuctionPlayerProvider";
-import { Player } from "@/features/players/queries/player";
 import { useEffect } from "react";
+import { NominationWithPlayer } from "../queries/auctionNomination";
 
 type Props = {
-  nominatedPlayer: Player | null;
+  currentNomination: NominationWithPlayer | null;
 };
 
-export function PlayerDetails({ nominatedPlayer }: Props) {
+export function PlayerDetails({ currentNomination }: Props) {
   const { selectedPlayer, toggleSelectPlayer } = useAuctionPlayer();
 
   useEffect(() => {
     if (
       selectedPlayer &&
-      nominatedPlayer &&
-      selectedPlayer.id === nominatedPlayer.id
+      currentNomination &&
+      selectedPlayer.id === currentNomination.player.id
     ) {
       toggleSelectPlayer(null);
     }
-  }, [nominatedPlayer]);
+  }, [currentNomination]);
+
+  const player = currentNomination?.player || selectedPlayer;
 
   return (
     <div className="bg-card border rounded-lg h-full">
       <div className="p-6">
-        {selectedPlayer ? (
+        {player ? (
           <div className="text-center space-y-4">
             <Avatar className="h-20 w-20 mx-auto">
-              <AvatarImage src={selectedPlayer.image || undefined} />
+              <AvatarImage src={player.avatarUrl || undefined} />
               <AvatarFallback className="text-lg">
-                {selectedPlayer.name.charAt(0)}
+                {player.displayName.charAt(0)}
               </AvatarFallback>
             </Avatar>
 
             <div>
-              <h3 className="font-heading font-bold">{selectedPlayer.name}</h3>
+              <h3 className="font-heading font-bold">{player.displayName}</h3>
               <p className="text-sm text-muted-foreground">
-                {selectedPlayer.team}
+                {player.team.name}
               </p>
-              <Badge className="mt-2">{selectedPlayer.role}</Badge>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm">Prezzo base:</span>
-                <span className="font-bold">${selectedPlayer.price}</span>
-              </div>
-              {currentBid > 0 && (
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Offerta attuale:</span>
-                  <span className="font-bold text-primary">${currentBid}</span>
-                </div>
-              )}
+              <Badge className="mt-2">{player.role.name}</Badge>
             </div>
           </div>
         ) : (

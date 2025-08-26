@@ -1,23 +1,22 @@
 "use client";
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { Nomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { NominationWithPlayer } from "@/features/(league)/auctions/queries/auctionNomination";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { use, useEffect, useRef, useState } from "react";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
-  lastNominationPromise: Promise<Nomination>;
+  lastNominationPromise: Promise<NominationWithPlayer>;
 };
 
 export default function useCurrentNomination({
   auction,
   lastNominationPromise,
 }: Args) {
-  const [currentNomination, setCurrentNomination] = useState<Nomination | null>(
-    null
-  );
+  const [currentNomination, setCurrentNomination] =
+    useState<NominationWithPlayer | null>(null);
 
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 

@@ -78,6 +78,8 @@ async function SuspenseBoundary({
   ]);
   if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
 
+
+
   return (
     <div>
       <AuctionHeader auction={auction} isAdmin={isAdmin} />

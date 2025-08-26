@@ -2,13 +2,13 @@
 
 import { Trophy, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Nomination } from "../queries/auctionNomination";
+import { NominationWithPlayer } from "../queries/auctionNomination";
 import { AuctionWithSettings } from "../queries/auction";
 import { useCurrentBid } from "@/hooks/useCurrentBid";
 
 type Props = {
   auction: NonNullable<AuctionWithSettings>;
-  currentNomination: Nomination | null;
+  currentNomination: NominationWithPlayer | null;
 };
 
 export function AuctionBids({ auction, currentNomination }: Props) {

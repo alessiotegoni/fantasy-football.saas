@@ -3,12 +3,12 @@
 import { AuctionBids } from "./AuctionBids";
 import { PlayerDetails } from "./PlayerDetailts";
 import { AuctionWithSettings } from "../queries/auction";
-import { Nomination } from "../queries/auctionNomination";
+import { NominationWithPlayer } from "../queries/auctionNomination";
 import useCurrentNomination from "@/hooks/useCurrentNomination";
 
 type Props = {
   auction: NonNullable<AuctionWithSettings>;
-  lastNominationPromise: Promise<Nomination>;
+  lastNominationPromise: Promise<NominationWithPlayer>;
 };
 
 export default function BidWrapper({ auction, lastNominationPromise }: Props) {
@@ -23,7 +23,7 @@ export default function BidWrapper({ auction, lastNominationPromise }: Props) {
         <AuctionBids currentNomination={currentNomination} />
       </div>
       <div className="lg:col-span-3">
-        <PlayerDetails />
+        <PlayerDetails currentNomination={currentNomination} />
       </div>
     </>
   );
