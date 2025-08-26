@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/services/supabase/client/supabase";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
@@ -27,13 +27,16 @@ export default function useAuctionBid({
     setBidAmount(defaultBidAmount);
   }, [currentBid]);
 
-  const canBid =
-    userParticipant &&
-    validateBidCredits({
-      bidAmount,
-      participantCredits: userParticipant.credits,
-      slotsRemaining: 2,
-    }).isValid;
+  const canBid = useMemo(
+    () =>
+      !!userParticipant &&
+      validateBidCredits({
+        bidAmount,
+        participantCredits: userParticipant.credits,
+        slotsRemaining: 2,
+      }).isValid,
+    [userParticipant]
+  );
 
   const handleSetBidAmount = useCallback(
     (amount: number) => {

@@ -6,6 +6,7 @@ import { useAuction } from "@/contexts/AuctionProvider";
 import ActionButton from "@/components/ActionButton";
 import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
+import { useEffect, useState } from "react";
 
 export default function AuctionBids() {
   const {
@@ -19,9 +20,25 @@ export default function AuctionBids() {
     userParticipant,
   } = useAuction();
 
-  const player = currentNomination?.player || selectedPlayer;
+  const [timeLeft, setTimeLeft] = useState(0);
 
-  const isMyTurn = true;
+  useEffect(() => {
+    const bidExpiresAt = currentNomination?.expiresAt;
+    if (!bidExpiresAt) return;
+
+    const target = new Date(bidExpiresAt).getTime();
+
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      setTimeLeft(diff);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [currentNomination?.expiresAt]);
+
+  const player = currentNomination?.player || selectedPlayer;
+  const isMyTurn = userParticipant?.isCurrent ?? false;
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6">
@@ -48,6 +65,7 @@ export default function AuctionBids() {
 
               <div className="flex justify-center">
                 <NumberInput
+                  disabled={!canBid}
                   value={bidAmount}
                   onChange={handleSetBidAmount}
                   min={bidAmount}
