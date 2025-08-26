@@ -1,22 +1,18 @@
-import Container from "@/components/Container";
-import { Button } from "@/components/ui/button";
 import { AuctionPlayerProvider } from "@/contexts/AuctionPlayerProvider";
-import { AuctionBids } from "@/features/(league)/auctions/components/AuctionBids";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
-import { PlayerDetails } from "@/features/(league)/auctions/components/PlayerDetailts";
-import { PlayerSearch } from "@/features/(league)/auctions/components/PlayerSearch";
+import BidWrapper from "@/features/(league)/auctions/components/BidWrapper";
 import {
   AuctionWithSettings,
   getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
+import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
-import { Menu } from "iconoir-react";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -96,9 +92,10 @@ async function SuspenseBoundary({
                 </Suspense>
               </div>
 
-              <Suspense>
-                <BidWrapper />
-              </Suspense>
+              <BidWrapper
+                auction={auction}
+                currentNominationPromise={getCurrentNomination(auction.id)}
+              />
             </AuctionPlayerProvider>
           </div>
 
@@ -112,23 +109,6 @@ async function SuspenseBoundary({
         </main>
       </div>
     </div>
-  );
-}
-
-async function BidWrapper() {
-
-  // TODO: here add nomination realtime to pass to both components
-
-  return (
-    <>
-      <div className="lg:col-span-6">
-        <AuctionBids />
-      </div>
-      <div className="lg:col-span-3">
-        <PlayerDetails />
-      </div>
-      ;
-    </>
   );
 }
 

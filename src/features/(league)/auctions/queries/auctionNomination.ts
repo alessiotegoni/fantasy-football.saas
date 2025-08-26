@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { auctionNominations } from "@/drizzle/schema";
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 export async function getNomination(nominationId: string) {
   const [nomination] = await db
@@ -10,6 +10,8 @@ export async function getNomination(nominationId: string) {
 
   return nomination;
 }
+
+export type Nomination = typeof auctionNominations.$inferSelect
 
 export async function getNominationByPlayer(
   auctionId: string,
@@ -24,6 +26,22 @@ export async function getNominationByPlayer(
         eq(auctionNominations.playerId, playerId)
       )
     );
+
+  return nomination;
+}
+
+export async function getCurrentNomination(auctionId: string) {
+  const [nomination] = await db
+    .select()
+    .from(auctionNominations)
+    .where(
+      and(
+        eq(auctionNominations.auctionId, auctionId),
+        eq(auctionNominations.status, "bidding")
+      )
+    )
+    .orderBy(asc(auctionNominations.expiresAt))
+    .limit(1);
 
   return nomination;
 }
