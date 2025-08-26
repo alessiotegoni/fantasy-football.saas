@@ -69,5 +69,5 @@ export function useCurrentBid({ currentNomination, defaultBid }: Args) {
     return () => unsubscribeBids();
   }, [currentNomination]);
 
-  return { currentBid, setCurrentBid };
+  return { currentBid };
 }

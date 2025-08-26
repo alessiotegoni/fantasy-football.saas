@@ -11,19 +11,8 @@ import NumberInput from "@/components/ui/number-input";
 import { CurrentNomination } from "../queries/auctionNomination";
 import { AuctionParticipant } from "../queries/auctionParticipant";
 
-type Props = {
-  userParticipant: AuctionParticipant;
-  isAdmin: boolean;
-  auction: NonNullable<AuctionWithSettings>;
-  currentNomination: CurrentNomination | null;
-};
 
-export default function AuctionBids({
-  auction,
-  currentNomination,
-  userParticipant,
-  isAdmin,
-}: Props) {
+export default function AuctionBids() {
 
   const { selectedPlayer,  } = useAuction();
 

@@ -23,7 +23,7 @@ export default function useCurrentNomination({
   async function getCurrentNomination(): Promise<CurrentNomination | null> {
     const { data, error } = await supabase
       .from("auction_nominations")
-      .select("*")
+      .select("*, player:players(*, role:player_roles(*), team:teams(*))")
       .eq("auction_id", auction.id)
       .order("expires_at", { ascending: true })
       .limit(1)
@@ -34,7 +34,7 @@ export default function useCurrentNomination({
       return null;
     }
 
-    return data;
+    return data as unknown as CurrentNomination;
   }
 
   async function handleSetNomination(

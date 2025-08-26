@@ -10,11 +10,13 @@ import useCurrentNomination from "@/hooks/useCurrentNomination";
 import { createContext, useCallback, useContext, useState } from "react";
 
 type AuctionContextType = {
+  currentNomination: CurrentNomination | null;
+  currentBid: Bid | null;
   participants: AuctionParticipant[];
   handleSetParticipants: (participants: AuctionParticipant[]) => void;
   selectedPlayer: Player | null;
   toggleSelectPlayer: (player: Player | null) => void;
-};
+} & Pick<Props, "auction" | "userParticipant" | "isLeagueAdmin">;
 
 const AuctionContext = createContext<AuctionContextType | null>(null);
 
@@ -28,22 +30,14 @@ type Props = {
   defaultBid: Bid | null;
 };
 
-export default function AuctionProvider({
-  children,
-  defaultParticipants,
-  defaultNomination,
-  ...props
-}: Props) {
-  const nomination = useCurrentNomination({
-    defaultNomination,
-    ...props,
-  });
+export default function AuctionProvider({ children, ...props }: Props) {
+  const nomination = useCurrentNomination(props);
   const bid = useCurrentBid({
-    currentNomination: nomination.currentNomination,
+    ...nomination,
     ...props,
   });
 
-  const [participants, setParticipants] = useState(defaultParticipants);
+  const [participants, setParticipants] = useState(props.defaultParticipants);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
 
   const handleSetParticipants = useCallback(setParticipants, []);
@@ -54,6 +48,7 @@ export default function AuctionProvider({
       value={{
         ...nomination,
         ...bid,
+        ...props,
         participants,
         handleSetParticipants,
         selectedPlayer,
