@@ -1,11 +1,14 @@
 import AuctionProvider from "@/contexts/AuctionProvider";
+import AuctionBids from "@/features/(league)/auctions/components/AuctionBids";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
 import BidWrapper from "@/features/(league)/auctions/components/BidWrapper";
+import PlayerDetails from "@/features/(league)/auctions/components/PlayerDetailts";
 import {
   AuctionWithSettings,
   getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
+import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import {
   getAuctionParticipant,
@@ -33,14 +36,8 @@ export default async function AuctionPage({ params }: Props) {
     getAuctionWithSettings(ids.auctionId),
     getPlayersRoles(),
   ]);
-
   if (!auction) notFound();
 
-  // TODO: prima mockup di ui con V0 passando lo screen di fantalab
-  // capire come funziona il realtime di supabase
-  // dopodiche creare query prima per i partecipanti in questa page
-  // mentre per i players dei partecipanti fare la query in un componente apparte wrappato
-  // con suspense
   return (
     <div>
       <Suspense>
@@ -75,12 +72,17 @@ async function SuspenseBoundary({
   const userTeamId = await getUserTeamId(userId, leagueId);
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
-  const [participants, isAdmin] = await Promise.all([
+  const [participants, currentNomination, isAdmin] = await Promise.all([
     getAuctionParticipants(auctionId),
+    getCurrentNomination(auction.id),
     isLeagueAdmin(userId, leagueId),
   ]);
-  const userParticipant = participants.find((p) => p.teamId === userTeamId);
+  const userParticipant = participants.find((p) => p.team?.id === userTeamId);
   if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
+
+  const currentBid = currentNomination
+    ? await getHighestBid(currentNomination.id)
+    : null;
 
   return (
     <div>
@@ -88,30 +90,37 @@ async function SuspenseBoundary({
 
       <div className="flex">
         <main className="flex-1">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-0 sm:p-6">
-            <AuctionProvider>
+          <AuctionProvider
+            defaultParticipants={participants}
+            defaultNomination={currentNomination}
+            defaultBid={currentBid}
+            auction={auction}
+            isLeagueAdmin={isAdmin}
+            userParticipant={userParticipant}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-0 sm:p-6">
               <div className="lg:col-span-3">
                 {/* <Suspense>
                   <AuctionAvailablePlayers {...auction} />
                 </Suspense> */}
               </div>
 
-              <BidWrapper
-                userParticipant={userParticipant}
-                isAdmin={isAdmin}
-                auction={auction}
-                currentNominationPromise={getCurrentNomination(auction.id)}
-              />
-            </AuctionProvider>
-          </div>
+              <div className="lg:col-span-6">
+                <AuctionBids />
+              </div>
+              <div className="lg:col-span-3">
+                <PlayerDetails />
+              </div>
+            </div>
 
-          {/* <div className="px-6 pb-6">
+            {/* <div className="px-6 pb-6">
             <ParticipantsList participants={participants} />
-          </div>
+            </div>
 
-          <div className="px-6 pb-6">
+            <div className="px-6 pb-6">
             <PlayerRoster roles={roles} />
-          </div> */}
+            </div> */}
+          </AuctionProvider>
         </main>
       </div>
     </div>

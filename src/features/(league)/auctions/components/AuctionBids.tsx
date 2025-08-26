@@ -9,10 +9,10 @@ import ActionButton from "@/components/ActionButton";
 import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
 import { CurrentNomination } from "../queries/auctionNomination";
-import { auctionParticipants } from "@/drizzle/schema";
+import { AuctionParticipant } from "../queries/auctionParticipant";
 
 type Props = {
-  userParticipant: typeof auctionParticipants.$inferSelect;
+  userParticipant: AuctionParticipant;
   isAdmin: boolean;
   auction: NonNullable<AuctionWithSettings>;
   currentNomination: CurrentNomination | null;
@@ -26,8 +26,6 @@ export default function AuctionBids({
 }: Props) {
 
   const { selectedPlayer,  } = useAuction();
-
-  const { currentBid } = useCurrentBid(currentNomination);
 
   const player = currentNomination?.player || selectedPlayer;
 

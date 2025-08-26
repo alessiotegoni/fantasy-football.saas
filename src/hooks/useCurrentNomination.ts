@@ -4,38 +4,55 @@ import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auctio
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
-  currentNominationPromise: Promise<CurrentNomination>;
+  defaultNomination: CurrentNomination | null;
 };
 
 export default function useCurrentNomination({
   auction,
-  currentNominationPromise,
+  defaultNomination,
 }: Args) {
-  const [currentNomination, setCurrentNomination] =
-    useState<CurrentNomination | null>(null);
+  const [currentNomination, setCurrentNomination] = useState(defaultNomination);
 
+  const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
-  function handleSetNomination(eventType: "INSERT" | "UPDATE" | "DELETE") {
+  async function getCurrentNomination(): Promise<CurrentNomination | null> {
+    const { data, error } = await supabase
+      .from("auction_nominations")
+      .select("*")
+      .eq("auction_id", auction.id)
+      .order("expires_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) {
+      console.error("Errore getCurrentBid:", error);
+      return null;
+    }
+
+    return data;
+  }
+
+  async function handleSetNomination(
+    eventType: "INSERT" | "UPDATE" | "DELETE"
+  ) {
     if (eventType === "DELETE") {
       setCurrentNomination(null);
       return;
     }
 
-    const lastNomination = use(currentNominationPromise);
-    const currentNomination =
-      lastNomination?.status === "bidding" ? lastNomination : null;
+    const currentNomination = await getCurrentNomination();
+    const nomination =
+      currentNomination?.status === "bidding" ? currentNomination : null;
 
-    setCurrentNomination(currentNomination);
+    setCurrentNomination(nomination);
   }
 
   function subscribeNominations() {
-    const supabase = createClient();
-
     const subscription = supabase
       .channel(`id:${auction.id}-auction-nominations`)
       .on(

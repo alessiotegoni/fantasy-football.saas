@@ -10,10 +10,10 @@ import { useEffect } from "react";
 
 type Props = {
   auction: NonNullable<AuctionWithSettings>;
-  isAdmin: boolean;
+  isAdmin?: boolean;
 };
 
-export default function AuctionHeader({ auction, isAdmin }: Props) {
+export default function AuctionHeader({ auction, isAdmin = false }: Props) {
   const { setOpen, toggleSidebar } = useSidebar();
 
   useEffect(() => {
@@ -33,7 +33,9 @@ export default function AuctionHeader({ auction, isAdmin }: Props) {
         >
           <Menu className="size-5" />
         </Button>
-        <h2 className="text-lg lg:text-2xl font-heading font-bold">{auction.name}</h2>
+        <h2 className="text-lg lg:text-2xl font-heading font-bold">
+          {auction.name}
+        </h2>
       </div>
       <div className="flex gap-2">
         <AuctionStatus auction={auction} canUpdate={isAdmin} />

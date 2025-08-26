@@ -4,8 +4,13 @@ import { Bid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { RealtimeChannel } from "@supabase/supabase-js";
 
-export function useCurrentBid(nomination: CurrentNomination | null) {
-  const [currentBid, setCurrentBid] = useState<Bid | null>(null);
+type Args = {
+  currentNomination: CurrentNomination | null;
+  defaultBid: Bid | null;
+};
+
+export function useCurrentBid({ currentNomination, defaultBid }: Args) {
+  const [currentBid, setCurrentBid] = useState(defaultBid);
 
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
@@ -14,7 +19,7 @@ export function useCurrentBid(nomination: CurrentNomination | null) {
     const { data, error } = await supabase
       .from("auction_bids")
       .select("*")
-      .eq("nomination_id", nomination?.id)
+      .eq("nomination_id", currentNomination!.id)
       .order("amount", { ascending: false })
       .order("created_at", { ascending: true })
       .limit(1)
@@ -30,7 +35,7 @@ export function useCurrentBid(nomination: CurrentNomination | null) {
 
   function subscribeBids() {
     const subscription = supabase
-      .channel(`id:${nomination!.id}-nomination-bids`)
+      .channel(`id:${currentNomination!.id}-nomination-bids`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "auction_bids" },
@@ -54,7 +59,7 @@ export function useCurrentBid(nomination: CurrentNomination | null) {
   }
 
   useEffect(() => {
-    if (!nomination) {
+    if (!currentNomination) {
       unsubscribeBids();
       return;
     }
@@ -62,7 +67,7 @@ export function useCurrentBid(nomination: CurrentNomination | null) {
     subscribeBids();
 
     return () => unsubscribeBids();
-  }, [nomination]);
+  }, [currentNomination]);
 
   return { currentBid, setCurrentBid };
 }
