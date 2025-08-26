@@ -95,6 +95,7 @@ async function SuspenseBoundary({
               </div>
 
               <BidWrapper
+                isAdmin={isAdmin}
                 auction={auction}
                 lastNominationPromise={getLastNomination(auction.id)}
               />

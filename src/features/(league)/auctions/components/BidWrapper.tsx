@@ -7,23 +7,21 @@ import { NominationWithPlayer } from "../queries/auctionNomination";
 import useCurrentNomination from "@/hooks/useCurrentNomination";
 
 type Props = {
+  isAdmin: boolean;
   auction: NonNullable<AuctionWithSettings>;
   lastNominationPromise: Promise<NominationWithPlayer>;
 };
 
-export default function BidWrapper({ auction, lastNominationPromise }: Props) {
-  const { currentNomination } = useCurrentNomination({
-    auction,
-    lastNominationPromise,
-  });
+export default function BidWrapper(props: Props) {
+  const { currentNomination } = useCurrentNomination(props);
 
   return (
     <>
       <div className="lg:col-span-6">
-        <AuctionBids currentNomination={currentNomination} />
+        <AuctionBids currentNomination={currentNomination} {...props} />
       </div>
       <div className="lg:col-span-3">
-        <PlayerDetails currentNomination={currentNomination} />
+        <PlayerDetails currentNomination={currentNomination} {...props} />
       </div>
     </>
   );

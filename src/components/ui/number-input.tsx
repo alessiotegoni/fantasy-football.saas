@@ -58,7 +58,7 @@ export default function NumberInput({
         type="button"
         onClick={decrement}
         className={cn(
-          "flex items-center justify-center w-8 h-8 rounded-l-xl border border-r-0 border-border bg-muted",
+          "flex items-center justify-center size-8 rounded-l-xl border border-r-0 border-border bg-muted",
           disabled && "opacity-50 cursor-not-allowed"
         )}
         disabled={disabled || value <= min}
@@ -86,7 +86,7 @@ export default function NumberInput({
         type="button"
         onClick={increment}
         className={cn(
-          "flex items-center justify-center w-8 h-8 rounded-r-xl border border-l-0 border-border bg-muted",
+          "flex items-center justify-center size-8 rounded-r-xl border border-l-0 border-border bg-muted",
           disabled && "opacity-50 cursor-not-allowed"
         )}
         disabled={disabled || value >= max}

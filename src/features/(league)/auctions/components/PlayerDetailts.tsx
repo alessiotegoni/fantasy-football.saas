@@ -27,7 +27,7 @@ export function PlayerDetails({ currentNomination }: Props) {
   const player = currentNomination?.player || selectedPlayer;
 
   return (
-    <div className="bg-card border rounded-lg h-full">
+    <div className="bg-card border rounded-3xl h-full">
       <div className="p-6">
         {player ? (
           <div className="text-center space-y-4">
