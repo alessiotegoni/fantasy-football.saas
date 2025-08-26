@@ -1,3 +1,5 @@
+"use client"
+
 import ActionButton from "@/components/ActionButton";
 import { useAuction } from "@/contexts/AuctionProvider";
 import { createNomination } from "../actions/auctionNomination";

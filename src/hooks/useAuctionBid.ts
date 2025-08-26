@@ -31,7 +31,6 @@ export default function useAuctionBid({
     setBidAmount(defaultBidAmount);
   }, [currentBid]);
 
-
   const handleSetBidAmount = useCallback(setBidAmount, []);
 
   const supabase = createClient();
@@ -39,13 +38,13 @@ export default function useAuctionBid({
 
   async function getCurrentBid(): Promise<CurrentBid | null> {
     const { data, error } = await supabase
-    .from("auction_bids")
-    .select("*")
-    .eq("nomination_id", currentNomination!.id)
-    .order("amount", { ascending: false })
-    .order("created_at", { ascending: true })
-    .limit(1)
-    .maybeSingle();
+      .from("auction_bids")
+      .select("*")
+      .eq("nomination_id", currentNomination!.id)
+      .order("amount", { ascending: false })
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
 
     if (error) {
       console.error("Errore getCurrentBid:", error);
@@ -57,18 +56,18 @@ export default function useAuctionBid({
 
   function subscribeBids() {
     const subscription = supabase
-    .channel(`id:${currentNomination!.id}-nomination-bids`)
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "auction_bids" },
-      async (payload) => {
-        if (payload.eventType === "INSERT") {
-          const bid = await getCurrentBid();
-          setCurrentBid(bid);
+      .channel(`id:${currentNomination!.id}-nomination-bids`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "auction_bids" },
+        async (payload) => {
+          if (payload.eventType === "INSERT") {
+            const bid = await getCurrentBid();
+            setCurrentBid(bid);
+          }
         }
-      }
-    )
-    .subscribe();
+      )
+      .subscribe();
 
     subscriptionRef.current = subscription;
   }
@@ -99,9 +98,10 @@ export default function useAuctionBid({
     }).isValid;
     const isValidAuction = auction.status === "active";
     const isValidPlayer = !!currentNomination?.player;
+    const isParticipant = !!userParticipant;
 
-    return hasValidCredits && isValidAuction && isValidPlayer;
+    return hasValidCredits && isValidAuction && isValidPlayer && isParticipant;
   }, [userParticipant, bidAmount, auction]);
-  
+
   return { currentBid, canBid, bidAmount, handleSetBidAmount };
 }
