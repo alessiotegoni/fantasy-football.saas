@@ -3,10 +3,9 @@
 import { Trophy, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuction } from "@/contexts/AuctionProvider";
-import ActionButton from "@/components/ActionButton";
-import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
 import { useEffect, useState } from "react";
+import NominatePlayerButton from "./NominatePlayerButton";
 
 export default function AuctionBids() {
   const {
@@ -40,7 +39,6 @@ export default function AuctionBids() {
 
   const player = currentNomination?.player || selectedPlayer;
   const isMyTurn = userParticipant?.isCurrent ?? false;
-  const canPerformAction = auction.status === "active" && canBid && !!player
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6">
@@ -81,22 +79,7 @@ export default function AuctionBids() {
                     Assegna
                   </Button>
                 )}
-                <ActionButton
-                  className="flex-1 max-w-32"
-                  loadingText="Chiamo"
-                  disabled={auction.status === "active" && canBid && !!player}
-                  action={
-                    player
-                      ? createNomination.bind(null, {
-                          auctionId: auction.id,
-                          initialPrice,
-                          playerId: player.id,
-                        })
-                      : undefined
-                  }
-                >
-                  Chiama
-                </ActionButton>
+                <NominatePlayerButton />
               </div>
             </div>
           </>

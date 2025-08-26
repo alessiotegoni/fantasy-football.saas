@@ -31,17 +31,6 @@ export default function useAuctionBid({
     setBidAmount(defaultBidAmount);
   }, [currentBid]);
 
-  const canBid = useMemo(() => {
-    const hasValidCredits = validateBidCredits({
-      bidAmount,
-      participantCredits: userParticipant?.credits ?? 0,
-      slotsRemaining: 2,
-    }).isValid;
-    const isValidAuction = auction.status === "active";
-    const isValidPlayer = !!currentNomination?.player;
-
-    return hasValidCredits && isValidAuction && isValidPlayer;
-  }, [userParticipant, bidAmount, auction]);
 
   const handleSetBidAmount = useCallback(setBidAmount, []);
 
@@ -50,13 +39,13 @@ export default function useAuctionBid({
 
   async function getCurrentBid(): Promise<CurrentBid | null> {
     const { data, error } = await supabase
-      .from("auction_bids")
-      .select("*")
-      .eq("nomination_id", currentNomination!.id)
-      .order("amount", { ascending: false })
-      .order("created_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
+    .from("auction_bids")
+    .select("*")
+    .eq("nomination_id", currentNomination!.id)
+    .order("amount", { ascending: false })
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
 
     if (error) {
       console.error("Errore getCurrentBid:", error);
@@ -68,18 +57,18 @@ export default function useAuctionBid({
 
   function subscribeBids() {
     const subscription = supabase
-      .channel(`id:${currentNomination!.id}-nomination-bids`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "auction_bids" },
-        async (payload) => {
-          if (payload.eventType === "INSERT") {
-            const bid = await getCurrentBid();
-            setCurrentBid(bid);
-          }
+    .channel(`id:${currentNomination!.id}-nomination-bids`)
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "auction_bids" },
+      async (payload) => {
+        if (payload.eventType === "INSERT") {
+          const bid = await getCurrentBid();
+          setCurrentBid(bid);
         }
-      )
-      .subscribe();
+      }
+    )
+    .subscribe();
 
     subscriptionRef.current = subscription;
   }
@@ -102,5 +91,17 @@ export default function useAuctionBid({
     return () => unsubscribeBids();
   }, [currentNomination]);
 
+  const canBid = useMemo(() => {
+    const hasValidCredits = validateBidCredits({
+      bidAmount,
+      participantCredits: userParticipant?.credits ?? 0,
+      slotsRemaining: 2,
+    }).isValid;
+    const isValidAuction = auction.status === "active";
+    const isValidPlayer = !!currentNomination?.player;
+
+    return hasValidCredits && isValidAuction && isValidPlayer;
+  }, [userParticipant, bidAmount, auction]);
+  
   return { currentBid, canBid, bidAmount, handleSetBidAmount };
 }

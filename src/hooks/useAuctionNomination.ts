@@ -2,17 +2,23 @@
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { Player } from "@/features/players/queries/player";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Args = {
+  selectedPlayer: Player | null;
+  userParticipant: AuctionParticipant | undefined;
   auction: NonNullable<AuctionWithSettings>;
   defaultNomination: CurrentNomination;
   toggleSelectPlayer: (player: null) => void;
 };
 
 export default function useAuctionNomination({
+  selectedPlayer,
+  userParticipant,
   auction,
   defaultNomination,
   toggleSelectPlayer,
@@ -75,5 +81,13 @@ export default function useAuctionNomination({
     return () => unsubscribeNominations();
   }, []);
 
-  return { currentNomination };
+  const canNominate = useMemo(() => {
+    const isValidAuction = auction.status === "active";
+    const isValidPlayer = !!selectedPlayer;
+    const hasCredits = !!userParticipant?.credits;
+
+    return hasCredits && isValidAuction && isValidPlayer;
+  }, [userParticipant, selectedPlayer, auction]);
+
+  return { currentNomination, canNominate };
 }

@@ -35,7 +35,12 @@ export default function AuctionProvider({ children, ...props }: Props) {
   const toggleSelectPlayer = useCallback(setSelectedPlayer, [selectedPlayer]);
 
   const participants = useAuctionParticipants(props);
-  const nomination = useAuctionNomination({ ...props, toggleSelectPlayer });
+  const nomination = useAuctionNomination({
+    ...props,
+    ...participants,
+    selectedPlayer,
+    toggleSelectPlayer,
+  });
   const bid = useAuctionBid({
     ...nomination,
     ...participants,

@@ -18,7 +18,7 @@ import { ExternalToast } from "sonner";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 
 type Props = ComponentPropsWithoutRef<typeof Button> & {
-  action: () => Promise<{ error: boolean; message: string }>;
+  action: (() => Promise<{ error: boolean; message: string }>) | undefined;
   onPendingChange?: (pending: boolean) => void;
   onSuccess?: () => void;
   onError?: () => void;

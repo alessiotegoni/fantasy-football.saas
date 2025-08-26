@@ -5,7 +5,9 @@ import useActionToast from "./useActionToast";
 import { useParams, useRouter } from "next/navigation";
 
 export default function useHandleSubmit<T>(
-  submitFn: (args: T) => Promise<{ error: boolean; message: string }>,
+  submitFn:
+    | ((args: T) => Promise<{ error: boolean; message: string }>)
+    | undefined,
   options?: {
     redirectTo?: string;
     isLeaguePrefix?: boolean;
@@ -33,6 +35,7 @@ export default function useHandleSubmit<T>(
   } = options ?? {};
 
   function onSubmit(args: T) {
+    if (!submitFn) return;
     startTransition(async () => {
       const result = await submitFn(args);
       if (displayToast) toast(result);
@@ -41,7 +44,7 @@ export default function useHandleSubmit<T>(
         handleRedirect();
         onSuccess?.();
         if (isDialogControlled) setDialogOpen(false);
-        return
+        return;
       }
 
       onError?.();
