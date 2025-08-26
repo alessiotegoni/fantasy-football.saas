@@ -11,7 +11,7 @@ type Args = {
   defaultNomination: CurrentNomination;
 };
 
-export default function useCurrentNomination({
+export default function useAuctionNomination({
   auction,
   defaultNomination,
 }: Args) {

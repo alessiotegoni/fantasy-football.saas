@@ -9,7 +9,7 @@ type Args = {
   defaultBid: CurrentBid;
 };
 
-export function useCurrentBid({ currentNomination, defaultBid }: Args) {
+export default function useAuctionBid({ currentNomination, defaultBid }: Args) {
   const [currentBid, setCurrentBid] = useState(defaultBid);
 
   const supabase = createClient();

@@ -5,8 +5,8 @@ import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { Player } from "@/features/players/queries/player";
-import { useCurrentBid } from "@/hooks/useCurrentBid";
-import useCurrentNomination from "@/hooks/useCurrentNomination";
+import useAuctionBid from "@/hooks/useAuctionBid";
+import useAuctionNomination from "@/hooks/useAuctionNomination";
 import { createContext, useCallback, useContext, useState } from "react";
 
 type AuctionContextType = {
@@ -31,8 +31,8 @@ type Props = {
 };
 
 export default function AuctionProvider({ children, ...props }: Props) {
-  const nomination = useCurrentNomination(props);
-  const bid = useCurrentBid({
+  const nomination = useAuctionNomination(props);
+  const bid = useAuctionBid({
     ...nomination,
     ...props,
   });
