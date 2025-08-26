@@ -4,26 +4,34 @@ import { Trophy, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AuctionWithSettings } from "../queries/auction";
 import { useCurrentBid } from "@/hooks/useCurrentBid";
-import { useAuctionPlayer } from "@/contexts/AuctionProvider";
+import { useAuction } from "@/contexts/AuctionProvider";
 import ActionButton from "@/components/ActionButton";
 import { createNomination } from "../actions/auctionNomination";
 import NumberInput from "@/components/ui/number-input";
 import { CurrentNomination } from "../queries/auctionNomination";
+import { auctionParticipants } from "@/drizzle/schema";
 
 type Props = {
+  userParticipant: typeof auctionParticipants.$inferSelect;
   isAdmin: boolean;
   auction: NonNullable<AuctionWithSettings>;
   currentNomination: CurrentNomination | null;
 };
 
-export function AuctionBids({ auction, currentNomination, isAdmin }: Props) {
-  const { selectedPlayer } = useAuctionPlayer();
+export default function AuctionBids({
+  auction,
+  currentNomination,
+  userParticipant,
+  isAdmin,
+}: Props) {
+
+  const { selectedPlayer,  } = useAuction();
 
   const { currentBid } = useCurrentBid(currentNomination);
 
   const player = currentNomination?.player || selectedPlayer;
 
-  const isMyTurn = true
+  const isMyTurn = true;
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6">

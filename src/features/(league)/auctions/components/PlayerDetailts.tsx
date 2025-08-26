@@ -3,7 +3,7 @@
 import { User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuctionPlayer } from "@/contexts/AuctionProvider";
+import { useAuction } from "@/contexts/AuctionProvider";
 import { useEffect } from "react";
 import { CurrentNomination} from "../queries/auctionNomination";
 
@@ -11,8 +11,8 @@ type Props = {
   currentNomination: CurrentNomination | null;
 };
 
-export function PlayerDetails({ currentNomination }: Props) {
-  const { selectedPlayer, toggleSelectPlayer } = useAuctionPlayer();
+export default function PlayerDetails({ currentNomination }: Props) {
+  const { selectedPlayer, toggleSelectPlayer } = useAuction();
 
   useEffect(() => {
     if (

@@ -7,7 +7,10 @@ import {
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
 import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import { getAuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import {
+  getAuctionParticipant,
+  getAuctionParticipants,
+} from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
@@ -72,10 +75,11 @@ async function SuspenseBoundary({
   const userTeamId = await getUserTeamId(userId, leagueId);
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
-  const [userParticipant, isAdmin] = await Promise.all([
-    getAuctionParticipant(auctionId, userTeamId),
+  const [participants, isAdmin] = await Promise.all([
+    getAuctionParticipants(auctionId),
     isLeagueAdmin(userId, leagueId),
   ]);
+  const userParticipant = participants.find((p) => p.teamId === userTeamId);
   if (!userParticipant) redirect(`/leagues/${leagueId}/premium/auctions`);
 
   return (
@@ -93,9 +97,10 @@ async function SuspenseBoundary({
               </div>
 
               <BidWrapper
+                userParticipant={userParticipant}
                 isAdmin={isAdmin}
                 auction={auction}
-                lastNominationPromise={getCurrentNomination(auction.id)}
+                currentNominationPromise={getCurrentNomination(auction.id)}
               />
             </AuctionProvider>
           </div>

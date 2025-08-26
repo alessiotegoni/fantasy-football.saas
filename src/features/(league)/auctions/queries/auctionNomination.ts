@@ -33,15 +33,6 @@ export async function getNominationByPlayer(
 export async function getCurrentNomination(auctionId: string) {
   const [nomination] = await db.query.auctionNominations.findMany({
     with: {
-      nominatedBy: {
-        with: {
-          team: {
-            columns: {
-              name: true,
-            },
-          },
-        },
-      },
       player: {
         with: {
           role: true,

@@ -4,15 +4,29 @@ import {
   auctionParticipants,
   players,
 } from "@/drizzle/schema";
-import { and, asc, count, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 export async function getAuctionParticipants(auctionId: string) {
-  return db
-    .select()
-    .from(auctionParticipants)
-    .where(eq(auctionParticipants.auctionId, auctionId))
-    .orderBy(asc(auctionParticipants.order));
+  return db.query.auctionParticipants.findMany({
+    columns: {
+      teamId: false
+    },
+    with: {
+      team: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    where: (participant, { eq }) => eq(participant.auctionId, auctionId),
+    orderBy: (participant, { asc }) => asc(participant.order),
+  });
 }
+
+export type AuctionParticipant = Awaited<
+  ReturnType<typeof getAuctionParticipants>
+>[number];
 
 export async function getAuctionParticipant(auctionId: string, teamId: string) {
   const [participant] = await db
@@ -30,7 +44,7 @@ export async function getAuctionParticipant(auctionId: string, teamId: string) {
 
 export async function getParticipantPlayersCountByRole(
   auctionId: string,
-  participantId: string,
+  participantId: string
 ) {
   const playerCounts = await db
     .select({

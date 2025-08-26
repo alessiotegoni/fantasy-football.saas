@@ -32,7 +32,7 @@ export default function AuctionProvider({
   );
 }
 
-export function useAuctionPlayer() {
+export function useAuction() {
   const context = useContext(AuctionPlayerContext);
   if (!context) {
     throw new Error(

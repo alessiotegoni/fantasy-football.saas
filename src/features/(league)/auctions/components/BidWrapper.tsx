@@ -1,15 +1,17 @@
 "use client";
 
-import { AuctionBids } from "./AuctionBids";
-import { PlayerDetails } from "./PlayerDetailts";
+import AuctionBids from "./AuctionBids";
+import PlayerDetails from "./PlayerDetailts";
 import { AuctionWithSettings } from "../queries/auction";
 import useCurrentNomination from "@/hooks/useCurrentNomination";
 import { CurrentNomination } from "../queries/auctionNomination";
+import { auctionParticipants } from "@/drizzle/schema";
 
 type Props = {
   isAdmin: boolean;
+  userParticipant: typeof auctionParticipants.$inferSelect
   auction: NonNullable<AuctionWithSettings>;
-  lastNominationPromise: Promise<CurrentNomination>;
+  currentNominationPromise: Promise<CurrentNomination>;
 };
 
 export default function BidWrapper(props: Props) {
