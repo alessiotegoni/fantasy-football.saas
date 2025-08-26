@@ -24,12 +24,11 @@ export default function BidWrapper({
   return (
     <>
       <div className="lg:col-span-6">
-        <AuctionBids />
+        <AuctionBids currentNomination={currentNomination} />
       </div>
       <div className="lg:col-span-3">
         <PlayerDetails />
       </div>
-      ;
     </>
   );
 }
@@ -43,7 +42,7 @@ function useCurrentNomination({ auction, currentNominationPromise }: Props) {
     const supabase = createClient();
 
     const subscription = supabase
-      .channel(`id:${auction.id}-auction-nomination`)
+      .channel(`id:${auction.id}-auction-nominations`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "auction_nominations" },

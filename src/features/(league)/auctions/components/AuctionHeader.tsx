@@ -14,7 +14,7 @@ type Props = {
 };
 
 export default function AuctionHeader({ auction, isAdmin }: Props) {
-  const { open, setOpen, toggleSidebar } = useSidebar();
+  const { setOpen, toggleSidebar } = useSidebar();
 
   useEffect(() => {
     setOpen(false);

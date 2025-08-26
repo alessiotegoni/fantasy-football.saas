@@ -87,14 +87,15 @@ async function SuspenseBoundary({
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
             <AuctionPlayerProvider>
               <div className="lg:col-span-3">
-                <Suspense>
+                {/* <Suspense>
                   <AuctionAvailablePlayers {...auction} />
-                </Suspense>
+                </Suspense> */}
               </div>
 
               <BidWrapper
                 auction={auction}
                 currentNominationPromise={getCurrentNomination(auction.id)}
+                
               />
             </AuctionPlayerProvider>
           </div>
