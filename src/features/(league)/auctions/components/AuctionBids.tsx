@@ -6,10 +6,10 @@ import NumberInput from "@/components/ui/number-input";
 import NominatePlayerButton from "./NominatePlayerButton";
 import EmptyState from "@/components/EmptyState";
 import { Clock, Pause } from "iconoir-react";
-import BidPlayerButton from "./BidPlayerButton";
 import CurrentBid from "./CurrentBid";
 import BidTurn from "./BidTurn";
 import { cn } from "@/lib/utils";
+import BidPlayerButtons from "./BidPlayerButtons";
 
 export default function AuctionBids() {
   const {
@@ -59,7 +59,7 @@ export default function AuctionBids() {
       {(currentNomination || currentBid) && <CurrentBid />}
       {turnParticipant && !currentBid && !currentNomination && <BidTurn />}
 
-      {(isMyTurn || canBid || isLeagueAdmin) && (
+      {(isMyTurn || canBid) && (
         <>
           <div className="flex justify-center">
             <NumberInput
@@ -76,16 +76,16 @@ export default function AuctionBids() {
               (currentBid || currentNomination) && "mt-4"
             )}
           >
-            {isLeagueAdmin && !currentBid && (
+            {/* {isLeagueAdmin && !currentBid && (
               <Button variant="destructive" className="flex-1 max-w-32">
                 Assegna
               </Button>
-            )}
+            )} */}
 
-            {isMyTurn && !currentBid ? (
+            {isMyTurn && currentBid ? (
               <NominatePlayerButton />
             ) : (
-              <BidPlayerButton />
+              <BidPlayerButtons />
             )}
           </div>
         </>

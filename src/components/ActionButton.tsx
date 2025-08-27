@@ -17,7 +17,7 @@ import { ComponentPropsWithoutRef, useEffect } from "react";
 import { ExternalToast } from "sonner";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 
-type Props = ComponentPropsWithoutRef<typeof Button> & {
+export type ActionButtonProps = ComponentPropsWithoutRef<typeof Button> & {
   action: (() => Promise<{ error: boolean; message: string }>) | undefined;
   onPendingChange?: (pending: boolean) => void;
   onSuccess?: () => void;
@@ -47,7 +47,7 @@ export default function ActionButton({
   disabled,
   children,
   ...props
-}: Props) {
+}: ActionButtonProps) {
   const {
     isPending,
     onSubmit: performAction,
