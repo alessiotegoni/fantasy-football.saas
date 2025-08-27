@@ -1,27 +1,26 @@
 "use client";
 
+import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
 import { AuctionAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 
 type Args = {
-  auctionId: string;
-  defaultAcquisitions:AuctionAcquisition[];
+  auction: NonNullable<AuctionWithSettings>;
+  defaultAcquisitions?: AuctionAcquisition[];
 };
 
 export default function useAuctionAcquisitions({
-  auctionId,
-  defaultAcquisitions,
+  auction,
+  defaultAcquisitions = [],
 }: Args) {
   const [acquisitions, setAcquisitions] = useState(defaultAcquisitions);
 
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
-  async function getAcquisitions(): Promise<
-   AuctionAcquisition[]
-  > {
+  async function getAcquisitions(): Promise<AuctionAcquisition[]> {
     const { data, error } = await supabase
       .from("auction_acquisitions")
       .select(
@@ -39,9 +38,9 @@ export default function useAuctionAcquisitions({
             displayName:display_name
           )
         )
-      `,
+      `
       )
-      .eq("auction_id", auctionId);
+      .eq("auction_id", auction.id);
 
     if (error) {
       console.error("Error getting auction acquisitions:", error);
@@ -58,11 +57,11 @@ export default function useAuctionAcquisitions({
 
   function subscribeAcquisitions() {
     const subscription = supabase
-      .channel(`id:${auctionId}-auction-acquisitions`)
+      .channel(`id:${auction.id}-auction-acquisitions`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "auction_acquisitions" },
-        handleSetAcquisitions,
+        handleSetAcquisitions
       )
       .subscribe();
 
@@ -80,7 +79,7 @@ export default function useAuctionAcquisitions({
     subscribeAcquisitions();
 
     return () => unsubscribeAcquisitions();
-  }, [auctionId]);
+  }, [auction.id]);
 
   return { acquisitions };
 }
