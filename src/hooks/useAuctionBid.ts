@@ -6,10 +6,10 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { Player } from "@/features/players/queries/player";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
+  participants: AuctionParticipant[];
   userParticipant: AuctionParticipant | undefined;
   currentNomination: CurrentNomination;
   defaultBid: CurrentBid;
@@ -17,6 +17,7 @@ type Args = {
 
 export default function useAuctionBid({
   auction,
+  participants,
   userParticipant,
   currentNomination,
   defaultBid,
@@ -103,5 +104,10 @@ export default function useAuctionBid({
     return hasValidCredits && isValidAuction && isValidPlayer && isParticipant;
   }, [userParticipant, bidAmount, auction]);
 
-  return { currentBid, canBid, bidAmount, handleSetBidAmount };
+  const currentBidTeam = useMemo(
+    () => participants.find((p) => p.id === currentBid?.participantId),
+    [currentBid]
+  );
+
+  return { currentBid, currentBidTeam, canBid, bidAmount, handleSetBidAmount };
 }

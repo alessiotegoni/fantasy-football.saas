@@ -75,5 +75,10 @@ export default function useAuctionParticipants({
     [participants]
   );
 
-  return { participants, userParticipant };
+  const turnParticipant = useMemo(
+    () => participants.find((p) => p.isCurrent),
+    [participants]
+  );
+
+  return { participants, userParticipant, turnParticipant };
 }
