@@ -1,4 +1,7 @@
 import { PlayersPerRole } from "@/drizzle/schema";
+import { AuctionAcquisition } from "../queries/auctionAcquisition";
+import { AuctionParticipant } from "../queries/auctionParticipant";
+import { AuctionWithSettings } from "../queries/auction";
 
 export function isRoleFull(
   playerCounts: Record<number, number>,
@@ -24,4 +27,31 @@ export function getRemainingSlots(
   );
 
   return requiredPlayers - acquiredPlayers;
+}
+
+export function calculateRemainingSlots(
+  acquisitions: AuctionAcquisition[],
+  userParticipant: AuctionParticipant | undefined,
+  auction: NonNullable<AuctionWithSettings>
+) {
+  const playerCounts: Record<number, number> = {};
+  if (userParticipant) {
+    const userAcquisitions = acquisitions.filter(
+      (a) => a.participantId === userParticipant.id
+    );
+
+    for (const acq of userAcquisitions) {
+      if (acq.player) {
+        playerCounts[acq.player.roleId] =
+          (playerCounts[acq.player.roleId] || 0) + 1;
+      }
+    }
+  }
+
+  const slotsRemaining = getRemainingSlots(
+    playerCounts,
+    auction.settings.playersPerRole
+  );
+
+  return slotsRemaining;
 }

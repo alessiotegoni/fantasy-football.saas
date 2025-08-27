@@ -4,6 +4,7 @@ import ActionButton from "@/components/ActionButton";
 import { useAuction } from "@/contexts/AuctionProvider";
 import { createBid } from "../actions/auctionBid";
 import { validateBidCredits } from "../utils/auctionBid";
+import { calculateRemainingSlots } from "../utils/auctionParticipant";
 
 export default function BidPlayerButtons() {
   const { userParticipant, currentNomination, bidAmount } = useAuction();
@@ -36,12 +37,19 @@ function PlusButton({
   plusAmount: number;
   onClick: (amount: number) => Promise<{ error: boolean; message: string }>;
 }) {
-  const { userParticipant, bidAmount, canBid } = useAuction();
+  const { userParticipant, bidAmount, canBid, acquisitions, auction } =
+    useAuction();
+
+  const slotsRemaining = calculateRemainingSlots(
+    acquisitions,
+    userParticipant,
+    auction
+  );
 
   const hasValidCredits = validateBidCredits({
     bidAmount: bidAmount + plusAmount,
     participantCredits: userParticipant?.credits ?? 0,
-    slotsRemaining: 2,
+    slotsRemaining: slotsRemaining,
   }).isValid;
 
   const canPlus = canBid && hasValidCredits;

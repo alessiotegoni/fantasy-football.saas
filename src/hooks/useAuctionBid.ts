@@ -6,12 +6,13 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { AuctionAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
+import { getAcquisitions } from "@/features/(league)/auctions/queries/auctionAcquisition";
+import { calculateRemainingSlots } from "@/features/(league)/auctions/utils/auctionParticipant";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
   participants: AuctionParticipant[];
-  acquisitions?: AuctionAcquisition[]
+  acquisitions: Awaited<ReturnType<typeof getAcquisitions>>;
   userParticipant: AuctionParticipant | undefined;
   currentNomination: CurrentNomination;
   defaultBid: CurrentBid;
@@ -95,17 +96,24 @@ export default function useAuctionBid({
   }, [currentNomination]);
 
   const canBid = useMemo(() => {
+    const slotsRemaining = calculateRemainingSlots(
+      acquisitions,
+      userParticipant,
+      auction
+    );
+
     const hasValidCredits = validateBidCredits({
       bidAmount,
       participantCredits: userParticipant?.credits ?? 0,
-      slotsRemaining: 2,
+      slotsRemaining: slotsRemaining,
     }).isValid;
+
     const isValidAuction = auction.status === "active";
     const isValidPlayer = !!currentNomination?.player;
     const isParticipant = !!userParticipant;
 
     return hasValidCredits && isValidAuction && isValidPlayer && isParticipant;
-  }, [userParticipant, bidAmount, auction]);
+  }, [userParticipant, bidAmount, auction, acquisitions, currentNomination]);
 
   const currentBidTeam = useMemo(
     () =>
