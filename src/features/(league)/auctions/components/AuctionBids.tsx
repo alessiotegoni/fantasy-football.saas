@@ -60,29 +60,26 @@ export default function AuctionBids() {
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-between">
-      {!currentBid ? (
-        <CurrentBid />
-      ) : (
-        <div className="space-y-2">
-          <Trophy className="size-8 mx-auto text-primary" />
-          {isMyTurn && (
-            <>
-              <h2 className="text-lg font-heading font-bold">È IL TUO TURNO</h2>
-              <p className="text-sm text-muted-foreground">
-                Seleziona un giocatore dal menu alla tua sinistra e chiamalo
-              </p>
-            </>
-          )}
-          {!isMyTurn && turnParticipant?.team && (
-            <div className="flex flex-col justify-center items-center gap-2">
-              <h2 className="text-lg font-heading font-bold">È IL TURNO DI</h2>
-              <Badge className="p-2 px-4 rounded-lg bg-primary w-fit text-md font-semibold">
-                {turnParticipant.team.name}
-              </Badge>
-            </div>
-          )}
-        </div>
-      )}
+      {currentBid && <CurrentBid />}
+      <div className="flex flex-col justify-center items-center gap-2">
+        <Trophy className="size-8 mx-auto text-primary" />
+        {!currentBid && isMyTurn && (
+          <>
+            <h2 className="text-lg font-heading font-bold">È IL TUO TURNO</h2>
+            <p className="text-sm text-muted-foreground">
+              Seleziona un giocatore dal menu alla tua sinistra e chiamalo
+            </p>
+          </>
+        )}
+        {!currentBid && !isMyTurn && turnParticipant?.team && (
+          <>
+            <h2 className="text-lg font-heading font-bold">È IL TURNO DI</h2>
+            <Badge className="p-2 px-4 rounded-lg bg-primary w-fit text-md font-semibold">
+              {turnParticipant.team.name}
+            </Badge>
+          </>
+        )}
+      </div>
 
       <div className="space-y-4">
         {player && (
@@ -97,13 +94,13 @@ export default function AuctionBids() {
             disabled={currentBid ? canBid : canNominate}
             value={bidAmount}
             onChange={handleSetBidAmount}
-            min={bidAmount}
+            min={currentBid ? bidAmount : 1}
             max={userParticipant?.credits}
           />
         </div>
 
         <div className="flex gap-3 justify-center">
-          {isLeagueAdmin && (
+          {isLeagueAdmin && !currentBid && (
             <Button variant="destructive" className="flex-1 max-w-32">
               Assegna
             </Button>

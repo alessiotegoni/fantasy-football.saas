@@ -10,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 type Args = {
   selectedPlayer: Player | null;
+  participants: AuctionParticipant[];
   userParticipant: AuctionParticipant | undefined;
   auction: NonNullable<AuctionWithSettings>;
   defaultNomination: CurrentNomination;
@@ -18,6 +19,7 @@ type Args = {
 
 export default function useAuctionNomination({
   selectedPlayer,
+  participants,
   userParticipant,
   auction,
   defaultNomination,
@@ -89,5 +91,13 @@ export default function useAuctionNomination({
     return hasCredits && isValidAuction && isValidPlayer;
   }, [userParticipant, selectedPlayer, auction]);
 
-  return { currentNomination, canNominate };
+  const currentNominationTeam = useMemo(
+    () =>
+      currentNomination
+        ? participants.find((p) => p.team?.id === currentNomination.nominatedBy)
+        : undefined,
+    [currentNomination]
+  );
+
+  return { currentNomination, currentNominationTeam, canNominate };
 }

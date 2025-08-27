@@ -105,7 +105,10 @@ export default function useAuctionBid({
   }, [userParticipant, bidAmount, auction]);
 
   const currentBidTeam = useMemo(
-    () => participants.find((p) => p.id === currentBid?.participantId),
+    () =>
+      currentBid
+        ? participants.find((p) => p.id === currentBid.participantId)
+        : undefined,
     [currentBid]
   );
 
