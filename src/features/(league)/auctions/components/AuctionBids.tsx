@@ -1,16 +1,16 @@
 "use client";
 
-import { Trophy, Timer } from "lucide-react";
+import { Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuction } from "@/contexts/AuctionProvider";
 import NumberInput from "@/components/ui/number-input";
-import { useEffect, useState } from "react";
 import NominatePlayerButton from "./NominatePlayerButton";
 import EmptyState from "@/components/EmptyState";
-import { Clock, Coins, Pause } from "iconoir-react";
+import { Clock, Pause } from "iconoir-react";
 import { Badge } from "@/components/ui/badge";
 import BidPlayerButton from "./BidPlayerButton";
 import CurrentBid from "./CurrentBid";
+import { cn } from "@/lib/utils";
 
 export default function AuctionBids() {
   const {
@@ -28,7 +28,6 @@ export default function AuctionBids() {
     isLeagueAdmin,
   } = useAuction();
 
-  const player = currentNomination?.player || selectedPlayer;
   const isMyTurn = userParticipant?.isCurrent ?? false;
 
   switch (auction.status) {
@@ -60,10 +59,15 @@ export default function AuctionBids() {
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-between">
-      {currentBid && <CurrentBid />}
-      <div className="flex flex-col justify-center items-center gap-2">
+      {(currentNomination || currentBid) && <CurrentBid />}
+      <div
+        className={cn(
+          "flex flex-col justify-center items-center gap-2",
+          (!isMyTurn && !canBid && !isLeagueAdmin) && "h-full"
+        )}
+      >
         <Trophy className="size-8 mx-auto text-primary" />
-        {!currentBid && isMyTurn && (
+        {!currentBid && !currentNomination && isMyTurn && (
           <>
             <h2 className="text-lg font-heading font-bold">È IL TUO TURNO</h2>
             <p className="text-sm text-muted-foreground">
@@ -71,67 +75,47 @@ export default function AuctionBids() {
             </p>
           </>
         )}
-        {!currentBid && !isMyTurn && turnParticipant?.team && (
-          <>
-            <h2 className="text-lg font-heading font-bold">È IL TURNO DI</h2>
-            <Badge className="p-2 px-4 rounded-lg bg-primary w-fit text-md font-semibold">
-              {turnParticipant.team.name}
-            </Badge>
-          </>
-        )}
+        {!currentBid &&
+          !currentNomination &&
+          !isMyTurn &&
+          turnParticipant?.team && (
+            <>
+              <h2 className="text-lg font-heading font-bold">È IL TURNO DI</h2>
+              <Badge className="p-2 px-4 rounded-lg bg-primary w-fit text-md font-semibold mt-1.5">
+                {turnParticipant.team.name}
+              </Badge>
+            </>
+          )}
       </div>
 
-      <div className="space-y-4">
-        {player && (
-          <div className="p-4 bg-muted rounded-lg">
-            <p className="font-medium">{player.displayName}</p>
-            <p className="text-sm text-muted-foreground">{player.team.name}</p>
+      {(isMyTurn || canBid || isLeagueAdmin) && (
+        <>
+          <div className="flex justify-center">
+            <NumberInput
+              disabled={currentBid ? canBid : canNominate}
+              value={bidAmount}
+              onChange={handleSetBidAmount}
+              min={currentBid ? bidAmount : 1}
+              max={userParticipant?.credits}
+            />
           </div>
-        )}
+          <div className="space-y-4">
+            <div className="flex gap-3 justify-center">
+              {isLeagueAdmin && !currentBid && (
+                <Button variant="destructive" className="flex-1 max-w-32">
+                  Assegna
+                </Button>
+              )}
 
-        <div className="flex justify-center">
-          <NumberInput
-            disabled={currentBid ? canBid : canNominate}
-            value={bidAmount}
-            onChange={handleSetBidAmount}
-            min={currentBid ? bidAmount : 1}
-            max={userParticipant?.credits}
-          />
-        </div>
-
-        <div className="flex gap-3 justify-center">
-          {isLeagueAdmin && !currentBid && (
-            <Button variant="destructive" className="flex-1 max-w-32">
-              Assegna
-            </Button>
-          )}
-
-          {isMyTurn && !currentBid ? (
-            <NominatePlayerButton />
-          ) : (
-            <BidPlayerButton />
-          )}
-        </div>
-      </div>
-      {/*
-        <div className="space-y-4">
-          <div className="p-4 bg-muted rounded-lg">
-            <p className="font-medium">
-              {player?.displayName || "Nessun giocatore"}
-            </p>
-            <p className="text-sm text-muted-foreground">{player?.team.name}</p>
-            <div className="mt-2 flex items-center justify-between">
-              <span className="text-sm">Offerta attuale:</span>
-              <span className="font-bold text-primary">
-                ${currentBid?.amount}
-              </span>
+              {isMyTurn && !currentBid ? (
+                <NominatePlayerButton />
+              ) : (
+                <BidPlayerButton />
+              )}
             </div>
           </div>
-
-          <Button variant="outline" size="sm">
-            +1
-          </Button>
-        </div> */}
+        </>
+      )}
     </div>
   );
 }

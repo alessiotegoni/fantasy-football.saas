@@ -4,7 +4,12 @@ import { Coins, Timer } from "iconoir-react";
 import { useEffect, useState } from "react";
 
 export default function CurrentBid() {
-  const { currentNomination, bidAmount, currentBidTeam } = useAuction();
+  const {
+    currentNomination,
+    currentNominationTeam,
+    bidAmount,
+    currentBidTeam,
+  } = useAuction();
 
   const [timeLeft, setTimeLeft] = useState(0);
 
@@ -23,6 +28,9 @@ export default function CurrentBid() {
     return () => clearInterval(interval);
   }, [bidExpiresAt]);
 
+  const currentTeamName =
+    currentBidTeam?.team?.name || currentNominationTeam?.team?.name;
+
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
       <div
@@ -37,7 +45,7 @@ export default function CurrentBid() {
         <p className="text-3xl font-bold">{bidAmount}</p>
       </div>
       <Badge className="p-2 px-4 rounded-lg bg-input w-fit text-md font-medium border border-border">
-        {currentBidTeam?.team?.name || "Nessuna squadra"}
+        {currentTeamName || "Nessuna squadra"}
       </Badge>
       {currentNomination && <h2>{currentNomination.player.displayName}</h2>}
     </div>
