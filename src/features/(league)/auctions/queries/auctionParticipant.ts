@@ -24,6 +24,7 @@ export async function getAuctionParticipants(auctionId: string) {
           name: true,
         },
       },
+
     },
     where: (participant, { eq }) => eq(participant.auctionId, auctionId),
     orderBy: (participant, { asc }) => asc(participant.order),

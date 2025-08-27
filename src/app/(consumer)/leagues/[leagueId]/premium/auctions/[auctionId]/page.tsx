@@ -2,20 +2,21 @@ import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader
 import AuctionWrapper from "@/features/(league)/auctions/components/AuctionWrapper";
 import {
   AuctionWithSettings,
-  getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
 import { getAcquisitions } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import { getAuctionParticipants } from "@/features/(league)/auctions/queries/auctionParticipant";
+import {
+  AuctionParticipant,
+  getAuctionParticipants,
+} from "@/features/(league)/auctions/queries/auctionParticipant";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
-import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   params: Promise<{
@@ -24,22 +25,49 @@ type Props = {
   }>;
 };
 
+function AuctionPageFallback({
+  auction,
+}: {
+  auction: NonNullable<AuctionWithSettings>;
+}) {
+  return (
+    <div>
+      <AuctionHeader auction={auction} isAdmin={false} />
+      <div className="flex">
+        <main className="flex-1 p-6">
+          <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6">
+            <div className="hidden lg:block lg:col-span-3">
+              <Skeleton className="h-[600px] w-full" />
+            </div>
+            <div className="lg:col-span-6">
+              <Skeleton className="h-[400px] w-full" />
+            </div>
+            <div className="lg:col-span-3">
+              <Skeleton className="h-[400px] w-full" />
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 export default async function AuctionPage({ params }: Props) {
   const ids = await params;
 
-  const [auction, playerRoles] = await Promise.all([
+  const [auction, participants] = await Promise.all([
     getAuctionWithSettings(ids.auctionId),
-    getPlayersRoles(),
+    getAuctionParticipants(ids.auctionId),
   ]);
   if (!auction) notFound();
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      <Suspense>
+      <Suspense fallback={<AuctionPageFallback auction={auction} />}>
         <SuspenseBoundary
           {...ids}
           auction={auction}
-          playerRoles={playerRoles}
+          participants={participants}
         />
       </Suspense>
     </div>
@@ -50,16 +78,12 @@ async function SuspenseBoundary({
   leagueId,
   auctionId,
   auction,
-  playerRoles,
+  participants,
 }: {
   leagueId: string;
   auctionId: string;
   auction: NonNullable<AuctionWithSettings>;
-  playerRoles: {
-    id: number;
-    name: string;
-    shortName: string;
-  }[];
+  participants: AuctionParticipant[];
 }) {
   const userId = await getUserId();
   if (!userId) return null;
@@ -67,8 +91,8 @@ async function SuspenseBoundary({
   const userTeamId = await getUserTeamId(userId, leagueId);
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
-  const [participants, currentNomination, isAdmin] = await Promise.all([
-    getAuctionParticipants(auctionId),
+  const [acquisitions, currentNomination, isAdmin] = await Promise.all([
+    getAcquisitions(auctionId),
     getCurrentNomination(auction.id),
     getLeagueAdmin(userId, leagueId),
   ]);
@@ -87,26 +111,17 @@ async function SuspenseBoundary({
     auction: auction,
     isLeagueAdmin: isAdmin,
     userTeamId: userTeamId,
+    defaultAcquisitions: acquisitions,
   };
 
   return (
-    <>
+    <div>
       <AuctionHeader auction={auction} isAdmin={isAdmin} />
-
       <div className="flex">
         <main className="flex-1">
-          <Suspense fallback={<AuctionWrapper {...wrapperProps} />}>
-            <AuctionAcquisitions {...wrapperProps} />
-          </Suspense>
+          <AuctionWrapper {...wrapperProps} />
         </main>
       </div>
-    </>
+    </div>
   );
-}
-
-async function AuctionAcquisitions(
-  props: React.ComponentProps<typeof AuctionWrapper>
-) {
-  const acquisitions = await getAcquisitions(props.auction.id);
-  return <AuctionWrapper {...props} acquisitions={acquisitions} />;
 }

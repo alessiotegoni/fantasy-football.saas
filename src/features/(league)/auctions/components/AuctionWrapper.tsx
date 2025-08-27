@@ -18,7 +18,7 @@ type Props = {
   auction: NonNullable<AuctionWithSettings>;
   defaultNomination: CurrentNomination;
   defaultBid: CurrentBid;
-  acquisitions?: AuctionAcquisition[];
+  defaultAcquisitions?: AuctionAcquisition[];
 };
 
 export default function AuctionWrapper(props: Props) {

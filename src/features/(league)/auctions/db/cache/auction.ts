@@ -5,7 +5,8 @@ export type AUCTION_TAG =
   | "auctions"
   | "auction-settings"
   | "auction-available-players"
-  | "auction-participants";
+  | "auction-participants"
+  | "auction-participants-acquisitions";
 
 export const getLeagueAuctionsTag = (leagueId: string) =>
   getLeagueTag("auctions", leagueId);
@@ -19,12 +20,15 @@ export const getAuctionSettingTag = (auctionId: string) =>
 export const getAuctionParticipantsTag = (auctionId: string) =>
   getIdTag("auction-participants", auctionId);
 
+export const getParticipantsAcquisitionsTag = (auctionId: string) =>
+  getIdTag("auction-participants-acquisitions", auctionId);
+
 export const getAuctionAvailablePlayersTag = (auctionId: string) =>
   getIdTag("auction-available-players", auctionId);
 
 export const revalidateLeagueAuctionsCache = (
   leagueId: string,
-  auctionId: string,
+  auctionId: string
 ) => {
   revalidateTag(getLeagueAuctionsTag(leagueId));
   revalidateTag(getAuctionIdTag(auctionId));
@@ -38,6 +42,9 @@ export const revalidateAuctionParticipantsCache = (auctionId: string) => {
   revalidateTag(getAuctionParticipantsTag(auctionId));
 };
 
+export const revalidateParticipantsAcquisitionsCache = (auctionId: string) => {
+  revalidateTag(getParticipantsAcquisitionsTag(auctionId));
+};
+
 export const revalidateAuctionPlayersCache = (auctionId: string) =>
   revalidateTag(getAuctionAvailablePlayersTag(auctionId));
-
