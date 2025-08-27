@@ -1,11 +1,15 @@
 import AuctionProvider from "@/contexts/AuctionProvider";
-import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
+import {
+  AuctionWithSettings,
+  getAuctionAvailablePlayers,
+} from "@/features/(league)/auctions/queries/auction";
 import { AuctionAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import AuctionBids from "./AuctionBids";
 import PlayerDetails from "./PlayerDetailts";
+import PlayersList from "../../teamsPlayers/components/PlayersList";
 
 type Props = {
   defaultParticipants: AuctionParticipant[];
@@ -43,5 +47,24 @@ export default function AuctionWrapper(props: Props) {
       <PlayerRoster roles={roles} />
       </div> */}
     </AuctionProvider>
+  );
+}
+
+async function AuctionAvailablePlayers({
+  id,
+  leagueId,
+}: {
+  id: string;
+  leagueId: string;
+}) {
+  const players = await getAuctionAvailablePlayers(id);
+
+  return (
+    <PlayersList
+      leagueId={leagueId}
+      players={players}
+      virtualized
+      showSelectionButton={false}
+    />
   );
 }

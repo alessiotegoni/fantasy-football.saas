@@ -110,22 +110,3 @@ async function AuctionAcquisitions(
   const acquisitions = await getAcquisitions(props.auction.id);
   return <AuctionWrapper {...props} acquisitions={acquisitions} />;
 }
-
-async function AuctionAvailablePlayers({
-  id,
-  leagueId,
-}: {
-  id: string;
-  leagueId: string;
-}) {
-  const players = await getAuctionAvailablePlayers(id);
-
-  return (
-    <PlayersList
-      leagueId={leagueId}
-      players={players}
-      virtualized
-      showSelectionButton={false}
-    />
-  );
-}
