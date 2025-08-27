@@ -13,18 +13,15 @@ export function isRoleFull(
   return currentRoleCount >= maxRoleCount;
 }
 
+const sumValues = (obj: Record<string | number, number>) =>
+  Object.values(obj).reduce((acc, value) => acc + value, 0);
+
 export function getRemainingSlots(
   playerCounts: Record<number, number>,
   playersPerRole: PlayersPerRole
 ) {
-  const requiredPlayers = Object.values(playersPerRole).reduce(
-    (acc, value) => acc + value,
-    0
-  );
-  const acquiredPlayers = Object.values(playerCounts).reduce(
-    (acc, value) => acc + value,
-    0
-  );
+  const requiredPlayers = sumValues(playersPerRole);
+  const acquiredPlayers = sumValues(playerCounts);
 
   return requiredPlayers - acquiredPlayers;
 }
@@ -34,24 +31,15 @@ export function calculateRemainingSlots(
   userParticipant: AuctionParticipant | undefined,
   auction: NonNullable<AuctionWithSettings>
 ) {
-  const playerCounts: Record<number, number> = {};
-  if (userParticipant) {
-    const userAcquisitions = acquisitions.filter(
-      (a) => a.participantId === userParticipant.id
-    );
+  if (!userParticipant) return 0;
 
-    for (const acq of userAcquisitions) {
-      if (acq.player) {
-        playerCounts[acq.player.roleId] =
-          (playerCounts[acq.player.roleId] || 0) + 1;
-      }
-    }
-  }
+  const playerCounts = acquisitions
+    .filter((a) => a.participantId === userParticipant.id)
+    .reduce((counts, acq) => {
+      const roleId = acq.player!.roleId;
+      counts[roleId] = (counts[roleId] || 0) + 1;
+      return counts;
+    }, {} as Record<number, number>);
 
-  const slotsRemaining = getRemainingSlots(
-    playerCounts,
-    auction.settings.playersPerRole
-  );
-
-  return slotsRemaining;
+  return getRemainingSlots(playerCounts, auction.settings.playersPerRole);
 }
