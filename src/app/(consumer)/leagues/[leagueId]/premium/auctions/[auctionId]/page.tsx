@@ -1,19 +1,15 @@
-import AuctionProvider from "@/contexts/AuctionProvider";
-import AuctionBids from "@/features/(league)/auctions/components/AuctionBids";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
-import PlayerDetails from "@/features/(league)/auctions/components/PlayerDetailts";
+import AuctionWrapper from "@/features/(league)/auctions/components/AuctionWrapper";
 import {
   AuctionWithSettings,
   getAuctionAvailablePlayers,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
+import { getAcquisitions } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import {
-  getAuctionParticipant,
-  getAuctionParticipants,
-} from "@/features/(league)/auctions/queries/auctionParticipant";
-import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
+import { getAuctionParticipants } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
@@ -39,7 +35,6 @@ export default async function AuctionPage({ params }: Props) {
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      <AuctionHeader auction={auction} />
       <Suspense>
         <SuspenseBoundary
           {...ids}
@@ -75,7 +70,7 @@ async function SuspenseBoundary({
   const [participants, currentNomination, isAdmin] = await Promise.all([
     getAuctionParticipants(auctionId),
     getCurrentNomination(auction.id),
-    isLeagueAdmin(userId, leagueId),
+    getLeagueAdmin(userId, leagueId),
   ]);
   if (!participants.find((p) => p.team?.id === userTeamId)) {
     redirect(`/leagues/${leagueId}/premium/auctions`);
@@ -85,45 +80,35 @@ async function SuspenseBoundary({
     ? await getHighestBid(currentNomination.id)
     : null;
 
+  const wrapperProps = {
+    defaultParticipants: participants,
+    defaultNomination: currentNomination,
+    defaultBid: currentBid,
+    auction: auction,
+    isLeagueAdmin: isAdmin,
+    userTeamId: userTeamId,
+  };
+
   return (
-    <div>
+    <>
+      <AuctionHeader auction={auction} isAdmin={isAdmin} />
+
       <div className="flex">
         <main className="flex-1">
-          <AuctionProvider
-            defaultParticipants={participants}
-            defaultNomination={currentNomination}
-            defaultBid={currentBid}
-            auction={auction}
-            isLeagueAdmin={isAdmin}
-            userTeamId={userTeamId}
-          >
-            <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
-              <div className="hidden lg:block lg:col-span-3">
-                {/* <Suspense>
-                  <AuctionAvailablePlayers {...auction} />
-                </Suspense> */}
-              </div>
-
-              <div className="lg:col-span-6">
-                <AuctionBids />
-              </div>
-              <div className="lg:col-span-3">
-                <PlayerDetails />
-              </div>
-            </div>
-
-            {/* <div className="px-6 pb-6">
-            <ParticipantsList participants={participants} />
-            </div>
-
-            <div className="px-6 pb-6">
-            <PlayerRoster roles={roles} />
-            </div> */}
-          </AuctionProvider>
+          <Suspense fallback={<AuctionWrapper {...wrapperProps} />}>
+            <AuctionAcquisitions {...wrapperProps} />
+          </Suspense>
         </main>
       </div>
-    </div>
+    </>
   );
+}
+
+async function AuctionAcquisitions(
+  props: React.ComponentProps<typeof AuctionWrapper>
+) {
+  const acquisitions = await getAcquisitions(props.auction.id);
+  return <AuctionWrapper {...props} acquisitions={acquisitions} />;
 }
 
 async function AuctionAvailablePlayers({

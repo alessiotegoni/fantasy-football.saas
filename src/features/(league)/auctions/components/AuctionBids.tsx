@@ -82,7 +82,7 @@ export default function AuctionBids() {
               </Button>
             )} */}
 
-            {isMyTurn && !currentBid ? (
+            {isMyTurn && currentBid ? (
               <NominatePlayerButton />
             ) : (
               <BidPlayerButtons />

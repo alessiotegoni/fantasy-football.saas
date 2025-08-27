@@ -19,10 +19,15 @@ export async function getAcquisitions(auctionId: string) {
       },
     },
     where: (acquisition, { eq }) => eq(acquisition.auctionId, auctionId),
+    orderBy: (acquisition, { desc }) => desc(acquisition.acquiredAt),
   });
 
   return acquisitions;
 }
+
+export type AuctionAcquisition = Awaited<
+  ReturnType<typeof getAcquisitions>
+>[number];
 
 export async function getAcquisition(acquisitionId: string) {
   const [acquisition] = await db
