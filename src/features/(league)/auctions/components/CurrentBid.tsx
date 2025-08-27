@@ -40,7 +40,7 @@ export default function CurrentBid() {
         <Timer className="size-10 text-primary" />
         <span className="text-3xl font-bold text-primary">{timeLeft}</span>
       </div>
-      <div className="flex gap-2 items-center mt-3">
+      <div className="flex gap-2 items-center">
         <Coins className="size-12 text-primary" />
         <p className="text-3xl font-bold">{bidAmount}</p>
       </div>
