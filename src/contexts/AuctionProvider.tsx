@@ -28,13 +28,13 @@ const AuctionContext = createContext<AuctionContextType | null>(null);
 
 type Props = {
   children: React.ReactNode;
-  defaultParticipants: AuctionParticipant[];
-  isLeagueAdmin: boolean;
-  userTeamId: string;
   auction: NonNullable<AuctionWithSettings>;
-  defaultNomination: CurrentNomination;
-  defaultBid: CurrentBid;
-  defaultAcquisitions?: AuctionAcquisition[];
+  defaultParticipants: AuctionParticipant[];
+  defaultAcquisitions: AuctionAcquisition[];
+  isLeagueAdmin?: boolean;
+  userTeamId?: string;
+  defaultNomination?: CurrentNomination;
+  defaultBid?: CurrentBid;
 };
 
 export default function AuctionProvider({ children, ...props }: Props) {

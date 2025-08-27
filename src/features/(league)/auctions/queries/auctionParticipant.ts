@@ -21,10 +21,6 @@ export async function getParticipantsWithAcquisitions(auctionId: string) {
   );
 
   const participants = await db.query.auctionParticipants.findMany({
-    columns: {
-      teamId: false,
-      auctionId: false,
-    },
     with: {
       team: {
         columns: {
@@ -33,11 +29,6 @@ export async function getParticipantsWithAcquisitions(auctionId: string) {
         },
       },
       acquisitions: {
-        columns: {
-          auctionId: false,
-          playerId: false,
-          participantId: false,
-        },
         with: {
           player: {
             columns: {
@@ -70,11 +61,13 @@ export type AuctionParticipantWithAcquisitions = Awaited<
   ReturnType<typeof getParticipantsWithAcquisitions>
 >[number];
 
+export type AuctionParticipant = Omit<
+  AuctionParticipantWithAcquisitions,
+  "acquisitions"
+>;
+
 export async function getAuctionParticipants(auctionId: string) {
   return db.query.auctionParticipants.findMany({
-    columns: {
-      teamId: false,
-    },
     with: {
       team: {
         columns: {

@@ -1,7 +1,10 @@
 "use client";
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import {
+  AuctionParticipant,
+  AuctionParticipantWithAcquisitions,
+} from "@/features/(league)/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useMemo, useRef, useState } from "react";

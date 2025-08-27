@@ -1,13 +1,15 @@
+import { playerRoles } from "@/drizzle/schema";
 import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
 import AuctionWrapper from "@/features/(league)/auctions/components/AuctionWrapper";
 import {
   AuctionWithSettings,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
+import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import {
-  AuctionParticipantWithAcquisitions,
+  AuctionParticipant,
   getParticipantsWithAcquisitions,
 } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
@@ -27,21 +29,33 @@ type Props = {
 export default async function AuctionPage({ params }: Props) {
   const ids = await params;
 
-  const [auction, participantsWithAcquisitions, playerRoles] = await Promise.all([
-    getAuctionWithSettings(ids.auctionId),
-    getParticipantsWithAcquisitions(ids.auctionId),
-    getPlayersRoles()
-  ]);
+  const [auction, participantsWithAcquisitions, playerRoles] =
+    await Promise.all([
+      getAuctionWithSettings(ids.auctionId),
+      getParticipantsWithAcquisitions(ids.auctionId),
+      getPlayersRoles(),
+    ]);
   if (!auction) notFound();
+
+  const defaultParticipants = participantsWithAcquisitions.map(
+    ({ acquisitions, ...p }) => p
+  );
+  const defaultAcquisitions = participantsWithAcquisitions.flatMap(
+    (p) => p.acquisitions
+  );
+
+  const props = {
+    ...ids,
+    defaultParticipants,
+    defaultAcquisitions,
+    auction,
+    playerRoles,
+  };
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      <Suspense>
-        <SuspenseBoundary
-          {...ids}
-          auction={auction}
-          participantsWithAcquisitions={participantsWithAcquisitions}
-        />
+      <Suspense fallback={<AuctionWrapper {...props} />}>
+        <SuspenseBoundary {...props} />
       </Suspense>
     </div>
   );
@@ -50,13 +64,14 @@ export default async function AuctionPage({ params }: Props) {
 async function SuspenseBoundary({
   leagueId,
   auctionId,
-  auction,
-  participantsWithAcquisitions,
+  ...props
 }: {
-  leagueId: string;
   auctionId: string;
+  leagueId: string;
+  playerRoles: (typeof playerRoles.$inferSelect)[];
   auction: NonNullable<AuctionWithSettings>;
-  participantsWithAcquisitions: AuctionParticipantWithAcquisitions[];
+  defaultParticipants: AuctionParticipant[];
+  defaultAcquisitions: ParticipantAcquisition[];
 }) {
   const userId = await getUserId();
   if (!userId) return null;
@@ -65,10 +80,10 @@ async function SuspenseBoundary({
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
   const [currentNomination, isAdmin] = await Promise.all([
-    getCurrentNomination(auction.id),
+    getCurrentNomination(auctionId),
     getLeagueAdmin(userId, leagueId),
   ]);
-  if (!participantsWithAcquisitions.find((p) => p.team?.id === userTeamId)) {
+  if (!props.defaultParticipants.find((p) => p.team?.id === userTeamId)) {
     redirect(`/leagues/${leagueId}/premium/auctions`);
   }
 
@@ -76,29 +91,13 @@ async function SuspenseBoundary({
     ? await getHighestBid(currentNomination.id)
     : null;
 
-  const allAcquisitions = participantsWithAcquisitions.flatMap(
-    (p) => p.acquisitions
-  );
-
   const wrapperProps = {
-    defaultParticipants: participantsWithAcquisitions,
     defaultNomination: currentNomination,
     defaultBid: currentBid,
-    auction: auction,
     isLeagueAdmin: isAdmin,
     userTeamId: userTeamId,
-    defaultAcquisitions: allAcquisitions,
+    ...props,
   };
 
-  return (
-    <div>
-      <AuctionHeader auction={auction} isAdmin={isAdmin} />
-
-      <div className="flex">
-        <main className="flex-1">
-          <AuctionWrapper {...wrapperProps} />
-        </main>
-      </div>
-    </div>
-  );
+  return <AuctionWrapper {...wrapperProps} />;
 }

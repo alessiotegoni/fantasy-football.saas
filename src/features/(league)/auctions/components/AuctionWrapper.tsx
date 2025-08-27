@@ -3,65 +3,71 @@ import {
   AuctionWithSettings,
   getAuctionAvailablePlayers,
 } from "@/features/(league)/auctions/queries/auction";
-import { AuctionAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import AuctionBids from "./AuctionBids";
 import PlayerDetails from "./PlayerDetailts";
 import PlayersList from "../../teamsPlayers/components/PlayersList";
+import { AuctionParticipant } from "../queries/auctionParticipant";
+import AuctionHeader from "./AuctionHeader";
+import { ParticipantAcquisition } from "../queries/auctionAcquisition";
+import { playerRoles } from "@/drizzle/schema";
+import { Suspense } from "react";
 
 type Props = {
-  defaultParticipants: AuctionParticipant[];
-  isLeagueAdmin: boolean;
-  userTeamId: string;
+  playerRoles: (typeof playerRoles.$inferSelect)[];
   auction: NonNullable<AuctionWithSettings>;
-  defaultNomination: CurrentNomination;
-  defaultBid: CurrentBid;
-  defaultAcquisitions?: AuctionAcquisition[];
+  defaultParticipants: AuctionParticipant[];
+  defaultAcquisitions: ParticipantAcquisition[];
+  isLeagueAdmin?: boolean;
+  userTeamId?: string;
+  defaultNomination?: CurrentNomination;
+  defaultBid?: CurrentBid;
 };
 
 export default function AuctionWrapper(props: Props) {
   return (
-    <AuctionProvider {...props}>
-      <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
-        <div className="hidden lg:block lg:col-span-3">
-          {/* <Suspense>
-            <AuctionAvailablePlayers {...auction} />
-          </Suspense> */}
-        </div>
+    <div>
+      <AuctionHeader {...props} />
 
-        <div className="lg:col-span-6">
-          <AuctionBids />
-        </div>
-        <div className="lg:col-span-3">
-          <PlayerDetails />
-        </div>
-      </div>
+      <div className="flex">
+        <main className="flex-1">
+          <AuctionProvider {...props}>
+            <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
+              <div className="hidden lg:block lg:col-span-3">
+                <Suspense>
+                  <AuctionAvailablePlayers {...props} />
+                </Suspense>
+              </div>
 
-      {/* <div className="px-6 pb-6">
+              <div className="lg:col-span-6">
+                <AuctionBids />
+              </div>
+              <div className="lg:col-span-3">
+                <PlayerDetails />
+              </div>
+            </div>
+
+            {/* <div className="px-6 pb-6">
       <ParticipantsList participants={participants} />
       </div>
 
       <div className="px-6 pb-6">
       <PlayerRoster roles={roles} />
       </div> */}
-    </AuctionProvider>
+          </AuctionProvider>
+        </main>
+      </div>
+    </div>
   );
 }
 
-async function AuctionAvailablePlayers({
-  id,
-  leagueId,
-}: {
-  id: string;
-  leagueId: string;
-}) {
-  const players = await getAuctionAvailablePlayers(id);
+async function AuctionAvailablePlayers({ auction }: Pick<Props, "auction">) {
+  const players = await getAuctionAvailablePlayers(auction.id);
 
   return (
     <PlayersList
-      leagueId={leagueId}
+      leagueId={auction.leagueId}
       players={players}
       virtualized
       showSelectionButton={false}
