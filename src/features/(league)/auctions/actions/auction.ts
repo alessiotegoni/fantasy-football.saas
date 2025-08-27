@@ -203,8 +203,8 @@ async function importTeamsPlayers(
   const auctionParticipants = await getAuctionParticipants(auction.id);
 
   const teamsIds = auctionParticipants
-    .map((p) => p.teamId)
-    .filter((teamId) => teamId !== null);
+    .map((p) => p.team?.id)
+    .filter((teamId) => teamId !== undefined);
   if (!teamsIds.length) return;
 
   await deleteTeamsPlayers(auction.leagueId, { membersTeamsIds: teamsIds }, tx);

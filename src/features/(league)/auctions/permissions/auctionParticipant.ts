@@ -28,12 +28,7 @@ export async function canJoinAuction(auctionId: string) {
     return createError(AUCTION_PARTICIPANT_ERRORS.JOIN_INVALID_STATUS);
   }
 
-  const participant = await getAuctionParticipant(auctionId, userTeamId);
-
-  return createSuccess("", {
-    ...permissions.data,
-    participant,
-  });
+  return createSuccess("", permissions.data);
 }
 
 export async function participantActionPermissions({

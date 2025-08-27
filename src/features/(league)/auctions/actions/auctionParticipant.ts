@@ -28,6 +28,7 @@ import { updateAuctionStatus } from "./auction";
 import { updateAuction } from "../db/auction";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { insertAcquisitions } from "../db/auctionAcquisition";
+import { getAuctionParticipant } from "../queries/auctionParticipant";
 
 enum AUCTION_PARTICIPANT_MESSAGES {
   TURN_SET_SUCCESSFULLY = "Turno impostato con successo",
@@ -48,11 +49,12 @@ export async function joinAuction(auctionId: string) {
   const {
     auction: { id, leagueId, status, type },
     userTeamId,
-    participant,
   } = permissions.data;
 
+  const participant = await getAuctionParticipant(auctionId, userTeamId);
+
   await db.transaction(async (tx) => {
-    let participantId = participant.id;
+    let participantId = participant?.id;
     if (!participant) {
       participantId = await insertParticipant(
         {

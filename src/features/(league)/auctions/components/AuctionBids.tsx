@@ -9,11 +9,11 @@ import NominatePlayerButton from "./NominatePlayerButton";
 
 export default function AuctionBids() {
   const {
-    auction,
     selectedPlayer,
+    canNominate,
     currentNomination,
-    currentBid,
     canBid,
+    currentBid,
     bidAmount,
     handleSetBidAmount,
     userParticipant,
@@ -22,8 +22,8 @@ export default function AuctionBids() {
 
   const [timeLeft, setTimeLeft] = useState(0);
 
+  const bidExpiresAt = currentNomination?.expiresAt;
   useEffect(() => {
-    const bidExpiresAt = currentNomination?.expiresAt;
     if (!bidExpiresAt) return;
 
     const target = new Date(bidExpiresAt).getTime();
@@ -35,7 +35,7 @@ export default function AuctionBids() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [currentNomination?.expiresAt]);
+  }, [bidExpiresAt]);
 
   const player = currentNomination?.player || selectedPlayer;
   const isMyTurn = userParticipant?.isCurrent ?? false;
@@ -65,7 +65,7 @@ export default function AuctionBids() {
 
               <div className="flex justify-center">
                 <NumberInput
-                  disabled={!canBid}
+                  disabled={currentBid ? canBid : canNominate}
                   value={bidAmount}
                   onChange={handleSetBidAmount}
                   min={bidAmount}
@@ -79,6 +79,7 @@ export default function AuctionBids() {
                     Assegna
                   </Button>
                 )}
+                
                 <NominatePlayerButton />
               </div>
             </div>

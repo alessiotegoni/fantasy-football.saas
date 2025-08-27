@@ -46,6 +46,7 @@ export default function AuctionDropdownMenu({
           variant="destructive"
           loadingText="Elimino"
           action={deleteAuction.bind(null, auction.id)}
+          redirectTo={`/leagues/${leagueId}/premium/auctions`}
           requireAreYouSure
           areYouSureDescription="Sei sicuro di voler eliminare l'asta ? L'azione e' irreversibile"
           className="text-white px-2 py-1.5 rounded-lg text-sm"
