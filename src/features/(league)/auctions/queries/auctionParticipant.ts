@@ -5,11 +5,17 @@ import {
   players,
 } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
+import { cacheTag } from "next/dist/server/use-cache/cache-tag";
+import { getAuctionParticipantsTag } from "../db/cache/auction";
+import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
 
 export async function getAuctionParticipants(auctionId: string) {
-  return db.query.auctionParticipants.findMany({
+  "use cache";
+  cacheTag(getAuctionParticipantsTag(auctionId));
+
+  const participants = await db.query.auctionParticipants.findMany({
     columns: {
-      teamId: false
+      teamId: false,
     },
     with: {
       team: {
@@ -22,6 +28,14 @@ export async function getAuctionParticipants(auctionId: string) {
     where: (participant, { eq }) => eq(participant.auctionId, auctionId),
     orderBy: (participant, { asc }) => asc(participant.order),
   });
+
+  const teamsIds = participants
+    .map((p) => p.team?.id)
+    .filter((id) => id !== undefined);
+
+  cacheTag(...teamsIds.map(getTeamIdTag));
+
+  return participants;
 }
 
 export type AuctionParticipant = Awaited<
