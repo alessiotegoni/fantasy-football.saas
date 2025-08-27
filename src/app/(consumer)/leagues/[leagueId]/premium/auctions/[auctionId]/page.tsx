@@ -4,19 +4,17 @@ import {
   AuctionWithSettings,
   getAuctionWithSettings,
 } from "@/features/(league)/auctions/queries/auction";
-import { getAcquisitions } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import {
-  AuctionParticipant,
-  getAuctionParticipants,
+  AuctionParticipantWithAcquisitions,
+  getParticipantsWithAcquisitions,
 } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   params: Promise<{
@@ -25,49 +23,22 @@ type Props = {
   }>;
 };
 
-function AuctionPageFallback({
-  auction,
-}: {
-  auction: NonNullable<AuctionWithSettings>;
-}) {
-  return (
-    <div>
-      <AuctionHeader auction={auction} isAdmin={false} />
-      <div className="flex">
-        <main className="flex-1 p-6">
-          <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6">
-            <div className="hidden lg:block lg:col-span-3">
-              <Skeleton className="h-[600px] w-full" />
-            </div>
-            <div className="lg:col-span-6">
-              <Skeleton className="h-[400px] w-full" />
-            </div>
-            <div className="lg:col-span-3">
-              <Skeleton className="h-[400px] w-full" />
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
-  );
-}
-
 export default async function AuctionPage({ params }: Props) {
   const ids = await params;
 
-  const [auction, participants] = await Promise.all([
+  const [auction, participantsWithAcquisitions] = await Promise.all([
     getAuctionWithSettings(ids.auctionId),
-    getAuctionParticipants(ids.auctionId),
+    getParticipantsWithAcquisitions(ids.auctionId),
   ]);
   if (!auction) notFound();
 
   return (
     <div className="max-w-[1600px] mx-auto">
-      <Suspense fallback={<AuctionPageFallback auction={auction} />}>
+      <Suspense>
         <SuspenseBoundary
           {...ids}
           auction={auction}
-          participants={participants}
+          participantsWithAcquisitions={participantsWithAcquisitions}
         />
       </Suspense>
     </div>
@@ -78,12 +49,12 @@ async function SuspenseBoundary({
   leagueId,
   auctionId,
   auction,
-  participants,
+  participantsWithAcquisitions,
 }: {
   leagueId: string;
   auctionId: string;
   auction: NonNullable<AuctionWithSettings>;
-  participants: AuctionParticipant[];
+  participantsWithAcquisitions: AuctionParticipantWithAcquisitions[];
 }) {
   const userId = await getUserId();
   if (!userId) return null;
@@ -91,12 +62,11 @@ async function SuspenseBoundary({
   const userTeamId = await getUserTeamId(userId, leagueId);
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
-  const [acquisitions, currentNomination, isAdmin] = await Promise.all([
-    getAcquisitions(auctionId),
+  const [currentNomination, isAdmin] = await Promise.all([
     getCurrentNomination(auction.id),
     getLeagueAdmin(userId, leagueId),
   ]);
-  if (!participants.find((p) => p.team?.id === userTeamId)) {
+  if (!participantsWithAcquisitions.find((p) => p.team?.id === userTeamId)) {
     redirect(`/leagues/${leagueId}/premium/auctions`);
   }
 
@@ -104,19 +74,24 @@ async function SuspenseBoundary({
     ? await getHighestBid(currentNomination.id)
     : null;
 
+  const allAcquisitions = participantsWithAcquisitions.flatMap(
+    (p) => p.acquisitions
+  );
+
   const wrapperProps = {
-    defaultParticipants: participants,
+    defaultParticipants: participantsWithAcquisitions,
     defaultNomination: currentNomination,
     defaultBid: currentBid,
     auction: auction,
     isLeagueAdmin: isAdmin,
     userTeamId: userTeamId,
-    defaultAcquisitions: acquisitions,
+    defaultAcquisitions: allAcquisitions,
   };
 
   return (
     <div>
       <AuctionHeader auction={auction} isAdmin={isAdmin} />
+
       <div className="flex">
         <main className="flex-1">
           <AuctionWrapper {...wrapperProps} />

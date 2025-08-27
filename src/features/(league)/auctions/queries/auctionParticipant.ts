@@ -6,16 +6,24 @@ import {
 } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getAuctionParticipantsTag } from "../db/cache/auction";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
+import {
+  getAuctionParticipantsTag,
+  getParticipantsAcquisitionsTag,
+} from "../db/cache/auction";
+import { getPlayerIdTag } from "@/features/players/db/cache/player";
 
-export async function getAuctionParticipants(auctionId: string) {
+export async function getParticipantsWithAcquisitions(auctionId: string) {
   "use cache";
-  cacheTag(getAuctionParticipantsTag(auctionId));
+  cacheTag(
+    getAuctionParticipantsTag(auctionId),
+    getParticipantsAcquisitionsTag(auctionId)
+  );
 
   const participants = await db.query.auctionParticipants.findMany({
     columns: {
       teamId: false,
+      auctionId: false,
     },
     with: {
       team: {
@@ -24,23 +32,42 @@ export async function getAuctionParticipants(auctionId: string) {
           name: true,
         },
       },
-
+      acquisitions: {
+        columns: {
+          auctionId: false,
+          playerId: false,
+          participantId: false,
+        },
+        with: {
+          player: {
+            columns: {
+              id: true,
+              displayName: true,
+              roleId: true,
+            },
+            with: {
+              team: {
+                columns: {
+                  displayName: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: (acquisitions, { desc }) => desc(acquisitions.acquiredAt),
+      },
     },
     where: (participant, { eq }) => eq(participant.auctionId, auctionId),
     orderBy: (participant, { asc }) => asc(participant.order),
   });
 
-  const teamsIds = participants
-    .map((p) => p.team?.id)
-    .filter((id) => id !== undefined);
-
-  cacheTag(...teamsIds.map(getTeamIdTag));
+  cacheTag(...getParticipantsWithAcquisitionsCacheTags(participants));
 
   return participants;
 }
 
-export type AuctionParticipant = Awaited<
-  ReturnType<typeof getAuctionParticipants>
+export type AuctionParticipantWithAcquisitions = Awaited<
+  ReturnType<typeof getParticipantsWithAcquisitions>
 >[number];
 
 export async function getAuctionParticipant(auctionId: string, teamId: string) {
@@ -83,4 +110,18 @@ export async function getParticipantPlayersCountByRole(
     },
     {}
   );
+}
+
+function getParticipantsWithAcquisitionsCacheTags(
+  participants: AuctionParticipantWithAcquisitions[]
+) {
+  const teamsIds = participants
+    .map((p) => p.team?.id)
+    .filter((id) => id !== undefined);
+
+  const playersIds = participants.flatMap((p) =>
+    p.acquisitions.map((a) => a.player.id)
+  );
+
+  return [...teamsIds.map(getTeamIdTag), ...playersIds.map(getPlayerIdTag)];
 }
