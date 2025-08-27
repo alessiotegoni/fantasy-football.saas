@@ -6,10 +6,12 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
+import { AuctionAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
   participants: AuctionParticipant[];
+  acquisitions?: AuctionAcquisition[]
   userParticipant: AuctionParticipant | undefined;
   currentNomination: CurrentNomination;
   defaultBid: CurrentBid;
@@ -18,6 +20,7 @@ type Args = {
 export default function useAuctionBid({
   auction,
   participants,
+  acquisitions = [],
   userParticipant,
   currentNomination,
   defaultBid,
