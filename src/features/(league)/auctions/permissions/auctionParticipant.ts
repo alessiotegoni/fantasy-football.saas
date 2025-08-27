@@ -22,7 +22,7 @@ export async function canJoinAuction(auctionId: string) {
   const permissions = await basePermissions(auctionId);
   if (permissions.error) return permissions;
 
-  const { auction, userTeamId } = permissions.data;
+  const { auction } = permissions.data;
 
   if (!["waiting", "active"].includes(auction.status)) {
     return createError(AUCTION_PARTICIPANT_ERRORS.JOIN_INVALID_STATUS);

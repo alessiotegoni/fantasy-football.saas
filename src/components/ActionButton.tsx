@@ -27,6 +27,7 @@ type Props = ComponentPropsWithoutRef<typeof Button> & {
   areYouSureDescription?: string;
   displayToast?: boolean;
   toastData?: ExternalToast;
+  isLeaguePrefix?: boolean;
   redirectTo?: string;
 };
 
@@ -39,6 +40,7 @@ export default function ActionButton({
   requireAreYouSure = false,
   areYouSureDescription = "Questa azione non può essere annullata",
   displayToast = true,
+  isLeaguePrefix,
   redirectTo,
   toastData,
   className,
@@ -54,7 +56,7 @@ export default function ActionButton({
     redirectTo,
     displayToast,
     isDialogControlled: requireAreYouSure,
-    isLeaguePrefix: redirectTo?.includes("/leagues"),
+    isLeaguePrefix,
     onSuccess,
     onError,
   });
