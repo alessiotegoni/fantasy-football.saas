@@ -70,6 +70,24 @@ export type AuctionParticipantWithAcquisitions = Awaited<
   ReturnType<typeof getParticipantsWithAcquisitions>
 >[number];
 
+export async function getAuctionParticipants(auctionId: string) {
+  return db.query.auctionParticipants.findMany({
+    columns: {
+      teamId: false,
+    },
+    with: {
+      team: {
+        columns: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+    where: (participant, { eq }) => eq(participant.auctionId, auctionId),
+    orderBy: (participant, { asc }) => asc(participant.order),
+  });
+}
+
 export async function getAuctionParticipant(auctionId: string, teamId: string) {
   const [participant] = await db
     .select()

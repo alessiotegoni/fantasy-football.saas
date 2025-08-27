@@ -33,7 +33,10 @@ import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
 import { getGeneralSettings } from "../../settings/queries/setting";
-import { getAuctionParticipants } from "../queries/auctionParticipant";
+import {
+  getAuctionParticipants,
+  getParticipantsWithAcquisitions,
+} from "../queries/auctionParticipant";
 import {
   deleteTeamsPlayers,
   insertTeamsPlayers,
@@ -200,7 +203,7 @@ async function importTeamsPlayers(
   auction: { id: string; leagueId: string },
   tx: Omit<typeof db, "$client"> = db
 ) {
-  const auctionParticipants = await getAuctionParticipants(auction.id);
+  const auctionParticipants = await getParticipantsWithAcquisitions(auction.id);
 
   const teamsIds = auctionParticipants
     .map((p) => p.team?.id)
@@ -209,34 +212,18 @@ async function importTeamsPlayers(
 
   await deleteTeamsPlayers(auction.leagueId, { membersTeamsIds: teamsIds }, tx);
 
-  const acquisitions = await getAuctionAcquisitions(auction.id);
+  const acquisitions = auctionParticipants.flatMap((p) =>
+    p.acquisitions.map((a) => ({ teamId: p.team?.id, ...a }))
+  );
   if (!acquisitions.length) return;
 
   const newTeamsPlayers = acquisitions
-    .filter((a) => a.teamId !== null)
+    .filter((a) => a.teamId !== undefined)
     .map((a) => ({
-      playerId: a.playerId,
+      playerId: a.player.id,
       purchaseCost: a.price,
       memberTeamId: a.teamId!,
     }));
 
   await insertTeamsPlayers(auction.leagueId, newTeamsPlayers, tx);
-}
-
-async function getAuctionAcquisitions(auctionId: string) {
-  const acquisitions = await db.query.auctionAcquisitions.findMany({
-    where: eq(auctionAcquisitions.auctionId, auctionId),
-    with: {
-      participant: {
-        columns: {
-          teamId: true,
-        },
-      },
-    },
-  });
-
-  return acquisitions.map(({ participant, ...rest }) => ({
-    ...rest,
-    teamId: participant?.teamId ?? null,
-  }));
 }

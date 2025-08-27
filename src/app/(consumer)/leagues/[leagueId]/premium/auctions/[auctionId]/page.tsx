@@ -11,6 +11,7 @@ import {
   getParticipantsWithAcquisitions,
 } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
 import { notFound, redirect } from "next/navigation";
@@ -26,9 +27,10 @@ type Props = {
 export default async function AuctionPage({ params }: Props) {
   const ids = await params;
 
-  const [auction, participantsWithAcquisitions] = await Promise.all([
+  const [auction, participantsWithAcquisitions, playerRoles] = await Promise.all([
     getAuctionWithSettings(ids.auctionId),
     getParticipantsWithAcquisitions(ids.auctionId),
+    getPlayersRoles()
   ]);
   if (!auction) notFound();
 
