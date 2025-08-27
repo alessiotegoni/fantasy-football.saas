@@ -2,6 +2,28 @@ import { db } from "@/drizzle/db";
 import { auctionAcquisitions } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
 
+export async function getAcquisitions(auctionId: string) {
+  const acquisitions = await db.query.auctionAcquisitions.findMany({
+    with: {
+      player: {
+        columns: {
+          id: true,
+          displayName: true,
+          roleId: true,
+        },
+        with: {
+          team: {
+            columns: { displayName: true },
+          },
+        },
+      },
+    },
+    where: (acquisition, { eq }) => eq(acquisition.auctionId, auctionId),
+  });
+
+  return acquisitions;
+}
+
 export async function getAcquisition(acquisitionId: string) {
   const [acquisition] = await db
     .select()

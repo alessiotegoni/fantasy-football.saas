@@ -23,7 +23,7 @@ export default function AuctionHeader({ auction, isAdmin = false }: Props) {
   }, []);
 
   return (
-    <header className="flex items-center justify-between gap-2 sm:gap-4 sm:p-4">
+    <header className="flex items-center justify-between gap-2 sm:gap-4 pb-4 sm:p-4">
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"

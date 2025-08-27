@@ -38,7 +38,8 @@ export default async function AuctionPage({ params }: Props) {
   if (!auction) notFound();
 
   return (
-    <div>
+    <div className="max-w-[1600px] mx-auto">
+      <AuctionHeader auction={auction} />
       <Suspense>
         <SuspenseBoundary
           {...ids}
@@ -86,8 +87,6 @@ async function SuspenseBoundary({
 
   return (
     <div>
-      <AuctionHeader auction={auction} isAdmin={isAdmin} />
-
       <div className="flex">
         <main className="flex-1">
           <AuctionProvider
@@ -98,8 +97,8 @@ async function SuspenseBoundary({
             isLeagueAdmin={isAdmin}
             userTeamId={userTeamId}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-0 sm:p-6">
-              <div className="lg:col-span-3">
+            <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
+              <div className="hidden lg:block lg:col-span-3">
                 {/* <Suspense>
                   <AuctionAvailablePlayers {...auction} />
                 </Suspense> */}
