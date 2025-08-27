@@ -2,6 +2,7 @@ import { db } from "@/drizzle/db";
 import { auctionParticipants } from "@/drizzle/schema";
 import { and, eq, inArray, SQL, sql } from "drizzle-orm";
 import { createError } from "@/utils/helpers";
+import { revalidateAuctionParticipantsCache } from "./cache/auction";
 
 enum DB_ERROR_MESSAGES {
   CREATION_FAILED = "Errore nella creazione del partecipante all'asta",
@@ -10,6 +11,7 @@ enum DB_ERROR_MESSAGES {
 }
 
 const participantInfo = {
+  auctionId: auctionParticipants.auctionId,
   participantId: auctionParticipants.id,
 };
 
@@ -31,6 +33,8 @@ export async function insertParticipant(
   if (!result?.participantId) {
     throw new Error(createError(DB_ERROR_MESSAGES.CREATION_FAILED).message);
   }
+
+  revalidateAuctionParticipantsCache(result.auctionId);
 
   return result.participantId;
 }
@@ -66,6 +70,8 @@ export async function updateParticipantsOrder(
         inArray(auctionParticipants.id, ids)
       )
     );
+
+  revalidateAuctionParticipantsCache(auctionId);
 }
 
 export async function updateParticipantCredits(
@@ -82,6 +88,8 @@ export async function updateParticipantCredits(
   if (!result?.participantId) {
     throw new Error(createError(DB_ERROR_MESSAGES.UPDATE_FAILED).message);
   }
+
+  revalidateAuctionParticipantsCache(result.auctionId);
 }
 
 export async function setAuctionTurn(
@@ -98,6 +106,8 @@ export async function setAuctionTurn(
     .update(auctionParticipants)
     .set({ isCurrent: true })
     .where(eq(auctionParticipants.id, participantId));
+
+  revalidateAuctionParticipantsCache(auctionId);
 }
 
 export async function deleteParticipant(participantId: string) {
@@ -109,4 +119,6 @@ export async function deleteParticipant(participantId: string) {
   if (!result?.participantId) {
     throw new Error(createError(DB_ERROR_MESSAGES.DELETION_FAILED).message);
   }
+
+  revalidateAuctionParticipantsCache(result.auctionId);
 }
