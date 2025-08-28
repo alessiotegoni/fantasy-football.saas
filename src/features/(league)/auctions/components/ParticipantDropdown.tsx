@@ -10,35 +10,50 @@ import {
   deleteParticipant,
   setAuctionTurn,
 } from "../actions/auctionParticipant";
+import ChangeOrderDialog from "./ChangeOrderDialog";
+
+type ParticipantActionProps = {
+  participant: AuctionParticipant;
+};
 
 export default function ParticipantDropdown({
   participant,
-}: {
-  participant: AuctionParticipant;
-}) {
-  const {
-    turnParticipant,
-    userParticipant,
-    participantToAssign,
-    handleSetParticipantToAssign,
-  } = useAuction();
-
-  const canAssignTurn =
-    participant.teamId && participant.id !== turnParticipant?.id;
-  const canKick = participant.teamId && participant.id !== userParticipant?.id;
-
+}: ParticipantActionProps) {
   return (
     <DropdownMenuContent className="w-56 space-y-1">
-      <DropdownMenuItem asChild>
-        <Button
-          variant="ghost"
-          onClick={handleSetParticipantToAssign.bind(null, participant)}
-        >
-          {participantToAssign?.id === participant.id
-            ? "Non assegnare giocatore"
-            : "Assegna giocatore"}
-        </Button>
-      </DropdownMenuItem>
+      <AssignPlayerButton participant={participant} />
+      <SetTurnButton participant={participant} />
+      <ChangeOrderDialog />
+      <KickParticipantButton participant={participant} />
+    </DropdownMenuContent>
+  );
+}
+
+function AssignPlayerButton({ participant }: ParticipantActionProps) {
+  const { participantToAssign, handleSetParticipantToAssign } = useAuction();
+
+  return (
+    <DropdownMenuItem asChild>
+      <Button
+        variant="ghost"
+        onClick={handleSetParticipantToAssign.bind(null, participant)}
+        className="w-full justify-start"
+      >
+        {participantToAssign?.id === participant.id
+          ? "Non assegnare giocatore"
+          : "Assegna giocatore"}
+      </Button>
+    </DropdownMenuItem>
+  );
+}
+
+function SetTurnButton({ participant }: ParticipantActionProps) {
+  const { turnParticipant } = useAuction();
+  const canAssignTurn =
+    participant.teamId && participant.id !== turnParticipant?.id;
+
+  return (
+    <DropdownMenuItem asChild>
       <ActionButton
         variant="ghost"
         loadingText="Assegno turno"
@@ -47,21 +62,20 @@ export default function ParticipantDropdown({
           auctionId: participant.auctionId,
           teamId: participant.teamId!,
         })}
-        className="text-sm py-1.5 rounded-lg"
+        className="text-sm py-1.5 rounded-lg w-full justify-start"
       >
         Assegna turno
       </ActionButton>
+    </DropdownMenuItem>
+  );
+}
 
-      <DropdownMenuItem asChild>
-        <ActionButton
-          variant="ghost"
-          loadingText="Cambio ordine"
-          action={undefined} // TODO: Change order dialog with dnd sortable
-        >
-          Cambia ordine
-        </ActionButton>
-      </DropdownMenuItem>
+function KickParticipantButton({ participant }: ParticipantActionProps) {
+  const { userParticipant } = useAuction();
+  const canKick = participant.teamId && participant.id !== userParticipant?.id;
 
+  return (
+    <DropdownMenuItem asChild>
       <ActionButton
         variant="destructive"
         loadingText="Espello"
@@ -70,12 +84,12 @@ export default function ParticipantDropdown({
           auctionId: participant.auctionId,
           teamId: participant.teamId!,
         })}
-        className="text-sm py-1.5 rounded-lg"
+        className="text-sm py-1.5 rounded-lg w-full justify-start"
         requireAreYouSure
         areYouSureDescription="Il partecipante verra espulso solamente dall'asta e potra rientrare in un secondo momento"
       >
         Espelli partecipante
       </ActionButton>
-    </DropdownMenuContent>
+    </DropdownMenuItem>
   );
 }
