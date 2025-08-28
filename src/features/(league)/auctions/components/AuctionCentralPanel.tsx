@@ -79,7 +79,9 @@ function AssignPlayerModeButton() {
           <CursorPointer className="size-6" />
         </Button>
       </TooltipTrigger>
-      <TooltipContent>Assegna giocatore</TooltipContent>
+      <TooltipContent>
+        {!assignPlayerMode ? "Assegna giocatore" : "Non assegnare giocatore"}
+      </TooltipContent>
     </Tooltip>
   );
 }
