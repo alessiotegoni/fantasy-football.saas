@@ -16,8 +16,12 @@ export default function ParticipantDropdown({
 }: {
   participant: AuctionParticipant;
 }) {
-  const { turnParticipant, userParticipant, toggleAssignPlayerMode } =
-    useAuction();
+  const {
+    turnParticipant,
+    userParticipant,
+    participantToAssign,
+    handleSetParticipantToAssign,
+  } = useAuction();
 
   const canAssignTurn =
     participant.teamId && participant.id !== turnParticipant?.id;
@@ -26,8 +30,13 @@ export default function ParticipantDropdown({
   return (
     <DropdownMenuContent className="w-56 space-y-1">
       <DropdownMenuItem asChild>
-        <Button variant="ghost" onClick={toggleAssignPlayerMode}>
-          Assegna giocatore
+        <Button
+          variant="ghost"
+          onClick={handleSetParticipantToAssign.bind(null, participant)}
+        >
+          {participantToAssign?.id === participant.id
+            ? "Non assegnare giocatore"
+            : "Assegna giocatore"}
         </Button>
       </DropdownMenuItem>
       <ActionButton

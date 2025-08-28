@@ -40,6 +40,8 @@ export default function useAuctionParticipants({
   }
 
   async function handleSetParticipants() {
+    console.log("event receiver");
+    
     const newParticipants = await getAuctionParticipants();
 
     setParticipants(newParticipants);

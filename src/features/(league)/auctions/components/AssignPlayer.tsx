@@ -13,6 +13,7 @@ import { addAcquisitionPlayer } from "../actions/auctionAcquisition";
 import { validateBidCredits } from "../utils/auctionBid";
 import { calculateRemainingSlots } from "../utils/auctionParticipant";
 import { useMemo } from "react";
+import { cn } from "@/lib/utils";
 
 export default function AssignPlayer() {
   const {
@@ -82,7 +83,7 @@ export default function AssignPlayer() {
       </div>
 
       <ActionButton
-        className="max-w-36"
+        className={cn("max-w-36", !canAssign && "cursor-not-allowed")}
         variant="destructive"
         loadingText="Assegno"
         disabled={!canAssign}
@@ -95,12 +96,8 @@ export default function AssignPlayer() {
 }
 
 function TeamsSelect() {
-  const {
-    selectedPlayer,
-    participants,
-    participantToAssign,
-    handleSetParticipantToAssign,
-  } = useAuction();
+  const { participants, participantToAssign, handleSetParticipantToAssign } =
+    useAuction();
 
   function handleSelectTeam(teamId: string) {
     const participant = participants.find((p) => p.teamId === teamId) || null;
@@ -111,9 +108,8 @@ function TeamsSelect() {
     <Select
       onValueChange={handleSelectTeam}
       value={participantToAssign?.teamId ?? undefined}
-      disabled={!selectedPlayer}
     >
-      <SelectTrigger className="w-[190px] !bg-input/100">
+      <SelectTrigger className="w-[190px] !bg-input/100 cursor-pointer">
         <SelectValue placeholder="Seleziona squadra" />
       </SelectTrigger>
       <SelectContent>
