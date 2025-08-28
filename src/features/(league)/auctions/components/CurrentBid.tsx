@@ -1,3 +1,5 @@
+"use client"
+
 import ActionButton from "@/components/ActionButton";
 import { Button } from "@/components/ui/button";
 import {

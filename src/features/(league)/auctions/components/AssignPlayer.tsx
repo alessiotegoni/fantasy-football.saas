@@ -24,6 +24,15 @@ export default function AssignPlayer() {
     acquisitions,
   } = useAuction();
 
+  function handleAssignPlayer() {
+    return addAcquisitionPlayer({
+      auctionId: auction.id,
+      participantId: participantToAssign!.id,
+      playerId: selectedPlayer!.id,
+      price: playerCost,
+    });
+  }
+
   const canAssign = useMemo(() => {
     if (!participantToAssign || !selectedPlayer || playerCost <= 0)
       return false;
@@ -43,16 +52,7 @@ export default function AssignPlayer() {
     });
 
     return creditsValidations.isValid;
-  }, [participantToAssign, selectedPlayer, playerCost]);
-
-  function handleAssignPlayer() {
-    return addAcquisitionPlayer({
-      auctionId: auction.id,
-      participantId: participantToAssign!.id,
-      playerId: selectedPlayer!.id,
-      price: playerCost,
-    });
-  }
+  }, [participantToAssign, selectedPlayer, playerCost, acquisitions]);
 
   return (
     <div className="flex flex-col justify-between items-center text-center gap-2 h-full">

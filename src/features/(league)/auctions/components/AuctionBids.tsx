@@ -35,6 +35,7 @@ export default function AuctionBids() {
 
   const isMyTurn = userParticipant?.isCurrent ?? false;
 
+
   switch (auction.status) {
     case "waiting":
       return (
@@ -65,15 +66,11 @@ export default function AuctionBids() {
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-between">
       {isLeagueAdmin && <AssignPlayerModeButton />}
-      {assignPlayerMode && <AssignPlayer />}
 
-      {(currentNomination || currentBid) && !assignPlayerMode && <CurrentBid />}
-      {turnParticipant &&
-        !currentBid &&
-        !currentNomination &&
-        !assignPlayerMode && <BidTurn />}
+      {(currentNomination || currentBid) && <CurrentBid />}
+      {turnParticipant && !currentBid && !currentNomination && <BidTurn />}
 
-      {(isMyTurn || canBid) && !assignPlayerMode && (
+      {(isMyTurn || canBid) && (
         <>
           <div className="flex justify-center">
             {(userParticipant?.isCurrent || customBidMode) && (

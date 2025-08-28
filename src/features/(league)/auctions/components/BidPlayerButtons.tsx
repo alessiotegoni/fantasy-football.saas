@@ -5,6 +5,7 @@ import { useAuction } from "@/contexts/AuctionProvider";
 import { createBid } from "../actions/auctionBid";
 import { validateBidCredits } from "../utils/auctionBid";
 import { calculateRemainingSlots } from "../utils/auctionParticipant";
+import { useMemo } from "react";
 
 export default function BidPlayerButtons() {
   const { userParticipant, currentNomination, bidAmount } = useAuction();
@@ -40,19 +41,21 @@ function PlusButton({
   const { userParticipant, bidAmount, canBid, acquisitions, auction } =
     useAuction();
 
-  const slotsRemaining = calculateRemainingSlots(
-    acquisitions,
-    userParticipant,
-    auction
-  );
+  const canPlus = useMemo(() => {
+    const slotsRemaining = calculateRemainingSlots(
+      acquisitions,
+      userParticipant,
+      auction
+    );
 
-  const hasValidCredits = validateBidCredits({
-    bidAmount: bidAmount + plusAmount,
-    participantCredits: userParticipant?.credits ?? 0,
-    slotsRemaining: slotsRemaining,
-  }).isValid;
+    const hasValidCredits = validateBidCredits({
+      bidAmount: bidAmount + plusAmount,
+      participantCredits: userParticipant?.credits ?? 0,
+      slotsRemaining,
+    }).isValid;
 
-  const canPlus = canBid && hasValidCredits;
+    return canBid && hasValidCredits;
+  }, [acquisitions, userParticipant, bidAmount]);
 
   return (
     <ActionButton
