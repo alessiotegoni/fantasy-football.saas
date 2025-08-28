@@ -53,20 +53,18 @@ function SetTurnButton({ participant }: ParticipantActionProps) {
     participant.teamId && participant.id !== turnParticipant?.id;
 
   return (
-    <DropdownMenuItem asChild>
-      <ActionButton
-        variant="ghost"
-        loadingText="Assegno turno"
-        disabled={!canAssignTurn}
-        action={setAuctionTurn.bind(null, {
-          auctionId: participant.auctionId,
-          teamId: participant.teamId!,
-        })}
-        className="text-sm py-1.5 rounded-lg w-full justify-start"
-      >
-        Assegna turno
-      </ActionButton>
-    </DropdownMenuItem>
+    <ActionButton
+      variant="ghost"
+      loadingText="Assegno turno"
+      disabled={!canAssignTurn}
+      action={setAuctionTurn.bind(null, {
+        auctionId: participant.auctionId,
+        teamId: participant.teamId!,
+      })}
+      className="text-sm px-2 py-1.5 rounded-lg w-full justify-start"
+    >
+      Assegna turno
+    </ActionButton>
   );
 }
 
@@ -75,21 +73,19 @@ function KickParticipantButton({ participant }: ParticipantActionProps) {
   const canKick = participant.teamId && participant.id !== userParticipant?.id;
 
   return (
-    <DropdownMenuItem asChild>
-      <ActionButton
-        variant="destructive"
-        loadingText="Espello"
-        disabled={!canKick}
-        action={deleteParticipant.bind(null, {
-          auctionId: participant.auctionId,
-          teamId: participant.teamId!,
-        })}
-        className="text-sm py-1.5 rounded-lg w-full justify-start"
-        requireAreYouSure
-        areYouSureDescription="Il partecipante verra espulso solamente dall'asta e potra rientrare in un secondo momento"
-      >
-        Espelli partecipante
-      </ActionButton>
-    </DropdownMenuItem>
+    <ActionButton
+      variant="destructive"
+      loadingText="Espello"
+      disabled={!canKick}
+      action={deleteParticipant.bind(null, {
+        auctionId: participant.auctionId,
+        teamId: participant.teamId!,
+      })}
+      className="text-sm px-2 py-1.5 rounded-lg w-full justify-start"
+      requireAreYouSure
+      areYouSureDescription="Il partecipante verra espulso solamente dall'asta e potra rientrare in un secondo momento"
+    >
+      Espelli partecipante
+    </ActionButton>
   );
 }
