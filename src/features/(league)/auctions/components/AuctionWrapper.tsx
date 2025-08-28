@@ -5,13 +5,13 @@ import {
 } from "@/features/(league)/auctions/queries/auction";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import AuctionBids from "./AuctionBids";
 import PlayerDetails from "./PlayerDetailts";
 import PlayersList from "../../teamsPlayers/components/PlayersList";
 import { AuctionParticipant } from "../queries/auctionParticipant";
 import AuctionHeader from "./AuctionHeader";
 import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 import { playerRoles } from "@/drizzle/schema";
+import AuctionCentralPanel from "./AuctionCentralPanel";
 
 type Props = {
   playerRoles: (typeof playerRoles.$inferSelect)[];
@@ -40,7 +40,7 @@ export default function AuctionWrapper(props: Props) {
               </div>
 
               <div className="lg:col-span-6">
-                <AuctionBids />
+                <AuctionCentralPanel />
               </div>
               <div className="lg:col-span-3">
                 <PlayerDetails />

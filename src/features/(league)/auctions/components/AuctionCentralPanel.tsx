@@ -13,7 +13,7 @@ import {
 import AssignPlayer from "./AssignPlayer";
 import AuctionInProgress from "./AuctionInProgress";
 
-export default function AuctionBids() {
+export default function AuctionCentralPanel() {
   const { auction, isLeagueAdmin, assignPlayerMode } = useAuction();
 
   switch (auction.status) {
