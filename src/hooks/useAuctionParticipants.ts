@@ -41,15 +41,23 @@ export default function useAuctionParticipants({
 
   async function handleSetParticipants() {
     const newParticipants = await getAuctionParticipants();
+
     setParticipants(newParticipants);
   }
+  console.log(participants);
 
   function subscribeParticipants() {
+
     const subscription = supabase
       .channel(`id:${auction.id}-auction-participants`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "auction_participants" },
+        {
+          event: "*",
+          schema: "public",
+          table: "auction_participants",
+          filter: `auction_id=eq.${auction.id}`,
+        },
         handleSetParticipants
       )
       .subscribe();

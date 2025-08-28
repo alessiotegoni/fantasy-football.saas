@@ -19,14 +19,13 @@ export function ParticipantsList() {
   } = useAuction();
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-2">
       {participants.map((participant) => (
         <DropdownMenu key={participant.id} modal={false}>
           <DropdownMenuTrigger
             className={cn(
               "bg-input/60 p-4 border rounded-3xl hover:bg-muted/50 cursor-pointer transition-colors min-w-70 relative",
-              participant.id === userParticipant?.id &&
-                userParticipant?.isCurrent
+              participant.id === turnParticipant?.id
                 ? "border-primary"
                 : "border-border"
             )}

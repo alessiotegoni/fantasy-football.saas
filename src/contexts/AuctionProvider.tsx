@@ -18,7 +18,7 @@ type AuctionContextType = {
   toggleCustomBidMode: () => void;
   selectedPlayer: Player | null;
   toggleSelectPlayer: (player: Player | null) => void;
-} & Pick<Props, "auction" | "isLeagueAdmin"> &
+} & Pick<Props, "auction" | "isLeagueAdmin" | "userTeamId"> &
   ReturnType<typeof useAuctionAcquisitions> &
   ReturnType<typeof useAuctionParticipants> &
   ReturnType<typeof useAuctionNomination> &

@@ -15,7 +15,7 @@ export default function BidTurn() {
         <div
           className={cn(
             "flex flex-col justify-center items-center gap-2",
-            !isMyTurn && !canBid && !isLeagueAdmin && "h-full"
+            !isMyTurn && !canBid && "h-full"
           )}
         >
           <Trophy className="size-8 mx-auto text-primary" />
@@ -29,7 +29,7 @@ export default function BidTurn() {
         <div
           className={cn(
             "flex flex-col justify-center items-center gap-2",
-            !isMyTurn && !canBid && !isLeagueAdmin && "h-full"
+            !isMyTurn && !canBid && "h-full"
           )}
         >
           <Trophy className="size-8 mx-auto text-primary" />

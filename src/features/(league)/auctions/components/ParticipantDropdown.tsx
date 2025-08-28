@@ -30,19 +30,18 @@ export default function ParticipantDropdown({
           Assegna giocatore
         </Button>
       </DropdownMenuItem>
-      <DropdownMenuItem asChild>
-        <ActionButton
-          variant="ghost"
-          loadingText="Assegno turno"
-          disabled={!canAssignTurn}
-          action={setAuctionTurn.bind(null, {
-            auctionId: participant.auctionId,
-            teamId: participant.teamId!,
-          })}
-        >
-          Assegna turno
-        </ActionButton>
-      </DropdownMenuItem>
+      <ActionButton
+        variant="ghost"
+        loadingText="Assegno turno"
+        disabled={!canAssignTurn}
+        action={setAuctionTurn.bind(null, {
+          auctionId: participant.auctionId,
+          teamId: participant.teamId!,
+        })}
+        className="text-sm py-1.5 rounded-lg"
+      >
+        Assegna turno
+      </ActionButton>
 
       <DropdownMenuItem asChild>
         <ActionButton
