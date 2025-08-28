@@ -21,19 +21,19 @@ export default function CurrentBid() {
     isLeagueAdmin,
   } = useAuction();
 
+  if (!currentNomination) return null;
+
   const currentTeamName =
     currentBidTeam?.team?.name || currentNominationTeam?.team?.name;
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
-      {currentNomination && isLeagueAdmin && (
+      {isLeagueAdmin && (
         <DeleteNominationButton nominationId={currentNomination.id} />
       )}
-
       <CustomBidButton />
-      {currentNomination && (
-        <BidExiprationTimer expiresAt={currentNomination.expiresAt} />
-      )}
+
+      <BidExiprationTimer expiresAt={currentNomination.expiresAt} />
       <div className="flex gap-2 items-center">
         <Coins className="size-12 text-primary" />
         <p className="text-3xl font-bold">{bidAmount}</p>
@@ -41,7 +41,7 @@ export default function CurrentBid() {
       <Badge className="p-2 px-4 rounded-lg bg-input w-fit text-md font-medium border border-border">
         {currentTeamName || "Nessuna squadra"}
       </Badge>
-      {currentNomination && <h2>{currentNomination.player.displayName}</h2>}
+      <h2>{currentNomination.player.displayName}</h2>
     </div>
   );
 }

@@ -19,12 +19,9 @@ import {
 export default function AuctionBids() {
   const {
     auction,
-    canNominate,
     currentNomination,
     canBid,
     currentBid,
-    bidAmount,
-    handleSetBidAmount,
     userParticipant,
     turnParticipant,
     isLeagueAdmin,
@@ -69,13 +66,7 @@ export default function AuctionBids() {
       {(isMyTurn || canBid) && (
         <>
           <div className="flex justify-center">
-            <NumberInput
-              disabled={currentBid ? canBid : canNominate}
-              value={bidAmount}
-              onChange={handleSetBidAmount}
-              min={currentBid ? bidAmount : 1}
-              max={userParticipant?.credits}
-            />
+            <CustomBidAmountInput />
           </div>
           <div
             className={cn(
@@ -98,6 +89,31 @@ export default function AuctionBids() {
         </>
       )}
     </div>
+  );
+}
+
+function CustomBidAmountInput() {
+  const {
+    canNominate,
+    canBid,
+    currentBid,
+    bidAmount,
+    handleSetBidAmount,
+    userParticipant,
+    customBidMode,
+  } = useAuction();
+
+  return (
+    (userParticipant?.isCurrent || customBidMode) && (
+      <NumberInput
+        containerClassName="mb-4"
+        disabled={currentBid ? canBid : canNominate}
+        value={bidAmount}
+        onChange={handleSetBidAmount}
+        min={currentBid ? bidAmount : 1}
+        max={userParticipant?.credits}
+      />
+    )
   );
 }
 
