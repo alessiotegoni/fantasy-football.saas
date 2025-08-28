@@ -59,18 +59,23 @@ export default function useAuctionBid({
     return data;
   }
 
+  async function handleSetCurrentBid() {
+    const bid = await getCurrentBid();
+    setCurrentBid(bid);
+  }
+
   function subscribeBids() {
     const subscription = supabase
       .channel(`id:${currentNomination!.id}-nomination-bids`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "auction_bids" },
-        async (payload) => {
-          if (payload.eventType === "INSERT") {
-            const bid = await getCurrentBid();
-            setCurrentBid(bid);
-          }
-        }
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "auction_bids",
+          filter: `nomination_id=eq.${currentNomination!.id}`,
+        },
+        handleSetCurrentBid
       )
       .subscribe();
 

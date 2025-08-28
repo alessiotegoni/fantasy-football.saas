@@ -1,14 +1,14 @@
 "use client";
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { AuctionAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
+import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
-  defaultAcquisitions?: AuctionAcquisition[];
+  defaultAcquisitions?: ParticipantAcquisition[];
 };
 
 export default function useAuctionAcquisitions({
@@ -20,7 +20,7 @@ export default function useAuctionAcquisitions({
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
-  async function getAcquisitions(): Promise<AuctionAcquisition[]> {
+  async function getAcquisitions(): Promise<ParticipantAcquisition[]> {
     const { data, error } = await supabase
       .from("auction_acquisitions")
       .select(
@@ -47,7 +47,7 @@ export default function useAuctionAcquisitions({
       return [];
     }
 
-    return data as unknown as AuctionAcquisition[];
+    return data as unknown as ParticipantAcquisition[];
   }
 
   async function handleSetAcquisitions() {
@@ -60,7 +60,12 @@ export default function useAuctionAcquisitions({
       .channel(`id:${auction.id}-auction-acquisitions`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "auction_acquisitions" },
+        {
+          event: "*",
+          schema: "public",
+          table: "auction_acquisitions",
+          filter: `auction_id=eq.${auction.id}`,
+        },
         handleSetAcquisitions
       )
       .subscribe();

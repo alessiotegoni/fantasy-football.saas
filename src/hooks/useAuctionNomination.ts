@@ -62,7 +62,12 @@ export default function useAuctionNomination({
       .channel(`id:${auction.id}-auction-nominations`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "auction_nominations" },
+        {
+          event: "*",
+          schema: "public",
+          table: "auction_nominations",
+          filter: `auction_id=eq.${auction.id}`,
+        },
         handleSetNomination
       )
       .subscribe();
