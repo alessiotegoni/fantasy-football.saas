@@ -10,10 +10,10 @@ import { useEffect } from "react";
 
 type Props = {
   auction: NonNullable<AuctionWithSettings>;
-  isAdmin?: boolean;
+  isLeagueAdmin?: boolean;
 };
 
-export default function AuctionHeader({ auction, isAdmin = false }: Props) {
+export default function AuctionHeader({ auction, isLeagueAdmin = false }: Props) {
   const { setOpen, toggleSidebar } = useSidebar();
 
   useEffect(() => {
@@ -38,11 +38,11 @@ export default function AuctionHeader({ auction, isAdmin = false }: Props) {
         </h2>
       </div>
       <div className="flex gap-2">
-        <AuctionStatus auction={auction} canUpdate={isAdmin} />
-        {isAdmin && (
+        <AuctionStatus auction={auction} canUpdate={isLeagueAdmin} />
+        {isLeagueAdmin && (
           <AuctionDropdownMenu
             auction={auction}
-            canUpdate={isAdmin}
+            canUpdate={isLeagueAdmin}
             leagueId={auction.leagueId}
           />
         )}
