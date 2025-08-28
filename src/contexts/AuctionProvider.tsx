@@ -11,19 +11,19 @@ import useAuctionBid from "@/hooks/useAuctionBid";
 import useAuctionNomination from "@/hooks/useAuctionNomination";
 import useAuctionParticipants from "@/hooks/useAuctionParticipants";
 import { createContext, useCallback, useContext, useState } from "react";
+import useAuctionPlayerAssign from "@/hooks/useAuctionPlayerAssign";
 
 type AuctionContextType = {
   customBidMode: boolean;
   toggleCustomBidMode: () => void;
-  assignPlayerMode: boolean;
-  toggleAssignPlayerMode: () => void;
   selectedPlayer: Player | null;
   toggleSelectPlayer: (player: Player | null) => void;
 } & Pick<Props, "auction" | "isLeagueAdmin"> &
   ReturnType<typeof useAuctionAcquisitions> &
   ReturnType<typeof useAuctionParticipants> &
   ReturnType<typeof useAuctionNomination> &
-  ReturnType<typeof useAuctionBid>;
+  ReturnType<typeof useAuctionBid> &
+  ReturnType<typeof useAuctionPlayerAssign>;
 
 const AuctionContext = createContext<AuctionContextType | null>(null);
 
@@ -45,17 +45,12 @@ export default function AuctionProvider({ children, ...props }: Props) {
     [customBidMode]
   );
 
-  const [assignPlayerMode, setAssignPlayerMode] = useState(false);
-  const toggleAssignPlayerMode = useCallback(
-    () => setAssignPlayerMode(!assignPlayerMode),
-    [assignPlayerMode]
-  );
-
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const toggleSelectPlayer = useCallback(setSelectedPlayer, []);
 
   const acquisitions = useAuctionAcquisitions(props);
   const participants = useAuctionParticipants(props);
+  const playerAssign = useAuctionPlayerAssign();
   const nomination = useAuctionNomination({
     ...props,
     ...participants,
@@ -76,11 +71,10 @@ export default function AuctionProvider({ children, ...props }: Props) {
         ...participants,
         ...nomination,
         ...bid,
+        ...playerAssign,
         ...props,
         customBidMode,
         toggleCustomBidMode,
-        assignPlayerMode,
-        toggleAssignPlayerMode,
         selectedPlayer,
         toggleSelectPlayer,
       }}

@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { useAuction } from "@/contexts/AuctionProvider";
-import NumberInput from "@/components/ui/number-input";
 import NominatePlayerButton from "./NominatePlayerButton";
 import EmptyState from "@/components/EmptyState";
 import { Clock, CursorPointer, Pause } from "iconoir-react";
@@ -15,6 +14,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import AssignPlayer from "./AssignPlayer";
+import CustomBidAmountInput from "./CustomBidAmountInput";
 
 export default function AuctionBids() {
   const {
@@ -25,6 +26,11 @@ export default function AuctionBids() {
     userParticipant,
     turnParticipant,
     isLeagueAdmin,
+    assignPlayerMode,
+    customBidMode,
+    canNominate,
+    bidAmount,
+    handleSetBidAmount,
   } = useAuction();
 
   const isMyTurn = userParticipant?.isCurrent ?? false;
@@ -59,14 +65,27 @@ export default function AuctionBids() {
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-between">
       {isLeagueAdmin && <AssignPlayerModeButton />}
+      {assignPlayerMode && <AssignPlayer />}
 
-      {(currentNomination || currentBid) && <CurrentBid />}
-      {turnParticipant && !currentBid && !currentNomination && <BidTurn />}
+      {(currentNomination || currentBid) && !assignPlayerMode && <CurrentBid />}
+      {turnParticipant &&
+        !currentBid &&
+        !currentNomination &&
+        !assignPlayerMode && <BidTurn />}
 
-      {(isMyTurn || canBid) && (
+      {(isMyTurn || canBid) && !assignPlayerMode && (
         <>
           <div className="flex justify-center">
-            <CustomBidAmountInput />
+            {(userParticipant?.isCurrent || customBidMode) && (
+              <CustomBidAmountInput
+                containerClassName="mb-4"
+                disabled={currentBid ? !canBid : !canNominate}
+                value={bidAmount}
+                onChange={handleSetBidAmount}
+                min={currentBid ? bidAmount : 1}
+                max={userParticipant?.credits}
+              />
+            )}
           </div>
           <div
             className={cn(
@@ -89,31 +108,6 @@ export default function AuctionBids() {
         </>
       )}
     </div>
-  );
-}
-
-function CustomBidAmountInput() {
-  const {
-    canNominate,
-    canBid,
-    currentBid,
-    bidAmount,
-    handleSetBidAmount,
-    userParticipant,
-    customBidMode,
-  } = useAuction();
-
-  return (
-    (userParticipant?.isCurrent || customBidMode) && (
-      <NumberInput
-        containerClassName="mb-4"
-        disabled={currentBid ? canBid : canNominate}
-        value={bidAmount}
-        onChange={handleSetBidAmount}
-        min={currentBid ? bidAmount : 1}
-        max={userParticipant?.credits}
-      />
-    )
   );
 }
 

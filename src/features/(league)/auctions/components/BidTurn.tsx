@@ -19,7 +19,7 @@ export default function BidTurn() {
           )}
         >
           <Trophy className="size-8 mx-auto text-primary" />
-          <h2 className="text-lg font-heading font-bold">È IL TUO TURNO</h2>
+          <h2 className="text-lg font-bold">È IL TUO TURNO</h2>
           <p className="text-sm text-center text-muted-foreground">
             Seleziona un giocatore dal menu alla tua sinistra e chiamalo
           </p>

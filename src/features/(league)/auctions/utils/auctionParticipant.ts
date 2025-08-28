@@ -28,13 +28,13 @@ export function getRemainingSlots(
 
 export function calculateRemainingSlots(
   acquisitions: ParticipantAcquisition[],
-  userParticipant: AuctionParticipant | undefined,
+  participant: AuctionParticipant | undefined,
   auction: NonNullable<AuctionWithSettings>
 ) {
-  if (!userParticipant) return 0;
+  if (!participant) return 0;
 
   const playerCounts = acquisitions
-    .filter((a) => a.participantId === userParticipant.id)
+    .filter((a) => a.participantId === participant.id)
     .reduce((counts, acq) => {
       const roleId = acq.player!.roleId;
       counts[roleId] = (counts[roleId] || 0) + 1;
