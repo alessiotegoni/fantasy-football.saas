@@ -12,7 +12,6 @@ import { AuctionParticipant } from "../queries/auctionParticipant";
 import AuctionHeader from "./AuctionHeader";
 import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 import { playerRoles } from "@/drizzle/schema";
-import { Suspense } from "react";
 
 type Props = {
   playerRoles: (typeof playerRoles.$inferSelect)[];
