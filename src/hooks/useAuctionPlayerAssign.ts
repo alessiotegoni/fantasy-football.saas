@@ -7,14 +7,16 @@ export default function useAuctionPlayerAssign() {
     useState<AuctionParticipant | null>(null);
   const [playerCost, setPlayerCost] = useState<number>(1);
 
-  const toggleAssignPlayerMode = useCallback(
-    (playerMode: boolean, toAssign: AuctionParticipant | null) => {
-      setAssignPlayerMode(playerMode);
-      setParticipantToAssign(toAssign);
+  const toggleAssignPlayerMode = useCallback(() => {
+    const newPlayerMode = !assignPlayerMode;
+
+    if (!newPlayerMode) {
+      setParticipantToAssign(null);
       setPlayerCost(1);
-    },
-    []
-  );
+    }
+
+    setAssignPlayerMode(newPlayerMode);
+  }, [assignPlayerMode]);
 
   const handleSetParticipantToAssign = useCallback(
     (participant: AuctionParticipant) => {
@@ -23,7 +25,8 @@ export default function useAuctionPlayerAssign() {
       const toAssign = isParticipantAssigned ? null : participant;
       const playerMode = isParticipantAssigned ? false : true;
 
-      toggleAssignPlayerMode(playerMode, toAssign);
+      setAssignPlayerMode(playerMode);
+      setParticipantToAssign(toAssign);
     },
     [participantToAssign]
   );
@@ -31,6 +34,7 @@ export default function useAuctionPlayerAssign() {
 
   return {
     assignPlayerMode,
+    toggleAssignPlayerMode,
     participantToAssign,
     handleSetParticipantToAssign,
     playerCost,

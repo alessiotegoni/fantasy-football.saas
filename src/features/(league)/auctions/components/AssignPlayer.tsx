@@ -100,8 +100,8 @@ function TeamsSelect() {
     useAuction();
 
   function handleSelectTeam(teamId: string) {
-    const participant = participants.find((p) => p.teamId === teamId) || null;
-    handleSetParticipantToAssign(participant);
+    const participant = participants.find((p) => p.teamId === teamId);
+    if (participant) handleSetParticipantToAssign(participant);
   }
 
   return (
