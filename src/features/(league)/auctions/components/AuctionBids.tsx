@@ -93,3 +93,7 @@ export default function AuctionBids() {
     </div>
   );
 }
+
+function name(params:type) {
+  
+}

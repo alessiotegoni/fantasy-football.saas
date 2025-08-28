@@ -35,9 +35,9 @@ export default function AuctionWrapper(props: Props) {
           <AuctionProvider {...props}>
             <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
               <div className="hidden lg:block lg:col-span-3">
-                <Suspense>
+                {/* <Suspense>
                   <AuctionAvailablePlayers {...props} />
-                </Suspense>
+                </Suspense> */}
               </div>
 
               <div className="lg:col-span-6">

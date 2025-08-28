@@ -6,25 +6,25 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { getAcquisitions } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { calculateRemainingSlots } from "@/features/(league)/auctions/utils/auctionParticipant";
+import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;
   participants: AuctionParticipant[];
-  acquisitions: Awaited<ReturnType<typeof getAcquisitions>>;
+  acquisitions: ParticipantAcquisition[];
   userParticipant: AuctionParticipant | undefined;
-  currentNomination: CurrentNomination;
-  defaultBid: CurrentBid;
+  currentNomination?: CurrentNomination;
+  defaultBid?: CurrentBid;
 };
 
 export default function useAuctionBid({
   auction,
   participants,
-  acquisitions = [],
+  acquisitions,
   userParticipant,
-  currentNomination,
-  defaultBid,
+  currentNomination = null,
+  defaultBid = null,
 }: Args) {
   const [currentBid, setCurrentBid] = useState(defaultBid);
 
@@ -105,7 +105,7 @@ export default function useAuctionBid({
     const hasValidCredits = validateBidCredits({
       bidAmount,
       participantCredits: userParticipant?.credits ?? 0,
-      slotsRemaining: slotsRemaining,
+      slotsRemaining,
     }).isValid;
 
     const isValidAuction = auction.status === "active";

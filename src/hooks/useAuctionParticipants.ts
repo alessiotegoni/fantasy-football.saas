@@ -1,16 +1,13 @@
 "use client";
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import {
-  AuctionParticipant,
-  AuctionParticipantWithAcquisitions,
-} from "@/features/(league)/auctions/queries/auctionParticipant";
+import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Args = {
-  userTeamId: string;
+  userTeamId?: string;
   auction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
 };
@@ -74,7 +71,10 @@ export default function useAuctionParticipants({
   }, []);
 
   const userParticipant = useMemo(
-    () => participants.find((p) => p.team?.id === userTeamId),
+    () =>
+      userTeamId
+        ? participants.find((p) => p.team?.id === userTeamId)
+        : undefined,
     [participants]
   );
 

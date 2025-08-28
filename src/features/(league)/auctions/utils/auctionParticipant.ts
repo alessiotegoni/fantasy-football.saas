@@ -1,7 +1,7 @@
 import { PlayersPerRole } from "@/drizzle/schema";
-import { AuctionAcquisition } from "../queries/auctionAcquisition";
 import { AuctionParticipant } from "../queries/auctionParticipant";
 import { AuctionWithSettings } from "../queries/auction";
+import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 
 export function isRoleFull(
   playerCounts: Record<number, number>,
@@ -27,7 +27,7 @@ export function getRemainingSlots(
 }
 
 export function calculateRemainingSlots(
-  acquisitions: AuctionAcquisition[],
+  acquisitions: ParticipantAcquisition[],
   userParticipant: AuctionParticipant | undefined,
   auction: NonNullable<AuctionWithSettings>
 ) {

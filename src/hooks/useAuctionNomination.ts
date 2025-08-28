@@ -13,8 +13,8 @@ type Args = {
   participants: AuctionParticipant[];
   userParticipant: AuctionParticipant | undefined;
   auction: NonNullable<AuctionWithSettings>;
-  defaultNomination: CurrentNomination;
   toggleSelectPlayer: (player: null) => void;
+  defaultNomination?: CurrentNomination;
 };
 
 export default function useAuctionNomination({
@@ -22,7 +22,7 @@ export default function useAuctionNomination({
   participants,
   userParticipant,
   auction,
-  defaultNomination,
+  defaultNomination = null,
   toggleSelectPlayer,
 }: Args) {
   const [currentNomination, setCurrentNomination] = useState(defaultNomination);

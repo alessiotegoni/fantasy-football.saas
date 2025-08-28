@@ -1,10 +1,7 @@
 "use client";
 
 import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import {
-  AuctionAcquisition,
-  getAcquisitions,
-} from "@/features/(league)/auctions/queries/auctionAcquisition";
+import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
@@ -18,8 +15,8 @@ import { createContext, useCallback, useContext, useState } from "react";
 type AuctionContextType = {
   selectedPlayer: Player | null;
   toggleSelectPlayer: (player: Player | null) => void;
-  acquisitions: Awaited<ReturnType<typeof getAcquisitions>>;
 } & Pick<Props, "auction" | "isLeagueAdmin"> &
+  ReturnType<typeof useAuctionAcquisitions> &
   ReturnType<typeof useAuctionParticipants> &
   ReturnType<typeof useAuctionNomination> &
   ReturnType<typeof useAuctionBid>;
@@ -30,7 +27,7 @@ type Props = {
   children: React.ReactNode;
   auction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
-  defaultAcquisitions: AuctionAcquisition[];
+  defaultAcquisitions: ParticipantAcquisition[];
   isLeagueAdmin?: boolean;
   userTeamId?: string;
   defaultNomination?: CurrentNomination;
