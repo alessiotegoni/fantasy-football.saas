@@ -5,11 +5,16 @@ import { useAuction } from "@/contexts/AuctionProvider";
 import NumberInput from "@/components/ui/number-input";
 import NominatePlayerButton from "./NominatePlayerButton";
 import EmptyState from "@/components/EmptyState";
-import { Clock, Pause } from "iconoir-react";
+import { Clock, CursorPointer, Pause } from "iconoir-react";
 import CurrentBid from "./CurrentBid";
 import BidTurn from "./BidTurn";
 import { cn } from "@/lib/utils";
 import BidPlayerButtons from "./BidPlayerButtons";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function AuctionBids() {
   const {
@@ -56,6 +61,8 @@ export default function AuctionBids() {
 
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-between">
+      {isLeagueAdmin && <AssignPlayerModeButton />}
+
       {(currentNomination || currentBid) && <CurrentBid />}
       {turnParticipant && !currentBid && !currentNomination && <BidTurn />}
 
@@ -91,5 +98,29 @@ export default function AuctionBids() {
         </>
       )}
     </div>
+  );
+}
+
+function AssignPlayerModeButton() {
+  const { assignPlayerMode, toggleAssignPlayerMode, currentNomination } =
+    useAuction();
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="ghost"
+          className={cn(
+            "absolute right-4 size-10 rounded-full border border-border",
+            assignPlayerMode ? "bg-primary" : "bg-input/60",
+            currentNomination ? "top-16" : "top-4"
+          )}
+          onClick={toggleAssignPlayerMode}
+        >
+          <CursorPointer className="size-6" />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Assegna giocatore</TooltipContent>
+    </Tooltip>
   );
 }

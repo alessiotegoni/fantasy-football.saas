@@ -7,15 +7,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { useAuction } from "@/contexts/AuctionProvider";
-import {
-  BitcoinCircle,
-  Coins,
-  CursorPointer,
-  Timer,
-  Xmark,
-} from "iconoir-react";
+import { BitcoinCircle, Coins, Timer, Xmark } from "iconoir-react";
 import { useEffect, useState } from "react";
 import { deleteNomination } from "../actions/auctionNomination";
+import { cn } from "@/lib/utils";
 
 export default function CurrentBid() {
   const {
@@ -31,14 +26,10 @@ export default function CurrentBid() {
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
-      {isLeagueAdmin && (
-        <div className="absolute right-4 top-4 flex flex-col gap-2">
-          {currentNomination && (
-            <DeleteNominationButton nominationId={currentNomination.id} />
-          )}
-          <AssignPlayerModeButton />
-        </div>
+      {currentNomination && isLeagueAdmin && (
+        <DeleteNominationButton nominationId={currentNomination.id} />
       )}
+
       <CustomBidButton />
       {currentNomination && (
         <BidExiprationTimer expiresAt={currentNomination.expiresAt} />
@@ -56,12 +47,18 @@ export default function CurrentBid() {
 }
 
 export function CustomBidButton() {
+  const { customBidMode, toggleCustomBidMode } = useAuction();
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
           variant="ghost"
-          className="size-10 absolute left-4 top-4 rounded-full border border-border bg-input/60"
+          className={cn(
+            "absolute left-4 top-4 size-10 rounded-full border border-border",
+            customBidMode ? "bg-primary" : "bg-input/60"
+          )}
+          onClick={toggleCustomBidMode}
         >
           <BitcoinCircle className="size-6" />
         </Button>
@@ -77,29 +74,13 @@ function DeleteNominationButton({ nominationId }: { nominationId: string }) {
       <TooltipTrigger asChild>
         <ActionButton
           variant="ghost"
-          className="size-10 rounded-full border border-border bg-input/60"
+          className="absolute right-4 top-4 size-10 rounded-full border border-border bg-input/60"
           action={deleteNomination.bind(null, nominationId)}
         >
           <Xmark className="size-6" />
         </ActionButton>
       </TooltipTrigger>
       <TooltipContent>Rimuovi chiamata</TooltipContent>
-    </Tooltip>
-  );
-}
-
-function AssignPlayerModeButton() {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          variant="ghost"
-          className="size-10 rounded-full border border-border bg-input/60"
-        >
-          <CursorPointer className="size-6" />
-        </Button>
-      </TooltipTrigger>
-      <TooltipContent>Assegna giocatore</TooltipContent>
     </Tooltip>
   );
 }
