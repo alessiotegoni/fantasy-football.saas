@@ -2,39 +2,19 @@
 
 import { Button } from "@/components/ui/button";
 import { useAuction } from "@/contexts/AuctionProvider";
-import NominatePlayerButton from "./NominatePlayerButton";
 import EmptyState from "@/components/EmptyState";
 import { Clock, CursorPointer, Pause } from "iconoir-react";
-import CurrentBid from "./CurrentBid";
-import BidTurn from "./BidTurn";
 import { cn } from "@/lib/utils";
-import BidPlayerButtons from "./BidPlayerButtons";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import AssignPlayer from "./AssignPlayer";
-import CustomBidAmountInput from "./CustomBidAmountInput";
+import AuctionInProgress from "./AuctionInProgress";
 
 export default function AuctionBids() {
-  const {
-    auction,
-    currentNomination,
-    canBid,
-    currentBid,
-    userParticipant,
-    turnParticipant,
-    isLeagueAdmin,
-    assignPlayerMode,
-    customBidMode,
-    canNominate,
-    bidAmount,
-    handleSetBidAmount,
-  } = useAuction();
-
-  const isMyTurn = userParticipant?.isCurrent ?? false;
-
+  const { auction, isLeagueAdmin, assignPlayerMode } = useAuction();
 
   switch (auction.status) {
     case "waiting":
@@ -63,47 +43,19 @@ export default function AuctionBids() {
       );
   }
 
+  if (assignPlayerMode) {
+    return (
+      <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-center">
+        {isLeagueAdmin && <AssignPlayerModeButton />}
+        <AssignPlayer />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-between">
       {isLeagueAdmin && <AssignPlayerModeButton />}
-
-      {(currentNomination || currentBid) && <CurrentBid />}
-      {turnParticipant && !currentBid && !currentNomination && <BidTurn />}
-
-      {(isMyTurn || canBid) && (
-        <>
-          <div className="flex justify-center">
-            {(userParticipant?.isCurrent || customBidMode) && (
-              <CustomBidAmountInput
-                containerClassName="mb-4"
-                disabled={currentBid ? !canBid : !canNominate}
-                value={bidAmount}
-                onChange={handleSetBidAmount}
-                min={currentBid ? bidAmount : 1}
-                max={userParticipant?.credits}
-              />
-            )}
-          </div>
-          <div
-            className={cn(
-              "flex gap-3 justify-center",
-              (currentBid || currentNomination) && "mt-4"
-            )}
-          >
-            {/* {isLeagueAdmin && !currentBid && (
-              <Button variant="destructive" className="flex-1 max-w-32">
-                Assegna
-              </Button>
-            )} */}
-
-            {isMyTurn && !currentBid ? (
-              <NominatePlayerButton />
-            ) : (
-              <BidPlayerButtons />
-            )}
-          </div>
-        </>
-      )}
+      <AuctionInProgress />
     </div>
   );
 }
