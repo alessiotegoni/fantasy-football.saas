@@ -7,6 +7,7 @@ import { useSidebar } from "@/components/ui/sidebar";
 import AuctionStatus from "./AuctionStatus";
 import AuctionDropdownMenu from "./AuctionDropdownMenu";
 import { useEffect } from "react";
+import ChangeOrderDialog from "./ChangeOrderDialog";
 
 type Props = {
   auction: NonNullable<AuctionWithSettings>;
@@ -44,7 +45,9 @@ export default function AuctionHeader({ auction, isLeagueAdmin = false }: Props)
             auction={auction}
             canUpdate={isLeagueAdmin}
             leagueId={auction.leagueId}
-          />
+          >
+            <ChangeOrderDialog />
+          </AuctionDropdownMenu>
         )}
       </div>
     </header>

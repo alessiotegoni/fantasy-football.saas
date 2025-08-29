@@ -8,23 +8,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ActionButton from "@/components/ActionButton";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { ListOrdered } from "lucide-react";
 
 export default function ChangeOrderDialog() {
   return (
     <Dialog>
-      <DropdownMenuItem onSelect={(e) => e.preventDefault()} asChild>
-        <DialogTrigger asChild>
-          <ActionButton
-            variant="ghost"
-            loadingText="Cambio ordine"
-            action={undefined}
-            className="w-full justify-start text-sm py-1.5 rounded-lg"
-          >
-            Cambia ordine
-          </ActionButton>
-        </DialogTrigger>
-      </DropdownMenuItem>
+      <DialogTrigger asChild>
+        <ActionButton
+          variant="ghost"
+          loadingText="Cambio ordine"
+          action={undefined}
+          className="justify-start text-sm !px-2 py-1.5 rounded-lg"
+        >
+          <ListOrdered  />
+          Cambia ordine
+        </ActionButton>
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Cambia ordine partecipanti</DialogTitle>

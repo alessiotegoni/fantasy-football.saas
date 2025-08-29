@@ -11,6 +11,8 @@ import {
   setAuctionTurn,
 } from "../actions/auctionParticipant";
 import ChangeOrderDialog from "./ChangeOrderDialog";
+import { CursorPointer, UserXmark } from "iconoir-react";
+import { SendToBack } from "lucide-react";
 
 type ParticipantActionProps = {
   participant: AuctionParticipant;
@@ -30,15 +32,19 @@ export default function ParticipantDropdown({
 }
 
 function AssignPlayerButton({ participant }: ParticipantActionProps) {
-  const { participantToAssign, handleSetParticipantToAssign } = useAuction();
+  const { auction, participantToAssign, handleSetParticipantToAssign } =
+    useAuction();
+  const canAssignPlayer = auction.status === "active";
 
   return (
     <DropdownMenuItem asChild>
       <Button
         variant="ghost"
         onClick={handleSetParticipantToAssign.bind(null, participant)}
-        className="w-full justify-start"
+        className="w-full justify-start !px-2"
+        disabled={!canAssignPlayer}
       >
+        <CursorPointer />
         {participantToAssign?.id === participant.id
           ? "Non assegnare giocatore"
           : "Assegna giocatore"}
@@ -61,8 +67,9 @@ function SetTurnButton({ participant }: ParticipantActionProps) {
         auctionId: participant.auctionId,
         teamId: participant.teamId!,
       })}
-      className="text-sm px-2 py-1.5 rounded-lg w-full justify-start"
+      className="text-sm !px-2 py-1.5 rounded-lg w-full justify-start"
     >
+      <SendToBack />
       Assegna turno
     </ActionButton>
   );
@@ -85,6 +92,7 @@ function KickParticipantButton({ participant }: ParticipantActionProps) {
       requireAreYouSure
       areYouSureDescription="Il partecipante verra espulso solamente dall'asta e potra rientrare in un secondo momento"
     >
+      <UserXmark />
       Espelli partecipante
     </ActionButton>
   );
