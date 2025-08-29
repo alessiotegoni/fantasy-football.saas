@@ -5,9 +5,13 @@ import { Accordion } from "@/components/ui/accordion";
 import AcquisitionsRoleSlots from "./AcquisitionsRoleSlots";
 import AuctionParticipant from "./AuctionParticipant";
 import useParticipantsAccordion from "@/hooks/useParticipantsAccordion";
+import useParticipantsPresence from "@/hooks/useParticipantsPresence";
 
 export function ParticipantsWithAcquisitions() {
   const { participants, playersRoles } = useAuction();
+
+  const { onlineParticipants } = useParticipantsPresence()
+
   const accordion = useParticipantsAccordion();
 
   return (

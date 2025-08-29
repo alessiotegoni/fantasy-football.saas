@@ -60,7 +60,7 @@ export default function useAuctionParticipants({
         },
         handleSetParticipants
       )
-      .subscribe((status) => console.log(status));
+      .subscribe();
 
     subscriptionRef.current = subscription;
   }
