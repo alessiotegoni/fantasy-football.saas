@@ -44,7 +44,7 @@ export default function useAuctionBid({
   async function getCurrentBid(): Promise<CurrentBid | null> {
     const { data, error } = await supabase
       .from("auction_bids")
-      .select("*")
+      .select("id, nominationId:nomination_id, participantId:participant_id, amount, createdAt:created_at")
       .eq("nomination_id", currentNomination!.id)
       .order("amount", { ascending: false })
       .order("created_at", { ascending: true })
