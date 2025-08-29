@@ -10,8 +10,7 @@ import useParticipantsPresence from "@/hooks/useParticipantsPresence";
 export function ParticipantsWithAcquisitions() {
   const { participants, playersRoles } = useAuction();
 
-  const { onlineParticipants } = useParticipantsPresence()
-
+  const { isOnline } = useParticipantsPresence();
   const accordion = useParticipantsAccordion();
 
   return (
@@ -22,6 +21,7 @@ export function ParticipantsWithAcquisitions() {
             <AuctionParticipant
               key={participant.id}
               participant={participant}
+              isOnline={isOnline(participant)}
             />
             <div className="space-y-1.5">
               {playersRoles.map((role) => (

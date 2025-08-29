@@ -9,11 +9,12 @@ import { cn } from "@/lib/utils";
 import ParticipantDropdown from "./ParticipantDropdown";
 import { type AuctionParticipant } from "../queries/auctionParticipant";
 
-export default function AuctionParticipant({
-  participant,
-}: {
+type Props = {
   participant: AuctionParticipant;
-}) {
+  isOnline: boolean;
+};
+
+export default function AuctionParticipant({ participant, isOnline }: Props) {
   const { userParticipant, turnParticipant, isLeagueAdmin } = useAuction();
 
   return (
@@ -33,9 +34,17 @@ export default function AuctionParticipant({
             </Badge>
           )}
           <div className="flex flex-col items-center justify-center gap-1">
-            <h3 className="font-medium text-lg">
-              {participant.team?.name || "Team eliminato"}
-            </h3>
+            <div className="flex justify-center items-center gap-2">
+              <div
+                className={cn(
+                  "size-2 rounded-full",
+                  isOnline ? "bg-green-500" : "bg-red-500"
+                )}
+              />
+              <h3 className="font-medium text-lg">
+                {participant.team?.name || "Team eliminato"}
+              </h3>
+            </div>
             <div className="flex items-center gap-2 text-primary">
               <Coins />
               <h2 className="font-semibold text-2xl">{participant.credits}</h2>

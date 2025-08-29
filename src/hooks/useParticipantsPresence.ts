@@ -1,10 +1,11 @@
 import { useAuction } from "@/contexts/AuctionProvider";
+import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
 import {
   REALTIME_SUBSCRIBE_STATES,
   RealtimeChannel,
 } from "@supabase/supabase-js";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export default function useParticipantsPresence() {
   const { auction, userTeamId } = useAuction();
@@ -57,5 +58,13 @@ export default function useParticipantsPresence() {
     return () => untrackPresence();
   }, [auction.id, userTeamId]);
 
-  return { onlineParticipants };
+  const isOnline = useCallback(
+    ({ teamId }: AuctionParticipant) => {
+      if (!teamId) return false;
+      return onlineParticipants.includes(teamId);
+    },
+    [onlineParticipants]
+  );
+
+  return { onlineParticipants, isOnline };
 }
