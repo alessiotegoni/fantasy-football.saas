@@ -23,7 +23,11 @@ export function ParticipantsWithAcquisitions() {
               defaultValue={playersRoles.map((role) => role.id.toString())}
             >
               {playersRoles.map((role) => (
-                <AcquisitionsRoleSlots participant={participant} role={role} />
+                <AcquisitionsRoleSlots
+                  key={role.id.toString()}
+                  participant={participant}
+                  role={role}
+                />
               ))}
             </Accordion>
           </div>
