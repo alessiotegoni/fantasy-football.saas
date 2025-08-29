@@ -59,7 +59,7 @@ export default function useAuctionAcquisitions({
 
   function subscribeAcquisitions() {
     const subscription = supabase
-      .channel(`id:${auction.id}-auction-acquisitions`)
+      .channel(`auction:${auction.id}-acquisitions`)
       .on(
         "postgres_changes",
         {

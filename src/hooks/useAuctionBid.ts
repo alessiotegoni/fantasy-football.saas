@@ -66,7 +66,7 @@ export default function useAuctionBid({
 
   function subscribeBids() {
     const subscription = supabase
-      .channel(`id:${currentNomination!.id}-nomination-bids`)
+      .channel(`nomination:${currentNomination!.id}-bids`)
       .on(
         "postgres_changes",
         {

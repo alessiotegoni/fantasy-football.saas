@@ -46,10 +46,10 @@ export default function useAuctionParticipants({
 
     setParticipants(newParticipants);
   }
-  
+
   function subscribeParticipants() {
     const subscription = supabase
-      .channel(`id:${auction.id}-auction-participants`)
+      .channel(`auction:${auction.id}-participants`)
       .on(
         "postgres_changes",
         {
@@ -76,7 +76,7 @@ export default function useAuctionParticipants({
     subscribeParticipants();
 
     return () => unsubscribeParticipants();
-  }, []);
+  }, [auction.id]);
 
   const userParticipant = useMemo(
     () =>

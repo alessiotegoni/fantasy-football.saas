@@ -77,7 +77,7 @@ export default function useAuctionNomination({
 
   function subscribeNominations() {
     const subscription = supabase
-      .channel(`id:${auction.id}-auction-nominations`)
+      .channel(`auction:${auction.id}-nominations`)
       .on(
         "postgres_changes",
         {
@@ -104,7 +104,7 @@ export default function useAuctionNomination({
     subscribeNominations();
 
     return () => unsubscribeNominations();
-  }, []);
+  }, [auction.id]);
 
   const canNominate = useMemo(() => {
     const isValidAuction = auction.status === "active";

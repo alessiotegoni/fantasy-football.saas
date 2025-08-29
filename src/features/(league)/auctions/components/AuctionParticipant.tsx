@@ -14,11 +14,7 @@ export default function AuctionParticipant({
 }: {
   participant: AuctionParticipant;
 }) {
-  const {
-    userParticipant,
-    turnParticipant,
-    isLeagueAdmin = false,
-  } = useAuction();
+  const { userParticipant, turnParticipant, isLeagueAdmin } = useAuction();
 
   return (
     <div>
@@ -51,7 +47,6 @@ export default function AuctionParticipant({
     </div>
   );
 }
-
 
 //   <div className="space-y-1 text-xs text-muted-foreground">
 //     <div className="flex justify-between">
