@@ -15,7 +15,7 @@ import AuctionCentralPanel from "./AuctionCentralPanel";
 import { ParticipantsWithAcquisitions } from "./ParticipantsWithAcquisitions.tsx";
 
 type Props = {
-  playerRoles: (typeof playerRoles.$inferSelect)[];
+  playersRoles: (typeof playerRoles.$inferSelect)[];
   auction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];

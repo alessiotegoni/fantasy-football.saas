@@ -1,28 +1,34 @@
 "use client";
 
 import { useAuction } from "@/contexts/AuctionProvider";
-import AuctionParticipant from "./AuctionParticipant"
+import { Accordion } from "@/components/ui/accordion";
+import AcquisitionsRoleSlots from "./AcquisitionsRoleSlots";
+import AuctionParticipant from "./AuctionParticipant";
 
 export function ParticipantsWithAcquisitions() {
-  const { participants } = useAuction();
+  const { participants, playersRoles } = useAuction();
 
   return (
     <div className="flex justify-center w-full">
       <div className="flex gap-2">
         {participants.map((participant) => (
-          <AuctionParticipant key={participant.id} participant={participant} renderAcquisitions={()} />
+          <div key={participant.id}>
+            <AuctionParticipant
+              key={participant.id}
+              participant={participant}
+            />
+            <Accordion
+              type="multiple"
+              className="w-full space-y-1.5"
+              defaultValue={playersRoles.map((role) => role.id.toString())}
+            >
+              {playersRoles.map((role) => (
+                <AcquisitionsRoleSlots participant={participant} role={role} />
+              ))}
+            </Accordion>
+          </div>
         ))}
       </div>
     </div>
   );
 }
-//   <div className="space-y-1 text-xs text-muted-foreground">
-//     <div className="flex justify-between">
-//       <span>Giocatori:</span>
-//       {/* <span className="font-medium">{participant.}</span> */}
-//     </div>
-//     <div className="flex justify-between">
-//       <span>% Spesi:</span>
-//       {/* <span className="font-medium">{participant.spent}%</span> */}
-//     </div>
-//   </div>

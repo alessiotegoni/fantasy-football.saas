@@ -12,13 +12,14 @@ import useAuctionNomination from "@/hooks/useAuctionNomination";
 import useAuctionParticipants from "@/hooks/useAuctionParticipants";
 import { createContext, useCallback, useContext, useState } from "react";
 import useAuctionPlayerAssign from "@/hooks/useAuctionPlayerAssign";
+import { playerRoles } from "@/drizzle/schema";
 
 type AuctionContextType = {
   customBidMode: boolean;
   toggleCustomBidMode: () => void;
   selectedPlayer: Player | null;
   toggleSelectPlayer: (player: Player | null) => void;
-} & Pick<Props, "auction" | "isLeagueAdmin" | "userTeamId"> &
+} & Pick<Props, "auction" | "isLeagueAdmin" | "userTeamId" | "playersRoles"> &
   ReturnType<typeof useAuctionAcquisitions> &
   ReturnType<typeof useAuctionParticipants> &
   ReturnType<typeof useAuctionNomination> &
@@ -30,6 +31,7 @@ const AuctionContext = createContext<AuctionContextType | null>(null);
 type Props = {
   children: React.ReactNode;
   auction: NonNullable<AuctionWithSettings>;
+  playersRoles: typeof playerRoles.$inferSelect[];
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];
   isLeagueAdmin?: boolean;

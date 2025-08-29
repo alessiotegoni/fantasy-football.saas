@@ -29,7 +29,7 @@ type Props = {
 export default async function AuctionPage({ params }: Props) {
   const ids = await params;
 
-  const [auction, participantsWithAcquisitions, playerRoles] =
+  const [auction, participantsWithAcquisitions, playersRoles] =
     await Promise.all([
       getAuctionWithSettings(ids.auctionId),
       getParticipantsWithAcquisitions(ids.auctionId),
@@ -49,7 +49,7 @@ export default async function AuctionPage({ params }: Props) {
     defaultParticipants,
     defaultAcquisitions,
     auction,
-    playerRoles,
+    playersRoles,
   };
 
   return (
@@ -68,7 +68,7 @@ async function SuspenseBoundary({
 }: {
   auctionId: string;
   leagueId: string;
-  playerRoles: (typeof playerRoles.$inferSelect)[];
+  playersRoles: (typeof playerRoles.$inferSelect)[];
   auction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];

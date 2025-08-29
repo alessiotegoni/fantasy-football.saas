@@ -8,38 +8,24 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import ParticipantDropdown from "./ParticipantDropdown";
 import { type AuctionParticipant } from "../queries/auctionParticipant";
-import { useMemo } from "react";
-import { ParticipantAcquisition } from "../queries/auctionAcquisition";
-
-type Props = {
-  participant: AuctionParticipant;
-  renderAcquisitions: (
-    acquisitions: ParticipantAcquisition[]
-  ) => React.ReactNode;
-};
 
 export default function AuctionParticipant({
   participant,
-  renderAcquisitions,
-}: Props) {
+}: {
+  participant: AuctionParticipant;
+}) {
   const {
     userParticipant,
     turnParticipant,
     isLeagueAdmin = false,
-    acquisitions,
   } = useAuction();
-
-  const participantAcquisitions = useMemo(
-    () => acquisitions.filter((a) => a.participantId === participant.id),
-    [acquisitions]
-  );
 
   return (
     <div>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           className={cn(
-            "bg-input/60 p-4 border rounded-3xl hover:bg-muted/50 cursor-pointer transition-colors min-w-70 relative",
+            "bg-input/60 p-4 border rounded-3xl hover:bg-muted/50 cursor-pointer transition-colors min-w-70 relative mb-4",
             participant.id === turnParticipant?.id
               ? "border-primary"
               : "border-border"
@@ -62,7 +48,18 @@ export default function AuctionParticipant({
         </DropdownMenuTrigger>
         {isLeagueAdmin && <ParticipantDropdown participant={participant} />}
       </DropdownMenu>
-      {renderAcquisitions(participantAcquisitions)}
     </div>
   );
 }
+
+
+//   <div className="space-y-1 text-xs text-muted-foreground">
+//     <div className="flex justify-between">
+//       <span>Giocatori:</span>
+//       {/* <span className="font-medium">{participant.}</span> */}
+//     </div>
+//     <div className="flex justify-between">
+//       <span>% Spesi:</span>
+//       {/* <span className="font-medium">{participant.spent}%</span> */}
+//     </div>
+//   </div>
