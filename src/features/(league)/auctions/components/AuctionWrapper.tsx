@@ -12,7 +12,7 @@ import AuctionHeader from "./AuctionHeader";
 import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 import { playerRoles } from "@/drizzle/schema";
 import AuctionCentralPanel from "./AuctionCentralPanel";
-import { ParticipantsList } from "./ParticipantsList";
+import { ParticipantsWithAcquisitions } from "./ParticipantsWithAcquisitions.tsx";
 
 type Props = {
   playerRoles: (typeof playerRoles.$inferSelect)[];
@@ -48,11 +48,7 @@ export default function AuctionWrapper(props: Props) {
               </div>
             </div>
 
-            <div className="flex justify-center w-full">
-              <ParticipantsList />
-
-              {/* <PlayerRoster roles={roles} /> */}
-            </div>
+            <ParticipantsWithAcquisitions />
           </AuctionProvider>
         </main>
       </div>
