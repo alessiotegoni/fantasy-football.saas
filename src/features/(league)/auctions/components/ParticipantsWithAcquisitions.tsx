@@ -18,13 +18,13 @@ export function ParticipantsWithAcquisitions() {
               participant={participant}
             />
             <Accordion
-              type="multiple"
+              type="single"
+              collapsible
               className="w-full space-y-1.5"
-              defaultValue={playersRoles.map((role) => role.id.toString())}
             >
               {playersRoles.map((role) => (
                 <AcquisitionsRoleSlots
-                  key={role.id.toString()}
+                  key={`${participant.id}-${role.id}`}
                   participant={participant}
                   role={role}
                 />

@@ -10,8 +10,6 @@ import { cn } from "@/lib/utils";
 import { playerRoles } from "@/drizzle/schema";
 import { useMemo } from "react";
 import AcquisitionCard from "./AcquisitionCard";
-import { ParticipantAcquisition } from "../queries/auctionAcquisition";
-import { AuctionWithSettings } from "../queries/auction";
 
 type Props = {
   participant: AuctionParticipant;
@@ -24,47 +22,13 @@ export default function AcquisitionsRoleSlots({ participant, role }: Props) {
   const roleStyles = roleClasses[role.name] ?? "bg-muted text-foreground";
   const roleSlots = auction.settings.playersPerRole[role.id] ?? 1;
 
-  const roleAcquisitions = [
-    {
-      id: "dwdwdw",
-      playerId: 2,
-      auctionId: "dwdwdw",
-      participantId: "dwdwdw",
-      price: 150,
-      acquiredAt: new Date(),
-      player: {
-        id: 150,
-        displayName: "Perrotti",
-        roleId: 1,
-        team: {
-          displayName: "z-milano",
-        },
-      },
-    },
-    {
-      id: "dwdwdw",
-      playerId: 2,
-      auctionId: "dwdwdw",
-      participantId: "dwdwdw",
-      price: 43,
-      acquiredAt: new Date(),
-      player: {
-        id: 323,
-        displayName: "Perrotti",
-        roleId: 2,
-        team: {
-          displayName: "z-milano",
-        },
-      },
-    },
-  ];
-  //   const roleAcquisitions = useMemo(
-  //     () =>
-  //       acquisitions.filter(
-  //         (a) => a.participantId === participant.id && a.player.roleId === role.id
-  //       ),
-  //     [acquisitions]
-  //   );
+  const roleAcquisitions = useMemo(
+    () =>
+      acquisitions.filter(
+        (a) => a.participantId === participant.id && a.player.roleId === role.id
+      ),
+    [acquisitions]
+  );
 
   const acquisitionPercentage = useMemo(() => {
     const spentCredits = roleAcquisitions.reduce(
@@ -76,11 +40,7 @@ export default function AcquisitionsRoleSlots({ participant, role }: Props) {
   }, [roleAcquisitions]);
 
   return (
-    <AccordionItem
-      key={role.id}
-      value={role.id.toString()}
-      className="border-b-0"
-    >
+    <AccordionItem value={role.id.toString()} className="border-b-0">
       <AccordionTrigger className={cn("p-1.5 px-3", roleStyles)}>
         <div className="flex justify-center items-center gap-1.5">
           <p>{role.shortName}</p>
@@ -91,10 +51,10 @@ export default function AcquisitionsRoleSlots({ participant, role }: Props) {
       </AccordionTrigger>
       <AccordionContent className="space-y-1.5 p-0">
         {roleAcquisitions.map((a) => (
-          <AcquisitionCard acquisition={a} role={role} />
+          <AcquisitionCard key={a.id} acquisition={a} role={role} />
         ))}
-        {Array.from({ length: roleSlots - roleAcquisitions.length }, () => (
-          <PlaceholderCard role={role} />
+        {Array.from({ length: roleSlots - roleAcquisitions.length }, (_, i) => (
+          <PlaceholderCard key={`${role.id.toString()}-${i}`} role={role} />
         ))}
       </AccordionContent>
     </AccordionItem>
@@ -106,7 +66,6 @@ function PlaceholderCard({ role }: Pick<Props, "role">) {
 
   return (
     <div
-      key={role.id.toString()}
       className={cn("h-14 opacity-40 rounded-lg first:mt-1.5", roleStyles)}
     />
   );
