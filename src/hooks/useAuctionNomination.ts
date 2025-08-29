@@ -31,13 +31,12 @@ export default function useAuctionNomination({
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   async function getCurrentNomination(): Promise<CurrentNomination | null> {
-    const { data, error } = await supabase
-      .from("auction_nominations")
-      .select("*, player:players(*, role:player_roles(*), team:teams(*))")
-      .eq("auction_id", auction.id)
-      .order("expires_at", { ascending: true })
-      .limit(1)
-      .maybeSingle();
+    const { data, error } = await supabase.functions.invoke(
+      `get-auction-nomination?auction_id=${auction.id}`,
+      {
+        method: "GET",
+      }
+    );
 
     if (error) {
       console.error("Errore gettting current nomination:", error);
