@@ -26,10 +26,10 @@ export default function useAuctionParticipants({
     const { data, error } = await supabase
       .from("auction_participants")
       .select(
-        "id, auctionId:auction_id, teamId:team_id, credits, order, isCurrent:is_current, joinedAt:joined_at, team:league_member_teams(id, name)"
+        "id, auctionId:auction_id, teamId:team_id credits, order, isCurrent:is_current, joinedAt:joined_at, team:league_member_teams(id, name)"
       )
       .eq("auction_id", auction.id)
-      .order("order", { ascending: true })
+      .order("order", { ascending: true });
 
     if (error) {
       console.error("Error getting auction participants:", error);
@@ -46,7 +46,7 @@ export default function useAuctionParticipants({
 
     setParticipants(newParticipants);
   }
-
+  
   function subscribeParticipants() {
     const subscription = supabase
       .channel(`id:${auction.id}-auction-participants`)

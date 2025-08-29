@@ -34,9 +34,17 @@ export async function getCurrentNomination(auctionId: string) {
   const [nomination] = await db.query.auctionNominations.findMany({
     with: {
       player: {
+        columns: {
+          id: true,
+          displayName: true,
+          roleId: true,
+        },
         with: {
-          role: true,
-          team: true,
+          team: {
+            columns: {
+              displayName: true,
+            },
+          },
         },
       },
     },

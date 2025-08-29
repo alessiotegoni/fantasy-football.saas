@@ -30,6 +30,7 @@ export default function useAuctionAcquisitions({
         teamId:team_id,
         playerId:player_id,
         price,
+        acquiredAt:acquired_at
         player:players(
           id,
           displayName:display_name,
@@ -40,7 +41,8 @@ export default function useAuctionAcquisitions({
         )
       `
       )
-      .eq("auction_id", auction.id);
+      .eq("auction_id", auction.id)
+      .order("acquired_at", { ascending: false });
 
     if (error) {
       console.error("Error getting auction acquisitions:", error);

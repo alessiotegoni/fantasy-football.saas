@@ -31,19 +31,38 @@ export default function useAuctionNomination({
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   async function getCurrentNomination(): Promise<CurrentNomination | null> {
-    const { data, error } = await supabase.functions.invoke(
-      `get-auction-nomination?auction_id=${auction.id}`,
-      {
-        method: "GET",
-      }
-    );
+    const { data, error } = await supabase
+      .from("auction_nominations")
+      .select(
+        `
+        id,
+        auctionId:auction_id,
+        playerId:player_id,
+        nominatedBy:nominated_by,
+        expiresAt:expires_at,
+        status,
+        initialPrice:initial_price,
+        player:players(
+          id,
+          displayName:display_name,
+          roleId:role_id,
+          team:teams(
+            displayName:display_name
+          )
+        )
+      `
+      )
+      .eq("auction_id", auction.id)
+      .order("expires_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
 
     if (error) {
       console.error("Errore gettting current nomination:", error);
       return null;
     }
 
-    return data;
+    return data as unknown as CurrentNomination;
   }
 
   async function handleSetNomination() {
