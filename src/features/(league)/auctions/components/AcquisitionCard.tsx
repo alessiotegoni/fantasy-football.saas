@@ -28,13 +28,13 @@ export default function AcquisitionCard({ acquisition, role }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className={cn(
-          "h-14 rounded-lg first:mt-1.5 p-2 flex gap-3 justify-between items-center",
+          "h-14 rounded-lg first:mt-1.5 p-2 flex gap-3 justify-between items-center w-full",
           roleStyles
         )}
       >
-        <div>
+        <div className="text-left">
           <p>{acquisition.player.displayName}</p>
-          <p className="text-muted-foreground text-xs">
+          <p className="text-white/70 text-xs">
             {acquisition.player.team.displayName}
           </p>
         </div>
