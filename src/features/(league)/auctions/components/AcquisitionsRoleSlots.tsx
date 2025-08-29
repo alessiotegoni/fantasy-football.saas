@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { playerRoles } from "@/drizzle/schema";
 import { useMemo } from "react";
 import AcquisitionCard from "./AcquisitionCard";
+import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 
 type Props = {
   participant: AuctionParticipant;
@@ -19,7 +20,6 @@ type Props = {
 export default function AcquisitionsRoleSlots({ participant, role }: Props) {
   const { acquisitions, auction } = useAuction();
 
-  const roleStyles = roleClasses[role.name] ?? "bg-muted text-foreground";
   const roleSlots = auction.settings.playersPerRole[role.id] ?? 1;
 
   const roleAcquisitions = useMemo(
@@ -30,25 +30,9 @@ export default function AcquisitionsRoleSlots({ participant, role }: Props) {
     [acquisitions]
   );
 
-  const acquisitionPercentage = useMemo(() => {
-    const spentCredits = roleAcquisitions.reduce(
-      (acc, a) => (acc += a.price),
-      0
-    );
-
-    return (spentCredits / auction.settings.initialCredits) * 100;
-  }, [roleAcquisitions]);
-
   return (
     <AccordionItem value={role.id.toString()} className="border-b-0">
-      <AccordionTrigger className={cn("p-1.5 px-3", roleStyles)}>
-        <div className="flex justify-center items-center gap-1.5">
-          <p>{role.shortName}</p>
-          {!!acquisitionPercentage && (
-            <p className="text-xs">{acquisitionPercentage}%</p>
-          )}
-        </div>
-      </AccordionTrigger>
+      <RoleSlotTrigger role={role} acquisitions={roleAcquisitions} />
       <AccordionContent className="space-y-1.5 p-0">
         {roleAcquisitions.map((a) => (
           <AcquisitionCard key={a.id} acquisition={a} role={role} />
@@ -58,6 +42,35 @@ export default function AcquisitionsRoleSlots({ participant, role }: Props) {
         ))}
       </AccordionContent>
     </AccordionItem>
+  );
+}
+
+function RoleSlotTrigger({
+  role,
+  acquisitions,
+}: Pick<Props, "role"> & { acquisitions: ParticipantAcquisition[] }) {
+  const { auction } = useAuction();
+
+  const roleStyles = roleClasses[role.name] ?? "bg-muted text-foreground";
+
+  const acquisitionPercentage = useMemo(() => {
+    const spentCredits = acquisitions.reduce((acc, a) => (acc += a.price), 0);
+
+    return (spentCredits / auction.settings.initialCredits) * 100;
+  }, [acquisitions]);
+
+  return (
+    <AccordionTrigger
+      className={cn("p-1.5 px-3 opacity-90", roleStyles)}
+      chevronClassName="hidden group-hover:block text-white"
+    >
+      <div className="flex justify-center items-center gap-1.5">
+        <p>{role.shortName}</p>
+        {!!acquisitionPercentage && (
+          <p className="text-xs">{acquisitionPercentage}%</p>
+        )}
+      </div>
+    </AccordionTrigger>
   );
 }
 
