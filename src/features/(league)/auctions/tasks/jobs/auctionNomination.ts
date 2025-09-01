@@ -9,7 +9,7 @@ export const getNominationExpiryKey = (nominationId: string) =>
 
 export type NominationExpiryJobData = {
   nomination: typeof auctionNominations.$inferSelect;
-  auctionSettings: typeof auctionSettings.$inferSelect;
+  auctionSettings: Omit<typeof auctionSettings.$inferSelect, "auctionId">;
   player: { role: { id: number } };
 };
 

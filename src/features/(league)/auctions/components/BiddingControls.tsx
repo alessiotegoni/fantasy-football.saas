@@ -17,6 +17,7 @@ export default function BiddingControls() {
     handleSetBidAmount,
     currentNomination,
   } = useAuction();
+
   const isMyTurn = userParticipant?.isCurrent ?? false;
 
   if (!isMyTurn && !canBid) return null;
@@ -24,11 +25,10 @@ export default function BiddingControls() {
   return (
     <>
       <div className="flex justify-center">
-        {(userParticipant?.isCurrent || customBidMode) && (
+        {((isMyTurn && !currentNomination) || customBidMode) && (
           <CustomBidAmountInput
-            containerClassName="mb-4"
             disabled={currentBid ? !canBid : !canNominate}
-            value={bidAmount}
+            value={customBidMode ? bidAmount + 1 : bidAmount}
             onChange={handleSetBidAmount}
             min={currentBid ? bidAmount : 1}
             max={userParticipant?.credits}

@@ -69,6 +69,7 @@ export default function useAuctionNomination({
     const nomination =
       currentNomination?.status === "bidding" ? currentNomination : null;
 
+    console.log(nomination);
     if (!nomination || nomination.status === "sold") toggleSelectPlayer(null);
 
     setCurrentNomination(nomination);
@@ -116,9 +117,9 @@ export default function useAuctionNomination({
   const currentNominationTeam = useMemo(
     () =>
       currentNomination
-        ? participants.find((p) => p.team?.id === currentNomination.nominatedBy)
+        ? participants.find((p) => p.id === currentNomination.nominatedBy)
         : undefined,
-    [currentNomination]
+    [participants, currentNomination]
   );
 
   return { currentNomination, currentNominationTeam, canNominate };

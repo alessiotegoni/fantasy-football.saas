@@ -20,18 +20,22 @@ import { Button } from "@/components/ui/button";
 type Props = {
   players?: TeamPlayer[];
   teams?: Team[];
-  playersRoles: PlayerRole[];
 };
 
 export default function AuctionPlayersDialog({
   players = [],
   teams = [],
-  playersRoles,
 }: Props) {
-  const { selectedPlayer, toggleSelectPlayer } = useAuction();
+  const {
+    playersRoles,
+    selectedPlayer,
+    toggleSelectPlayer,
+    currentNomination,
+  } = useAuction();
   const [open, setOpen] = useState(false);
 
   function handlePlayerClick(player: TeamPlayer) {
+    if (currentNomination) return;
     toggleSelectPlayer(selectedPlayer?.id === player.id ? null : player);
     setOpen(false);
   }
@@ -69,7 +73,7 @@ export default function AuctionPlayersDialog({
                     className={
                       selectedPlayer?.id === player.id ? "border-primary" : ""
                     }
-                    canSelectCard
+                    canSelectCard={!currentNomination}
                   />
                 )}
               />

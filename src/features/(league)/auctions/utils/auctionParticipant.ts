@@ -8,8 +8,11 @@ export function isRoleFull(
   playersPerRole: PlayersPerRole,
   playerRoleId: number
 ) {
+  if (!playerCounts) return false
+
   const currentRoleCount = playerCounts[playerRoleId] || 0;
-  const maxRoleCount = playersPerRole[playerRoleId] || 0;
+  const maxRoleCount = playersPerRole[playerRoleId] || 1;
+
   return currentRoleCount >= maxRoleCount;
 }
 

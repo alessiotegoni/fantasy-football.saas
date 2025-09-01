@@ -95,7 +95,7 @@ export default function useAuctionParticipants({
   );
 
   useEffect(() => {
-    if (!userParticipant) {
+    if (userTeamId && !userParticipant) {
       toast.error("Sei stato espulso dall'asta");
       router.push(`/leagues/${auction.leagueId}/premium/auctions`);
     }

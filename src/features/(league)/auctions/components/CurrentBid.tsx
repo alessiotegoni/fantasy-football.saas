@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import ActionButton from "@/components/ActionButton";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,8 @@ export default function CurrentBid() {
   const currentTeamName =
     currentBidTeam?.team?.name || currentNominationTeam?.team?.name;
 
+  console.log(currentNominationTeam);
+
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
       {isLeagueAdmin && (
@@ -43,7 +45,6 @@ export default function CurrentBid() {
       <Badge className="p-2 px-4 rounded-lg bg-input w-fit text-md font-medium border border-border">
         {currentTeamName || "Nessuna squadra"}
       </Badge>
-      <h2>{currentNomination.player.displayName}</h2>
     </div>
   );
 }
@@ -71,24 +72,36 @@ export function CustomBidButton() {
 }
 
 function DeleteNominationButton({ nominationId }: { nominationId: string }) {
+  // return (
+  //   <Tooltip>
+  //     <TooltipTrigger asChild>
+  //       <ActionButton
+  //         variant="destructive"
+  //         className="absolute right-4 top-4 size-10 rounded-full border border-border bg-input/60"
+  //         action={deleteNomination.bind(null, nominationId)}
+  //       >
+  //         <Xmark className="size-6" />
+  //       </ActionButton>
+  //     </TooltipTrigger>
+  //     <TooltipContent>Rimuovi chiamata</TooltipContent>
+  //   </Tooltip>
+  // );
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <ActionButton
-          variant="ghost"
-          className="absolute right-4 top-4 size-10 rounded-full border border-border bg-input/60"
-          action={deleteNomination.bind(null, nominationId)}
-        >
-          <Xmark className="size-6" />
-        </ActionButton>
-      </TooltipTrigger>
-      <TooltipContent>Rimuovi chiamata</TooltipContent>
-    </Tooltip>
+    <ActionButton
+      loadingText=""
+      variant="destructive"
+      className="absolute right-4 top-4 size-10 rounded-full border border-border bg-input/60"
+      action={deleteNomination.bind(null, nominationId)}
+    >
+      <Xmark className="size-6" />
+    </ActionButton>
   );
 }
 
 function BidExiprationTimer({ expiresAt }: { expiresAt: Date }) {
   const [timeLeft, setTimeLeft] = useState(0);
+
+  console.log(expiresAt, timeLeft);
 
   useEffect(() => {
     const target = new Date(expiresAt).getTime();
