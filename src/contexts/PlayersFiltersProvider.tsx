@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -7,9 +7,10 @@ import {
   useContext,
   useState,
 } from "react";
-import { getTeams } from "@/features/teams/queries/team";
+import { getTeams, Team } from "@/features/teams/queries/team";
 import {
   getPlayersRoles,
+  PlayerRole,
   TeamPlayer,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { useFilter } from "@/hooks/useFilter";
@@ -26,6 +27,8 @@ type Filters = {
 type FilterType = "search" | "teams" | "roles";
 
 interface PlayersFiltersContextType {
+  teams: Team[];
+  roles: PlayerRole[];
   filteredPlayers: TeamPlayer[];
   filters: Filters;
   handleSetFilters: (filter: Partial<Filters>) => void;
@@ -40,8 +43,8 @@ type Props = {
   children: React.ReactNode;
   players: TeamPlayer[];
   enabledFilters?: FilterType[];
-  teams: Awaited<ReturnType<typeof getTeams>>;
-  roles: Awaited<ReturnType<typeof getPlayersRoles>>;
+  teams: Team[];
+  roles: PlayerRole[];
 };
 
 export function PlayersFiltersProvider({
@@ -81,14 +84,16 @@ export function PlayersFiltersProvider({
   const renderFilters = () => (
     <div className="space-y-2">
       {isFilterEnabled("search") && <PlayersListSearchBar />}
-      {isFilterEnabled("teams") && <TeamsFilters teams={teams} />}
-      {isFilterEnabled("roles") && <PlayersRolesFilters roles={roles} />}
+      {isFilterEnabled("teams") && <TeamsFilters />}
+      {isFilterEnabled("roles") && <PlayersRolesFilters />}
     </div>
   );
 
   return (
     <PlayersFiltersContext.Provider
       value={{
+        teams,
+        roles,
         filteredPlayers,
         filters,
         handleSetFilters,

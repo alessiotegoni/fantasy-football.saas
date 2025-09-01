@@ -16,8 +16,18 @@ import { ArrowLeft } from "iconoir-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { getTeams } from "@/features/teams/queries/team";
+import {
+  getPlayersRoles,
+  PlayerRole,
+  TeamPlayer,
+} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { getTeams, Team } from "@/features/teams/queries/team";
+import Container from "@/components/Container";
+import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
+import { Suspense } from "react";
+import PlayerSelectionButton from "@/features/(league)/teamsPlayers/components/PlayerSelectionButton";
+import { getUserId } from "@/features/users/utils/user";
+import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 
 export default async function LeaguePlayersListPage({
   params,
@@ -31,27 +41,51 @@ export default async function LeaguePlayersListPage({
     getPlayersRoles(),
   ]);
 
+  const props = {
+    players,
+    roles,
+    teams,
+    leagueId,
+  };
+
   return (
-    <div className="mx-auto max-w-[700px] md:p-4">
-      <div className="mb-4 flex items-center md:mb-8 md:hidden">
-        <Link href={`/leagues/${leagueId}`} className="mr-3">
-          <ArrowLeft className="size-5" />
-        </Link>
-        <h2 className="text-2xl font-heading">Listone giocatori</h2>
-      </div>
-      <h2 className="mb-8 hidden text-3xl font-heading md:block">
-        Listone giocatori
-      </h2>
-      <PlayersList
-        leagueId={leagueId}
-        players={players}
-        teams={teams}
-        roles={roles}
-        actionsDialog={<InsertPlayerDialog />}
-        emptyState={<PlayersEmptyState />}
-        virtualized
-      />
-    </div>
+    <Container leagueId={leagueId} headerLabel="Listone giocatori">
+      <Suspense
+        fallback={
+          <PlayersList
+            {...props}
+            actionsDialog={<InsertPlayerDialog />}
+            emptyState={<PlayersEmptyState />}
+            virtualized
+          />
+        }
+      >
+        <SuspenseBoundary {...props} />
+      </Suspense>
+    </Container>
+  );
+}
+
+async function SuspenseBoundary(props: {
+  leagueId: string;
+  players: TeamPlayer[];
+  teams: Team[];
+  roles: PlayerRole[];
+}) {
+  const userId = await getUserId();
+  const isAdmin = userId ? await getLeagueAdmin(userId, props.leagueId) : false;
+
+  const leagueTeams = await getLeagueTeams(props.leagueId);
+
+  return (
+    <PlayersList
+      {...props}
+      selectionButton={isAdmin && <PlayerSelectionButton />}
+      leagueTeams={leagueTeams}
+      actionsDialog={<InsertPlayerDialog teams={leagueTeams} />}
+      emptyState={<PlayersEmptyState />}
+      virtualized
+    />
   );
 }
 

@@ -5,21 +5,14 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { use, useCallback } from "react";
-import {
-  getPlayersRoles,
-  TeamPlayer,
-} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { useCallback } from "react";
+import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export default function PlayersRolesFilters({
-  roles,
-}: {
-  roles: Awaited<ReturnType<typeof getPlayersRoles>>;
-}) {
-  const { filters, handleSetFilters } = usePlayersFilters();
+export default function PlayersRolesFilters() {
+  const { roles, filters, handleSetFilters } = usePlayersFilters();
 
   const handleRolesFilter = useCallback(
     ({ id }: TeamPlayer["role"]) => {

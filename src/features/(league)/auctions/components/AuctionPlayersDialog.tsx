@@ -1,22 +1,27 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useAuction } from '@/contexts/AuctionProvider';
-import PlayersList from '@/features/(league)/teamsPlayers/components/PlayersList';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { useAuction } from "@/contexts/AuctionProvider";
+import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { TeamPlayer } from '../../teamsPlayers/queries/teamsPlayer';
-import { getTeams } from "@/features/teams/queries/team";
-import { getPlayersRoles } from "../../teamsPlayers/queries/teamsPlayer";
-import { VirtualizedList } from '@/components/VirtualizedList';
-import PlayerCard from '../../teamsPlayers/components/PlayerCard';
-import EmptyState from '@/components/EmptyState';
+import { PlayerRole, TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
+import { Team } from "@/features/teams/queries/team";
+import { VirtualizedList } from "@/components/VirtualizedList";
+import PlayerCard from "../../teamsPlayers/components/PlayerCard";
+import EmptyState from "@/components/EmptyState";
 
 type Props = {
   players: TeamPlayer[];
-  teams: Awaited<ReturnType<typeof getTeams>>;
-  roles: Awaited<ReturnType<typeof getPlayersRoles>>;
+  teams: Team[];
+  roles: PlayerRole[];
   leagueId: string;
 };
 
@@ -48,15 +53,9 @@ export default function AuctionPlayersDialog({
       </DialogTrigger>
       <DialogContent className="flex h-5/6 max-w-3xl flex-col gap-4">
         <DialogHeader>
-            <DialogTitle>Giocatori disponibili</DialogTitle>
+          <DialogTitle>Giocatori disponibili</DialogTitle>
         </DialogHeader>
-        <PlayersList
-          players={players}
-          leagueId={leagueId}
-          enabledFilters={['search', 'teams', 'roles']}
-          teams={teams}
-          roles={roles}
-        >
+        <PlayersList players={players} teams={teams} roles={roles}>
           {(filteredPlayers) => (
             <div className="relative grow overflow-y-auto">
               {filteredPlayers.length > 0 ? (
@@ -78,7 +77,10 @@ export default function AuctionPlayersDialog({
                   )}
                 />
               ) : (
-                <EmptyState title="Nessun giocatore trovato" description="Prova a modificare i filtri di ricerca." />
+                <EmptyState
+                  title="Nessun giocatore trovato"
+                  description="Prova a modificare i filtri di ricerca."
+                />
               )}
             </div>
           )}

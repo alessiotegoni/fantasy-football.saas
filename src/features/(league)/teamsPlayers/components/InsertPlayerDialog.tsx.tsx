@@ -13,8 +13,14 @@ import NumberInput from "@/components/ui/number-input";
 import { useParams } from "next/navigation";
 import { addTeamPlayer } from "../actions/teamsPlayer";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
+import { Team } from "@/features/teams/queries/team";
+import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
-export default function InsertPlayerDialog() {
+export default function InsertPlayerDialog({
+  teams = [],
+}: {
+  teams?: LeagueTeam[];
+}) {
   const { leagueId } = useParams<{ leagueId: string }>();
   const { selectedPlayer, selectedTeamId } = usePlayerSelection();
 
@@ -35,12 +41,12 @@ export default function InsertPlayerDialog() {
         purchaseCost: 200,
       }}
       onFormSubmit={addTeamPlayer}
-      renderFormFields={({ toggleSelectTeam, leagueTeamsPromise }) => (
+      renderFormFields={({ toggleSelectTeam }) => (
         <div className="my-5 space-y-7">
           <div className="flex justify-center">
             <TeamsSelectField<InsertTeamPlayerSchema>
               name="memberTeamId"
-              teams={use(leagueTeamsPromise)}
+              teams={teams}
               onSelect={toggleSelectTeam}
             />
           </div>

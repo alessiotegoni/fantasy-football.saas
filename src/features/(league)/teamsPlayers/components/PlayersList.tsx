@@ -11,18 +11,15 @@ import {
   TeamPlayer,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import PlayersListContent from "./PlayerListContent";
-import { Suspense } from "react";
-import { default as PlayerSelectionButton } from "./PlayerSelection";
 
 type FilterType = "search" | "teams" | "roles";
 
 interface PlayersListProps {
   players: TeamPlayer[];
-  leagueId: string;
   title?: string;
   enabledFilters?: FilterType[];
   virtualized?: boolean;
-  showSelectionButton?: boolean;
+  selectionButton?: React.ReactNode;
   actionsDialog?: React.ReactNode;
   emptyState?: React.ReactNode;
   teams: Team[];
@@ -41,9 +38,8 @@ export default function PlayersList({ children, ...props }: PlayersListProps) {
 
 function PlayersListInner({
   children,
-  leagueId,
-  title,
-  showSelectionButton = true,
+  title = "Giocatori",
+  selectionButton,
   virtualized = false,
   actionsDialog,
   emptyState,
@@ -55,23 +51,19 @@ function PlayersListInner({
     return <>{children(filteredPlayers)}</>;
   }
 
-  if (!leagueTeams) return null
+  if (!leagueTeams) return null;
 
   return (
     <PlayerSelectionProvider leagueTeams={leagueTeams}>
       <div className="flex h-full flex-col">
         <div className="mb-3.5 flex items-center">
           <h2 className="grow text-xl">{title}</h2>
-          {showSelectionButton && (
-            <Suspense>
-              <PlayerSelectionButton leagueId={leagueId} />
-            </Suspense>
-          )}
+          {selectionButton}
         </div>
         <PlayersListContent
-          virtualized={virtualized!}
+          virtualized={virtualized}
           actionsDialog={actionsDialog}
-          emptyState={emptyState!}
+          emptyState={emptyState}
         />
       </div>
     </PlayerSelectionProvider>
