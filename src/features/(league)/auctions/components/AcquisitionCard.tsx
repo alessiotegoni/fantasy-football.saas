@@ -25,7 +25,7 @@ export default function AcquisitionCard({ acquisition, role }: Props) {
   const roleStyles = roleClasses[role.name] ?? "bg-muted text-foreground";
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger
         className={cn(
           "h-14 rounded-lg first:mt-1.5 p-2 flex gap-3 justify-between items-center w-full",
@@ -43,22 +43,33 @@ export default function AcquisitionCard({ acquisition, role }: Props) {
           <p className="font-semibold">{acquisition.price}</p>
         </div>
       </DropdownMenuTrigger>
-      {isLeagueAdmin && <PlayerDropdownContent acquisition={acquisition} />}
+      {isLeagueAdmin && (
+        <AcquisitionDropdownContent acquisition={acquisition} />
+      )}
     </DropdownMenu>
   );
 }
 
-function PlayerDropdownContent({ acquisition }: Pick<Props, "acquisition">) {
+function AcquisitionDropdownContent({
+  acquisition,
+}: Pick<Props, "acquisition">) {
   return (
-    <DropdownMenuContent>
+    <DropdownMenuContent className="space-y-1">
       <DropdownMenuItem asChild>
         <Button asChild variant="ghost">
           <Link href={`/players/${acquisition.playerId}`}>
-            Vedi scheda giocaotre
+            Vedi scheda giocatore
           </Link>
         </Button>
       </DropdownMenuItem>
-      <ActionButton action={removeAcquiredPlayer.bind(null, acquisition.id)}>
+      <ActionButton
+        variant="destructive"
+        loadingText="Rimuovo"
+        action={removeAcquiredPlayer.bind(null, acquisition.id)}
+        className="px-2 py-1.5 rounded-lg text-sm justify-start"
+        requireAreYouSure
+        areYouSureDescription="Il giocatore verra rimosso, al partecipante sarano restituiti i crediti spesi."
+      >
         Rimuovi giocatore
       </ActionButton>
     </DropdownMenuContent>

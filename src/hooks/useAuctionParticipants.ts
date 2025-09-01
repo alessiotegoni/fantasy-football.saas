@@ -45,8 +45,6 @@ export default function useAuctionParticipants({
 
   async function handleSetParticipants() {
     const newParticipants = await getAuctionParticipants();
-    console.log(newParticipants);
-
     setParticipants(newParticipants);
   }
 
