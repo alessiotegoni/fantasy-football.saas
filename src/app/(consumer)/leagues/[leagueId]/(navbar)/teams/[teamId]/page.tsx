@@ -3,7 +3,7 @@ import { leagueSettings } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
+import PlayersList from "@/components/PlayersList";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

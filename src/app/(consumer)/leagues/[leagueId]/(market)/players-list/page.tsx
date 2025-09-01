@@ -10,7 +10,7 @@ import {
 import { getLeagueAvailablePlayersTag } from "@/features/(league)/leagues/db/cache/league";
 import InsertPlayerDialog from "@/features/(league)/teamsPlayers/components/InsertPlayerDialog.tsx";
 import PlayersEmptyState from "@/features/(league)/teamsPlayers/components/PlayersEmptyState";
-import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
+import PlayersList from "@/components/PlayersList";
 import { eq, notInArray } from "drizzle-orm";
 import { ArrowLeft } from "iconoir-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";

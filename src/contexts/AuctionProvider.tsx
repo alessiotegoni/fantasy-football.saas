@@ -5,7 +5,6 @@ import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auc
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
-import { Player } from "@/features/players/queries/player";
 import useAuctionAcquisitions from "@/hooks/useAuctionAcquisitions";
 import useAuctionBid from "@/hooks/useAuctionBid";
 import useAuctionNomination from "@/hooks/useAuctionNomination";
@@ -13,12 +12,13 @@ import useAuctionParticipants from "@/hooks/useAuctionParticipants";
 import { createContext, useCallback, useContext, useState } from "react";
 import useAuctionPlayerAssign from "@/hooks/useAuctionPlayerAssign";
 import { playerRoles } from "@/drizzle/schema";
+import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 
 type AuctionContextType = {
   customBidMode: boolean;
   toggleCustomBidMode: () => void;
-  selectedPlayer: Player | null;
-  toggleSelectPlayer: (player: Player | null) => void;
+  selectedPlayer: TeamPlayer | null;
+  toggleSelectPlayer: (player: TeamPlayer | null) => void;
 } & Pick<Props, "auction" | "isLeagueAdmin" | "userTeamId" | "playersRoles"> &
   ReturnType<typeof useAuctionAcquisitions> &
   ReturnType<typeof useAuctionParticipants> &
@@ -31,7 +31,7 @@ const AuctionContext = createContext<AuctionContextType | null>(null);
 type Props = {
   children: React.ReactNode;
   auction: NonNullable<AuctionWithSettings>;
-  playersRoles: typeof playerRoles.$inferSelect[];
+  playersRoles: (typeof playerRoles.$inferSelect)[];
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];
   isLeagueAdmin?: boolean;
@@ -47,7 +47,7 @@ export default function AuctionProvider({ children, ...props }: Props) {
     [customBidMode]
   );
 
-  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<TeamPlayer | null>(null);
   const toggleSelectPlayer = useCallback(setSelectedPlayer, []);
 
   const acquisitions = useAuctionAcquisitions(props);

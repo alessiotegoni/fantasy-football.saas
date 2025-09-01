@@ -1,7 +1,5 @@
 import AuctionProvider from "@/contexts/AuctionProvider";
-import {
-  AuctionWithSettings,
-} from "@/features/(league)/auctions/queries/auction";
+import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import PlayerDetails from "./PlayerDetailts";
@@ -13,6 +11,7 @@ import AuctionCentralPanel from "./AuctionCentralPanel";
 import { ParticipantsWithAcquisitions } from "./ParticipantsWithAcquisitions";
 import { Suspense } from "react";
 import AuctionPlayers from "./AuctionPlayers";
+import AuctionPlayersDialog from "./AuctionPlayersDialog";
 
 type Props = {
   playersRoles: (typeof playerRoles.$inferSelect)[];
@@ -35,11 +34,9 @@ export default function AuctionWrapper(props: Props) {
           <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 pb-6 sm:p-6">
             <div className="hidden lg:block lg:col-span-3">
               <Suspense
-                fallback={
-                  <div className="h-10 w-full animate-pulse rounded-lg bg-input" />
-                }
+                fallback={<AuctionPlayersDialog {...props} />}
               >
-                <AuctionPlayers auction={props.auction} />
+                <AuctionPlayers {...props} />
               </Suspense>
             </div>
 
@@ -57,5 +54,3 @@ export default function AuctionWrapper(props: Props) {
     </AuctionProvider>
   );
 }
-
-

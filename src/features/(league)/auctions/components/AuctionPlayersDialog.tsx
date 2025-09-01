@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useAuction } from "@/contexts/AuctionProvider";
-import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList";
+import PlayersList from "@/components/PlayersList";
 import {
   Dialog,
   DialogContent,
@@ -19,25 +19,23 @@ import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import EmptyState from "@/components/EmptyState";
 
 type Props = {
-  players: TeamPlayer[];
-  teams: Team[];
-  roles: PlayerRole[];
-  leagueId: string;
+  players?: TeamPlayer[];
+  teams?: Team[];
+  playersRoles: PlayerRole[];
 };
 
 export default function AuctionPlayersDialog({
-  players,
-  teams,
-  roles,
-  leagueId,
+  players = [],
+  teams = [],
+  playersRoles,
 }: Props) {
   const { toggleSelectPlayer } = useAuction();
   const [open, setOpen] = useState(false);
 
-  const handlePlayerClick = (player: TeamPlayer) => {
+  function handlePlayerClick(player: TeamPlayer) {
     toggleSelectPlayer(player);
     setOpen(false);
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -51,35 +49,30 @@ export default function AuctionPlayersDialog({
           />
         </div>
       </DialogTrigger>
-      <DialogContent className="flex h-5/6 max-w-3xl flex-col gap-4">
+      <DialogContent className="flex h-5/6 max-w-3xl flex-col gap-4 sm:max-w-2xl pt-6 p-2 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Giocatori disponibili</DialogTitle>
+          <DialogTitle className="text-2xl">Giocatori disponibili</DialogTitle>
         </DialogHeader>
-        <PlayersList players={players} teams={teams} roles={roles}>
-          {(filteredPlayers) => (
+        <PlayersList players={players} teams={teams} roles={playersRoles}>
+          {(players) => (
             <div className="relative grow overflow-y-auto">
-              {filteredPlayers.length > 0 ? (
+              {players.length > 0 ? (
                 <VirtualizedList
-                  items={filteredPlayers}
+                  items={players}
                   estimateSize={80}
                   renderItem={(player) => (
-                    <div
-                      key={player.id}
-                      onClick={() => handlePlayerClick(player)}
-                      className="cursor-pointer"
-                    >
-                      <PlayerCard
-                        {...player}
-                        showSelectButton={false}
-                        onSelect={() => {}}
-                      />
-                    </div>
+                    <PlayerCard
+                      {...player}
+                      showSelectButton={false}
+                      onSelect={handlePlayerClick}
+                    />
                   )}
                 />
               ) : (
                 <EmptyState
                   title="Nessun giocatore trovato"
                   description="Prova a modificare i filtri di ricerca."
+                  className="!bg-transparent"
                 />
               )}
             </div>

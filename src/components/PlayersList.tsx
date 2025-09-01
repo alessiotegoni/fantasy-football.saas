@@ -10,7 +10,8 @@ import {
   PlayerRole,
   TeamPlayer,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import PlayersListContent from "./PlayerListContent";
+import PlayersListContent from "../features/(league)/teamsPlayers/components/PlayerListContent";
+import useSortPlayers from "@/hooks/useSortPlayers";
 
 type FilterType = "search" | "teams" | "roles";
 
@@ -46,9 +47,10 @@ function PlayersListInner({
   leagueTeams,
 }: PlayersListProps) {
   const { filteredPlayers } = usePlayersFilters();
+  const { sortedPlayers } = useSortPlayers(filteredPlayers);
 
   if (children) {
-    return <>{children(filteredPlayers)}</>;
+    return <>{children(sortedPlayers)}</>;
   }
 
   if (!leagueTeams) return null;
