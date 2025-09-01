@@ -10,11 +10,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAuction } from "@/contexts/AuctionProvider";
 import { BitcoinCircle, Coins, Timer, Xmark } from "iconoir-react";
-import { useEffect, useState } from "react";
 import { deleteNomination } from "../actions/auctionNomination";
 import { cn } from "@/lib/utils";
 
-export default function CurrentBid() {
+export default function CurrentBid({ timeLeft }: { timeLeft: number }) {
   const {
     currentNomination,
     currentNominationTeam,
@@ -28,16 +27,16 @@ export default function CurrentBid() {
   const currentTeamName =
     currentBidTeam?.team?.name || currentNominationTeam?.team?.name;
 
-  console.log(currentNominationTeam);
+  const isExpired = timeLeft === 0;
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
-      {isLeagueAdmin && (
+      {isLeagueAdmin && !isExpired && (
         <DeleteNominationButton nominationId={currentNomination.id} />
       )}
-      <CustomBidButton />
+      {!isExpired && <CustomBidButton />}
 
-      <BidExiprationTimer expiresAt={currentNomination.expiresAt} />
+      <BidExiprationTimer timeLeft={timeLeft} />
       <div className="flex gap-2 items-center">
         <Coins className="size-12 text-primary" />
         <p className="text-3xl font-bold">{bidAmount}</p>
@@ -72,49 +71,27 @@ export function CustomBidButton() {
 }
 
 function DeleteNominationButton({ nominationId }: { nominationId: string }) {
-  // return (
-  //   <Tooltip>
-  //     <TooltipTrigger asChild>
-  //       <ActionButton
-  //         variant="destructive"
-  //         className="absolute right-4 top-4 size-10 rounded-full border border-border bg-input/60"
-  //         action={deleteNomination.bind(null, nominationId)}
-  //       >
-  //         <Xmark className="size-6" />
-  //       </ActionButton>
-  //     </TooltipTrigger>
-  //     <TooltipContent>Rimuovi chiamata</TooltipContent>
-  //   </Tooltip>
-  // );
+  const { handleSetBidAmount } = useAuction();
+
+  function handleDelete() {
+    handleSetBidAmount(1);
+
+    return deleteNomination(nominationId);
+  }
+
   return (
     <ActionButton
       loadingText=""
       variant="destructive"
       className="absolute right-4 top-4 size-10 rounded-full border border-border bg-input/60"
-      action={deleteNomination.bind(null, nominationId)}
+      action={handleDelete}
     >
       <Xmark className="size-6" />
     </ActionButton>
   );
 }
 
-function BidExiprationTimer({ expiresAt }: { expiresAt: Date }) {
-  const [timeLeft, setTimeLeft] = useState(0);
-
-  console.log(expiresAt, timeLeft);
-
-  useEffect(() => {
-    const target = new Date(expiresAt).getTime();
-
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const diff = Math.max(0, target - now);
-      setTimeLeft(diff);
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [expiresAt]);
-
+function BidExiprationTimer({ timeLeft }: { timeLeft: number }) {
   return (
     <div
       className="absolute left-1/2 -translate-x-1/2 -top-8 flex justify-center items-center gap-4
