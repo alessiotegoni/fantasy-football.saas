@@ -1,5 +1,5 @@
 import { db } from "@/drizzle/db";
-import { leagueSettings, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
+import { leagueSettings } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -7,65 +7,114 @@ import PlayersList from "@/features/(league)/teamsPlayers/components/PlayersList
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowLeft, NavArrowRight } from "iconoir-react";
+import { NavArrowRight } from "iconoir-react";
 import ReleasePlayerDialog from "@/features/(league)/teamsPlayers/components/ReleasePlayerDialog";
 import {
   getPlayersRoles,
   getTeamPlayerPerRoles,
   getTeamsPlayers,
+  PlayerRole,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
 import { cn } from "@/lib/utils";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
-import { getLeagueTeam } from "@/features/(league)/teams/queries/leagueTeam";
+import {
+  getLeagueTeam,
+  getLeagueTeams,
+} from "@/features/(league)/teams/queries/leagueTeam";
 import Container from "@/components/Container";
+import { getTeams, Team } from "@/features/teams/queries/team";
+import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
 
 export default async function LeagueTeamPage({
   params,
 }: {
   params: Promise<{ leagueId: string; teamId: string }>;
 }) {
-  const { leagueId, teamId } = await params;
+  const ids = await params;
 
-  const team = await getLeagueTeam({ leagueId, teamId });
-  if (!team) notFound();
+  const [leagueTeam, teams, roles] = await Promise.all([
+    getLeagueTeam(ids),
+    getTeams(),
+    getPlayersRoles(),
+  ]);
+  if (!leagueTeam) notFound();
+
+  const props = {
+    ...ids,
+    teams,
+    roles,
+  };
 
   return (
-    <Container leagueId={leagueId} headerLabel="Squadra">
+    <Container {...ids} headerLabel="Squadra">
       <LeagueTeamCard
-        team={team}
-        leagueId={leagueId}
+        team={leagueTeam}
+        {...ids}
         className="bg-sidebar hover:border-border rounded-3xl flex-col md:flex-row items-center"
         showIsUserTeam={false}
         renderTeamPpr={() => (
           <Suspense>
-            <TeamPlayerPerRole leagueId={leagueId} teamId={teamId} />
+            <TeamPlayerPerRole {...props} />
           </Suspense>
         )}
       />
       <Suspense>
-        <SuspendedPlayersList leagueId={leagueId} teamId={teamId} />
+        <SuspenseBoundary {...props} />
       </Suspense>
     </Container>
   );
 }
 
-type Props = { leagueId: string; teamId: string };
+type Props = {
+  leagueId: string;
+  teamId: string;
+  teams: Team[];
+  roles: PlayerRole[];
+};
 
-async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
-  const [playerRoles, teamPlayerRolesCount, leaguePlayerRoles] =
-    await Promise.all([
-      getPlayersRoles(),
-      getTeamPlayerPerRoles(teamId),
-      getLeaguePlayersPerRole(leagueId),
-    ]);
+async function SuspenseBoundary({ leagueId, teamId, ...props }: Props) {
+  const [teamPlayers, leagueTeams] = await Promise.all([
+    getTeamsPlayers([teamId]),
+    getLeagueTeams(leagueId),
+  ]);
+
+  return (
+    <PlayersList
+      {...props}
+      players={teamPlayers}
+      leagueTeams={leagueTeams}
+      emptyState={<TeamPlayersEmptyState leagueId={leagueId} />}
+      selectionButton={
+        <Suspense>
+          <PlayerSelection leagueId={leagueId} />
+        </Suspense>
+      }
+      actionsDialog={
+        <ReleasePlayerDialog
+          releasePercentagePromise={getLeagueReleasePercentage(leagueId)}
+        />
+      }
+      enabledFilters={[]}
+    />
+  );
+}
+
+async function TeamPlayerPerRole({
+  leagueId,
+  teamId,
+  roles,
+}: Omit<Props, "teams">) {
+  const [teamPlayerRolesCount, leaguePlayerRoles] = await Promise.all([
+    getTeamPlayerPerRoles(teamId),
+    getLeaguePlayersPerRole(leagueId),
+  ]);
 
   return (
     <div className="flex flex-wrap justify-center md:justify-normal gap-3">
-      {playerRoles.map((role) => {
-        const requiredCount =
-          { [PRESIDENT_ROLE_ID]: 1, ...leaguePlayerRoles }[role.id] || 0;
+      {roles.map((role) => {
+        const requiredCount = leaguePlayerRoles[role.id] || 1;
 
         const teamCount =
           teamPlayerRolesCount.find(
@@ -89,30 +138,6 @@ async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
         );
       })}
     </div>
-  );
-}
-
-async function SuspendedPlayersList({ leagueId, teamId }: Props) {
-  const [teamPlayers, teams, roles] = await Promise.all([
-    getTeamsPlayers([teamId]),
-    getTeams(),
-    getPlayersRoles(),
-  ]);
-
-  return (
-    <PlayersList
-      players={teamPlayers}
-      teams={teams}
-      roles={roles}
-      emptyState={<TeamPlayersEmptyState leagueId={leagueId} />}
-      actionsDialog={
-        <ReleasePlayerDialog
-          releasePercentagePromise={getLeagueReleasePercentage(leagueId)}
-        />
-      }
-      leagueId={leagueId}
-      enabledFilters={[]}
-    />
   );
 }
 

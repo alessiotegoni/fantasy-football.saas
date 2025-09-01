@@ -28,6 +28,7 @@ import { Suspense } from "react";
 import PlayerSelectionButton from "@/features/(league)/teamsPlayers/components/PlayerSelectionButton";
 import { getUserId } from "@/features/users/utils/user";
 import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
 
 export default async function LeaguePlayersListPage({
   params,
@@ -72,15 +73,16 @@ async function SuspenseBoundary(props: {
   teams: Team[];
   roles: PlayerRole[];
 }) {
-  const userId = await getUserId();
-  const isAdmin = userId ? await getLeagueAdmin(userId, props.leagueId) : false;
-
   const leagueTeams = await getLeagueTeams(props.leagueId);
 
   return (
     <PlayersList
       {...props}
-      selectionButton={isAdmin && <PlayerSelectionButton />}
+      selectionButton={
+        <Suspense>
+          <PlayerSelection {...props} />
+        </Suspense>
+      }
       leagueTeams={leagueTeams}
       actionsDialog={<InsertPlayerDialog teams={leagueTeams} />}
       emptyState={<PlayersEmptyState />}
