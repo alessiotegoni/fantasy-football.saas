@@ -1,11 +1,11 @@
 "use client";
 
-import { User } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuction } from "@/contexts/AuctionProvider";
 import { Button } from "@/components/ui/button";
-import { Xmark } from "iconoir-react";
+import { ArrowUpRight, User, Xmark } from "iconoir-react";
+import Avatar from "@/components/Avatar";
+import PlayerRoleBadge from "@/components/PlayerRoleBadge";
+import Link from "next/link";
 
 export default function PlayerDetails() {
   const { toggleSelectPlayer, selectedPlayer, currentNomination } =
@@ -25,26 +25,52 @@ export default function PlayerDetails() {
         </Button>
       )}
       {player ? (
-        <div className="text-center space-y-4 h-full flex flex-col justify-center items-center">
-          <Avatar className="h-20 w-20 mx-auto">
-            <AvatarImage src={player.avatarUrl || undefined} />
-            <AvatarFallback className="text-lg">
-              {player.displayName.charAt(0)}
-            </AvatarFallback>
-          </Avatar>
+        <div className="text-center space-y-2 h-full flex flex-col justify-center items-center">
+          <div className="relative size-20">
+            <Avatar
+              imageUrl={player.avatarUrl}
+              name={player.displayName}
+              renderFallback={() => <User className="size-8" />}
+              className="size-18 ring-1 ring-zinc-700"
+            />
+            {player.role && (
+              <PlayerRoleBadge
+                role={player.role}
+                className="absolute size-6 bottom-2 right-2"
+              />
+            )}
+          </div>
 
           <div>
-            <h3 className="font-heading font-bold">{player.displayName}</h3>
-            <p className="text-sm text-muted-foreground">{player.team.displayName}</p>
-            <Badge className="mt-2">{player.role.name}</Badge>
+            <Link
+              href={`/players/${player.id}`}
+              className="relative hover:underline"
+            >
+              <h2>{player.displayName}</h2>
+              <ArrowUpRight className="size-3 absolute top-0 -right-3" />
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              {player.team.displayName}
+            </p>
           </div>
         </div>
       ) : (
-        <div className="text-center text-muted-foreground">
-          <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>Seleziona un giocatore</p>
-        </div>
+        <PlayerEmptyState />
       )}
+    </div>
+  );
+}
+
+function PlayerEmptyState() {
+  return (
+    <div className="h-full flex flex-col justify-center items-center text-center text-muted-foreground">
+      <div className="size-20 bg-input rounded-full grid place-content-center mb-4">
+        <User className="size-10" />
+      </div>
+      <div>
+        <h2 className="text-lg">Giocatore</h2>
+        <p className="text-sm">Squadra</p>
+      </div>
     </div>
   );
 }

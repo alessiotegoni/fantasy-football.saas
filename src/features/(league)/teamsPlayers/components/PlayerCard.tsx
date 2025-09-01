@@ -38,7 +38,7 @@ export default memo(function PlayerCard({
         canSelectCard && "cursor-pointer",
         className
       )}
-      {...(canSelectCard ? { onClick: onSelect?.bind(null, player) } : {})}
+      onClick={canSelectCard ? onSelect?.bind(null, player) : undefined}
     >
       <div className="flex items-center gap-3">
         <div className={cn("relative", `size-${avatarSize}`)}>
