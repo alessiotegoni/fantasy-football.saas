@@ -35,6 +35,7 @@ export default memo(function PlayerCard({
     <div
       className={cn(
         "flex items-center justify-between px-4 py-3 rounded-xl border border-border",
+        canSelectCard && "cursor-pointer",
         className
       )}
       {...(canSelectCard ? { onClick: onSelect?.bind(null, player) } : {})}

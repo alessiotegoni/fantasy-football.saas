@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useWindowVirtualizer, VirtualItem } from "@tanstack/react-virtual";
-import { ScrollToTopButton } from "./ScrollToBottom";
+import { useVirtualizer, VirtualItem } from "@tanstack/react-virtual";
 import { cn } from "@/lib/utils";
+import React from "react";
 
 type VirtualizedListProps<T> = {
   items: T[];
@@ -16,13 +16,16 @@ type VirtualizedListProps<T> = {
 export function VirtualizedList<T>({
   items,
   estimateSize,
-  gap = 0,
+  gap = 16,
   overscan = 5,
   className = "",
   renderItem,
 }: VirtualizedListProps<T>) {
-  const virtualizer = useWindowVirtualizer({
+  const parentRef = React.useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
     count: items.length,
+    getScrollElement: () => parentRef.current,
     estimateSize: () => estimateSize,
     gap,
     overscan,
@@ -31,36 +34,40 @@ export function VirtualizedList<T>({
   const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <>
-      <div className={cn("h-full", className)}>
+    <div ref={parentRef} className={cn("size-full overflow-y-auto", className)}>
+      <div
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+          width: "100%",
+          position: "relative",
+        }}
+      >
         <div
           style={{
-            height: `${virtualizer.getTotalSize()}px`,
-            position: "relative",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            transform: `translateY(${virtualItems[0]?.start ?? 0}px)`,
           }}
         >
-          <div
-            className="absolute top-0 left-0 w-full space-y-4"
-            style={{
-              transform: `translateY(${virtualItems[0]?.start ?? 0}px)`,
-            }}
-          >
-            {virtualItems.map((virtualRow) => {
-              const item = items[virtualRow.index];
-              return (
-                <div
-                  key={virtualRow.key}
-                  data-index={virtualRow.index}
-                  ref={virtualizer.measureElement}
-                >
-                  {renderItem(item, virtualRow)}
-                </div>
-              );
-            })}
-          </div>
+          {virtualItems.map((virtualRow) => {
+            const item = items[virtualRow.index];
+            return (
+              <div
+                key={virtualRow.key}
+                data-index={virtualRow.index}
+                ref={virtualizer.measureElement}
+                style={{
+                  paddingBottom: `${gap}px`,
+                }}
+              >
+                {renderItem(item, virtualRow)}
+              </div>
+            );
+          })}
         </div>
       </div>
-      <ScrollToTopButton />
-    </>
+    </div>
   );
 }

@@ -29,24 +29,20 @@ export default function AuctionPlayersDialog({
   teams = [],
   playersRoles,
 }: Props) {
-  const { toggleSelectPlayer } = useAuction();
+  const { selectedPlayer, toggleSelectPlayer } = useAuction();
   const [open, setOpen] = useState(false);
 
   function handlePlayerClick(player: TeamPlayer) {
-    toggleSelectPlayer(player);
+    toggleSelectPlayer(selectedPlayer?.id === player.id ? null : player);
     setOpen(false);
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground size-4" />
-          <Input
-            readOnly
-            placeholder="Cerca giocatori..."
-            className="cursor-pointer pl-9"
-          />
+        <div className="relative w-full mb-6 *:cursor-pointer">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+          <Input type="text" placeholder="Cerca giocatori" className="pl-10 focus:border-border" />
         </div>
       </DialogTrigger>
       <DialogContent className="flex h-5/6 max-w-3xl flex-col gap-4 sm:max-w-2xl pt-6 p-2 sm:p-6">
@@ -54,29 +50,31 @@ export default function AuctionPlayersDialog({
           <DialogTitle className="text-2xl">Giocatori disponibili</DialogTitle>
         </DialogHeader>
         <PlayersList players={players} teams={teams} roles={playersRoles}>
-          {(players) => (
-            <div className="relative grow overflow-y-auto">
-              {players.length > 0 ? (
-                <VirtualizedList
-                  items={players}
-                  estimateSize={80}
-                  renderItem={(player) => (
-                    <PlayerCard
-                      {...player}
-                      showSelectButton={false}
-                      onSelect={handlePlayerClick}
-                    />
-                  )}
-                />
-              ) : (
-                <EmptyState
-                  title="Nessun giocatore trovato"
-                  description="Prova a modificare i filtri di ricerca."
-                  className="!bg-transparent"
-                />
-              )}
-            </div>
-          )}
+          {(players) =>
+            players.length > 0 ? (
+              <VirtualizedList
+                items={players}
+                estimateSize={80}
+                renderItem={(player) => (
+                  <PlayerCard
+                    {...player}
+                    showSelectButton={false}
+                    onSelect={handlePlayerClick}
+                    className={
+                      selectedPlayer?.id === player.id ? "border-primary" : ""
+                    }
+                    canSelectCard
+                  />
+                )}
+              />
+            ) : (
+              <EmptyState
+                title="Nessun giocatore trovato"
+                description="Prova a modificare i filtri di ricerca."
+                className="!bg-transparent"
+              />
+            )
+          }
         </PlayersList>
       </DialogContent>
     </Dialog>
