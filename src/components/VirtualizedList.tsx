@@ -16,7 +16,7 @@ type VirtualizedListProps<T> = {
 export function VirtualizedList<T>({
   items,
   estimateSize,
-  gap = 16,
+  gap = 10,
   overscan = 5,
   className = "",
   renderItem,
@@ -34,7 +34,7 @@ export function VirtualizedList<T>({
   const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <div ref={parentRef} className={cn("size-full overflow-y-auto", className)}>
+    <div ref={parentRef} className={cn("size-full overflow-y-auto pr-1.5 custom-scrollbar", className)}>
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

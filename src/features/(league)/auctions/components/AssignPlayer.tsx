@@ -66,10 +66,6 @@ export default function AssignPlayer() {
         </p>
       </div>
 
-      {selectedPlayer && (
-        <p className="font-semibold">{selectedPlayer.displayName}</p>
-      )}
-
       <div className="flex gap-4">
         <TeamsSelect />
 

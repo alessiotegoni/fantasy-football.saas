@@ -8,15 +8,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { InputSearch } from "iconoir-react";
 import { PlayerRole, TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import { Team } from "@/features/teams/queries/team";
 import { VirtualizedList } from "@/components/VirtualizedList";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import EmptyState from "@/components/EmptyState";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   players?: TeamPlayer[];
@@ -39,12 +38,19 @@ export default function AuctionPlayersDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <div className="relative w-full mb-6 *:cursor-pointer">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-          <Input type="text" placeholder="Cerca giocatori" className="pl-10 focus:border-border" />
+      <div className="size-full bg-card rounded-3xl p-4 sm:p-6 flex flex-col justify-center items-center gap-5 text-center">
+        <div className="flex flex-col justify-center items-center gap-3">
+          <InputSearch className="size-15 size-text-muted-foreground" />
+          <p className="text-muted-foreground">Cerca i giocatori rimasti</p>
         </div>
-      </DialogTrigger>
+        <Button
+          variant="ghost"
+          onClick={setOpen.bind(null, true)}
+          className="py-3"
+        >
+          Cerca
+        </Button>
+      </div>
       <DialogContent className="flex h-5/6 max-w-3xl flex-col gap-4 sm:max-w-2xl pt-6 p-2 sm:p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl">Giocatori disponibili</DialogTitle>
