@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   createContext,
@@ -40,16 +40,16 @@ type Props = {
   children: React.ReactNode;
   players: TeamPlayer[];
   enabledFilters?: FilterType[];
-  teamsPromise: ReturnType<typeof getTeams>;
-  rolesPromise: ReturnType<typeof getPlayersRoles>;
+  teams: Awaited<ReturnType<typeof getTeams>>;
+  roles: Awaited<ReturnType<typeof getPlayersRoles>>;
 };
 
 export function PlayersFiltersProvider({
   children,
   players,
   enabledFilters = ["search", "teams", "roles"],
-  teamsPromise,
-  rolesPromise,
+  teams,
+  roles,
 }: Props) {
   const [filters, setFilters] = useState<Filters>({
     search: "",
@@ -75,20 +75,14 @@ export function PlayersFiltersProvider({
 
   const isFilterEnabled = useCallback(
     (filter: FilterType) => enabledFilters.includes(filter),
-    []
+    [enabledFilters]
   );
 
   const renderFilters = () => (
     <div className="space-y-2">
       {isFilterEnabled("search") && <PlayersListSearchBar />}
-      <Suspense>
-        {isFilterEnabled("teams") && (
-          <TeamsFilters teamsPromise={teamsPromise} />
-        )}
-        {isFilterEnabled("roles") && (
-          <PlayersRolesFilters playersRolesPromise={rolesPromise} />
-        )}
-      </Suspense>
+      {isFilterEnabled("teams") && <TeamsFilters teams={teams} />}
+      {isFilterEnabled("roles") && <PlayersRolesFilters roles={roles} />}
     </div>
   );
 

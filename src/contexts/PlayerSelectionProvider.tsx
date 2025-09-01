@@ -3,7 +3,7 @@ import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer
 import { createContext, useCallback, useContext, useState } from "react";
 
 type PlayerSelectionContextType = {
-  leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
+  leagueTeams: { id: string; name: string }[];
   isDialogOpen: boolean;
   isSelectionMode: boolean;
   selectedPlayer: TeamPlayer | null;
@@ -19,10 +19,10 @@ export const PlayerSelectionContext =
   createContext<PlayerSelectionContextType | null>(null);
 
 export function PlayerSelectionProvider({
-  leagueTeamsPromise,
+  leagueTeams,
   children,
 }: {
-  leagueTeamsPromise: Promise<{ id: string; name: string }[]>;
+  leagueTeams: { id: string; name: string }[];
   children: React.ReactNode;
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -46,7 +46,7 @@ export function PlayerSelectionProvider({
   return (
     <PlayerSelectionContext.Provider
       value={{
-        leagueTeamsPromise,
+        leagueTeams,
         isDialogOpen,
         isSelectionMode,
         selectedPlayer,

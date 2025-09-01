@@ -16,28 +16,37 @@ import { ArrowLeft } from "iconoir-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
 
+import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { getTeams } from "@/features/teams/queries/team";
+
 export default async function LeaguePlayersListPage({
   params,
 }: {
   params: Promise<{ leagueId: string }>;
 }) {
   const { leagueId } = await params;
-  const players = await getLeagueAvailablePlayers(leagueId);
+  const [players, teams, roles] = await Promise.all([
+    getLeagueAvailablePlayers(leagueId),
+    getTeams(),
+    getPlayersRoles(),
+  ]);
 
   return (
-    <div className="max-w-[700px] mx-auto md:p-4">
-      <div className="flex items-center mb-4 md:mb-8 md:hidden">
+    <div className="mx-auto max-w-[700px] md:p-4">
+      <div className="mb-4 flex items-center md:mb-8 md:hidden">
         <Link href={`/leagues/${leagueId}`} className="mr-3">
           <ArrowLeft className="size-5" />
         </Link>
         <h2 className="text-2xl font-heading">Listone giocatori</h2>
       </div>
-      <h2 className="hidden md:block text-3xl font-heading mb-8">
+      <h2 className="mb-8 hidden text-3xl font-heading md:block">
         Listone giocatori
       </h2>
       <PlayersList
         leagueId={leagueId}
         players={players}
+        teams={teams}
+        roles={roles}
         actionsDialog={<InsertPlayerDialog />}
         emptyState={<PlayersEmptyState />}
         virtualized

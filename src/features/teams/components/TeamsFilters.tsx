@@ -13,11 +13,10 @@ import { cn } from "@/lib/utils";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 
 export default function TeamsFilters({
-  teamsPromise,
+  teams,
 }: {
-  teamsPromise: ReturnType<typeof getTeams>;
+  teams: Awaited<ReturnType<typeof getTeams>>;
 }) {
-  const teams = use(teamsPromise);
   const { filters, handleSetFilters } = usePlayersFilters();
 
   const handleTeamsFilter = useCallback(

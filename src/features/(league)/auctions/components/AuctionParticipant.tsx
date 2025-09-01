@@ -23,6 +23,7 @@ export default function AuctionParticipant({ participant, isOnline }: Props) {
         <DropdownMenuTrigger
           className={cn(
             "bg-input/60 p-4 border rounded-3xl hover:bg-muted/50 cursor-pointer transition-colors relative mb-4 w-full",
+            !isLeagueAdmin && "cursor-default",
             participant.id === turnParticipant?.id
               ? "border-primary"
               : "border-border"

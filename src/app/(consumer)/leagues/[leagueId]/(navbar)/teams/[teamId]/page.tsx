@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
 import { getLeagueTeam } from "@/features/(league)/teams/queries/leagueTeam";
+import Container from "@/components/Container";
 
 export default async function LeagueTeamPage({
   params,
@@ -31,14 +32,7 @@ export default async function LeagueTeamPage({
   if (!team) notFound();
 
   return (
-    <div className="max-w-[700px] mx-auto md:p-4">
-      <div className="flex items-center mb-4 md:mb-8 md:hidden">
-        <Link href={`/leagues/${leagueId}/teams`} className="mr-3">
-          <ArrowLeft className="size-5" />
-        </Link>
-        <h2 className="text-2xl font-heading">Squadra</h2>
-      </div>
-      <h2 className="hidden md:block text-2xl font-heading mb-4">Squadra</h2>
+    <Container leagueId={leagueId} headerLabel="Squadra">
       <LeagueTeamCard
         team={team}
         leagueId={leagueId}
@@ -53,7 +47,7 @@ export default async function LeagueTeamPage({
       <Suspense>
         <SuspendedPlayersList leagueId={leagueId} teamId={teamId} />
       </Suspense>
-    </div>
+    </Container>
   );
 }
 
@@ -99,11 +93,17 @@ async function TeamPlayerPerRole({ leagueId, teamId }: Props) {
 }
 
 async function SuspendedPlayersList({ leagueId, teamId }: Props) {
-  const teamPlayers = await getTeamsPlayers([teamId]);
+  const [teamPlayers, teams, roles] = await Promise.all([
+    getTeamsPlayers([teamId]),
+    getTeams(),
+    getPlayersRoles(),
+  ]);
 
   return (
     <PlayersList
       players={teamPlayers}
+      teams={teams}
+      roles={roles}
       emptyState={<TeamPlayersEmptyState leagueId={leagueId} />}
       actionsDialog={
         <ReleasePlayerDialog

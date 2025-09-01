@@ -22,6 +22,8 @@ export async function getPlayersRoles() {
   return db.query.playerRoles.findMany();
 }
 
+export type PlayerRole = typeof playerRoles.$inferSelect
+
 export async function getRolesWithoutPresident() {
   const roles = await getPlayersRoles();
 

@@ -1,11 +1,18 @@
-import { PlayersFiltersProvider } from "@/contexts/PlayersFiltersProvider";
+"use client";
+
+import {
+  PlayersFiltersProvider,
+  usePlayersFilters,
+} from "@/contexts/PlayersFiltersProvider";
 import { PlayerSelectionProvider } from "@/contexts/PlayerSelectionProvider";
-import { getTeams } from "@/features/teams/queries/team";
-import { getPlayersRoles, TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { Team } from "@/features/teams/queries/team";
+import {
+  PlayerRole,
+  TeamPlayer,
+} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import PlayersListContent from "./PlayerListContent";
 import { Suspense } from "react";
 import { default as PlayerSelectionButton } from "./PlayerSelection";
-import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 
 type FilterType = "search" | "teams" | "roles";
 
@@ -15,51 +22,58 @@ interface PlayersListProps {
   title?: string;
   enabledFilters?: FilterType[];
   virtualized?: boolean;
-  showSelection?: boolean;
   showSelectionButton?: boolean;
   actionsDialog?: React.ReactNode;
   emptyState?: React.ReactNode;
+  teams: Team[];
+  roles: PlayerRole[];
+  leagueTeams?: { id: string; name: string }[];
+  children?: (players: TeamPlayer[]) => React.ReactNode;
 }
 
-export default function PlayersList({
-  players,
+export default function PlayersList({ children, ...props }: PlayersListProps) {
+  return (
+    <PlayersFiltersProvider {...props}>
+      <PlayersListInner {...props}>{children}</PlayersListInner>
+    </PlayersFiltersProvider>
+  );
+}
+
+function PlayersListInner({
+  children,
   leagueId,
-  title = "Giocatori",
-  enabledFilters = ["search", "teams", "roles"],
-  virtualized = false,
+  title,
   showSelectionButton = true,
+  virtualized = false,
   actionsDialog,
   emptyState,
+  leagueTeams,
 }: PlayersListProps) {
-  return (
-    <PlayersFiltersProvider
-      players={players}
-      enabledFilters={enabledFilters}
-      teamsPromise={getTeams()}
-      rolesPromise={getPlayersRoles()}
-    >
-      <PlayerSelectionProvider
-        leagueTeamsPromise={getLeagueTeams(leagueId).then((team) =>
-          team.map(({ id, name }) => ({ id, name }))
-        )}
-      >
-        <div>
-          <div className="flex items-center mb-3.5">
-            <h2 className="text-xl grow">{title}</h2>
-            {showSelectionButton && (
-              <Suspense>
-                <PlayerSelectionButton leagueId={leagueId} />
-              </Suspense>
-            )}
-          </div>
+  const { filteredPlayers } = usePlayersFilters();
 
-          <PlayersListContent
-            virtualized={virtualized}
-            actionsDialog={actionsDialog}
-            emptyState={emptyState}
-          />
+  if (children) {
+    return <>{children(filteredPlayers)}</>;
+  }
+
+  if (!leagueTeams) return null
+
+  return (
+    <PlayerSelectionProvider leagueTeams={leagueTeams}>
+      <div className="flex h-full flex-col">
+        <div className="mb-3.5 flex items-center">
+          <h2 className="grow text-xl">{title}</h2>
+          {showSelectionButton && (
+            <Suspense>
+              <PlayerSelectionButton leagueId={leagueId} />
+            </Suspense>
+          )}
         </div>
-      </PlayerSelectionProvider>
-    </PlayersFiltersProvider>
+        <PlayersListContent
+          virtualized={virtualized!}
+          actionsDialog={actionsDialog}
+          emptyState={emptyState!}
+        />
+      </div>
+    </PlayerSelectionProvider>
   );
 }

@@ -15,11 +15,10 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function PlayersRolesFilters({
-  playersRolesPromise,
+  roles,
 }: {
-  playersRolesPromise: ReturnType<typeof getPlayersRoles>;
+  roles: Awaited<ReturnType<typeof getPlayersRoles>>;
 }) {
-  const roles = use(playersRolesPromise);
   const { filters, handleSetFilters } = usePlayersFilters();
 
   const handleRolesFilter = useCallback(

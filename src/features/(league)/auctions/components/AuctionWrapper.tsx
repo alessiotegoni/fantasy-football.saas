@@ -1,18 +1,18 @@
 import AuctionProvider from "@/contexts/AuctionProvider";
 import {
   AuctionWithSettings,
-  getAuctionAvailablePlayers,
 } from "@/features/(league)/auctions/queries/auction";
 import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
 import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
 import PlayerDetails from "./PlayerDetailts";
-import PlayersList from "../../teamsPlayers/components/PlayersList";
 import { AuctionParticipant } from "../queries/auctionParticipant";
 import AuctionHeader from "./AuctionHeader";
 import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 import { playerRoles } from "@/drizzle/schema";
 import AuctionCentralPanel from "./AuctionCentralPanel";
 import { ParticipantsWithAcquisitions } from "./ParticipantsWithAcquisitions";
+import { Suspense } from "react";
+import AuctionPlayers from "./AuctionPlayers";
 
 type Props = {
   playersRoles: (typeof playerRoles.$inferSelect)[];
@@ -34,9 +34,13 @@ export default function AuctionWrapper(props: Props) {
         <main className="flex-1">
           <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 pb-6 sm:p-6">
             <div className="hidden lg:block lg:col-span-3">
-              {/* <Suspense>
-                  <AuctionAvailablePlayers {...props} />
-                </Suspense> */}
+              <Suspense
+                fallback={
+                  <div className="h-10 w-full animate-pulse rounded-lg bg-input" />
+                }
+              >
+                <AuctionPlayers auction={props.auction} />
+              </Suspense>
             </div>
 
             <div className="lg:col-span-6">
@@ -54,15 +58,4 @@ export default function AuctionWrapper(props: Props) {
   );
 }
 
-async function AuctionAvailablePlayers({ auction }: Pick<Props, "auction">) {
-  const players = await getAuctionAvailablePlayers(auction.id);
 
-  return (
-    <PlayersList
-      leagueId={auction.leagueId}
-      players={players}
-      virtualized
-      showSelectionButton={false}
-    />
-  );
-}
