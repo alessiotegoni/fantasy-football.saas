@@ -27,32 +27,30 @@ type Props = {
 
 export default function AuctionWrapper(props: Props) {
   return (
-    <div>
+    <AuctionProvider {...props}>
       <AuctionHeader {...props} />
 
       <div className="flex">
         <main className="flex-1">
-          <AuctionProvider {...props}>
-            <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
-              <div className="hidden lg:block lg:col-span-3">
-                {/* <Suspense>
+          <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 p-0 sm:p-6">
+            <div className="hidden lg:block lg:col-span-3">
+              {/* <Suspense>
                   <AuctionAvailablePlayers {...props} />
                 </Suspense> */}
-              </div>
-
-              <div className="lg:col-span-6">
-                <AuctionCentralPanel />
-              </div>
-              <div className="lg:col-span-3">
-                <PlayerDetails />
-              </div>
             </div>
 
-            <ParticipantsWithAcquisitions />
-          </AuctionProvider>
+            <div className="lg:col-span-6">
+              <AuctionCentralPanel />
+            </div>
+            <div className="lg:col-span-3">
+              <PlayerDetails />
+            </div>
+          </div>
+
+          <ParticipantsWithAcquisitions />
         </main>
       </div>
-    </div>
+    </AuctionProvider>
   );
 }
 
