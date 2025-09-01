@@ -4,7 +4,9 @@ import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auctio
 import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 
 type Args = {
   userTeamId?: string;
@@ -18,6 +20,8 @@ export default function useAuctionParticipants({
   defaultParticipants,
 }: Args) {
   const [participants, setParticipants] = useState(defaultParticipants);
+
+  const router = useRouter();
 
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
@@ -41,6 +45,7 @@ export default function useAuctionParticipants({
 
   async function handleSetParticipants() {
     const newParticipants = await getAuctionParticipants();
+    console.log(newParticipants);
 
     setParticipants(newParticipants);
   }
@@ -88,6 +93,13 @@ export default function useAuctionParticipants({
     () => participants.find((p) => p.isCurrent),
     [participants]
   );
+
+  useEffect(() => {
+    if (!userParticipant) {
+      toast.error("Sei stato espulso dall'asta");
+      router.push(`/leagues/${auction.leagueId}/premium/auctions`);
+    }
+  }, [userParticipant]);
 
   return { participants, userParticipant, turnParticipant };
 }

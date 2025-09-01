@@ -22,7 +22,7 @@ export default function AuctionParticipant({ participant, isOnline }: Props) {
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
           className={cn(
-            "bg-input/60 p-4 border rounded-3xl hover:bg-muted/50 cursor-pointer transition-colors min-w-70 relative mb-4",
+            "bg-input/60 p-4 border rounded-3xl hover:bg-muted/50 cursor-pointer transition-colors relative mb-4 w-full",
             participant.id === turnParticipant?.id
               ? "border-primary"
               : "border-border"

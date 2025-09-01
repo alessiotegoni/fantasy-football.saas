@@ -17,7 +17,7 @@ export function ParticipantsWithAcquisitions() {
     <div className="flex justify-center w-full">
       <Accordion type="multiple" className="flex gap-2" {...accordion}>
         {participants.map((participant) => (
-          <div key={participant.id}>
+          <div key={participant.id} className="min-w-45 sm:min-w-70">
             <AuctionParticipant
               key={participant.id}
               participant={participant}
