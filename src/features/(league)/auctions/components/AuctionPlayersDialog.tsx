@@ -46,7 +46,7 @@ export default function AuctionPlayersDialog({
         <Button
           variant="ghost"
           onClick={setOpen.bind(null, true)}
-          className="py-3"
+          className="py-3 w-30"
         >
           Cerca
         </Button>

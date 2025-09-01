@@ -37,14 +37,11 @@ export async function getCurrentNomination(auctionId: string) {
         columns: {
           id: true,
           displayName: true,
-          roleId: true,
+          avatarUrl: true
         },
         with: {
-          team: {
-            columns: {
-              displayName: true,
-            },
-          },
+          team: true,
+          role: true
         },
       },
     },

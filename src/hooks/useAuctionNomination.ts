@@ -45,10 +45,9 @@ export default function useAuctionNomination({
         player:players(
           id,
           displayName:display_name,
-          roleId:role_id,
-          team:teams(
-            displayName:display_name
-          )
+          avatarUrl:avatar_url,
+          team:teams(id, name, displayName:display_name),
+          role:player_roles(id, name, shortName:short_name)
         )
       `
       )

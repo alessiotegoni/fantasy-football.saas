@@ -25,7 +25,7 @@ export default function PlayerDetails() {
         </Button>
       )}
       {player ? (
-        <div className="text-center space-y-4">
+        <div className="text-center space-y-4 h-full flex flex-col justify-center items-center">
           <Avatar className="h-20 w-20 mx-auto">
             <AvatarImage src={player.avatarUrl || undefined} />
             <AvatarFallback className="text-lg">

@@ -31,7 +31,7 @@ export default function AuctionWrapper(props: Props) {
 
       <div className="flex">
         <main className="flex-1">
-          <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 pb-6 sm:p-6">
+          <div className="grid grid-cols-[1fr_200px] lg:grid-cols-12 gap-6 pb-6 sm:pt-2 sm:p-6">
             <div className="hidden lg:block lg:col-span-3">
               <Suspense
                 fallback={<AuctionPlayersDialog {...props} />}
