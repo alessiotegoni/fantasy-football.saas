@@ -9,9 +9,13 @@ import {
 import { relations, sql } from "drizzle-orm";
 import { leagues } from "./leagues";
 
-export type PlayersPerRole = Record<string, number>;
+export type PlayersPerRole = {
+  [roleId: string]: number;
+};
 export type AvailableTacticalModules = number[];
-export type CustomBonusMalus = Record<string, number>;
+export type CustomBonusMalus = {
+  [bonusMalusId: string]: number;
+};
 export type GoalThresholdSettings = {
   base: number;
   interval: number;

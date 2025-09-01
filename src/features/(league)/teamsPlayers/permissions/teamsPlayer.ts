@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { InsertTeamPlayerSchema } from "../schema/teamsPlayer";
-import { leagueMemberTeamPlayers } from "@/drizzle/schema";
+import { leagueMemberTeamPlayers, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { getTeamPlayerPerRoles } from "../queries/teamsPlayer";
@@ -62,7 +62,10 @@ export async function isTeamRoleSlotFull({
   playersRolesIdsOut?: number[];
 }) {
   const [leagueLimits, teamPlayers] = await Promise.all([
-    getLeaguePlayersPerRole(leagueId),
+    getLeaguePlayersPerRole(leagueId).then((ppr) => ({
+      [PRESIDENT_ROLE_ID.toString()]: 1,
+      ...ppr,
+    })),
     getTeamPlayerPerRoles(teamId),
   ]);
 
