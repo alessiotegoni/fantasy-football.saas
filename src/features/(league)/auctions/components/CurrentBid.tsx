@@ -13,7 +13,7 @@ import { BitcoinCircle, Coins, Timer, Xmark } from "iconoir-react";
 import { deleteNomination } from "../actions/auctionNomination";
 import { cn } from "@/lib/utils";
 
-export default function CurrentBid({ timeLeft }: { timeLeft: number }) {
+export default function CurrentBid({ timeLeft }: { timeLeft: number | undefined }) {
   const {
     currentNomination,
     currentNominationTeam,
@@ -27,11 +27,11 @@ export default function CurrentBid({ timeLeft }: { timeLeft: number }) {
   const currentTeamName =
     currentBidTeam?.team?.name || currentNominationTeam?.team?.name;
 
-  const isExpired = timeLeft === 0;
+  const isExpired = timeLeft !== undefined && timeLeft === 0
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
-      {isLeagueAdmin && !isExpired && (
+      {isLeagueAdmin && (
         <DeleteNominationButton nominationId={currentNomination.id} />
       )}
       {!isExpired && <CustomBidButton />}
@@ -91,7 +91,7 @@ function DeleteNominationButton({ nominationId }: { nominationId: string }) {
   );
 }
 
-function BidExiprationTimer({ timeLeft }: { timeLeft: number }) {
+function BidExiprationTimer({ timeLeft }: { timeLeft: number | undefined }) {
   return (
     <div
       className="absolute left-1/2 -translate-x-1/2 -top-8 flex justify-center items-center gap-4

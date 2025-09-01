@@ -69,7 +69,6 @@ export default function useAuctionNomination({
     const nomination =
       currentNomination?.status === "bidding" ? currentNomination : null;
 
-    console.log(nomination);
     if (!nomination || nomination.status === "sold") toggleSelectPlayer(null);
 
     setCurrentNomination(nomination);

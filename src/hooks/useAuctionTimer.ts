@@ -1,18 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useAuction } from "@/contexts/AuctionProvider";
+import { useState, useEffect } from "react";
 
-type UseAuctionTimerProps = {
-  expiresAt: Date | null;
-  onExpire?: () => void;
-};
+export function useAuctionTimer() {
+  const { currentNomination } = useAuction();
 
-export function useAuctionTimer({ expiresAt, onExpire }: UseAuctionTimerProps) {
   const [timeLeft, setTimeLeft] = useState(0);
 
+  const expiresAt = currentNomination?.expiresAt;
+
   useEffect(() => {
-    if (!expiresAt) {
-      setTimeLeft(0);
-      return;
-    }
+    if (!expiresAt) return;
 
     const target = new Date(expiresAt).getTime();
 
@@ -21,7 +18,6 @@ export function useAuctionTimer({ expiresAt, onExpire }: UseAuctionTimerProps) {
       setTimeLeft(Math.ceil(initialDiff / 1000));
     } else {
       setTimeLeft(0);
-      onExpire?.();
       return;
     }
 
@@ -32,14 +28,13 @@ export function useAuctionTimer({ expiresAt, onExpire }: UseAuctionTimerProps) {
       if (diff <= 0) {
         clearInterval(interval);
         setTimeLeft(0);
-        onExpire?.();
       } else {
         setTimeLeft(Math.ceil(diff / 1000));
       }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [expiresAt, onExpire]);
+  }, [expiresAt]);
 
-  return timeLeft;
+  return currentNomination ? timeLeft : undefined;
 }

@@ -6,7 +6,11 @@ import NominatePlayerButton from "./NominatePlayerButton";
 import BidPlayerButtons from "./BidPlayerButtons";
 import { cn } from "@/lib/utils";
 
-export default function BiddingControls() {
+export default function BiddingControls({
+  canShowControls,
+}: {
+  canShowControls: boolean;
+}) {
   const {
     canBid,
     currentBid,
@@ -20,7 +24,7 @@ export default function BiddingControls() {
 
   const isMyTurn = userParticipant?.isCurrent ?? false;
 
-  if (!isMyTurn && !canBid) return null;
+  if (!canShowControls || (!isMyTurn && !canBid)) return null;
 
   return (
     <>
