@@ -26,7 +26,7 @@ export default function useAuctionParticipants({
     const { data, error } = await supabase
       .from("auction_participants")
       .select(
-        "id, auctionId:auction_id, teamId:team_id credits, order, isCurrent:is_current, joinedAt:joined_at, team:league_member_teams(id, name)"
+        "id, auctionId:auction_id, teamId:team_id, credits, order, isCurrent:is_current, joinedAt:joined_at, team:league_member_teams(id, name)"
       )
       .eq("auction_id", auction.id)
       .order("order", { ascending: true });
@@ -40,8 +40,6 @@ export default function useAuctionParticipants({
   }
 
   async function handleSetParticipants() {
-    console.log("event received");
-
     const newParticipants = await getAuctionParticipants();
 
     setParticipants(newParticipants);

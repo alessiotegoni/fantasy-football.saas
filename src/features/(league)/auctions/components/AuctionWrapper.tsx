@@ -12,7 +12,7 @@ import AuctionHeader from "./AuctionHeader";
 import { ParticipantAcquisition } from "../queries/auctionAcquisition";
 import { playerRoles } from "@/drizzle/schema";
 import AuctionCentralPanel from "./AuctionCentralPanel";
-import { ParticipantsWithAcquisitions } from "./ParticipantsWithAcquisitions.tsx";
+import { ParticipantsWithAcquisitions } from "./ParticipantsWithAcquisitions";
 
 type Props = {
   playersRoles: (typeof playerRoles.$inferSelect)[];
