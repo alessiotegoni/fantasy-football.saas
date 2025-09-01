@@ -41,25 +41,22 @@ export async function insertParticipant(
 
 export async function updateParticipantsOrder(
   auctionId: string,
-  participantsIds: string[]
+  participantsIds: string[],
 ) {
   if (!participantsIds.length) return;
 
-  const sqlChunks: SQL[] = [];
   const ids: string[] = [];
-
-  sqlChunks.push(sql`(case`);
+  const sqlChunks: SQL[] = [];
 
   participantsIds.forEach((participantId, index) => {
     sqlChunks.push(
-      sql`when ${auctionParticipants.id} = ${participantId} then ${index + 1}`
+      sql`when ${auctionParticipants.id} = ${participantId} then ${index + 1}`,
     );
     ids.push(participantId);
   });
 
-  sqlChunks.push(sql`end)`);
-
-  const finalSql: SQL = sql.join(sqlChunks, sql.raw(" "));
+  const whenClauses = sql.join(sqlChunks, sql.raw(" "));
+  const finalSql = sql`(case ${whenClauses} end)::smallint`;
 
   await db
     .update(auctionParticipants)
@@ -67,8 +64,8 @@ export async function updateParticipantsOrder(
     .where(
       and(
         eq(auctionParticipants.auctionId, auctionId),
-        inArray(auctionParticipants.id, ids)
-      )
+        inArray(auctionParticipants.id, ids),
+      ),
     );
 
   revalidateAuctionParticipantsCache(auctionId);
