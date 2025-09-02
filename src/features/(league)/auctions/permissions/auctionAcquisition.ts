@@ -8,13 +8,35 @@ import { db } from "@/drizzle/db";
 import { auctionParticipants } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { getAuctionWithSettings } from "../queries/auction";
-import { getAcquisition, getAcquisitionByPlayer } from "../queries/auctionAcquisition";
+import {
+  getAcquisition,
+  getAcquisitionByPlayer,
+} from "../queries/auctionAcquisition";
+import { getNominationByPlayer } from "../queries/auctionNomination";
 
 enum ACQUISITION_ERRORS {
+  NOMINATION_NOT_BIDDING = "Nomina non trovata o gia terminata",
   ACQUISITION_NOT_FOUND = "Acquisizione non trovata",
   ADMIN_REQUIRED = "Solo un admin può eseguire questa azione",
   INVALID_PARTICIPANT = "Partecipante non valido per questa asta",
   PLAYER_ALREADY_ACQUIRED = "Questo giocatore è già stato acquistato",
+}
+
+export async function canConfirmAcquisition(data: AddAcquisitionPlayerSchema) {
+  const permissions = await canAddAcquisitionPlayer(data);
+  if (permissions.error) return permissions;
+
+  const { participant, player } = permissions.data;
+
+  const nomination = await getNominationByPlayer(
+    participant.auctionId,
+    player.id
+  );
+  if (!nomination || nomination.status !== "bidding") {
+    return createError(ACQUISITION_ERRORS.NOMINATION_NOT_BIDDING);
+  }
+
+  return createSuccess("", { nomination, ...permissions.data });
 }
 
 export async function canAddAcquisitionPlayer(
@@ -37,16 +59,14 @@ export async function canAddAcquisitionPlayer(
   }
 
   const playerAndCreditValidation = await validatePlayerAndCredits({
-    playerId: data.playerId,
-    auctionId: data.auctionId,
-    participantId: data.participantId,
+    ...data,
     bidAmount: data.price,
-    teamCredits: participant.credits,
+    participantCredits: participant.credits,
   });
 
   if (playerAndCreditValidation.error) return playerAndCreditValidation;
 
-  return createSuccess("", { participant });
+  return createSuccess("", { participant, ...playerAndCreditValidation.data });
 }
 
 export async function canRemoveAcquiredPlayer(acquisitionId: string) {

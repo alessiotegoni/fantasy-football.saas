@@ -1,4 +1,5 @@
 import type React from "react";
+import "@/jobs";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";

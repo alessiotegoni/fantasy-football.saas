@@ -7,21 +7,84 @@ import {
   deleteAcquisition as deleteAcquisitionDB,
   insertAcquisitions,
 } from "../db/auctionAcquisition";
-import { updateParticipantCredits } from "../db/auctionParticipant";
+import {
+  setAuctionTurn,
+  updateParticipantCredits,
+} from "../db/auctionParticipant";
 import {
   canAddAcquisitionPlayer,
+  canConfirmAcquisition,
   canRemoveAcquiredPlayer,
 } from "../permissions/auctionAcquisition";
 import {
   addAcquisitionPlayerSchema,
   AddAcquisitionPlayerSchema,
 } from "../schema/auctionAcquisition";
-import { deleteNomination } from "../db/auctionNomination";
+import { deleteNomination, updateNomination } from "../db/auctionNomination";
 import { getNominationByPlayer } from "../queries/auctionNomination";
+import {
+  auctionAcquisitions,
+  auctionBids,
+  auctionNominations,
+  PlayersPerRole,
+} from "@/drizzle/schema";
+import { isRoleFull } from "../utils/auctionParticipant";
+import {
+  AuctionParticipant,
+  getAuctionParticipants,
+  getParticipantPlayersCountByRole,
+} from "../queries/auctionParticipant";
+import { getHighestBid } from "../queries/auctionBid";
+import { Player } from "@/features/players/queries/player";
 
 enum ACQUISITION_MESSAGES {
+  ACQUISITION_CONFIRMED_SUCCESSFULLY = "Giocatore confermato con successo",
   PLAYER_ACQUIRED_SUCCESSFULLY = "Giocatore acquisito con successo",
   ACQUISITION_DELETED_SUCCESSFULLY = "Acquisizione eliminata con successo",
+}
+
+export async function confirmAcquisition(values: AddAcquisitionPlayerSchema) {
+  const { isValid, data, error } = validateSchema<AddAcquisitionPlayerSchema>(
+    addAcquisitionPlayerSchema,
+    values
+  );
+  if (!isValid) return error;
+
+  const permissions = await canConfirmAcquisition(data);
+  if (permissions.error) return permissions;
+
+  const {
+    nomination,
+    player,
+    auctionSettings: { playersPerRole },
+  } = permissions.data;
+
+  const highestBid = await getHighestBid(nomination.id);
+
+  await db.transaction(async (tx) => {
+    const acquisitionData = getAcquisitionData(nomination, highestBid);
+
+    await insertAcquisitions([acquisitionData], tx);
+    await updateNomination(nomination.id, { status: "sold" }, tx);
+
+    const participants = await getAuctionParticipants(nomination.auctionId);
+    if (participants.length > 1) {
+      setNextTurn(
+        {
+          participants,
+          player,
+          auctionId: nomination.auctionId,
+          playersPerRole,
+        },
+        tx
+      );
+    }
+  });
+
+  return createSuccess(
+    ACQUISITION_MESSAGES.ACQUISITION_CONFIRMED_SUCCESSFULLY,
+    ""
+  );
 }
 
 export async function addAcquisitionPlayer(values: AddAcquisitionPlayerSchema) {
@@ -75,6 +138,85 @@ export async function removeAcquiredPlayer(acquisitionId: string) {
     ACQUISITION_MESSAGES.ACQUISITION_DELETED_SUCCESSFULLY,
     null
   );
+}
+
+async function setNextTurn(
+  {
+    auctionId,
+    participants,
+    playersPerRole,
+    player,
+  }: {
+    auctionId: string;
+    participants: AuctionParticipant[];
+    playersPerRole: PlayersPerRole;
+    player: Player;
+  },
+  tx: Omit<typeof db, "$client">
+) {
+  const currentIndex = participants.findIndex((p) => p.isCurrent);
+
+  const nextParticipant = await findNextParticipant(
+    participants,
+    currentIndex,
+    playersPerRole,
+    auctionId,
+    player.role.id
+  );
+
+  if (nextParticipant) {
+    await setAuctionTurn(auctionId, nextParticipant.id, tx);
+  }
+}
+
+async function findNextParticipant(
+  participants: { id: string; isCurrent: boolean }[],
+  currentIndex: number,
+  playersPerRole: PlayersPerRole,
+  auctionId: string,
+  playerRoleId: number
+) {
+  let nextIndex = (currentIndex + 1) % participants.length;
+  let attempts = 0;
+
+  while (attempts < participants.length) {
+    const nextParticipant = participants[nextIndex];
+
+    const playerCounts = await getParticipantPlayersCountByRole(
+      auctionId,
+      nextParticipant.id
+    );
+
+    if (!isRoleFull(playerCounts, playersPerRole, playerRoleId)) {
+      return nextParticipant;
+    }
+
+    nextIndex = (nextIndex + 1) % participants.length;
+    attempts++;
+  }
+
+  return null;
+}
+
+function getAcquisitionData(
+  nomination: typeof auctionNominations.$inferSelect,
+  highestBid: typeof auctionBids.$inferSelect | undefined
+): typeof auctionAcquisitions.$inferInsert {
+  if (highestBid) {
+    return {
+      auctionId: nomination.auctionId,
+      playerId: nomination.playerId,
+      participantId: highestBid.participantId,
+      price: highestBid.amount,
+    };
+  } else {
+    return {
+      auctionId: nomination.auctionId,
+      playerId: nomination.playerId,
+      participantId: nomination.nominatedBy,
+      price: nomination.initialPrice,
+    };
+  }
 }
 
 async function deleteNominationIfExists(
