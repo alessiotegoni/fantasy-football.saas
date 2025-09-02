@@ -20,11 +20,6 @@ export default function useAuctionAcquisitions({
   const supabase = createClient();
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
-  // FIXME: Le acquisitions non vengono mandate a schermo appena inserite nel db
-
-  console.log(acquisitions);
-
-
   async function getAcquisitions(): Promise<ParticipantAcquisition[]> {
     const { data, error } = await supabase
       .from("auction_acquisitions")
@@ -32,10 +27,10 @@ export default function useAuctionAcquisitions({
         `
         id,
         auctionId:auction_id,
-        teamId:team_id,
+        participantId:participant_id,
         playerId:player_id,
         price,
-        acquiredAt:acquired_at
+        acquiredAt:acquired_at,
         player:players(
           id,
           displayName:display_name,
