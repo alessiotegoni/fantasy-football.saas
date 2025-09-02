@@ -37,15 +37,19 @@ export async function getCurrentNomination(auctionId: string) {
         columns: {
           id: true,
           displayName: true,
-          avatarUrl: true
+          avatarUrl: true,
         },
         with: {
           team: true,
-          role: true
+          role: true,
         },
       },
     },
-    where: (nomination, { eq }) => eq(nomination.auctionId, auctionId),
+    where: (nomination, { and, eq }) =>
+      and(
+        eq(nomination.status, "bidding"),
+        eq(nomination.auctionId, auctionId)
+      ),
     orderBy: (nomination, { asc }) => asc(nomination.expiresAt),
     limit: 1,
   });
@@ -53,4 +57,6 @@ export async function getCurrentNomination(auctionId: string) {
   return nomination;
 }
 
-export type CurrentNomination = Awaited<ReturnType<typeof getCurrentNomination>> | null
+export type CurrentNomination = Awaited<
+  ReturnType<typeof getCurrentNomination>
+> | null;
