@@ -34,15 +34,19 @@ export function validateBidCredits({
 
 export function isTimeExpired({
   expiresAt,
+  isFirstBid,
+  firstCallTime,
   othersCallsTime,
 }: {
   expiresAt: Date;
+  isFirstBid: boolean;
+  firstCallTime: number;
   othersCallsTime: number;
 }) {
   const now = new Date();
   const remainingTime = expiresAt.getTime() - now.getTime();
 
-  console.log(remainingTime);
+  const callTime = isFirstBid ? firstCallTime : othersCallsTime;
 
-  return remainingTime >= othersCallsTime * 1000;
+  return remainingTime >= callTime * 1000;
 }

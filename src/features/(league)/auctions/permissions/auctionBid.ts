@@ -23,7 +23,7 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
 
   const { participant, auction } = permissions.data;
 
-  // const highestBid = await getHighestBid(nominationId);
+  const highestBid = await getHighestBid(nominationId);
   // const minBid = highestBid ? highestBid.amount + 1 : nomination.initialPrice;
 
   // if (amount < minBid) {
@@ -42,6 +42,7 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
 
   if (
     isTimeExpired({
+      isFirstBid: !highestBid,
       ...nomination,
       ...playerAndCreditValidation.data.auctionSettings,
     })
