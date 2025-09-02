@@ -67,7 +67,7 @@ function RoleSlotTrigger({
       <div className="flex justify-center items-center gap-1.5">
         <p>{role.shortName}</p>
         {!!acquisitionPercentage && (
-          <p className="text-xs">{acquisitionPercentage}%</p>
+          <p className="text-xs">{acquisitionPercentage.toFixed(2)}%</p>
         )}
       </div>
     </AccordionTrigger>

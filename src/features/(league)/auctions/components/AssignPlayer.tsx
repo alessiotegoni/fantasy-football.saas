@@ -19,6 +19,7 @@ export default function AssignPlayer() {
   const {
     auction,
     selectedPlayer,
+    toggleSelectPlayer,
     participantToAssign,
     toggleAssignPlayerMode,
     playerCost,
@@ -27,7 +28,8 @@ export default function AssignPlayer() {
   } = useAuction();
 
   function handleAssignPlayer() {
-    toggleAssignPlayerMode()
+    toggleAssignPlayerMode();
+    toggleSelectPlayer(null);
     return addAcquisitionPlayer({
       auctionId: auction.id,
       participantId: participantToAssign!.id,
