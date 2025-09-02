@@ -48,7 +48,7 @@ export default function CurrentBid({
       )}
       {canShowCustomBidBtn && <CustomBidButton />}
 
-      <BidExiprationTimer timeLeft={timeLeft} />
+      <BidExiprationTimer timeLeft={timeLeft} isBidExpired={isBidExpired} />
       <div className="flex gap-2 items-center">
         <Coins className="size-12 text-primary" />
         <p className="text-3xl font-bold">{bidAmount}</p>
@@ -107,8 +107,13 @@ function DeleteNominationButton({ nominationId }: { nominationId: string }) {
 }
 
 function ConfirmAcquisitionButton() {
-  const { auction, currentNomination, currentNominationTeam, bidAmount, currentBidTeam } =
-    useAuction();
+  const {
+    auction,
+    currentNomination,
+    currentNominationTeam,
+    bidAmount,
+    currentBidTeam,
+  } = useAuction();
 
   if (!currentNominationTeam && !currentBidTeam) return null;
 
@@ -133,14 +138,37 @@ function ConfirmAcquisitionButton() {
   );
 }
 
-function BidExiprationTimer({ timeLeft }: { timeLeft: number | undefined }) {
-  return (
-    <div
-      className="absolute left-1/2 -translate-x-1/2 -top-8 flex justify-center items-center gap-4
+function BidExiprationTimer({
+  timeLeft,
+  isBidExpired,
+}: {
+  timeLeft: number | undefined;
+  isBidExpired: boolean;
+}) {
+  const { isLeagueAdmin } = useAuction();
+
+  if (!isBidExpired) {
+    return (
+      <div
+        className="absolute left-1/2 -translate-x-1/2 -top-6 flex justify-center items-center gap-4
             bg-card border border-border p-2 px-4 rounded-xl"
-    >
-      <Timer className="size-10 text-primary" />
-      <span className="text-3xl font-bold text-primary">{timeLeft}</span>
-    </div>
-  );
+      >
+        <Timer className="size-10 text-primary" />
+        <span className="text-3xl font-bold text-primary">{timeLeft}</span>
+      </div>
+    );
+  }
+
+  if (!isLeagueAdmin) {
+    return (
+      <div
+        className="absolute left-1/2 -translate-x-1/2 -top-6 flex justify-center items-center gap-4
+            bg-primary/80 border border-primary p-2 px-4 rounded-xl"
+      >
+        L'admin deve confermare l'acquisto
+      </div>
+    );
+  }
+
+  return null;
 }

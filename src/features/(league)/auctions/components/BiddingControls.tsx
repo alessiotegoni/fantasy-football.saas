@@ -33,7 +33,9 @@ export default function BiddingControls({
       <div className="flex justify-center">
         {((isMyTurn && !currentNomination) || customBidMode) && (
           <CustomBidAmountInput
-            disabled={currentBid ? !canBid : !canNominate}
+            disabled={
+              customBidMode ? false : currentBid ? !canBid : !canNominate
+            }
             value={customBidMode ? customBidAmount : bidAmount}
             onChange={
               customBidMode ? handleSetCustomBidAmount : handleSetBidAmount
