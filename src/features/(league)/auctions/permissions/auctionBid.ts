@@ -23,12 +23,12 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
 
   const { participant, auction } = permissions.data;
 
-  const highestBid = await getHighestBid(nominationId);
-  const minBid = highestBid ? highestBid.amount + 1 : nomination.initialPrice;
+  // const highestBid = await getHighestBid(nominationId);
+  // const minBid = highestBid ? highestBid.amount + 1 : nomination.initialPrice;
 
-  if (amount < minBid) {
-    return createError(BID_ERRORS.BID_TOO_LOW);
-  }
+  // if (amount < minBid) {
+  //   return createError(BID_ERRORS.BID_TOO_LOW);
+  // }
 
   const playerAndCreditValidation = await validatePlayerAndCredits({
     playerId: nomination.playerId,

@@ -8,10 +8,23 @@ import { calculateRemainingSlots } from "../utils/auctionParticipant";
 import { useMemo } from "react";
 
 export default function BidPlayerButtons() {
-  const { userParticipant, currentNomination, bidAmount, customBidMode } =
-    useAuction();
+  const {
+    userParticipant,
+    currentNomination,
+    bidAmount,
+    customBidMode,
+    customBidAmount,
+  } = useAuction();
 
   if (!currentNomination || !userParticipant) return null;
+
+  function handleCreateBid(amount: number) {
+    return createBid({
+      amount,
+      nominationId: currentNomination!.id,
+      participantId: userParticipant!.id,
+    });
+  }
 
   return (
     <div className="w-full flex justify-center gap-2">
@@ -19,11 +32,7 @@ export default function BidPlayerButtons() {
         <ActionButton
           loadingText="Rilancio"
           className="w-32"
-          action={createBid.bind(null, {
-            amount: bidAmount + 1,
-            nominationId: currentNomination.id,
-            participantId: userParticipant.id,
-          })}
+          action={handleCreateBid.bind(null, customBidAmount)}
         >
           Rilancia
         </ActionButton>
@@ -32,11 +41,7 @@ export default function BidPlayerButtons() {
           <PlusButton
             key={plusAmount}
             plusAmount={plusAmount}
-            onClick={createBid.bind(null, {
-              nominationId: currentNomination.id,
-              participantId: userParticipant.id,
-              amount: bidAmount + plusAmount,
-            })}
+            onClick={handleCreateBid.bind(null, bidAmount + plusAmount)}
           />
         ))
       )}

@@ -33,6 +33,10 @@ export default function useAuctionBid({
   const [bidAmount, setBidAmount] = useState(defaultBidAmount);
 
   useEffect(() => {
+    if (!currentNomination) setCurrentBid(null);
+  }, [currentNomination]);
+
+  useEffect(() => {
     setBidAmount(defaultBidAmount);
   }, [defaultBidAmount]);
 
@@ -44,7 +48,9 @@ export default function useAuctionBid({
   async function getCurrentBid(): Promise<CurrentBid | null> {
     const { data, error } = await supabase
       .from("auction_bids")
-      .select("id, nominationId:nomination_id, participantId:participant_id, amount, createdAt:created_at")
+      .select(
+        "id, nominationId:nomination_id, participantId:participant_id, amount, createdAt:created_at"
+      )
       .eq("nomination_id", currentNomination!.id)
       .order("amount", { ascending: false })
       .order("created_at", { ascending: true })
