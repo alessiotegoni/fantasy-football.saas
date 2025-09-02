@@ -27,6 +27,3 @@ export const auctionBidsRelations = relations(auctionBids, ({ one }) => ({
     references: [auctionParticipants.id],
   }),
 }));
-
-// TODO: aggiungere che se allo scadere del timer la nominations è sold si eliminano
-// tutte le tabelle delle bids di quella nomination

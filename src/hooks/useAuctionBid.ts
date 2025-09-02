@@ -34,7 +34,7 @@ export default function useAuctionBid({
 
   useEffect(() => {
     setBidAmount(defaultBidAmount);
-  }, [currentBid]);
+  }, [defaultBidAmount]);
 
   const handleSetBidAmount = useCallback(setBidAmount, []);
 
