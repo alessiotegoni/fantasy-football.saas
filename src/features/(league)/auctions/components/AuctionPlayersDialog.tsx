@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ComponentProps, useMemo, useState } from "react";
 import { useAuction } from "@/contexts/AuctionProvider";
 import PlayersList from "@/components/PlayersList";
 import {
@@ -10,12 +10,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { InputSearch } from "iconoir-react";
-import { PlayerRole, TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import { Team } from "@/features/teams/queries/team";
 import { VirtualizedList } from "@/components/VirtualizedList";
 import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 type Props = {
   players?: TeamPlayer[];
@@ -27,6 +28,7 @@ export default function AuctionPlayersDialog({
   teams = [],
 }: Props) {
   const {
+    acquisitions,
     playersRoles,
     selectedPlayer,
     toggleSelectPlayer,
@@ -66,15 +68,7 @@ export default function AuctionPlayersDialog({
                 items={players}
                 estimateSize={80}
                 renderItem={(player) => (
-                  <PlayerCard
-                    {...player}
-                    showSelectButton={false}
-                    onSelect={handlePlayerClick}
-                    className={
-                      selectedPlayer?.id === player.id ? "border-primary" : ""
-                    }
-                    canSelectCard={!currentNomination}
-                  />
+                  <AuctionPlayerCard {...player} onSelect={handlePlayerClick} />
                 )}
               />
             ) : (
@@ -88,5 +82,32 @@ export default function AuctionPlayersDialog({
         </PlayersList>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function AuctionPlayerCard({
+  onSelect,
+  ...player
+}: ComponentProps<typeof PlayerCard>) {
+  const { acquisitions, selectedPlayer, currentNomination } = useAuction();
+
+  const isAlreadyAcquired = useMemo(
+    () => acquisitions.some((a) => a.player.id === player.id),
+    [acquisitions]
+  );
+
+  const className = cn(
+    selectedPlayer?.id === player.id && "border-primary",
+    isAlreadyAcquired && "cursor-not-allowed opacity-60"
+  );
+
+  return (
+    <PlayerCard
+      {...player}
+      onSelect={onSelect}
+      showSelectButton={false}
+      className={className}
+      canSelectCard={!isAlreadyAcquired && !currentNomination}
+    />
   );
 }

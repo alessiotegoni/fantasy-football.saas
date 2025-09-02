@@ -71,7 +71,7 @@ export async function confirmAcquisition(values: AddAcquisitionPlayerSchema) {
 
     const participants = await getAuctionParticipants(nomination.auctionId);
     if (participants.length > 1) {
-      setNextTurn(
+      await setNextTurn(
         {
           participants,
           player,
@@ -179,6 +179,7 @@ async function findNextParticipant(
   playerRoleId: number
 ) {
   let nextIndex = (currentIndex + 1) % participants.length;
+
   let attempts = 0;
 
   while (attempts < participants.length) {
@@ -189,7 +190,12 @@ async function findNextParticipant(
       nextParticipant.id
     );
 
+    console.log(nextParticipant);
+
+
     if (!isRoleFull(playerCounts, playersPerRole, playerRoleId)) {
+      console.log("roles not full");
+
       return nextParticipant;
     }
 
