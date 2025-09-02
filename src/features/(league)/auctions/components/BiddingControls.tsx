@@ -45,9 +45,8 @@ export default function BiddingControls({
           (currentBid || currentNomination) && "mt-4"
         )}
       >
-        {isMyTurn && !currentBid ? (
-          <NominatePlayerButton />
-        ) : (
+        {isMyTurn && !currentNomination && <NominatePlayerButton />}
+        {((!isMyTurn && currentNomination) || (isMyTurn && currentBid)) && (
           <BidPlayerButtons />
         )}
       </div>

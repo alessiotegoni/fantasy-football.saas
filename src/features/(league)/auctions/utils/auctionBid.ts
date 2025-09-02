@@ -42,5 +42,7 @@ export function isTimeExpired({
   const now = new Date();
   const remainingTime = expiresAt.getTime() - now.getTime();
 
+  console.log(remainingTime);
+
   return remainingTime >= othersCallsTime * 1000;
 }

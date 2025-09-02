@@ -20,12 +20,10 @@ export async function scheduleExpiryJob(
   const name = getNominationExpiryJobName();
   const key = getNominationExpiryKey(data.nomination.id);
 
-  await boss.send(name, data, { startAfter, singletonKey: key });
+  await boss.send(name, data, { startAfter, singletonKey: key, id: data.nomination.id });
 }
 
 export async function cancelExpiryJob(nominationId: string) {
   const name = getNominationExpiryJobName();
-  const key = getNominationExpiryKey(nominationId);
-
-  await boss.cancel(name, key);
+  await boss.cancel(name, nominationId);
 }

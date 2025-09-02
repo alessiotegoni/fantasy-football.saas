@@ -22,6 +22,10 @@ import { isRoleFull } from "../../utils/auctionParticipant";
 import { setAuctionTurn } from "../../db/auctionParticipant";
 
 const handler: WorkHandler<NominationExpiryJobData> = async ([job]) => {
+
+  console.log(job);
+  
+
   const {
     nomination,
     auctionSettings: { playersPerRole },

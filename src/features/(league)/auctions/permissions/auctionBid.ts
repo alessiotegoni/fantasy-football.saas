@@ -43,8 +43,7 @@ export async function canCreateBid({ nominationId, amount }: CreateBidSchema) {
   if (
     isTimeExpired({
       ...nomination,
-      othersCallsTime:
-        playerAndCreditValidation.data.auctionSettings.othersCallsTime,
+      ...playerAndCreditValidation.data.auctionSettings,
     })
   ) {
     return createError(BID_ERRORS.NOMINATION_EXPIRED);
