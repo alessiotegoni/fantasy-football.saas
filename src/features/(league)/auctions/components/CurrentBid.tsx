@@ -9,9 +9,10 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { useAuction } from "@/contexts/AuctionProvider";
-import { BitcoinCircle, Coins, Timer, Xmark } from "iconoir-react";
+import { BitcoinCircle, Check, Coins, Timer, Xmark } from "iconoir-react";
 import { deleteNomination } from "../actions/auctionNomination";
 import { cn } from "@/lib/utils";
+import { confirmAcquisition } from "../actions/auctionAcquisition";
 
 export default function CurrentBid({
   timeLeft,
@@ -55,6 +56,9 @@ export default function CurrentBid({
       <Badge className="p-2 px-4 rounded-lg bg-input w-fit text-md font-medium border border-border">
         {currentTeamName || "Nessuna squadra"}
       </Badge>
+      {isBidExpired && currentNomination && isLeagueAdmin && (
+        <ConfirmAcquisitionButton />
+      )}
     </div>
   );
 }
@@ -98,6 +102,33 @@ function DeleteNominationButton({ nominationId }: { nominationId: string }) {
       action={handleDelete}
     >
       <Xmark className="size-6" />
+    </ActionButton>
+  );
+}
+
+function ConfirmAcquisitionButton() {
+  const { auction, currentNomination, bidAmount, currentBidTeam } =
+    useAuction();
+
+  if (!currentBidTeam || !currentNomination) return null;
+
+  function handleConfirmAcquisition() {
+    return confirmAcquisition({
+      auctionId: auction.id,
+      participantId: currentBidTeam!.id,
+      playerId: currentNomination!.player.id,
+      price: bidAmount,
+    });
+  }
+
+  return (
+    <ActionButton
+      loadingText="Confermo"
+      className="bg-green-600 hover:bg-green-500 max-w-50"
+      action={handleConfirmAcquisition}
+    >
+      <Check className="size-5" />
+      Conferma acquisto
     </ActionButton>
   );
 }

@@ -7,10 +7,6 @@ import { canCreateBid } from "../permissions/auctionBid";
 import { CreateBidSchema, createBidSchema } from "../schema/auctionBid";
 import { db } from "@/drizzle/db";
 import { updateNomination } from "../db/auctionNomination";
-import {
-  cancelExpiryJob,
-  scheduleExpiryJob,
-} from "../tasks/jobs/auctionNomination";
 
 enum AUCTION_BID_MESSAGES {
   BID_CREATED_SUCCESSFULLY = "Offerta piazzata con successo",
@@ -29,7 +25,7 @@ export async function createBid(values: CreateBidSchema) {
   const permissions = await canCreateBid(data);
   if (permissions.error) return permissions;
 
-  const { nomination, auctionSettings, player } = permissions.data;
+  const { auctionSettings } = permissions.data;
 
   await db.transaction(async (tx) => {
     await insertBid(data, tx);
@@ -45,12 +41,6 @@ export async function createBid(values: CreateBidSchema) {
         expiresAt: newExpiresAt,
       },
       tx
-    );
-
-    await cancelExpiryJob(data.nominationId);
-    await scheduleExpiryJob(
-      { nomination, auctionSettings, player },
-      newExpiresAt
     );
   });
 
