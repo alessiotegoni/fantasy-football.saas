@@ -54,6 +54,7 @@ export async function confirmAcquisition(values: AddAcquisitionPlayerSchema) {
   if (permissions.error) return permissions;
 
   const {
+    participant,
     nomination,
     player,
     auctionSettings: { playersPerRole },
@@ -66,6 +67,7 @@ export async function confirmAcquisition(values: AddAcquisitionPlayerSchema) {
 
     await insertAcquisitions([acquisitionData], tx);
     await updateNomination(nomination.id, { status: "sold" }, tx);
+    await updateParticipantCredits(participant.id, -data.price, tx);
 
     const participants = await getAuctionParticipants(nomination.auctionId);
     if (participants.length > 1) {

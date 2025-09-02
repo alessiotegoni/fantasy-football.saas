@@ -107,15 +107,15 @@ function DeleteNominationButton({ nominationId }: { nominationId: string }) {
 }
 
 function ConfirmAcquisitionButton() {
-  const { auction, currentNomination, bidAmount, currentBidTeam } =
+  const { auction, currentNomination, currentNominationTeam, bidAmount, currentBidTeam } =
     useAuction();
 
-  if (!currentBidTeam || !currentNomination) return null;
+  if (!currentNominationTeam && !currentBidTeam) return null;
 
   function handleConfirmAcquisition() {
     return confirmAcquisition({
       auctionId: auction.id,
-      participantId: currentBidTeam!.id,
+      participantId: currentBidTeam?.id ?? currentNominationTeam!.id,
       playerId: currentNomination!.player.id,
       price: bidAmount,
     });
@@ -124,7 +124,7 @@ function ConfirmAcquisitionButton() {
   return (
     <ActionButton
       loadingText="Confermo"
-      className="bg-green-600 hover:bg-green-500 max-w-50"
+      className="bg-green-600 hover:bg-green-700 max-w-50"
       action={handleConfirmAcquisition}
     >
       <Check className="size-5" />

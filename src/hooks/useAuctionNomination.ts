@@ -52,7 +52,7 @@ export default function useAuctionNomination({
       `
       )
       .eq("auction_id", auction.id)
-      .order("expires_at", { ascending: true })
+      .order("expires_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 

@@ -33,8 +33,8 @@ export default function AcquisitionCard({ acquisition, role }: Props) {
         )}
       >
         <div className="text-left">
-          <p>{acquisition.player.displayName}</p>
-          <p className="text-white/70 text-xs">
+          <p className="font-semibold">{acquisition.player.displayName}</p>
+          <p className="text-white/70 text-[11px]">
             {acquisition.player.team.displayName}
           </p>
         </div>
