@@ -13,13 +13,19 @@ import { BitcoinCircle, Coins, Timer, Xmark } from "iconoir-react";
 import { deleteNomination } from "../actions/auctionNomination";
 import { cn } from "@/lib/utils";
 
-export default function CurrentBid({ timeLeft }: { timeLeft: number | undefined }) {
+export default function CurrentBid({
+  timeLeft,
+}: {
+  timeLeft: number | undefined;
+}) {
   const {
     currentNomination,
     currentNominationTeam,
     bidAmount,
+    currentBid,
     currentBidTeam,
     isLeagueAdmin,
+    userParticipant,
   } = useAuction();
 
   if (!currentNomination) return null;
@@ -27,14 +33,19 @@ export default function CurrentBid({ timeLeft }: { timeLeft: number | undefined 
   const currentTeamName =
     currentBidTeam?.team?.name || currentNominationTeam?.team?.name;
 
-  const isExpired = timeLeft !== undefined && timeLeft === 0
+  const isBidExpired = timeLeft !== undefined && timeLeft === 0;
+
+  const isMyTurn = userParticipant?.isCurrent ?? false;
+  const canShowCustomBidBtn =
+    !isBidExpired &&
+    ((!isMyTurn && currentNomination) || (isMyTurn && currentBid));
 
   return (
     <div className="flex flex-col gap-4 justify-center items-center h-full">
       {isLeagueAdmin && (
         <DeleteNominationButton nominationId={currentNomination.id} />
       )}
-      {!isExpired && <CustomBidButton />}
+      {canShowCustomBidBtn && <CustomBidButton />}
 
       <BidExiprationTimer timeLeft={timeLeft} />
       <div className="flex gap-2 items-center">
