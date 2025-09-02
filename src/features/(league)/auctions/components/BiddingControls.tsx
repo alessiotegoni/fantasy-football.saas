@@ -20,6 +20,8 @@ export default function BiddingControls({
     bidAmount,
     handleSetBidAmount,
     currentNomination,
+    customBidAmount,
+    handleSetCustomBidAmount,
   } = useAuction();
 
   const isMyTurn = userParticipant?.isCurrent ?? false;
@@ -32,9 +34,11 @@ export default function BiddingControls({
         {((isMyTurn && !currentNomination) || customBidMode) && (
           <CustomBidAmountInput
             disabled={currentBid ? !canBid : !canNominate}
-            value={customBidMode ? bidAmount + 1 : bidAmount}
-            onChange={handleSetBidAmount}
-            min={currentBid ? bidAmount : 1}
+            value={customBidMode ? customBidAmount : bidAmount}
+            onChange={
+              customBidMode ? handleSetCustomBidAmount : handleSetBidAmount
+            }
+            min={currentBid ? (currentBid.amount || 0) + 1 : 1}
             max={userParticipant?.credits}
           />
         )}
