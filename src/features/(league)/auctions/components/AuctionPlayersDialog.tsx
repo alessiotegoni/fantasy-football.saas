@@ -17,6 +17,7 @@ import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import AuctionPlayerCard from "./AuctionPlayerCard";
 
 type Props = {
   players?: TeamPlayer[];
@@ -28,7 +29,6 @@ export default function AuctionPlayersDialog({
   teams = [],
 }: Props) {
   const {
-    acquisitions,
     playersRoles,
     selectedPlayer,
     toggleSelectPlayer,

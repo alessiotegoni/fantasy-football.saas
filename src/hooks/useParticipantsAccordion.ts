@@ -1,24 +1,14 @@
-import { useAuction } from "@/contexts/AuctionProvider";
 import { useEffect, useState, useCallback } from "react";
+import useAcquisitionsRoleSlots from "./useAcquisitionsRoleSlots";
 
 export default function useParticipantsAccordion() {
-  const { auction, playersRoles, participants, acquisitions } = useAuction();
+  const { unfilledRolesIds } = useAcquisitionsRoleSlots();
 
   const [value, setValue] = useState<string[]>([]);
 
   useEffect(() => {
-    const notFullRoleSlots = playersRoles.filter((role) => {
-      const maxPlayers = auction.settings.playersPerRole[role.id] ?? 1;
-
-      const roleAcquisitions = acquisitions.filter(
-        (a) => a.player.roleId === role.id
-      );
-
-      return maxPlayers * participants.length > roleAcquisitions.length;
-    });
-
-    setValue(notFullRoleSlots.map((role) => role.id.toString()));
-  }, [playersRoles, acquisitions]);
+    setValue(unfilledRolesIds.map((roleId) => roleId.toString()));
+  }, [unfilledRolesIds]);
 
   const onValueChange = useCallback(setValue, []);
 
