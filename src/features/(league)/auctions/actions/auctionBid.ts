@@ -19,9 +19,6 @@ export async function createBid(values: CreateBidSchema) {
   );
   if (!isValid) return error;
 
-  console.log(data);
-
-
   const permissions = await canCreateBid(data);
   if (permissions.error) return permissions;
 

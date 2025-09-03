@@ -97,9 +97,10 @@ export async function getAuctionParticipant(auctionId: string, teamId: string) {
 
 export async function getParticipantPlayersCountByRole(
   auctionId: string,
-  participantId: string
+  participantId: string,
+  tx: Omit<typeof db, "$client"> = db,
 ) {
-  const playerCounts = await db
+  const playerCounts = await tx
     .select({
       roleId: players.roleId,
       count: count(players.id),
@@ -109,8 +110,8 @@ export async function getParticipantPlayersCountByRole(
     .where(
       and(
         eq(auctionAcquisitions.auctionId, auctionId),
-        eq(auctionAcquisitions.participantId, participantId)
-      )
+        eq(auctionAcquisitions.participantId, participantId),
+      ),
     )
     .groupBy(players.roleId);
 
@@ -119,7 +120,7 @@ export async function getParticipantPlayersCountByRole(
       acc[roleId] = count;
       return acc;
     },
-    {}
+    {},
   );
 }
 

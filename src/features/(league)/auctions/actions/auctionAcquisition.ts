@@ -163,7 +163,8 @@ async function setNextTurn(
     currentIndex,
     playersPerRole,
     auctionId,
-    player.role.id
+    player.role.id,
+    tx
   );
 
   if (nextParticipant) {
@@ -176,7 +177,8 @@ async function findNextParticipant(
   currentIndex: number,
   playersPerRole: PlayersPerRole,
   auctionId: string,
-  playerRoleId: number
+  playerRoleId: number,
+  tx: Omit<typeof db, "$client">
 ) {
   let nextIndex = (currentIndex + 1) % participants.length;
 
@@ -187,15 +189,11 @@ async function findNextParticipant(
 
     const playerCounts = await getParticipantPlayersCountByRole(
       auctionId,
-      nextParticipant.id
+      nextParticipant.id,
+      tx
     );
 
-    console.log(nextParticipant);
-
-
     if (!isRoleFull(playerCounts, playersPerRole, playerRoleId)) {
-      console.log("roles not full");
-
       return nextParticipant;
     }
 
@@ -210,17 +208,20 @@ function getAcquisitionData(
   nomination: typeof auctionNominations.$inferSelect,
   highestBid: typeof auctionBids.$inferSelect | undefined
 ): typeof auctionAcquisitions.$inferInsert {
+  const baseData = {
+    auctionId: nomination.auctionId,
+    playerId: nomination.playerId,
+  };
+
   if (highestBid) {
     return {
-      auctionId: nomination.auctionId,
-      playerId: nomination.playerId,
+      ...baseData,
       participantId: highestBid.participantId,
       price: highestBid.amount,
     };
   } else {
     return {
-      auctionId: nomination.auctionId,
-      playerId: nomination.playerId,
+      ...baseData,
       participantId: nomination.nominatedBy,
       price: nomination.initialPrice,
     };
