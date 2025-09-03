@@ -84,30 +84,3 @@ export default function AuctionPlayersDialog({
     </Dialog>
   );
 }
-
-function AuctionPlayerCard({
-  onSelect,
-  ...player
-}: ComponentProps<typeof PlayerCard>) {
-  const { acquisitions, selectedPlayer, currentNomination } = useAuction();
-
-  const isAlreadyAcquired = useMemo(
-    () => acquisitions.some((a) => a.player.id === player.id),
-    [acquisitions]
-  );
-
-  const className = cn(
-    selectedPlayer?.id === player.id && "border-primary",
-    isAlreadyAcquired && "cursor-not-allowed opacity-60"
-  );
-
-  return (
-    <PlayerCard
-      {...player}
-      onSelect={onSelect}
-      showSelectButton={false}
-      className={className}
-      canSelectCard={!isAlreadyAcquired && !currentNomination}
-    />
-  );
-}

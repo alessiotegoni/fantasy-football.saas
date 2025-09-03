@@ -64,7 +64,7 @@ export default function PlayerDetails() {
 function PlayerEmptyState() {
   return (
     <div className="h-full flex lg:flex-col lg:justify-center items-center lg:text-center text-muted-foreground gap-2 sm:gap-4">
-      <div className="size-20 bg-input rounded-full grid place-content-center lg:mb-4">
+      <div className="size-20 bg-input rounded-full grid place-content-center">
         <User className="size-10" />
       </div>
       <div>
