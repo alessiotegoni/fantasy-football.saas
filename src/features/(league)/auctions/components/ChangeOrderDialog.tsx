@@ -83,7 +83,7 @@ export default function ChangeOrderDialog() {
             ))}
           </SortableContext>
         </DndContext>
-        <DialogFooter className="flex-col">
+        <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline" className="w-full min-w-25 sm:w-fit">
               Chiudi

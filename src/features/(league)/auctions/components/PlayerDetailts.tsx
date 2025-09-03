@@ -25,7 +25,7 @@ export default function PlayerDetails() {
         </Button>
       )}
       {player ? (
-        <div className="text-center space-y-2 h-full flex flex-col justify-center items-center">
+        <div className="lg:text-center lg:space-y-2 h-full flex lg:flex-col lg:justify-center items-center gap-2 sm:gap-4">
           <div className="relative size-20">
             <Avatar
               imageUrl={player.avatarUrl}
@@ -63,8 +63,8 @@ export default function PlayerDetails() {
 
 function PlayerEmptyState() {
   return (
-    <div className="h-full flex flex-col justify-center items-center text-center text-muted-foreground">
-      <div className="size-20 bg-input rounded-full grid place-content-center mb-4">
+    <div className="h-full flex lg:flex-col lg:justify-center items-center lg:text-center text-muted-foreground gap-2 sm:gap-4">
+      <div className="size-20 bg-input rounded-full grid place-content-center lg:mb-4">
         <User className="size-10" />
       </div>
       <div>
