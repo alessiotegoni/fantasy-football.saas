@@ -32,16 +32,16 @@ export default function AuctionWrapper(props: Props) {
       <div className="flex">
         <main className="flex-1">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-6 pb-6 sm:pt-2 sm:p-6">
-            <div className="hidden lg:block lg:col-span-3 order-1">
+            <div className="lg:col-span-3 order-1">
               <Suspense fallback={<AuctionPlayersDialog />}>
                 <AuctionPlayers {...props} />
               </Suspense>
             </div>
 
-            <div className="lg:col-span-6 order-3 lg:order-2">
+            <div className="lg:col-span-6 order-2">
               <AuctionCentralPanel />
             </div>
-            <div className="lg:col-span-3 order-2 lg:order-3">
+            <div className="lg:col-span-3 order-3">
               <PlayerDetails />
             </div>
           </div>

@@ -45,16 +45,16 @@ export default function AuctionPlayersDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <div className="size-full bg-card rounded-3xl p-4 sm:p-6 flex flex-col justify-center items-center gap-5 text-center">
-        <div className="flex flex-col justify-center items-center gap-3">
+        <div className="hidden lg:flex flex-col justify-center items-center gap-3">
           <InputSearch className="size-15 size-text-muted-foreground" />
           <p className="text-muted-foreground">Cerca i giocatori rimasti</p>
         </div>
         <Button
           variant="ghost"
           onClick={setOpen.bind(null, true)}
-          className="py-3 w-30"
+          className="py-3 lg:w-30"
         >
-          Cerca
+          Cerca <span className="lg:hidden">giocatori</span>
         </Button>
       </div>
       <DialogContent className="flex h-5/6 max-w-3xl flex-col gap-4 sm:max-w-2xl pt-6 p-2 sm:p-6">
