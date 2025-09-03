@@ -33,6 +33,7 @@ export default function BidPlayerButtons() {
           loadingText="Rilancio"
           className="w-32"
           action={handleCreateBid.bind(null, customBidAmount)}
+          displayToast={false}
         >
           Rilancia
         </ActionButton>
@@ -81,6 +82,7 @@ function PlusButton({
       loadingText="Rilancio"
       disabled={!canPlus}
       action={canPlus ? onClick.bind(null, plusAmount) : undefined}
+      displayToast={false}
     >
       +{plusAmount}
     </ActionButton>

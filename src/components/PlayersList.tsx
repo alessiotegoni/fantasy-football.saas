@@ -2,32 +2,23 @@
 
 import {
   PlayersFiltersProvider,
+  PlayersFiltersProviderProps,
   usePlayersFilters,
 } from "@/contexts/PlayersFiltersProvider";
 import { PlayerSelectionProvider } from "@/contexts/PlayerSelectionProvider";
-import { Team } from "@/features/teams/queries/team";
-import {
-  PlayerRole,
-  TeamPlayer,
-} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import PlayersListContent from "../features/(league)/teamsPlayers/components/PlayerListContent";
 import useSortPlayers from "@/hooks/useSortPlayers";
 
-type FilterType = "search" | "teams" | "roles";
-
-interface PlayersListProps {
-  players: TeamPlayer[];
+type PlayersListProps = {
   title?: string;
-  enabledFilters?: FilterType[];
   virtualized?: boolean;
   selectionButton?: React.ReactNode;
   actionsDialog?: React.ReactNode;
   emptyState?: React.ReactNode;
-  teams: Team[];
-  roles: PlayerRole[];
   leagueTeams?: { id: string; name: string }[];
   children?: (players: TeamPlayer[]) => React.ReactNode;
-}
+} & Omit<PlayersFiltersProviderProps, "children">;
 
 export default function PlayersList({ children, ...props }: PlayersListProps) {
   return (

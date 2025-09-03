@@ -23,7 +23,5 @@ export default function useAcquisitionsRoleSlots() {
     return unfilledRoles.map((role) => role.id);
   }, [playersRoles, acquisitions, settings.playersPerRole]);
 
-  const firstUnfilledRoleId = unfilledRolesIds[0]
-
-  return { unfilledRolesIds, firstUnfilledRoleId };
+  return { unfilledRolesIds };
 }

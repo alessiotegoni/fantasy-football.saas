@@ -21,6 +21,7 @@ export default function NominatePlayerButton() {
       loadingText="Chiamo"
       disabled={!canNominate}
       action={canNominate ? handleCreateNomination : undefined}
+      displayToast={false}
     >
       Chiama
     </ActionButton>

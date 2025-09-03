@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Trophy } from "iconoir-react";
 
 export default function BidTurn() {
-  const { canBid, userParticipant, turnParticipant, isLeagueAdmin } =
+  const { canBid, userParticipant, turnParticipant } =
     useAuction();
 
   const isMyTurn = userParticipant?.isCurrent ?? false;

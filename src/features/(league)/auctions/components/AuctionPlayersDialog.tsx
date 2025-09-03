@@ -13,11 +13,10 @@ import { InputSearch } from "iconoir-react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import { Team } from "@/features/teams/queries/team";
 import { VirtualizedList } from "@/components/VirtualizedList";
-import PlayerCard from "../../teamsPlayers/components/PlayerCard";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import AuctionPlayerCard from "./AuctionPlayerCard";
+import useAcquisitionsRoleSlots from "@/hooks/useAcquisitionsRoleSlots";
 
 type Props = {
   players?: TeamPlayer[];
@@ -34,6 +33,9 @@ export default function AuctionPlayersDialog({
     toggleSelectPlayer,
     currentNomination,
   } = useAuction();
+
+  const { unfilledRolesIds } = useAcquisitionsRoleSlots();
+
   const [open, setOpen] = useState(false);
 
   function handlePlayerClick(player: TeamPlayer) {
@@ -61,7 +63,12 @@ export default function AuctionPlayersDialog({
         <DialogHeader>
           <DialogTitle className="text-2xl">Giocatori disponibili</DialogTitle>
         </DialogHeader>
-        <PlayersList players={players} teams={teams} roles={playersRoles}>
+        <PlayersList
+          players={players}
+          teams={teams}
+          roles={playersRoles}
+          defaultFilters={{ roles: unfilledRolesIds.slice(0, 1) }}
+        >
           {(players) =>
             players.length > 0 ? (
               <VirtualizedList

@@ -5,6 +5,7 @@ import {
   Suspense,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { getTeams, Team } from "@/features/teams/queries/team";
@@ -39,10 +40,11 @@ const PlayersFiltersContext = createContext<PlayersFiltersContextType | null>(
   null
 );
 
-type Props = {
+export type PlayersFiltersProviderProps = {
   children: React.ReactNode;
   players: TeamPlayer[];
   enabledFilters?: FilterType[];
+  defaultFilters?: Partial<Filters>;
   teams: Team[];
   roles: PlayerRole[];
 };
@@ -51,14 +53,19 @@ export function PlayersFiltersProvider({
   children,
   players,
   enabledFilters = ["search", "teams", "roles"],
+  defaultFilters,
   teams,
   roles,
-}: Props) {
+}: PlayersFiltersProviderProps) {
   const [filters, setFilters] = useState<Filters>({
     search: "",
     teams: [],
     roles: [],
   });
+
+  useEffect(() => {
+    if (defaultFilters) setFilters((prev) => ({ ...prev, ...defaultFilters }));
+  }, [defaultFilters]);
 
   const handleSetFilters = useCallback(
     (newFilters: Partial<Filters>) =>
