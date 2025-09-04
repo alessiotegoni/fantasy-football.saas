@@ -14,10 +14,11 @@ import AssignPlayer from "./AssignPlayer";
 import AuctionInProgress from "./AuctionInProgress";
 import useAcquisitionsRoleSlots from "@/hooks/useAcquisitionsRoleSlots";
 import TerminateAuction from "./TerminateAuction";
+import AuctionTerminated from "./AuctionTerminated";
 
 export default function AuctionCentralPanel() {
   const { auction, isLeagueAdmin, assignPlayerMode } = useAuction();
-  const { unfilledRolesIds } = useAcquisitionsRoleSlots()
+  const { unfilledRolesIds } = useAcquisitionsRoleSlots();
 
   switch (auction.status) {
     case "waiting":
@@ -26,6 +27,7 @@ export default function AuctionCentralPanel() {
           icon={Clock}
           title="In attesa di partecipanti"
           description="L'asta sara attiva quando tutti i membri della lega ci entreranno, oppure l'admin la dichiarera come attiva"
+          className="static translate-none"
         />
       );
     case "paused":
@@ -34,17 +36,11 @@ export default function AuctionCentralPanel() {
           icon={Pause}
           title="Asta in pausa"
           description="Potrai riprendere l'asta quando l'admin la dichiarera come attiva"
+          className="static translate-none"
         />
       );
     case "ended":
-      return (
-        <EmptyState
-          icon={Arc3dCenterPoint}
-          title="Asta terminata"
-          subtitle={`Complimenti hai`}
-          description="Tutte le rose sono state automaticamente importate all'interno della lega"
-        />
-      );
+      return <AuctionTerminated />;
   }
 
   if (unfilledRolesIds.length) {

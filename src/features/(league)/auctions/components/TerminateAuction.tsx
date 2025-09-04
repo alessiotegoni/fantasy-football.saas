@@ -13,7 +13,6 @@ export default function TerminateAuction() {
       <div className="flex flex-col justify-center items-center gap-2">
         <Arc3dCenterPoint className="size-10 text-primary" />
         <h2 className="font-bold text-lg">TERMINA ASTA</h2>
-        <h3 className="">Asta durata</h3>
         <p className="text-sm text-muted-foreground max-w-xs">
           Dopo aver terminato l'asta non potrai piu riattivarla. Tutti gli
           acquisti verranno automaticamente importati all'interno della lega.
