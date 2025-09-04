@@ -25,7 +25,7 @@ export default function Logo({
       )}
       {withText && (
         <div className="font-heading text-2xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-          KikLeague
+          K fantasy
         </div>
       )}
     </div>

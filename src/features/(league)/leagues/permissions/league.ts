@@ -2,11 +2,11 @@ import { db } from "@/drizzle/db";
 import {
   leagueMembers,
   leagueSettings,
+  leagueUserBans,
   leagues,
   userSubscriptions,
 } from "@/drizzle/schema";
 import {
-  isUserBanned,
   isValidSubscription,
   userHasPremium,
 } from "@/features/users/permissions/user";
@@ -94,6 +94,20 @@ export async function isPremiumUnlocked(leagueId: string) {
     .where(and(eq(leagues.id, leagueId), isValidSubscription));
 
   return result.count > 0;
+}
+
+async function isUserBanned(userId: string, leagueId: string) {
+  const [res] = await db
+    .select({ count: count() })
+    .from(leagueUserBans)
+    .where(
+      and(
+        eq(leagueUserBans.userId, userId),
+        eq(leagueUserBans.leagueId, leagueId)
+      )
+    );
+
+  return res.count > 0;
 }
 
 async function isUniqueName(leagueName: string) {

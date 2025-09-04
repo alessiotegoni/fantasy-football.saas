@@ -89,19 +89,6 @@ export async function addUserLastLeagueMetadata(user: User, leagueId: string) {
   });
 }
 
-export async function isAdmin(
-  supabase: SupabaseClient<any, "public", any>,
-  userId: string
-): Promise<boolean> {
-  const { data, error } = await supabase
-    .from("admins")
-    .select("id")
-    .eq("id", userId)
-    .single();
-
-  return !error && !!data;
-}
-
 export function getCanRedirectUserToLeague(request: NextRequest, user: User) {
   const isHomePage = request.nextUrl.pathname === "/";
   const preventRedirect = request.nextUrl.searchParams.has("preventRedirect");

@@ -1,5 +1,5 @@
-import { routeRedirect } from "@/lib/utils";
 import { createClient } from "@/services/supabase/server/supabase";
+import { routeRedirect } from "@/utils/helpers";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
