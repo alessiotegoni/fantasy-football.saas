@@ -6,12 +6,10 @@ import { getLeagueNameTag } from "@/features/(league)/leagues/db/cache/league";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { LeagueNav } from "../../../../features/(league)/leagues/components/LeagueNav";
 
-type Props = {
-  children: React.ReactNode;
-  params: Promise<{ leagueId: string }>;
-};
-
-export default async function LeagueLayout({ children, params }: Props) {
+export default async function LeagueLayout({
+  children,
+  params,
+}: LayoutProps<"/leagues/[leagueId]">) {
   const { leagueId } = await params;
   const leagueNamePromise = getLeagueName(leagueId);
 

@@ -4,10 +4,7 @@ import { redirect } from "next/navigation";
 export default async function PremiumLayout({
   params,
   children,
-}: {
-  params: Promise<{ leagueId: string }>;
-  children: React.ReactNode;
-}) {
+}: LayoutProps<"/leagues/[leagueId]/premium">) {
   const { leagueId } = await params;
 
   const hasLeaguePremium = await getLeaguePremium(leagueId);

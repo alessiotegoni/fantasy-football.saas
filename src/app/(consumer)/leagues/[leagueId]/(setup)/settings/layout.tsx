@@ -20,10 +20,7 @@ import LeagueSettingLink from "@/features/(league)/settings/components/LeagueSet
 export default async function leagueSettingsLayout({
   children,
   params,
-}: {
-  children: React.ReactNode;
-  params: Promise<{ leagueId: string }>;
-}) {
+}: LayoutProps<"/leagues/[leagueId]/settings">) {
   const { leagueId } = await params;
 
   return (

@@ -6,9 +6,7 @@ import { PropsWithChildren, Suspense } from "react";
 export default async function LeagueAdminLayout({
   children,
   params,
-}: PropsWithChildren<{
-  params: Promise<{ leagueId: string }>;
-}>) {
+}: LayoutProps<"/leagues/[leagueId]/admin">) {
   const { leagueId } = await params;
 
   return (
