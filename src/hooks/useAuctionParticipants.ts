@@ -23,7 +23,7 @@ export default function useAuctionParticipants({
 
   const router = useRouter();
 
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   async function getAuctionParticipants(): Promise<AuctionParticipant[]> {

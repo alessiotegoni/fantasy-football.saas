@@ -42,7 +42,7 @@ export default function useAuctionBid({
 
   const handleSetBidAmount = useCallback(setBidAmount, []);
 
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   async function getCurrentBid(): Promise<CurrentBid | null> {

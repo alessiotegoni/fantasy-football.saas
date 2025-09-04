@@ -27,7 +27,7 @@ export default function useAuctionNomination({
 }: Args) {
   const [currentNomination, setCurrentNomination] = useState(defaultNomination);
 
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   async function getCurrentNomination(): Promise<CurrentNomination | null> {

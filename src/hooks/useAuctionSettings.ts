@@ -12,7 +12,7 @@ type Args = {
 export default function useAuctionSettings({ defaultAuction }: Args) {
   const [auction, setAuction] = useState(defaultAuction);
 
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const auctionSubscriptionRef = useRef<RealtimeChannel | null>(null);
   const settingsSubscriptionRef = useRef<RealtimeChannel | null>(null);
 

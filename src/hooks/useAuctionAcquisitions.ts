@@ -17,7 +17,7 @@ export default function useAuctionAcquisitions({
 }: Args) {
   const [acquisitions, setAcquisitions] = useState(defaultAcquisitions);
 
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   async function getAcquisitions(): Promise<ParticipantAcquisition[]> {

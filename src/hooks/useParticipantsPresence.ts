@@ -12,7 +12,7 @@ export default function useParticipantsPresence() {
 
   const [onlineParticipants, setOnlineParticipants] = useState<string[]>([]);
 
-  const supabase = createClient();
+  const [supabase] = useState(createClient);
   const subscriptionRef = useRef<RealtimeChannel | null>(null);
 
   function trackPresence() {
