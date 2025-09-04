@@ -230,12 +230,12 @@ function getTeamsCreditsSpent(
 
   for (const teamId of teamIds) {
     const teamPlayers = teamsPlayers.filter((p) => p.memberTeamId === teamId);
-    const totalCredits = teamPlayers.reduce(
+    const credits = teamPlayers.reduce(
       (acc, player) => (acc += player.purchaseCost),
       0
     );
 
-    creditsSpent.push({ teamId, totalCredits })
+    creditsSpent.push({ teamId, credits })
   }
 
   return creditsSpent
