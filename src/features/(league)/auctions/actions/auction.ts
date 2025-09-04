@@ -31,7 +31,10 @@ import { redirect } from "next/navigation";
 import { updateLeagueSettings } from "../../settings/db/setting";
 import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
-import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
+import {
+  addTeamsCredits,
+  subtractTeamsCredits,
+} from "../../(admin)/handle-credits/db/handle-credits";
 import { getGeneralSettings } from "../../settings/queries/setting";
 import { getParticipantsWithAcquisitions } from "../queries/auctionParticipant";
 import {
@@ -196,47 +199,36 @@ async function importTeamsPlayers(
 ) {
   const auctionParticipants = await getParticipantsWithAcquisitions(auction.id);
 
-  const teamsIds = auctionParticipants
-    .map((p) => p.team?.id)
-    .filter((teamId) => teamId !== undefined);
-  if (!teamsIds.length) return;
+  const validParticipants = auctionParticipants.filter((p) => p.team?.id);
+  if (!validParticipants.length) return;
 
+  const teamsIds = validParticipants.map((p) => p.team!.id);
   await deleteTeamsPlayers(auction.leagueId, { membersTeamsIds: teamsIds }, tx);
 
-  const acquisitions = auctionParticipants.flatMap((p) =>
-    p.acquisitions.map((a) => ({ teamId: p.team?.id, ...a }))
-  );
-  if (!acquisitions.length) return;
-
-  const newTeamsPlayers = acquisitions
-    .filter((a) => a.teamId !== undefined)
-    .map((a) => ({
+  const newTeamsPlayers = validParticipants.flatMap((p) =>
+    p.acquisitions.map((a) => ({
       playerId: a.player.id,
       purchaseCost: a.price,
-      memberTeamId: a.teamId!,
-    }));
+      memberTeamId: p.team!.id,
+    }))
+  );
+  if (!newTeamsPlayers.length) return;
 
   const teamsSpentCredits = getTeamsCreditsSpent(newTeamsPlayers);
 
   await insertTeamsPlayers(auction.leagueId, newTeamsPlayers, tx);
+  await subtractTeamsCredits(auction.leagueId, teamsSpentCredits, tx);
 }
 
 function getTeamsCreditsSpent(
   teamsPlayers: { purchaseCost: number; memberTeamId: string }[]
 ) {
-  const teamIds = new Set(teamsPlayers.map((p) => p.memberTeamId));
+  const creditsByTeam = new Map<string, number>();
 
-  const creditsSpent = [];
-
-  for (const teamId of teamIds) {
-    const teamPlayers = teamsPlayers.filter((p) => p.memberTeamId === teamId);
-    const credits = teamPlayers.reduce(
-      (acc, player) => (acc += player.purchaseCost),
-      0
-    );
-
-    creditsSpent.push({ teamId, credits })
+  for (const player of teamsPlayers) {
+    const currentCredits = creditsByTeam.get(player.memberTeamId) || 0;
+    creditsByTeam.set(player.memberTeamId, currentCredits + player.purchaseCost);
   }
 
-  return creditsSpent
+  return Array.from(creditsByTeam, ([teamId, credits]) => ({ teamId, credits }));
 }
