@@ -33,16 +33,11 @@ import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import { addTeamsCredits } from "../../(admin)/handle-credits/db/handle-credits";
 import { getGeneralSettings } from "../../settings/queries/setting";
-import {
-  getAuctionParticipants,
-  getParticipantsWithAcquisitions,
-} from "../queries/auctionParticipant";
+import { getParticipantsWithAcquisitions } from "../queries/auctionParticipant";
 import {
   deleteTeamsPlayers,
   insertTeamsPlayers,
 } from "../../teamsPlayers/db/teamsPlayer";
-import { auctionAcquisitions, auctionParticipants } from "@/drizzle/schema";
-import { eq } from "drizzle-orm";
 
 enum AUCTION_MESSAGES {
   AUCTION_CREATED_SUCCESFULLY = "Asta creata con successo",
@@ -90,8 +85,6 @@ export async function updateAuction(auctionId: string, values: AuctionSchema) {
   );
   if (!isValid) return error;
 
-  console.log(data);
-
   const permissions = await canUpdateAuction(data);
   if (permissions.error) return permissions;
 
@@ -131,11 +124,9 @@ export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
   const { auction } = permissions.data;
 
   const timestampts: { startedAt: Date | null; endedAt: Date | null } = {
-    startedAt: null,
-    endedAt: null,
+    startedAt: status === "active" ? new Date() : auction.startedAt,
+    endedAt: status === "ended" ? new Date() : auction.endedAt,
   };
-  if (status === "active") timestampts.startedAt = new Date();
-  if (status === "ended") timestampts.endedAt = new Date();
 
   await db.transaction(async (tx) => {
     await updateAuctionDB(auction.id, { status, ...timestampts }, tx);

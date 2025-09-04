@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuction } from "@/contexts/AuctionProvider";
 import EmptyState from "@/components/EmptyState";
-import { Arc3dCenterPoint, Clock, CursorPointer, Pause } from "iconoir-react";
+import { Clock, CursorPointer, Pause } from "iconoir-react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,

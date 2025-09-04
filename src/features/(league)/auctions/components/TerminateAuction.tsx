@@ -4,6 +4,7 @@ import { useAuction } from "@/contexts/AuctionProvider";
 import { Arc3dCenterPoint } from "iconoir-react";
 import ActionButton from "@/components/ActionButton";
 import { updateAuctionStatus } from "../actions/auction";
+import { getAuctionDuration } from "../utils/auction";
 
 export default function TerminateAuction() {
   const { auction } = useAuction();
@@ -11,9 +12,15 @@ export default function TerminateAuction() {
   return (
     <div className="flex flex-col justify-between items-center text-center gap-2 h-full">
       <div className="flex flex-col justify-center items-center gap-2">
-        <Arc3dCenterPoint className="size-10 text-primary" />
-        <h2 className="font-bold text-lg">TERMINA ASTA</h2>
-        <p className="text-sm text-muted-foreground max-w-xs">
+        <Arc3dCenterPoint className="size-12 text-primary" />
+        <div>
+          <h2 className="font-bold text-lg">TERMINA ASTA</h2>
+          <h3 className="text-sm">
+            Asta durata:{" "}
+            {getAuctionDuration({ ...auction, endedAt: new Date() })}
+          </h3>
+        </div>
+        <p className="text-sm text-muted-foreground max-w-sm">
           Dopo aver terminato l'asta non potrai piu riattivarla. Tutti gli
           acquisti verranno automaticamente importati all'interno della lega.
         </p>
