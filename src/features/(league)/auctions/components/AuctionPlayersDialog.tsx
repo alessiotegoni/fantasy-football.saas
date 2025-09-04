@@ -1,6 +1,6 @@
 "use client";
 
-import { ComponentProps, useMemo, useState } from "react";
+import { useState } from "react";
 import { useAuction } from "@/contexts/AuctionProvider";
 import PlayersList from "@/components/PlayersList";
 import {

@@ -16,8 +16,9 @@ export function isRoleFull(
   return currentRoleCount >= maxRoleCount;
 }
 
-const sumValues = (obj: Record<string | number, number>) =>
-  Object.values(obj).reduce((acc, value) => acc + value, 0);
+export function sumValues(obj: Record<string | number, number>) {
+  return Object.values(obj).reduce((acc, value) => acc + value, 0);
+}
 
 export function getRemainingSlots(
   playerCounts: Record<number, number>,

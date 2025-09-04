@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuction } from "@/contexts/AuctionProvider";
 import EmptyState from "@/components/EmptyState";
-import { Clock, CursorPointer, Pause } from "iconoir-react";
+import { Arc3dCenterPoint, Clock, CursorPointer, Pause } from "iconoir-react";
 import { cn } from "@/lib/utils";
 import {
   Tooltip,
@@ -12,9 +12,12 @@ import {
 } from "@/components/ui/tooltip";
 import AssignPlayer from "./AssignPlayer";
 import AuctionInProgress from "./AuctionInProgress";
+import useAcquisitionsRoleSlots from "@/hooks/useAcquisitionsRoleSlots";
+import TerminateAuction from "./TerminateAuction";
 
 export default function AuctionCentralPanel() {
   const { auction, isLeagueAdmin, assignPlayerMode } = useAuction();
+  const { unfilledRolesIds } = useAcquisitionsRoleSlots()
 
   switch (auction.status) {
     case "waiting":
@@ -36,11 +39,20 @@ export default function AuctionCentralPanel() {
     case "ended":
       return (
         <EmptyState
-          icon={Pause}
+          icon={Arc3dCenterPoint}
           title="Asta terminata"
-          description="Tutte le rose verranno importate automaticamente all'interno della lega"
+          subtitle={`Complimenti hai`}
+          description="Tutte le rose sono state automaticamente importate all'interno della lega"
         />
       );
+  }
+
+  if (unfilledRolesIds.length) {
+    return (
+      <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-center">
+        <TerminateAuction />
+      </div>
+    );
   }
 
   if (assignPlayerMode) {

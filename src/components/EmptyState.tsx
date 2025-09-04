@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 type Props = {
   icon?: React.ElementType;
   title: string;
+  subtitle?: string
   description: string;
   renderButton?: () => React.ReactNode;
   className?: string;
@@ -13,6 +14,7 @@ type Props = {
 export default function EmptyState({
   icon: Icon = Search,
   title,
+  subtitle,
   description,
   renderButton,
   className,
@@ -30,6 +32,7 @@ export default function EmptyState({
         <Icon className="size-8 text-muted-foreground" />
       </div>
       <h3 className="text-xl font-heading mb-2">{title}</h3>
+      <h4>{subtitle}</h4>
       <p className="text-muted-foreground">{description}</p>
       {renderButton && (
         <Button asChild className="w-fit mt-9 md:mt-7">

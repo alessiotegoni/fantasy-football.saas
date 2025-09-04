@@ -3,7 +3,8 @@
 import NavLink from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/useMobile";
-import { cn, getItemHref } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { getItemHref } from "@/utils/helpers";
 import Link from "next/link";
 
 type Props = {
