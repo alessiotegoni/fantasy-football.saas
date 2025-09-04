@@ -43,7 +43,7 @@ export default function AuctionCentralPanel() {
       return <AuctionTerminated />;
   }
 
-  if (unfilledRolesIds.length) {
+  if (!unfilledRolesIds.length) {
     return (
       <div className="bg-card border rounded-3xl h-full p-4 sm:p-6 relative min-h-[300px] flex flex-col justify-center">
         <TerminateAuction />
