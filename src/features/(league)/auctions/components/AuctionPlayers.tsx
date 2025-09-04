@@ -5,13 +5,16 @@ import AuctionPlayersDialog from "./AuctionPlayersDialog";
 import { PlayerRole, TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 type Props = {
-  auction: NonNullable<AuctionWithSettings>;
+  defaultAuction: NonNullable<AuctionWithSettings>;
   playersRoles: PlayerRole[];
 };
 
-export default async function AuctionPlayers({ auction, ...props }: Props) {
+export default async function AuctionPlayers({
+  defaultAuction,
+  ...props
+}: Props) {
   const [players, teams] = await Promise.all([
-    getAuctionAvailablePlayers(auction.id),
+    getAuctionAvailablePlayers(defaultAuction.id),
     getTeams(),
   ]);
 

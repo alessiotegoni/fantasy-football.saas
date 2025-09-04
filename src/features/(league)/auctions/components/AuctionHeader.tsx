@@ -2,19 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { Menu } from "iconoir-react";
-import { AuctionWithSettings } from "../queries/auction";
 import { useSidebar } from "@/components/ui/sidebar";
 import AuctionStatus from "./AuctionStatus";
 import AuctionDropdownMenu from "./AuctionDropdownMenu";
 import { useEffect } from "react";
 import ChangeOrderDialog from "./ChangeOrderDialog";
+import { useAuction } from "@/contexts/AuctionProvider";
 
-type Props = {
-  auction: NonNullable<AuctionWithSettings>;
-  isLeagueAdmin?: boolean;
-};
+export default function AuctionHeader() {
+  const { auction, isLeagueAdmin = false } = useAuction();
 
-export default function AuctionHeader({ auction, isLeagueAdmin = false }: Props) {
   const { setOpen, toggleSidebar } = useSidebar();
 
   useEffect(() => {

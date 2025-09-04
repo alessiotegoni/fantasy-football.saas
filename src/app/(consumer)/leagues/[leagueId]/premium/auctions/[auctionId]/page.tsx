@@ -48,7 +48,7 @@ export default async function AuctionPage({ params }: Props) {
     ...ids,
     defaultParticipants,
     defaultAcquisitions,
-    auction,
+    defaultAuction: auction,
     playersRoles,
   };
 
@@ -69,7 +69,7 @@ async function SuspenseBoundary({
   auctionId: string;
   leagueId: string;
   playersRoles: (typeof playerRoles.$inferSelect)[];
-  auction: NonNullable<AuctionWithSettings>;
+  defaultAuction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];
 }) {

@@ -6,17 +6,17 @@ import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
 
 type Args = {
-  auction: NonNullable<AuctionWithSettings>;
+  defaultAuction: NonNullable<AuctionWithSettings>;
 };
 
-export default function useAuctionSettings({ auction: defaultAuction }: Args) {
+export default function useAuctionSettings({ defaultAuction }: Args) {
   const [auction, setAuction] = useState(defaultAuction);
 
   const supabase = createClient();
   const auctionSubscriptionRef = useRef<RealtimeChannel | null>(null);
   const settingsSubscriptionRef = useRef<RealtimeChannel | null>(null);
 
-  async function getAuctionWithSettings(): Promise<AuctionWithSettings | undefined> {
+  async function getAuctionWithSettings() {
     const { data, error } = await supabase
       .from("auctions")
       .select(
@@ -45,56 +45,63 @@ export default function useAuctionSettings({ auction: defaultAuction }: Args) {
 
     if (error) {
       console.error("Error getting auction with settings:", error);
-      return undefined;
+      return;
     }
 
-    const result = { ...data, settings: data.settings[0] };
-
-    return result as unknown as AuctionWithSettings;
+    return { ...data, settings: data.settings[0] } as AuctionWithSettings;
   }
 
   async function handleSetAuction() {
-    const newAuction = await getAuctionWithSettings();
-    if (newAuction) setAuction(newAuction);
+    console.log("event received");
+
+    const auction = await getAuctionWithSettings();
+    if (auction) setAuction(auction);
   }
 
-  function subscribeToChanges() {
+  function subscribeToAuctionChanges() {
     const auctionSubscription = supabase
       .channel(`auction:${defaultAuction.id}-details`)
       .on(
         "postgres_changes",
         {
-          event: "UPDATE",
+          event: "*",
           schema: "public",
           table: "auctions",
           filter: `id=eq.${defaultAuction.id}`,
         },
         handleSetAuction
       )
-      .subscribe();
-    auctionSubscriptionRef.current = auctionSubscription;
+      .subscribe(console.log);
 
+    auctionSubscriptionRef.current = auctionSubscription;
+  }
+
+  function subscribeToSettingsChanges() {
     const settingsSubscription = supabase
       .channel(`auction:${defaultAuction.id}-settings`)
       .on(
         "postgres_changes",
         {
-          event: "UPDATE",
+          event: "*",
           schema: "public",
           table: "auction_settings",
           filter: `auction_id=eq.${defaultAuction.id}`,
         },
         handleSetAuction
       )
-      .subscribe();
+      .subscribe(console.log);
+
     settingsSubscriptionRef.current = settingsSubscription;
   }
 
-  function unsubscribeFromChanges() {
+  function unsubscribeFromAuctionChanges() {
     if (auctionSubscriptionRef.current) {
       auctionSubscriptionRef.current.unsubscribe();
       auctionSubscriptionRef.current = null;
     }
+  }
+
+  function unsubscribeFromSettingsChanges() {
     if (settingsSubscriptionRef.current) {
       settingsSubscriptionRef.current.unsubscribe();
       settingsSubscriptionRef.current = null;
@@ -102,9 +109,13 @@ export default function useAuctionSettings({ auction: defaultAuction }: Args) {
   }
 
   useEffect(() => {
-    subscribeToChanges();
+    subscribeToAuctionChanges();
+    subscribeToSettingsChanges();
 
-    return () => unsubscribeFromChanges();
+    return () => {
+      unsubscribeFromAuctionChanges();
+      unsubscribeFromSettingsChanges();
+    };
   }, [defaultAuction.id]);
 
   return { auction };

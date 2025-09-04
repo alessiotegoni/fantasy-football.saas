@@ -15,11 +15,13 @@ import { playerRoles } from "@/drizzle/schema";
 import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import useCustomBidMode from "@/hooks/useAuctionCustomBid";
 import useAuctionCustomBid from "@/hooks/useAuctionCustomBid";
+import useAuctionSettings from "@/hooks/useAuctionSettings";
 
 type AuctionContextType = {
   selectedPlayer: TeamPlayer | null;
   toggleSelectPlayer: (player: TeamPlayer | null) => void;
-} & Pick<Props, "auction" | "isLeagueAdmin" | "userTeamId" | "playersRoles"> &
+} & Pick<Props, "isLeagueAdmin" | "userTeamId" | "playersRoles"> &
+  ReturnType<typeof useAuctionSettings> &
   ReturnType<typeof useAuctionAcquisitions> &
   ReturnType<typeof useAuctionParticipants> &
   ReturnType<typeof useAuctionNomination> &
@@ -31,7 +33,7 @@ const AuctionContext = createContext<AuctionContextType | null>(null);
 
 type Props = {
   children: React.ReactNode;
-  auction: NonNullable<AuctionWithSettings>;
+  defaultAuction: NonNullable<AuctionWithSettings>;
   playersRoles: (typeof playerRoles.$inferSelect)[];
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];
@@ -45,16 +47,34 @@ export default function AuctionProvider({ children, ...props }: Props) {
   const [selectedPlayer, setSelectedPlayer] = useState<TeamPlayer | null>(null);
   const toggleSelectPlayer = useCallback(setSelectedPlayer, []);
 
-  const acquisitions = useAuctionAcquisitions(props);
-  const participants = useAuctionParticipants(props);
+  // Error: Route "/leagues/[leagueId]/premium/auctions/[auctionId]" used `Math.random()` outside of `"use cache"` and without explicitly calling `await connection()` beforehand. See more info here: https://nextjs.org/docs/messages/next-prerender-random
+  //   at String.replace (<anonymous>:2:1)
+  //   at createClient (rsc://React/Server/file:///D:/nextJS/fantasy-football-saas/.next/server/chunks/ssr/%255Broot-of-the-server%255D__084addd1._.js?75:63:210)
+  //   at useAuctionSettings (rsc://React/Server/file:///D:/nextJS/fantasy-football-saas/.next/server/chunks/ssr/%255Broot-of-the-server%255D__084addd1._.js?76:570:188)
+  //   at AuctionProvider (rsc://React/Server/file:///D:/nextJS/fantasy-football-saas/.next/server/chunks/ssr/%255Broot-of-the-server%255D__084addd1._.js?77:684:167)
+  //   at resolveErrorDev (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3403:48)
+  //   at getOutlinedModel (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3101:28)
+  //   at parseModelString (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3182:52)
+  //   at Array.<anonymous> (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3764:51)
+  //   at JSON.parse (<anonymous>)
+  //   at resolveConsoleEntry (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3551:32)
+  //   at processFullStringRow (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3737:17)
+  //   at processFullBinaryRow (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3705:9)
+  //   at progress (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_d87e34ab._.js:3857:102)
+
+  const auction = useAuctionSettings(props);
+  const acquisitions = useAuctionAcquisitions({ ...props, ...auction });
+  const participants = useAuctionParticipants({ ...props, ...auction });
   const playerAssign = useAuctionPlayerAssign();
   const nomination = useAuctionNomination({
     ...props,
+    ...auction,
     ...participants,
     selectedPlayer,
     toggleSelectPlayer,
   });
   const bid = useAuctionBid({
+    ...auction,
     ...nomination,
     ...participants,
     ...acquisitions,
@@ -66,6 +86,7 @@ export default function AuctionProvider({ children, ...props }: Props) {
   return (
     <AuctionContext.Provider
       value={{
+        ...auction,
         ...acquisitions,
         ...participants,
         ...nomination,

@@ -15,7 +15,7 @@ import AuctionPlayersDialog from "./AuctionPlayersDialog";
 
 type Props = {
   playersRoles: (typeof playerRoles.$inferSelect)[];
-  auction: NonNullable<AuctionWithSettings>;
+  defaultAuction: NonNullable<AuctionWithSettings>;
   defaultParticipants: AuctionParticipant[];
   defaultAcquisitions: ParticipantAcquisition[];
   isLeagueAdmin?: boolean;
@@ -27,7 +27,7 @@ type Props = {
 export default function AuctionWrapper(props: Props) {
   return (
     <AuctionProvider {...props}>
-      <AuctionHeader {...props} />
+      <AuctionHeader />
 
       <div className="flex">
         <main className="flex-1">
