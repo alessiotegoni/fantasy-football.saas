@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   experimental: {
-    dynamicIO: true,
+    typedRoutes: true,
+    cacheComponents: true,
     viewTransition: true,
-    clientSegmentCache: true,
     serverActions: {
       bodySizeLimit: "3mb",
     },

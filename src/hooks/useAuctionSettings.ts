@@ -58,7 +58,7 @@ export default function useAuctionSettings({ defaultAuction }: Args) {
     if (auction) setAuction(auction);
   }
 
-  function subscribeToAuctionChanges() {
+  function subscribeAuction() {
     const auctionSubscription = supabase
       .channel(`auction:${defaultAuction.id}-details`)
       .on(
@@ -71,12 +71,15 @@ export default function useAuctionSettings({ defaultAuction }: Args) {
         },
         handleSetAuction
       )
-      .subscribe(console.log);
+      .subscribe();
 
     auctionSubscriptionRef.current = auctionSubscription;
   }
 
-  function subscribeToSettingsChanges() {
+  console.log(defaultAuction);
+
+
+  function subscribeSettings() {
     const settingsSubscription = supabase
       .channel(`auction:${defaultAuction.id}-settings`)
       .on(
@@ -89,19 +92,19 @@ export default function useAuctionSettings({ defaultAuction }: Args) {
         },
         handleSetAuction
       )
-      .subscribe(console.log);
+      .subscribe();
 
     settingsSubscriptionRef.current = settingsSubscription;
   }
 
-  function unsubscribeFromAuctionChanges() {
+  function unsubscribeAuction() {
     if (auctionSubscriptionRef.current) {
       auctionSubscriptionRef.current.unsubscribe();
       auctionSubscriptionRef.current = null;
     }
   }
 
-  function unsubscribeFromSettingsChanges() {
+  function unsubscribeSettings() {
     if (settingsSubscriptionRef.current) {
       settingsSubscriptionRef.current.unsubscribe();
       settingsSubscriptionRef.current = null;
@@ -109,12 +112,12 @@ export default function useAuctionSettings({ defaultAuction }: Args) {
   }
 
   useEffect(() => {
-    subscribeToAuctionChanges();
-    subscribeToSettingsChanges();
+    subscribeAuction();
+    subscribeSettings();
 
     return () => {
-      unsubscribeFromAuctionChanges();
-      unsubscribeFromSettingsChanges();
+      unsubscribeAuction();
+      unsubscribeSettings();
     };
   }, [defaultAuction.id]);
 
