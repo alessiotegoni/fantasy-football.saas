@@ -16,7 +16,7 @@ export default function AuctionTerminated() {
       title="Asta terminata"
       subtitle={auctionDuration && `Durata: ${auctionDuration}`}
       description="Tutte le rose sono state automaticamente importate all'interno della lega"
-      className="static translate-none"
+      className="static translate-none !bg-muted/30 max-w-full"
       renderButton={() => (
         <Button asChild>
           <Link

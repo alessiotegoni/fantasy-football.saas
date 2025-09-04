@@ -216,5 +216,27 @@ async function importTeamsPlayers(
       memberTeamId: a.teamId!,
     }));
 
+  const teamsSpentCredits = getTeamsCreditsSpent(newTeamsPlayers);
+
   await insertTeamsPlayers(auction.leagueId, newTeamsPlayers, tx);
+}
+
+function getTeamsCreditsSpent(
+  teamsPlayers: { purchaseCost: number; memberTeamId: string }[]
+) {
+  const teamIds = new Set(teamsPlayers.map((p) => p.memberTeamId));
+
+  const creditsSpent = [];
+
+  for (const teamId of teamIds) {
+    const teamPlayers = teamsPlayers.filter((p) => p.memberTeamId === teamId);
+    const totalCredits = teamPlayers.reduce(
+      (acc, player) => (acc += player.purchaseCost),
+      0
+    );
+
+    creditsSpent.push({ teamId, totalCredits })
+  }
+
+  return creditsSpent
 }

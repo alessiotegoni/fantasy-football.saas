@@ -27,7 +27,7 @@ export default function AuctionCentralPanel() {
           icon={Clock}
           title="In attesa di partecipanti"
           description="L'asta sara attiva quando tutti i membri della lega ci entreranno, oppure l'admin la dichiarera come attiva"
-          className="static translate-none"
+          className="static translate-none !bg-muted/30 max-w-full"
         />
       );
     case "paused":
@@ -36,7 +36,7 @@ export default function AuctionCentralPanel() {
           icon={Pause}
           title="Asta in pausa"
           description="Potrai riprendere l'asta quando l'admin la dichiarera come attiva"
-          className="static translate-none"
+          className="static translate-none !bg-muted/30 max-w-full"
         />
       );
     case "ended":
