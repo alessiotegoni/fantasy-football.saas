@@ -8,13 +8,17 @@ import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import Link from "next/link";
 
 export default function PlayerDetails() {
-  const { toggleSelectPlayer, selectedPlayer, currentNomination } =
+  const { auction, toggleSelectPlayer, selectedPlayer, currentNomination } =
     useAuction();
 
   const player = currentNomination?.player || selectedPlayer;
 
   return (
-    <div className="relative bg-card border rounded-3xl h-full p-4 sm:p-6">
+    <div
+      className={`relative rounded-3xl h-full p-4 sm:p-6 ${
+        auction.status === "ended" ? "bg-muted/30" : "bg-card border"
+      }`}
+    >
       {selectedPlayer && !currentNomination && (
         <Button
           variant="destructive"
@@ -25,7 +29,7 @@ export default function PlayerDetails() {
         </Button>
       )}
       {player ? (
-        <div className="lg:text-center lg:space-y-2 h-full flex lg:flex-col lg:justify-center items-center gap-2 sm:gap-4">
+        <div className="lg:text-center h-full flex lg:flex-col lg:justify-center items-center gap-2">
           <div className="relative size-20">
             <Avatar
               imageUrl={player.avatarUrl}

@@ -1,13 +1,20 @@
-import { useEffect, useState, useCallback } from "react";
+"use client";
+
+import { useEffect, useState, useCallback, useMemo } from "react";
 import useAcquisitionsRoleSlots from "./useAcquisitionsRoleSlots";
 
 export default function useParticipantsAccordion() {
   const { unfilledRolesIds } = useAcquisitionsRoleSlots();
 
-  const [value, setValue] = useState<string[]>([]);
+  const roleIds = useMemo(
+    () => unfilledRolesIds.map((roleId) => roleId.toString()),
+    [unfilledRolesIds]
+  );
+
+  const [value, setValue] = useState<string[]>(roleIds);
 
   useEffect(() => {
-    setValue(unfilledRolesIds.map((roleId) => roleId.toString()));
+    setValue(roleIds);
   }, [unfilledRolesIds]);
 
   const onValueChange = useCallback(setValue, []);

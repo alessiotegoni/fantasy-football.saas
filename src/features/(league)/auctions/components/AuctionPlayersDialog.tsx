@@ -28,6 +28,7 @@ export default function AuctionPlayersDialog({
   teams = [],
 }: Props) {
   const {
+    auction,
     playersRoles,
     selectedPlayer,
     toggleSelectPlayer,
@@ -46,7 +47,11 @@ export default function AuctionPlayersDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <div className="size-full bg-card rounded-3xl p-4 sm:p-6 flex flex-col justify-center items-center gap-5 text-center">
+      <div
+        className={`size-full rounded-3xl p-4 sm:p-6 flex flex-col justify-center items-center gap-5 text-center ${
+          auction.status === "ended" ? "bg-muted/30" : "bg-card"
+        }`}
+      >
         <div className="hidden lg:flex flex-col justify-center items-center gap-3">
           <InputSearch className="size-15 size-text-muted-foreground" />
           <p className="text-muted-foreground">Cerca i giocatori rimasti</p>

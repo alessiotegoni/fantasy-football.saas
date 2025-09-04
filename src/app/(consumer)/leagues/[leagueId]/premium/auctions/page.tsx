@@ -36,7 +36,7 @@ export default async function LeagueAuctionsPage({
       <Suspense>
         <SuspenseBoundary
           leagueId={leagueId}
-          selectedSplitPromise={searchParams.then((sp) => sp.splitId)}
+          selectedSplitPromise={searchParams.then((sp) => sp.splitId as string)}
           splits={splits}
           lastSplit={lastSplit}
         />

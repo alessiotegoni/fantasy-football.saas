@@ -76,9 +76,6 @@ export default function useAuctionSettings({ defaultAuction }: Args) {
     auctionSubscriptionRef.current = auctionSubscription;
   }
 
-  console.log(defaultAuction);
-
-
   function subscribeSettings() {
     const settingsSubscription = supabase
       .channel(`auction:${defaultAuction.id}-settings`)

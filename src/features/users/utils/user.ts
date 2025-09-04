@@ -93,17 +93,13 @@ export async function isAdmin(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
-  try {
-    const { data, error } = await supabase
-      .from("admins")
-      .select("id")
-      .eq("id", userId)
-      .single();
+  const { data, error } = await supabase
+    .from("admins")
+    .select("id")
+    .eq("id", userId)
+    .single();
 
-    return !error && !!data;
-  } catch {
-    return false;
-  }
+  return !error && !!data;
 }
 
 export function getCanRedirectUserToLeague(request: NextRequest, user: User) {

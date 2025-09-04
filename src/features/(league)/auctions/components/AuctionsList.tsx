@@ -46,6 +46,6 @@ export default function AuctionsList({
 }
 
 const sectionTitles = {
-  classic: "Classica",
+  classic: "Classiche",
   repair: "Di riparazione",
 };

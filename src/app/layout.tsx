@@ -1,4 +1,3 @@
-import type React from "react";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "next-themes";
@@ -16,8 +15,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "KikLeague",
-  description: "App ispirata alla Kings League ma non ufficiale",
+  title: "K fantasy",
+  description: "App di fantacalcio ispirata alla Kings League ma non ufficiale",
 };
 
 export const viewport: Viewport = {

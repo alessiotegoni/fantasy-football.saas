@@ -1,6 +1,5 @@
 export * from "./teams";
 export * from "./tacticalModules";
-export * from "./seasons";
 export * from "./splits";
 export * from "./splitMatchdays";
 export * from "./playerRoles";
