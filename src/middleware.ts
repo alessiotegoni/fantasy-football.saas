@@ -6,19 +6,23 @@ import {
   getCanRedirectUserToLeague,
   canAccessLeague,
   isAdmin,
+  isContentCreator,
+  isRedaction,
 } from "./features/users/utils/user";
 import { getRedirectUrl } from "./utils/helpers";
 
 const ROUTE_MATCHERS = {
   auth: createRouteMatcher(["/auth/*rest"]),
-  admin: createRouteMatcher(["/admin"]),
+  admin: createRouteMatcher(["/admin/*rest"]),
+  content_creators: createRouteMatcher(["/content-creators/*rest"]),
+  redactions: createRouteMatcher(["/redactions/*rest"]),
   private: createRouteMatcher([
     "/",
     "/leagues/create",
     "/leagues/join",
     "/leagues/join/*rest",
   ]),
-  league: createRouteMatcher(["/leagues/*rest"]),
+  leagues: createRouteMatcher(["/leagues/*rest"]),
 } as const;
 
 export async function middleware(request: NextRequest) {
@@ -33,7 +37,7 @@ export async function middleware(request: NextRequest) {
     if (privateRouteResponse) return privateRouteResponse;
   }
 
-  if (ROUTE_MATCHERS.league(request) && !ROUTE_MATCHERS.private(request)) {
+  if (ROUTE_MATCHERS.leagues(request) && !ROUTE_MATCHERS.private(request)) {
     const leagueRouteResponse = await handleLeagueRoute(request, user);
     if (leagueRouteResponse) return leagueRouteResponse;
   }
@@ -41,6 +45,20 @@ export async function middleware(request: NextRequest) {
   if (ROUTE_MATCHERS.admin(request) && user) {
     const isUserAdmin = await isAdmin(supabase, user.id);
     if (!isUserAdmin) {
+      return NextResponse.redirect(getRedirectUrl(request));
+    }
+  }
+
+  if (ROUTE_MATCHERS.content_creators(request) && user) {
+    const isUserContentCreator = await isContentCreator(supabase, user.id);
+    if (!isUserContentCreator) {
+      return NextResponse.redirect(getRedirectUrl(request));
+    }
+  }
+
+  if (ROUTE_MATCHERS.redactions(request) && user) {
+    const isUserRedaction = await isRedaction(supabase, user.id);
+    if (!isUserRedaction) {
       return NextResponse.redirect(getRedirectUrl(request));
     }
   }
