@@ -4,9 +4,7 @@ import { getBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
 
 export default async function LeagueBonusMalusSettingsPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/settings/bonus">) {
   const { leagueId } = await params;
 
   const [{ bonusMalusSettings: customBonusMalus }, bonusMalus] =

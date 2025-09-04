@@ -17,10 +17,7 @@ import { ComponentPropsWithoutRef, Suspense } from "react";
 export default async function LeagueStandingPage({
   params,
   searchParams,
-}: {
-  params: Promise<{ leagueId: string }>;
-  searchParams: Promise<{ splitId?: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/standing">) {
   const [splits, { leagueId }] = await Promise.all([getSplits(), params]);
 
   const lastSplit = splits.at(-1);

@@ -19,14 +19,9 @@ import { getUserId } from "@/features/users/utils/user";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
-type Props = {
-  params: Promise<{
-    leagueId: string;
-    auctionId: string;
-  }>;
-};
-
-export default async function AuctionPage({ params }: Props) {
+export default async function AuctionPage({
+  params,
+}: PageProps<"/leagues/[leagueId]/premium/auctions/[auctionId]">) {
   const ids = await params;
 
   const [auction, participantsWithAcquisitions, playersRoles] =

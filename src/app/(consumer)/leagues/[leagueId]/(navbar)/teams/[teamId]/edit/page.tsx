@@ -8,9 +8,7 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 
 export default async function EditLeagueTeamPage({
   params,
-}: {
-  params: Promise<{ leagueId: string; teamId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/teams/[teamId]/edit">) {
   const { leagueId, teamId } = await params;
   const leagueTeam = await getLeagueMemberTeam(teamId);
 

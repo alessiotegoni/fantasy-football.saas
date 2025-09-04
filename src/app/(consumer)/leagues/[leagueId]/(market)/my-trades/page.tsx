@@ -11,9 +11,7 @@ import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 
 export default async function MyTradesPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/my-trades">) {
   const { leagueId } = await params;
 
   return (

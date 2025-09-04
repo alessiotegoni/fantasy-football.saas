@@ -7,9 +7,7 @@ import Link from "next/link";
 
 export default async function LeagueProfilePage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/profile">) {
   const { leagueId } = await params;
   const leagueProfile = await getLeagueProfile(leagueId);
 

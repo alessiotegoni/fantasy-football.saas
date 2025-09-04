@@ -16,9 +16,7 @@ import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/admin/calculate-matchday">) {
   const [liveSplit, { leagueId }] = await Promise.all([getLiveSplit(), params]);
 
   return (

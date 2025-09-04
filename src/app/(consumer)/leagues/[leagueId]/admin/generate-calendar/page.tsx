@@ -14,9 +14,7 @@ import { Suspense } from "react";
 
 export default async function GenerateCalendarPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/admin/generate-calendar">) {
   const [{ leagueId }, upcomingSplit] = await Promise.all([
     params,
     getUpcomingSplit(),

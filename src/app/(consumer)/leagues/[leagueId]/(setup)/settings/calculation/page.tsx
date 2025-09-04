@@ -3,9 +3,7 @@ import { getCalculationSettings } from "@/features/(league)/settings/queries/set
 
 export default async function LeagueCalculationSettingsPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/settings/calculation">) {
   const { leagueId } = await params;
   const calculationSettings = await getCalculationSettings(leagueId);
 

@@ -18,15 +18,10 @@ import {
 } from "@/features/(league)/(admin)/calendar/regular/queries/calendar";
 import MatchdaySection from "@/features/(league)/(admin)/calendar/regular/components/MatchdaySection";
 
-type Props = {
-  params: Promise<{ leagueId: string }>;
-  searchParams: Promise<{ splitId?: string }>;
-};
-
 export default async function LeagueCalendarPage({
   params,
   searchParams,
-}: Props) {
+}: PageProps<"/leagues/[leagueId]/calendar">) {
   const [{ leagueId }, splits] = await Promise.all([params, getSplits()]);
 
   const lastSplit = splits.at(-1);

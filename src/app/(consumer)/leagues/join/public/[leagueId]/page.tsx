@@ -22,9 +22,7 @@ import { getTacticalModules } from "@/features/(league)/settings/queries/setting
 
 export default async function LeagueDetailPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/join/public/[leagueId]">) {
   return (
     <Suspense>
       <SuspenseBoundary leagueIdPromise={params.then((p) => p.leagueId)} />

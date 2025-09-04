@@ -18,9 +18,7 @@ import MyLineupDndProvider from "@/contexts/MyLineupDndProvider";
 
 export default async function MatchPage({
   params,
-}: {
-  params: Promise<{ leagueId: string; matchId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/matches/[matchId]">) {
   const { success, ...ids } = validateUUIds(await params);
   if (!success) notFound();
 

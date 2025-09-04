@@ -17,15 +17,10 @@ import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
 import Disclaimer from "@/components/Disclaimer";
 
-type Props = {
-  params: Promise<{ leagueId: string }>;
-  searchParams: Promise<{ splitId?: string }>;
-};
-
 export default async function LeagueAuctionsPage({
   params,
   searchParams,
-}: Props) {
+}: PageProps<"/leagues/[leagueId]/premium/auctions">) {
   const [{ leagueId }, splits] = await Promise.all([params, getSplits()]);
 
   const lastSplit = splits.at(-1);

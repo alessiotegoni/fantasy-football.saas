@@ -7,9 +7,7 @@ import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queri
 
 export default async function LeagueRosterSettingsPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/settings/roster">) {
   const { leagueId } = await params;
 
   const [rosterSettings, tacticalModules, playersRoles] = await Promise.all([

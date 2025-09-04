@@ -12,10 +12,7 @@ import InsertPlayerDialog from "@/features/(league)/teamsPlayers/components/Inse
 import PlayersEmptyState from "@/features/(league)/teamsPlayers/components/PlayersEmptyState";
 import PlayersList from "@/components/PlayersList";
 import { eq, notInArray } from "drizzle-orm";
-import { ArrowLeft } from "iconoir-react";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import Link from "next/link";
-
 import {
   getPlayersRoles,
   PlayerRole,
@@ -25,16 +22,11 @@ import { getTeams, Team } from "@/features/teams/queries/team";
 import Container from "@/components/Container";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { Suspense } from "react";
-import PlayerSelectionButton from "@/features/(league)/teamsPlayers/components/PlayerSelectionButton";
-import { getUserId } from "@/features/users/utils/user";
-import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
 
 export default async function LeaguePlayersListPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/players-list">) {
   const { leagueId } = await params;
   const [players, teams, roles] = await Promise.all([
     getLeagueAvailablePlayers(leagueId),

@@ -5,18 +5,10 @@ import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-type Props = {
-  params: Promise<{ leagueId: string }>;
-  searchParams?: Promise<{
-    proposerTeamId?: string;
-    receiverTeamId?: string;
-  }>;
-};
-
 export default async function TradeProposalPage({
   params,
   searchParams,
-}: Props) {
+}: PageProps<"/leagues/[leagueId]/my-trades/proposal">) {
   const { leagueId } = await params;
 
   return (

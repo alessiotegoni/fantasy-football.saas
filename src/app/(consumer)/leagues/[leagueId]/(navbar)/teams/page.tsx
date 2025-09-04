@@ -9,9 +9,7 @@ import { Suspense } from "react";
 
 export default async function LeagueTeamsPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/teams">) {
   const { leagueId } = await params;
   const leagueTeams = await getLeagueTeams(leagueId);
 

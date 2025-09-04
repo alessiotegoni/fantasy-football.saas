@@ -29,9 +29,7 @@ import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerS
 
 export default async function LeagueTeamPage({
   params,
-}: {
-  params: Promise<{ leagueId: string; teamId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/teams/[teamId]">) {
   const ids = await params;
 
   const [leagueTeam, teams, roles] = await Promise.all([

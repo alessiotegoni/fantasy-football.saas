@@ -23,9 +23,7 @@ import Container from "@/components/Container";
 
 export default async function LeagueMembersPage({
   params,
-}: {
-  params: Promise<{ leagueId: string }>;
-}) {
+}: PageProps<"/leagues/[leagueId]/members">) {
   const { leagueId } = await params;
 
   return (
