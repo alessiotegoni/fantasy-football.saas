@@ -24,16 +24,3 @@ export async function userHasPremium(userId: string) {
 
   return res.count > 0;
 }
-
-export async function isAdmin(
-  supabase: SupabaseClient<any, "public", any>,
-  userId: string
-): Promise<boolean> {
-  const { data, error } = await supabase
-    .from("admins")
-    .select("id")
-    .eq("id", userId)
-    .single();
-
-  return !error && !!data;
-}
