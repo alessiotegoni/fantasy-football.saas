@@ -20,6 +20,8 @@ import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMemb
 import { getLeagueModules } from "@/features/(league)/settings/queries/setting";
 import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
 
+// FIXME: migliorare fcp
+
 export default async function LeagueDetailPage({
   params,
 }: PageProps<"/leagues/join/public/[leagueId]">) {

@@ -2,8 +2,8 @@ import { getSerialIdSchema, getUUIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 import { positionIdSchema } from "./matchTacticalModule";
 import { lineupPlayerTypes, PRESIDENT_POSITION_ID } from "@/drizzle/schema";
-import { getTacticalModules } from "../../settings/queries/setting";
-import { getLeagueModules } from "../../leagues/queries/league";
+import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
+import { getLeagueModules } from "../../settings/queries/setting";
 
 const lineupPlayerSchema = z
   .object({

@@ -6,8 +6,6 @@ import FootballFieldBg from "./FootballFieldBg";
 import StarterLineups from "./StarterLineups";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import ModulesSelect from "./ModulesSelect";
-import { getTacticalModules } from "../../settings/queries/setting";
-import { getLeagueModules } from "../../leagues/queries/league";
 import Disclaimer from "@/components/Disclaimer";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { LineupTeam } from "../utils/match";
@@ -17,6 +15,8 @@ import { getPresident, groupLineupsPlayers } from "../utils/LineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
 import BenchSkeleton from "./skeletons/BenchSkeleton";
 import { AwayLineupSlot, HomeLineupSlot } from "./LineupSlot";
+import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
+import { getLeagueModules } from "../../settings/queries/setting";
 
 type Props = {
   matchInfo: MatchInfo;
