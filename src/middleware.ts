@@ -3,12 +3,15 @@ import { updateSession } from "./services/supabase/utils/supabase";
 import { createRouteMatcher } from "./lib/utils";
 import {
   addUserLastLeagueMetadata,
+  getCanRedirectUserToLeague,
   canAccessLeague,
   isAdmin,
 } from "./features/users/utils/user";
 import { getRedirectUrl } from "./utils/helpers";
+import { User } from "@supabase/supabase-js";
 
 const ROUTE_MATCHERS = {
+  home: createRouteMatcher(["/"]),
   auth: createRouteMatcher(["/auth/*rest"]),
   dashboard: createRouteMatcher(["/dashboard/*rest"]),
   league: createRouteMatcher(["/league/*rest"]),
@@ -16,6 +19,14 @@ const ROUTE_MATCHERS = {
 
 export async function middleware(request: NextRequest) {
   const { user, supabase, supabaseResponse } = await updateSession(request);
+
+  if (ROUTE_MATCHERS.home(request) && user) {
+    const { isRedirectable, redirectUrl } = getCanRedirectUserToLeague(
+      request,
+      user
+    );
+    if (isRedirectable) return NextResponse.redirect(redirectUrl);
+  }
 
   if (ROUTE_MATCHERS.auth(request) && user) {
     return NextResponse.redirect(getRedirectUrl(request));
@@ -33,27 +44,13 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // if (ROUTE_MATCHERS.content_creator(request) && user) {
-  //   const isUserContentCreator = await isContentCreator(supabase, user.id);
-  //   if (!isUserContentCreator) {
-  //     return NextResponse.redirect(getRedirectUrl(request));
-  //   }
-  // }
-
-  // if (ROUTE_MATCHERS.redaction(request) && user) {
-  //   const isUserRedaction = await isRedaction(supabase, user.id);
-  //   if (!isUserRedaction) {
-  //     return NextResponse.redirect(getRedirectUrl(request));
-  //   }
-  // }
-
   return supabaseResponse;
 }
 
-async function handleLeagueRoute(request: NextRequest, user: any) {
+async function handleLeagueRoute(request: NextRequest, user: User | null) {
   const leagueId = request.nextUrl.pathname.split("/")[2];
 
-  if (!user || !leagueId || !(await canAccessLeague(user, leagueId))) {
+  if (!user || !leagueId || !canAccessLeague(user, leagueId)) {
     return NextResponse.redirect(new URL("/", request.nextUrl));
   }
 

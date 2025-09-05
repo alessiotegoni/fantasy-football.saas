@@ -36,10 +36,7 @@ export async function setUserMetadata(userId: string, metadata: UserMetadata) {
   });
 }
 
-export async function canAccessLeague(
-  user: User,
-  leagueId: string
-): Promise<boolean> {
+export function canAccessLeague(user: User, leagueId: string) {
   if (!leagueId) return false;
 
   const { league_ids } = getMetadataFromUser(user);
@@ -96,7 +93,7 @@ export function getCanRedirectUserToLeague(request: NextRequest, user: User) {
 
   return {
     isRedirectable: isHomePage && !!last_league_id && !preventRedirect,
-    redirectUrl: new URL(`/leagues/${last_league_id}`, request.nextUrl),
+    redirectUrl: new URL(`/league/${last_league_id}`, request.nextUrl),
   };
 }
 
