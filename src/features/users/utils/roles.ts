@@ -22,7 +22,7 @@ export async function handleDashboardRoute(
   const role = pathname.split("/")[2];
 
   if (user) {
-    if (role === "user") return null
+    if (pathname === "/dashboard" || role === "user") return null;
 
     const checkRole = roleChecks[role];
 

@@ -13,7 +13,7 @@ import { User } from "@supabase/supabase-js";
 const ROUTE_MATCHERS = {
   home: createRouteMatcher(["/"]),
   auth: createRouteMatcher(["/auth/*rest"]),
-  dashboard: createRouteMatcher(["/dashboard/*rest"]),
+  dashboard: createRouteMatcher(["/dashboard", "/dashboard/*rest"]),
   league: createRouteMatcher(["/league/*rest"]),
 } as const;
 
