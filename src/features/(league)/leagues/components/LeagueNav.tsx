@@ -80,22 +80,22 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     name: "Overview",
-    href: "/leagues/:leagueId",
+    href: "/league/:leagueId",
     icon: Home,
   },
   {
     name: "Squadre",
-    href: "/leagues/:leagueId/teams",
+    href: "/league/:leagueId/teams",
     icon: Shield,
   },
   {
     name: "Calendario",
-    href: "/leagues/:leagueId/calendar",
+    href: "/league/:leagueId/calendar",
     icon: Calendar,
   },
   {
     name: "Classifica",
-    href: "/leagues/:leagueId/standing",
+    href: "/league/:leagueId/standing",
     icon: Medal1st,
   },
 ];

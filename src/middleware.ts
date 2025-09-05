@@ -5,8 +5,8 @@ import {
   addUserLastLeagueMetadata,
   getCanRedirectUserToLeague,
   canAccessLeague,
-  isAdmin,
 } from "./features/users/utils/user";
+import { handleDashboardRoute } from "./features/users/utils/roles";
 import { getRedirectUrl } from "./utils/helpers";
 import { User } from "@supabase/supabase-js";
 
@@ -37,11 +37,9 @@ export async function middleware(request: NextRequest) {
     if (leagueRouteResponse) return leagueRouteResponse;
   }
 
-  if (ROUTE_MATCHERS.dashboard(request) && user) {
-    const isUserAdmin = await isAdmin(supabase, user.id);
-    if (!isUserAdmin) {
-      return NextResponse.redirect(getRedirectUrl(request));
-    }
+  if (ROUTE_MATCHERS.dashboard(request)) {
+    const dashboardResponse = await handleDashboardRoute(request, user, supabase);
+    if (dashboardResponse) return dashboardResponse;
   }
 
   return supabaseResponse;

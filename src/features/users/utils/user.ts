@@ -108,44 +108,4 @@ export async function getUserId(): Promise<string | undefined> {
   return user?.id;
 }
 
-export async function isAdmin(
-  supabase: SupabaseClient<any, "public", any>,
-  userId: string
-): Promise<boolean> {
-  const { count, error } = await supabase
-    .from("admins")
-    .select("*", { count: "exact", head: true })
-    .eq("id", userId);
 
-  if (error) return false;
-
-  return count !== null && count > 0;
-}
-
-export async function isContentCreator(
-  supabase: SupabaseClient<any, "public", any>,
-  userId: string
-): Promise<boolean> {
-  const { count, error } = await supabase
-    .from("content_creators")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", userId);
-
-  if (error) return false;
-
-  return count !== null && count > 0;
-}
-
-export async function isRedaction(
-  supabase: SupabaseClient<any, "public", any>,
-  userId: string
-): Promise<boolean> {
-  const { count, error } = await supabase
-    .from("redactions")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", userId);
-
-  if (error) return false;
-
-  return count !== null && count > 0;
-}

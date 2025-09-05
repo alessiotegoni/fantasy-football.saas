@@ -1,5 +1,3 @@
-"use client";
-
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -7,20 +5,15 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-  DropdownMenuGroup,
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
-import {
-  getMetadataFromUser,
-  isContentCreator,
-  isRedaction,
-} from "../utils/user";
+import { getMetadataFromUser } from "../utils/user";
 import {
   ArrowSeparateVertical,
+  DashboardSpeed,
   LogOut,
   NavArrowDown,
   Star,
-  StarSolid,
   User as UserIcon,
 } from "iconoir-react";
 import { User } from "@supabase/supabase-js";
@@ -36,11 +29,6 @@ export default async function UserDropdown({
   variant?: "sidebar" | "topbar";
 }) {
   if (!user) return null;
-
-  const [] = await Promise.all([
-    // isContentCreator(supabase, user.id),
-    // isRedaction(supabase, user.id),
-  ]);
 
   const { name, avatar_url } = getMetadataFromUser(user);
 
@@ -85,36 +73,28 @@ export default async function UserDropdown({
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52 rounded-xl">
         <DropdownMenuLabel>Account</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="group">
-            <Link href="/user/profile">
-            <UserS
-              <UserIcon className="size-4 group-hover:!text-white" /> Profilo
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="group">
-            <Link href="/user/premium">
-              <StarSolid className="size-4 group-hover:!text-white" /> Premium
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="group">
-            <Link href="/admin">
-              <Star className="size-4 group-hover:!text-white" /> Admin
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="group">
-            <Link href="/redaction">
-              <Star className="size-4 group-hover:!text-white" /> Redazione
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="group">
-            <Link href="/content-creator">
-              <Star className="size-4 group-hover:!text-white" /> Redazione
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem asChild className="group">
+          <Link href="/dashboard/user/profile">
+            <UserIcon className="size-4 group-hover:!text-white" /> Profilo
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="group">
+          <Link href="/dashboard/user/premium">
+            <Star className="size-4 group-hover:!text-white" /> Premium
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild className="group">
+          <Link href="/dashboard">
+            <DashboardSpeed className="size-4 group-hover:!text-white" />{" "}
+            Dashboard
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuSeparator />
+
         <ActionButton
           action={logout}
           redirectTo="/auth/login"

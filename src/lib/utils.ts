@@ -8,11 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function createRouteMatcher<T extends string>(patterns: T[]) {
-  const matchers = patterns.map(pattern =>
-    match(pattern, { decode: decodeURIComponent })
-  );
+  const matchers = patterns.map((pattern) => match(pattern));
 
   return (request: NextRequest): boolean => {
-    return matchers.some(matcher => !!matcher(request.nextUrl.pathname));
+    return matchers.some((matcher) => !!matcher(request.nextUrl.pathname));
   };
 }
