@@ -29,7 +29,7 @@ import { Suspense } from "react";
 import LeagueDropdown from "./LeagueDropdown";
 import UserDropdown from "@/features/users/components/userDropdown";
 import { getUser, getUserId } from "@/features/users/utils/user";
-import { getLeagueAdmin, getLeaguePremium } from "../queries/league";
+import { getLeagueAdmin, getLeaguePremium, League } from "../queries/league";
 import { cn } from "@/lib/utils";
 
 // FIXME: vedi sidebarSection e fixa perche ad ogni section va chiamate inutili,
@@ -38,18 +38,15 @@ import { cn } from "@/lib/utils";
 // TODO: aggiungere a UserDropdown le sezioni private a seconda del ruolo (admin, content-creator, redazione)
 
 export default function LeagueSidebar({
-  leagueId,
-  leagueNamePromise,
+  league,
 }: {
-  leagueId: string;
-  leagueNamePromise: Promise<string>;
+  league: League;
 }) {
   return (
     <Sidebar>
       <SidebarHeader className="p-0">
         <LeagueDropdown
-          leagueId={leagueId}
-          leagueNamePromise={leagueNamePromise}
+          league={league}
         />
         <div className="p-3">
           <Button asChild>

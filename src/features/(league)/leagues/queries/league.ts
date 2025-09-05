@@ -23,6 +23,8 @@ export async function getLeague(leagueId: string) {
   return league;
 }
 
+export type League = typeof leagues.$inferSelect
+
 export async function getLeaguePremium(leagueId: string) {
   "use cache";
   cacheTag(getLeaguePremiumTag(leagueId));
