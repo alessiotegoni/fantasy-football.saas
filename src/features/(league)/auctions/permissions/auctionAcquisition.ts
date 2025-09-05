@@ -1,7 +1,6 @@
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { isLeagueAdmin } from "../../leagues/queries/league";
 import { AUCTION_PERMISSION_ERRORS, validatePlayerAndCredits } from "./shared";
 import { AddAcquisitionPlayerSchema } from "../schema/auctionAcquisition";
 import { db } from "@/drizzle/db";
@@ -13,6 +12,7 @@ import {
   getAcquisitionByPlayer,
 } from "../queries/auctionAcquisition";
 import { getNominationByPlayer } from "../queries/auctionNomination";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 enum ACQUISITION_ERRORS {
   NOMINATION_NOT_BIDDING = "Nomina non trovata o gia terminata",
@@ -90,8 +90,8 @@ async function basePermissions(auctionId: string) {
     return createError(AUCTION_PERMISSION_ERRORS.AUCTION_NOT_FOUND);
   }
 
-  const isLeagueAdmin = await isLeagueAdmin(userId, auction.leagueId);
-  if (!isLeagueAdmin) {
+  const isAdmin = await isLeagueAdmin(userId, auction.leagueId);
+  if (!isAdmin) {
     return createError(ACQUISITION_ERRORS.ADMIN_REQUIRED);
   }
 

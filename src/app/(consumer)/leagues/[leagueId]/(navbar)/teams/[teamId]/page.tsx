@@ -15,7 +15,6 @@ import {
   getTeamsPlayers,
   PlayerRole,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { getLeaguePlayersPerRole } from "@/features/(league)/leagues/queries/league";
 import { cn } from "@/lib/utils";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
@@ -26,6 +25,7 @@ import {
 import Container from "@/components/Container";
 import { getTeams, Team } from "@/features/teams/queries/team";
 import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
+import { getLeaguePlayersPerRole } from "@/features/(league)/settings/queries/setting";
 
 export default async function LeagueTeamPage({
   params,

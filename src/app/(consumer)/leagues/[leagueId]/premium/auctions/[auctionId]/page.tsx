@@ -12,7 +12,7 @@ import {
   AuctionParticipant,
   getParticipantsWithAcquisitions,
 } from "@/features/(league)/auctions/queries/auctionParticipant";
-import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getUserId } from "@/features/users/utils/user";
@@ -71,13 +71,14 @@ async function SuspenseBoundary({
   const userId = await getUserId();
   if (!userId) return null;
 
-  const userTeamId = await getUserTeamId(userId, leagueId);
-  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
-
-  const [currentNomination, isAdmin] = await Promise.all([
+  const [userTeamId, currentNomination, isAdmin] = await Promise.all([
+    getUserTeamId(userId, leagueId),
     getCurrentNomination(auctionId),
     isLeagueAdmin(userId, leagueId),
   ]);
+
+  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
+
   if (!props.defaultParticipants.find((p) => p.team?.id === userTeamId)) {
     redirect(`/leagues/${leagueId}/premium/auctions`);
   }

@@ -17,8 +17,8 @@ import { Trophy } from "iconoir-react";
 import Avatar from "@/components/Avatar";
 import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
 import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMember";
-import { getLeagueModules } from "@/features/(league)/leagues/queries/league";
-import { getTacticalModules } from "@/features/(league)/settings/queries/setting";
+import { getLeagueModules } from "@/features/(league)/settings/queries/setting";
+import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
 
 export default async function LeagueDetailPage({
   params,

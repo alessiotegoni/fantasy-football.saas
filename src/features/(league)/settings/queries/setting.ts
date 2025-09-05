@@ -1,7 +1,7 @@
 import { getTacticalModulesTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { leagueSettings } from "@/drizzle/schema";
+import { leagueSettings, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   getLeagueBonusMalusSettingsTag,
@@ -96,9 +96,17 @@ export async function getMarketSettings(leagueId: string) {
   return result;
 }
 
-export async function getTacticalModules() {
-  "use cache";
-  cacheTag(getTacticalModulesTag());
+export async function getLeaguePlayersPerRole(leagueId: string) {
+  const { playersPerRole } = await getRosterSettings(leagueId);
 
-  return db.query.tacticalModules.findMany();
+  return {
+    [PRESIDENT_ROLE_ID.toString()]: 1,
+    ...playersPerRole,
+  };
+}
+
+export async function getLeagueModules(leagueId: string) {
+  const { tacticalModules } = await getRosterSettings(leagueId);
+
+  return tacticalModules;
 }

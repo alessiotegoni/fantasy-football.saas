@@ -1,10 +1,10 @@
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { isLeagueAdmin } from "../../leagues/queries/league";
 import { getAuctionWithSettings } from "../queries/auction";
 import { getUserTeamId } from "@/features/users/queries/user";
 import { getAuctionParticipant } from "../queries/auctionParticipant";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 enum AUCTION_PARTICIPANT_ERRORS {
   USER_TEAM_NOT_FOUND = "Devi prima creare una squadra per partecipare all'asta",
@@ -43,12 +43,12 @@ export async function participantActionPermissions({
 
   const { auction, userId } = permissions.data;
 
-  const [isLeagueAdmin, participant] = await Promise.all([
+  const [isAdmin, participant] = await Promise.all([
     isLeagueAdmin(userId, auction.leagueId),
     getAuctionParticipant(auctionId, teamId),
   ]);
 
-  if (!isLeagueAdmin) {
+  if (!isAdmin) {
     return createError(AUCTION_PARTICIPANT_ERRORS.ADMIN_REQUIRED);
   }
 
@@ -72,9 +72,9 @@ export async function canUpdateParticipantsOrder(auctionId: string) {
 
   const { auction, userId } = permissions.data;
 
-  const isLeagueAdmin = await isLeagueAdmin(userId, auction.leagueId);
+  const isAdmin = await isLeagueAdmin(userId, auction.leagueId);
 
-  if (!isLeagueAdmin) {
+  if (!isAdmin) {
     return createError(AUCTION_PARTICIPANT_ERRORS.ADMIN_REQUIRED);
   }
 

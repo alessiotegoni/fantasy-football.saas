@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { formatPlural } from "@/utils/formatters";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import PlayerRoleBadge, { roleNames } from "@/components/PlayerRoleBadge";
-import { getLeaguePlayersPerRole } from "../queries/league";
+import { getLeaguePlayersPerRole } from "../../settings/queries/setting";
 
 type Props = {
   leagueId: string;

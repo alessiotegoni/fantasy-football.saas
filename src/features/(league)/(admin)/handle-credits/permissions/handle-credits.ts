@@ -1,7 +1,7 @@
-import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
+import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 
 enum ERROR_MESSAGES {
   NOT_ADMIN = "Per aggiornare i crediti delle squadre devi essere un admin della lega",

@@ -1,11 +1,11 @@
 import { createError, createSuccess } from "@/utils/helpers";
 import { CreateNominationSchema } from "../schema/auctionNomination";
-import { isLeagueAdmin } from "../../leagues/queries/league";
 import {
   getNomination,
   getNominationByPlayer,
 } from "../queries/auctionNomination";
 import { baseAuctionPermissions, validatePlayerAndCredits } from "./shared";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 enum NOMINATION_ERRORS {
   INSUFFICENT_CREDITS = "Non hai abbastanza crediti",
@@ -58,8 +58,8 @@ export async function canDeleteNomination(nominationId: string) {
 
   const { userId, auction } = permissions.data;
 
-  const isLeagueAdmin = await isLeagueAdmin(userId, auction.leagueId);
-  if (!isLeagueAdmin) {
+  const isAdmin = await isLeagueAdmin(userId, auction.leagueId);
+  if (!isAdmin) {
     return createError(NOMINATION_ERRORS.ADMIN_REQUIRED);
   }
 

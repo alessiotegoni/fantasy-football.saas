@@ -1,7 +1,6 @@
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { isLeagueAdmin, getLeaguePremium } from "../../leagues/queries/league";
 import {
   CreateAuctionSchema,
   UpdateAuctionSchema,
@@ -11,6 +10,8 @@ import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 import { getAuctionWithSettings } from "../queries/auction";
 import { getUserTeamId } from "@/features/users/queries/user";
+import { isPremiumUnlocked } from "../../leagues/permissions/league";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 
 enum AUCTION_ERRORS {
   PREMIUM_NOT_UNLOCKED = "Per gestire le aste almeno un membro della lega deve avere il premium",
@@ -32,17 +33,17 @@ export async function basePermissions(leagueId: string) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const [isPremiumUnlocked, isLeagueAdmin, userTeamId] = await Promise.all([
-    getLeaguePremium(leagueId),
+  const [leaguePremium, isUserAdmin, userTeamId] = await Promise.all([
+    isPremiumUnlocked(leagueId),
     isLeagueAdmin(userId, leagueId),
     getUserTeamId(userId, leagueId),
   ]);
 
-  if (!isPremiumUnlocked) {
+  if (!leaguePremium) {
     return createError(AUCTION_ERRORS.PREMIUM_NOT_UNLOCKED);
   }
 
-  if (!isLeagueAdmin) {
+  if (!isUserAdmin) {
     return createError(AUCTION_ERRORS.ADMIN_REQUIRED);
   }
 

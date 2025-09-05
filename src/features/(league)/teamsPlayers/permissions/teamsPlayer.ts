@@ -1,11 +1,11 @@
 import { db } from "@/drizzle/db";
 import { InsertTeamPlayerSchema } from "../schema/teamsPlayer";
-import { leagueMemberTeamPlayers, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
+import { leagueMemberTeamPlayers } from "@/drizzle/schema";
 import { and, count, eq } from "drizzle-orm";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { getTeamPlayerPerRoles } from "../queries/teamsPlayer";
-import { getLeaguePlayersPerRole } from "../../leagues/queries/league";
 import { createError, createSuccess } from "@/utils/helpers";
+import { getLeaguePlayersPerRole } from "../../settings/queries/setting";
 
 enum TEAM_PLAYER_MESSAGES {
   ADMIN_REQUIRED = "Per aggiungere giocatori alle squadre devi essere admin della lega",
@@ -62,10 +62,7 @@ export async function isTeamRoleSlotFull({
   playersRolesIdsOut?: number[];
 }) {
   const [leagueLimits, teamPlayers] = await Promise.all([
-    getLeaguePlayersPerRole(leagueId).then((ppr) => ({
-      [PRESIDENT_ROLE_ID.toString()]: 1,
-      ...ppr,
-    })),
+    getLeaguePlayersPerRole(leagueId),
     getTeamPlayerPerRoles(teamId),
   ]);
 

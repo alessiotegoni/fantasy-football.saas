@@ -13,9 +13,9 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getUserId } from "@/features/users/utils/user";
-import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
 import Disclaimer from "@/components/Disclaimer";
+import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 
 export default async function LeagueAuctionsPage({
   params,
@@ -141,13 +141,13 @@ async function SuspendedAuctionsList({
   const userId = await getUserId();
   if (!userId) return null;
 
-  const isLeagueAdmin = await isLeagueAdmin(userId, leagueId);
+  const isAdmin = await isLeagueAdmin(userId, leagueId);
 
   return (
     <AuctionsList
       leagueId={leagueId}
       auctions={auctions}
-      isLeagueAdmin={isLeagueAdmin}
+      isLeagueAdmin={isAdmin}
       selectedSplit={selectedSplit}
     />
   );

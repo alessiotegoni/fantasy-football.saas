@@ -129,5 +129,7 @@ async function updateLeagueImage(leagueId: string, file: File) {
 
 function redirectToLeagueSetup(leagueId: string) {
   const leagueUrl = `/leagues/${leagueId}`;
-  redirect(`${leagueUrl}/teams/create?redirectUrl=${leagueUrl}//general`);
+  const redirectUrl =
+    `${leagueUrl}/teams/create?redirectUrl=${leagueUrl}//general` as __next_route_internal_types__.RouteImpl<string>;
+  redirect(redirectUrl);
 }
