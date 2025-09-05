@@ -55,7 +55,7 @@ export default function LeagueSidebar({
         <LeagueDropdown user={user} league={league} />
         <div className="p-3">
           <Button asChild>
-            <Link href="/user/premium">
+            <Link href="/dashboard/user/premium">
               <Star className="size-5" />
               <span className="font-medium">Passa a premium</span>
             </Link>
@@ -151,18 +151,18 @@ const sidebarSections: SidebarSectionConfig[] = [
     items: [
       {
         name: "Profilo lega",
-        href: "/leagues/:leagueId/profile",
+        href: "/league/:leagueId/profile",
         icon: Shield,
       },
       {
         name: "Impostazioni lega",
-        href: "/leagues/:leagueId/settings/general",
+        href: "/league/:leagueId/settings/general",
         icon: Settings,
-        basePath: "/leagues/:leagueId/",
+        basePath: "/league/:leagueId/",
       },
       {
         name: "Partecipanti",
-        href: "/leagues/:leagueId/members",
+        href: "/league/:leagueId/members",
         icon: UserIcon,
       },
     ],
@@ -173,17 +173,17 @@ const sidebarSections: SidebarSectionConfig[] = [
     items: [
       {
         name: "Listone giocatori",
-        href: "/leagues/:leagueId/players-list",
+        href: "/league/:leagueId/players-list",
         icon: Community,
       },
       {
         name: "I miei scambi",
-        href: "/leagues/:leagueId/my-trades",
+        href: "/league/:leagueId/my-trades",
         icon: CoinsSwap,
       },
       {
         name: "Scambi della lega",
-        href: "/leagues/:leagueId/trades",
+        href: "/league/:leagueId/trades",
         icon: Refresh,
       },
     ],
@@ -194,17 +194,17 @@ const sidebarSections: SidebarSectionConfig[] = [
     items: [
       {
         name: "Calcola giornate",
-        href: "/leagues/:leagueId/admin/calculate-matchday",
+        href: "/league/:leagueId/admin/calculate-matchday",
         icon: Calculator,
       },
       {
         name: "Genera calendario",
-        href: "/leagues/:leagueId/admin/generate-calendar",
+        href: "/league/:leagueId/admin/generate-calendar",
         icon: Calendar,
       },
       {
         name: "Gestisci Crediti",
-        href: "/leagues/:leagueId/admin/handle-credits",
+        href: "/league/:leagueId/admin/handle-credits",
         icon: Coins,
       },
     ],
@@ -215,12 +215,12 @@ const sidebarSections: SidebarSectionConfig[] = [
     items: [
       {
         name: "Crea asta",
-        href: "/leagues/:leagueId/premium/auctions/create",
+        href: "/league/:leagueId/premium/auctions/create",
         icon: DatabaseScriptPlus,
       },
       {
         name: "Aste della lega",
-        href: "/leagues/:leagueId/premium/auctions",
+        href: "/league/:leagueId/premium/auctions",
         icon: Hammer,
         exact: true,
       },

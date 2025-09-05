@@ -20,7 +20,7 @@ import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMem
 export default async function LeagueAuctionsPage({
   params,
   searchParams,
-}: PageProps<"/leagues/[leagueId]/premium/auctions">) {
+}: PageProps<"/league/[leagueId]/premium/auctions">) {
   const [{ leagueId }, splits] = await Promise.all([params, getSplits()]);
 
   const lastSplit = splits.at(-1);
@@ -97,7 +97,7 @@ async function SuspenseBoundary({
             <BackButton />
           ) : (
             <Button asChild className="min-w-36">
-              <Link href={`/leagues/${leagueId}/premium/auctions/create`}>
+              <Link href={`/league/${leagueId}/premium/auctions/create`}>
                 Crea asta
                 <NavArrowRight className="size-5" />
               </Link>

@@ -11,7 +11,7 @@ import { Suspense } from "react";
 
 export default async function HandleCreditsPage({
   params,
-}: PageProps<"/leagues/[leagueId]/admin/handle-credits">) {
+}: PageProps<"/league/[leagueId]/admin/handle-credits">) {
   const { leagueId } = await params;
   const leagueTeams = await getLeagueTeams(leagueId);
 

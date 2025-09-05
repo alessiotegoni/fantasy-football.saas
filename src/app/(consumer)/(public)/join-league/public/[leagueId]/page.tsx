@@ -24,7 +24,7 @@ import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalM
 
 export default async function LeagueDetailPage({
   params,
-}: PageProps<"/leagues/join/public/[leagueId]">) {
+}: PageProps<"/join-league/public/[leagueId]">) {
   return (
     <Suspense>
       <SuspenseBoundary leagueIdPromise={params.then((p) => p.leagueId)} />

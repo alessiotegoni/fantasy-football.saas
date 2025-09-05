@@ -11,7 +11,7 @@ import MembersWrapper from "@/features/(league)/members/components/MembersWrappe
 
 export default async function LeagueMembersPage({
   params,
-}: PageProps<"/leagues/[leagueId]/members">) {
+}: PageProps<"/league/[leagueId]/members">) {
   const { leagueId } = await params;
   const members = await getLeagueMembers(leagueId);
 

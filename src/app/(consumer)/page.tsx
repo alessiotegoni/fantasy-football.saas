@@ -88,7 +88,7 @@ async function BackToLeagueButton() {
       className="w-fit absolute left-2 top-2 text-white"
       asChild
     >
-      <Link href={`/leagues/${last_league_id}`}>
+      <Link href={`/league/${last_league_id}`}>
         <ArrowLeft className="size-4" />
         <p>Torna alla lega</p>
       </Link>

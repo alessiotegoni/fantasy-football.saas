@@ -29,7 +29,7 @@ import { getLeaguePlayersPerRole } from "@/features/(league)/settings/queries/se
 
 export default async function LeagueTeamPage({
   params,
-}: PageProps<"/leagues/[leagueId]/teams/[teamId]">) {
+}: PageProps<"/league/[leagueId]/teams/[teamId]">) {
   const ids = await params;
 
   const [leagueTeam, teams, roles] = await Promise.all([
@@ -146,7 +146,7 @@ function TeamPlayersEmptyState({ leagueId }: Pick<Props, "leagueId">) {
       description="Se l'asta è conclusa ed hai gia acquistato giocatori chiedi agli admin della lega di aggiungerteli"
       renderButton={() => (
         <Button asChild>
-          <Link href={`/leagues/${leagueId}/players-list`}>
+          <Link href={`/league/${leagueId}/players-list`}>
             Listone giocatori
             <NavArrowRight className="size-5" />
           </Link>

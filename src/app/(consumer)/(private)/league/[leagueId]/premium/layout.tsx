@@ -4,11 +4,11 @@ import { redirect } from "next/navigation";
 export default async function PremiumLayout({
   params,
   children,
-}: LayoutProps<"/leagues/[leagueId]/premium">) {
+}: LayoutProps<"/league/[leagueId]/premium">) {
   const { leagueId } = await params;
 
   const hasLeaguePremium = await getLeaguePremium(leagueId);
-  if (!hasLeaguePremium) redirect(`/leagues/${leagueId}`);
+  if (!hasLeaguePremium) redirect(`/league/${leagueId}`);
 
   return children;
 }

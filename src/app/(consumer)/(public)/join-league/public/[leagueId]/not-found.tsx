@@ -16,7 +16,7 @@ export default function NotFound() {
         </p>
 
         <Button asChild variant="gradient" className="w-full mt-2">
-          <Link href="/leagues/join/public">
+          <Link href="/join-league/public">
             <NavArrowLeft className="size-5" />
             Torna alle leghe pubbliche
           </Link>

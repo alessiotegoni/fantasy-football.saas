@@ -14,7 +14,7 @@ import { Suspense } from "react";
 
 export default async function GenerateCalendarPage({
   params,
-}: PageProps<"/leagues/[leagueId]/admin/generate-calendar">) {
+}: PageProps<"/league/[leagueId]/admin/generate-calendar">) {
   const [{ leagueId }, upcomingSplit] = await Promise.all([
     params,
     getUpcomingSplit(),
@@ -66,7 +66,7 @@ async function SuspenseBoundary({
             Rigenera
           </ActionButton>
           <Button asChild className="sm:w-fit sm:mt-7 !px-5">
-            <Link href={`/leagues/${leagueId}/calendar?splitId=${splitId}`}>
+            <Link href={`/league/${leagueId}/calendar?splitId=${splitId}`}>
               Vedi
               <NavArrowRight className="size-5" />
             </Link>

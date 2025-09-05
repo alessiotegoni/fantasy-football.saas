@@ -7,7 +7,7 @@ import { Suspense } from "react";
 
 export default async function LeagueTradesPage({
   params,
-}: PageProps<"/leagues/[leagueId]/trades">) {
+}: PageProps<"/league/[leagueId]/trades">) {
   const { leagueId } = await params;
 
   return (

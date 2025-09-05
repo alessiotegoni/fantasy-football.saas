@@ -3,7 +3,7 @@ import { getGeneralSettings } from "@/features/(league)/settings/queries/setting
 
 export default async function LeagueGeneralSettingsPage({
   params,
-}: PageProps<"/leagues/[leagueId]/settings/general">) {
+}: PageProps<"/league/[leagueId]/settings/general">) {
   const { leagueId } = await params;
   const generalSettings = await getGeneralSettings(leagueId);
 

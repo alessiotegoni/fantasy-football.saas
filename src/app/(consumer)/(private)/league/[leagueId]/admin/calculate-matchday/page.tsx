@@ -16,7 +16,7 @@ import { Suspense } from "react";
 
 export default async function CalculateMatchdayPage({
   params,
-}: PageProps<"/leagues/[leagueId]/admin/calculate-matchday">) {
+}: PageProps<"/league/[leagueId]/admin/calculate-matchday">) {
   const [liveSplit, { leagueId }] = await Promise.all([getLiveSplit(), params]);
 
   return (
@@ -97,7 +97,7 @@ function CalendarNotGeneratedEmptyState({ leagueId }: { leagueId: string }) {
       description="Per calcolare le giornate devi prima generare un calendario"
       renderButton={() => (
         <Button asChild>
-          <Link href={`/leagues/${leagueId}/admin/generate-calendar`}>
+          <Link href={`/league/${leagueId}/admin/generate-calendar`}>
             Crea calendario
             <NavArrowRight className="size-5" />
           </Link>

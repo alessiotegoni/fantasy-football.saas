@@ -20,7 +20,7 @@ import LeagueSettingLink from "@/features/(league)/settings/components/LeagueSet
 export default async function leagueSettingsLayout({
   children,
   params,
-}: LayoutProps<"/leagues/[leagueId]/settings">) {
+}: LayoutProps<"/league/[leagueId]/settings">) {
   const { leagueId } = await params;
 
   return (
@@ -28,7 +28,7 @@ export default async function leagueSettingsLayout({
       {/* Mobile leagueSettings */}
       <div className="md:hidden">
         <div className="flex items-center mb-4">
-          <Link href={`/leagues/${leagueId}`} className="mr-3">
+          <Link href={`/league/${leagueId}`} className="mr-3">
             <ArrowLeft className="size-5" />
           </Link>
           <h1 className="text-xl font-heading">Impostazioni Lega</h1>

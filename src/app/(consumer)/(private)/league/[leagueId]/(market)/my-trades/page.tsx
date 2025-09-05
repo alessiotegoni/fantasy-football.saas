@@ -11,7 +11,7 @@ import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 
 export default async function MyTradesPage({
   params,
-}: PageProps<"/leagues/[leagueId]/my-trades">) {
+}: PageProps<"/league/[leagueId]/my-trades">) {
   const { leagueId } = await params;
 
   return (
@@ -26,7 +26,7 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
   if (!userId) return null;
 
   const userTeamId = await getUserTeamId(userId, leagueId);
-  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
+  if (!userTeamId) redirect(`/league/${leagueId}/teams/create`);
 
   return (
     <Container

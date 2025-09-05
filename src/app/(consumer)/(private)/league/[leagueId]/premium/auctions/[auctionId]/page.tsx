@@ -21,7 +21,7 @@ import { Suspense } from "react";
 
 export default async function AuctionPage({
   params,
-}: PageProps<"/leagues/[leagueId]/premium/auctions/[auctionId]">) {
+}: PageProps<"/league/[leagueId]/premium/auctions/[auctionId]">) {
   const ids = await params;
 
   const [auction, participantsWithAcquisitions, playersRoles] =
@@ -80,7 +80,7 @@ async function SuspenseBoundary({
   if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
 
   if (!props.defaultParticipants.find((p) => p.team?.id === userTeamId)) {
-    redirect(`/leagues/${leagueId}/premium/auctions`);
+    redirect(`/league/${leagueId}/premium/auctions`);
   }
 
   const currentBid = currentNomination

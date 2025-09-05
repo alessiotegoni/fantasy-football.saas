@@ -17,7 +17,7 @@ import { ComponentPropsWithoutRef, Suspense } from "react";
 export default async function LeagueStandingPage({
   params,
   searchParams,
-}: PageProps<"/leagues/[leagueId]/standing">) {
+}: PageProps<"/league/[leagueId]/standing">) {
   const [splits, { leagueId }] = await Promise.all([getSplits(), params]);
 
   const lastSplit = splits.at(-1);
@@ -90,7 +90,7 @@ async function SuspenseBoundary({
           description="Per vedere la classifica sono necessarie almeno 4 squadre all'interno della lega"
           renderButton={() => (
             <Button className="w-44" asChild>
-              <Link href={`/leagues/${leagueId}/teams`}>
+              <Link href={`/league/${leagueId}/teams`}>
                 Vedi squadre <NavArrowRight className="size-5" />
               </Link>
             </Button>

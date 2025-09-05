@@ -2,7 +2,7 @@ import { LeagueTeamForm } from "@/features/(league)/teams/components/LeagueTeamF
 
 export default async function CreateLeagueTeamPage({
   params,
-}: PageProps<"/leagues/[leagueId]/teams/create">) {
+}: PageProps<"/league/[leagueId]/teams/create">) {
   const { leagueId } = await params;
 
   return (

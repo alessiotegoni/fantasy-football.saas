@@ -9,7 +9,7 @@ import { Suspense } from "react";
 
 export default async function CreateAuctionPage({
   params,
-}: PageProps<"/leagues/[leagueId]/premium/auctions/create">) {
+}: PageProps<"/league/[leagueId]/premium/auctions/create">) {
   const { leagueId } = await params;
   const [playersPerRole, { initialCredits }] = await Promise.all([
     getLeaguePlayersPerRole(leagueId),

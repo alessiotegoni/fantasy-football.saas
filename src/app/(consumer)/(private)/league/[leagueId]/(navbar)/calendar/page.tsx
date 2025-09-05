@@ -21,7 +21,7 @@ import MatchdaySection from "@/features/(league)/(admin)/calendar/regular/compon
 export default async function LeagueCalendarPage({
   params,
   searchParams,
-}: PageProps<"/leagues/[leagueId]/calendar">) {
+}: PageProps<"/league/[leagueId]/calendar">) {
   const [{ leagueId }, splits] = await Promise.all([params, getSplits()]);
 
   const lastSplit = splits.at(-1);

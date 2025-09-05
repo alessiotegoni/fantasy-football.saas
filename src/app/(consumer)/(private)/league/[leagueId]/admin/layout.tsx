@@ -6,7 +6,7 @@ import { PropsWithChildren, Suspense } from "react";
 export default async function LeagueAdminLayout({
   children,
   params,
-}: LayoutProps<"/leagues/[leagueId]/admin">) {
+}: LayoutProps<"/league/[leagueId]/admin">) {
   const { leagueId } = await params;
 
   return (
@@ -22,7 +22,7 @@ async function SuspenseBoundary({
 }: PropsWithChildren<{ leagueId: string }>) {
   const userId = await getUserId();
   if (!userId || !(await isLeagueAdmin(userId, leagueId))) {
-    redirect(`/leagues/${leagueId}`);
+    redirect(`/league/${leagueId}`);
   }
 
   return children;

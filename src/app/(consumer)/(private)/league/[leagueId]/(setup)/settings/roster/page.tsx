@@ -7,7 +7,7 @@ import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalM
 
 export default async function LeagueRosterSettingsPage({
   params,
-}: PageProps<"/leagues/[leagueId]/settings/roster">) {
+}: PageProps<"/league/[leagueId]/settings/roster">) {
   const { leagueId } = await params;
 
   const [rosterSettings, tacticalModules, playersRoles] = await Promise.all([

@@ -11,7 +11,7 @@ import { isPremiumUnlocked } from "@/features/(league)/leagues/permissions/leagu
 import { User } from "@supabase/supabase-js";
 
 export default async function LeagueLayout(
-  props: LayoutProps<"/leagues/[leagueId]">
+  props: LayoutProps<"/league/[leagueId]">
 ) {
   const { leagueId } = await props.params;
 

@@ -9,7 +9,7 @@ import { Suspense } from "react";
 
 export default async function LeagueTeamsPage({
   params,
-}: PageProps<"/leagues/[leagueId]/teams">) {
+}: PageProps<"/league/[leagueId]/teams">) {
   const { leagueId } = await params;
   const leagueTeams = await getLeagueTeams(leagueId);
 
@@ -29,7 +29,7 @@ export default async function LeagueTeamsPage({
             Prova a riaggiornare la pagina
           </p>
           <Button variant="gradient" asChild className="w-fit mt-7 gap-4 !px-4">
-            <Link href={`/leagues/${leagueId}/teams/create`}>
+            <Link href={`/league/${leagueId}/teams/create`}>
               Oppure crea la tua prima squadra
               <NavArrowRight className="size-5" />
             </Link>

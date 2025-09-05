@@ -3,7 +3,7 @@ import { getMarketSettings } from "@/features/(league)/settings/queries/setting"
 
 export default async function LeagueMarketSettingsPage({
   params,
-}: PageProps<"/leagues/[leagueId]/settings/market">) {
+}: PageProps<"/league/[leagueId]/settings/market">) {
   const { leagueId } = await params;
 
   const marketSettings = await getMarketSettings(leagueId);

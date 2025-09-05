@@ -26,7 +26,7 @@ import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerS
 
 export default async function LeaguePlayersListPage({
   params,
-}: PageProps<"/leagues/[leagueId]/players-list">) {
+}: PageProps<"/league/[leagueId]/players-list">) {
   const { leagueId } = await params;
   const [players, teams, roles] = await Promise.all([
     getLeagueAvailablePlayers(leagueId),

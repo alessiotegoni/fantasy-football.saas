@@ -25,7 +25,7 @@ export default function JoinLeaguePage() {
         <div className="flex-1 flex flex-col items-center">
           <div className="grid gap-6 md:grid-cols-2 mx-auto max-w-[900px] px-6">
             <Link
-              href="/leagues/join/public"
+              href="/join-league/public"
               className="flex flex-col items-center text-center p-6 bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="size-20 sm:size-25 rounded-full bg-primary/10 flex items-center justify-center mb-4">
@@ -42,7 +42,7 @@ export default function JoinLeaguePage() {
             </Link>
 
             <Link
-              href="/leagues/join/private"
+              href="/join-league/private"
               className="flex flex-col items-center text-center p-6 bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="size-20 sm:size-25 rounded-full bg-primary/10 flex items-center justify-center mb-4">

@@ -12,7 +12,7 @@ import { Suspense } from "react";
 
 export default async function EditAuctionPage({
   params,
-}: PageProps<"/leagues/[leagueId]/premium/auctions/[auctionId]/edit">) {
+}: PageProps<"/league/[leagueId]/premium/auctions/[auctionId]/edit">) {
   const { leagueId, auctionId } = await params;
 
   const auction = await getAuctionWithSettings(auctionId);
