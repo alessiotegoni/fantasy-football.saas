@@ -45,3 +45,5 @@ export async function getLeagueMembers(leagueId: string) {
 
   return results;
 }
+
+export type LeagueMember = Awaited<ReturnType<typeof getLeagueMembers>>[number]

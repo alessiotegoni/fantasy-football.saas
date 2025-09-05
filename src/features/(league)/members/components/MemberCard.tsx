@@ -18,22 +18,13 @@ import { SetRoleMemberSchema } from "../schema/leagueMember";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import MemberActionDialog from "./MemberActionDialog";
+import { LeagueMember } from "../queries/leagueMember";
 
 type Props = {
-  member: {
-    role: "member" | "admin";
-    joinedAt: Date;
-    id: string;
-    team: {
-      imageUrl: string | null;
-      name: string;
-      managerName: string;
-    } | null;
-    user: { id: string; email: string | null };
-  };
+  member: LeagueMember
   leagueId: string;
   isAdmin: boolean;
-  userId: string;
+  userId?: string;
 };
 
 export function MemberCard({ member, leagueId, isAdmin, userId }: Props) {
