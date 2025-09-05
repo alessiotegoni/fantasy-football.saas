@@ -59,20 +59,14 @@ export default function LeagueSidebar(props: Props) {
         </div>
       </SidebarHeader>
       <SidebarContent className="custom-scrollbar">
-        {sidebarSections.map(({ type, sections }) => {
-          const section = (
-            <SidebarSection
-              key={type}
-              sections={sections}
-              type={type}
-              leagueId={league.id}
-            />
-          );
-
-          if (section.type === "public") return section;
-
-          return <Suspense key={type}>{section}</Suspense>;
-        })}
+        {sidebarSections.map(({ type, sections }) => (
+          <SidebarSection
+            key={type}
+            sections={sections}
+            type={type}
+            {...props}
+          />
+        ))}
       </SidebarContent>
       <SidebarFooter className="hidden lg:block lg:border lg:border-border">
         <UserDropdown {...props} />
@@ -82,39 +76,29 @@ export default function LeagueSidebar(props: Props) {
 }
 
 async function SidebarSection({
+  league,
+  isAdmin,
+  leaguePremium,
   sections,
   type,
-  leagueId,
 }: {
   sections: (typeof sidebarSections)[number]["sections"];
   type?: "public" | "private" | "premium";
-  leagueId: string;
-}) {
-  let isPremiumFeaturesUnlocked = true;
-
-  switch (type) {
-    case "private":
-      const userId = await getUserId();
-      if (!userId) return;
-
-      if (!(await getLeagueAdmin(userId, leagueId))) return null;
-      break;
-    case "premium":
-      isPremiumFeaturesUnlocked = await getLeaguePremium(leagueId);
-      break;
-  }
+} & Props) {
+  if (type === "private" && !isAdmin) return null;
+  if (type === "premium" && !leaguePremium) return null;
 
   return sections.map((section) => (
     <SidebarGroup key={section.title} className="p-3">
       <SidebarGroupLabel
         className={cn(
           "font-heading text-lg mb-1",
-          !isPremiumFeaturesUnlocked &&
+          !leaguePremium &&
             `mb-0 bg-background rounded-2xl rounded-bl-none rounded-br-none
             px-5 flex-col items-start h-fit pt-4`
         )}
       >
-        {!isPremiumFeaturesUnlocked && (
+        {!leaguePremium && (
           <div className="flex items-center gap-2 text-primary font-semibold mb-3">
             <Star className="size-5" />
             <p className="text-base">Premium</p>
@@ -124,19 +108,17 @@ async function SidebarSection({
       </SidebarGroupLabel>
       <SidebarGroupContent
         className={cn(
-          !isPremiumFeaturesUnlocked &&
+          !leaguePremium &&
             "p-2 bg-background rounded-2xl rounded-tl-none rounded-tr-none"
         )}
       >
-        <SidebarMenu
-          className={cn(!isPremiumFeaturesUnlocked && "pointer-events-none")}
-        >
+        <SidebarMenu className={cn(!leaguePremium && "pointer-events-none")}>
           {section.items.map((item) => (
             <SidebarItem
               key={item.name}
               item={item}
-              leagueId={leagueId}
-              showLink={isPremiumFeaturesUnlocked}
+              leagueId={league.id}
+              showLink={leaguePremium}
             />
           ))}
         </SidebarMenu>

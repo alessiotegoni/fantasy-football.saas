@@ -1,10 +1,9 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import UserDropdown from "@/features/users/components/userDropdown";
-import { getUser } from "@/features/users/utils/user";
-import { Suspense } from "react";
 import { League } from "../queries/league";
+import { User } from "@supabase/supabase-js";
 
-export function Topbar({ league }: { league: League }) {
+export function Topbar({ league, user }: { league: League; user?: User }) {
   return (
     <header
       className="bg-gradient-to-r from-primary to-secondary w-full
@@ -15,9 +14,7 @@ export function Topbar({ league }: { league: League }) {
         <SidebarTrigger />
         <h2 className="font-heading text-lg">{league.name}</h2>
       </div>
-      <Suspense>
-        <UserDropdown variant="topbar" userPromise={getUser()} />
-      </Suspense>
+      <UserDropdown variant="topbar" user={user} />
     </header>
   );
 }
