@@ -30,47 +30,10 @@ export default async function UserDropdown({
 }) {
   if (!user) return null;
 
-  const { name, avatar_url } = getMetadataFromUser(user);
-
-  const triggerClass =
-    variant === "sidebar" ? "w-full px-3 py-2" : "p-0 m-0 rounded-full gap-1";
-
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className={`relative group flex justify-between rounded-xl items-center gap-3 ${triggerClass}`}
-      >
-        <div className="flex items-center gap-3">
-          <Avatar
-            imageUrl={avatar_url}
-            name={name || "user avatar"}
-            className="size-8"
-            renderFallback={() =>
-              (name?.charAt(0) ?? user.email?.charAt(0))?.toUpperCase()
-            }
-          />
-
-          {variant === "sidebar" && (
-            <div className="text-left">
-              {name && <p className="text-sm font-medium">{name}</p>}
-              <p className="text-xs text-muted-foreground">{user.email}</p>
-            </div>
-          )}
-        </div>
-        {variant === "sidebar" ? (
-          <ArrowSeparateVertical className="size-5" />
-        ) : (
-          <div
-            className="bg-white rounded-full size-4 flex
-          justify-center items-center absolute -bottom-2 -right-2"
-          >
-            <NavArrowDown
-              className="group-data-[state=open]:rotate-180
-             transition-transform size-3 text-black"
-            />
-          </div>
-        )}
-      </DropdownMenuTrigger>
+      <DropdownTrigger user={user} variant={variant} />
+      
       <DropdownMenuContent align="end" className="w-52 rounded-xl">
         <DropdownMenuLabel>Account</DropdownMenuLabel>
 
@@ -106,5 +69,55 @@ export default async function UserDropdown({
         </ActionButton>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function DropdownTrigger({
+  user,
+  variant,
+}: {
+  user: User;
+  variant?: "sidebar" | "topbar";
+}) {
+  const { name, avatar_url } = getMetadataFromUser(user);
+
+  const triggerClass =
+    variant === "sidebar" ? "w-full px-3 py-2" : "p-0 m-0 rounded-full gap-1";
+
+  return (
+    <DropdownMenuTrigger
+      className={`relative group flex justify-between rounded-xl items-center gap-3 ${triggerClass}`}
+    >
+      <div className="flex items-center gap-3">
+        <Avatar
+          imageUrl={avatar_url}
+          name={name || "user avatar"}
+          className="size-8"
+          renderFallback={() =>
+            (name?.charAt(0) ?? user.email?.charAt(0))?.toUpperCase()
+          }
+        />
+
+        {variant === "sidebar" && (
+          <div className="text-left">
+            {name && <p className="text-sm font-medium">{name}</p>}
+            <p className="text-xs text-muted-foreground">{user.email}</p>
+          </div>
+        )}
+      </div>
+      {variant === "sidebar" ? (
+        <ArrowSeparateVertical className="size-5" />
+      ) : (
+        <div
+          className="bg-white rounded-full size-4 flex
+          justify-center items-center absolute -bottom-2 -right-2"
+        >
+          <NavArrowDown
+            className="group-data-[state=open]:rotate-180
+             transition-transform size-3 text-black"
+          />
+        </div>
+      )}
+    </DropdownMenuTrigger>
   );
 }
