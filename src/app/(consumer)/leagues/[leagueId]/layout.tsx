@@ -57,7 +57,7 @@ function LeagueWrapper({
   league,
   user,
   isAdmin = false,
-  leaguePremium = false,
+  leaguePremium = true,
 }: {
   user?: User;
   isAdmin?: boolean;

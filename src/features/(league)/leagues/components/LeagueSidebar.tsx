@@ -25,16 +25,12 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import SidebarItem from "./SidebarItem";
-import { Suspense } from "react";
 import LeagueDropdown from "./LeagueDropdown";
 import UserDropdown from "@/features/users/components/userDropdown";
 import { League } from "../queries/league";
 import { cn } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";
 
-// FIXME: vedi sidebarSection e fixa perche ad ogni section va chiamate inutili,
-// utilizzare solita tecnica ovvero come suspense utilizzare scheletro della sidebar
-// e poi in suspenseBoundary fare i fetch che servono
 // TODO: aggiungere a UserDropdown le sezioni private a seconda del ruolo (admin, content-creator, redazione)
 
 type Props = {
@@ -44,11 +40,20 @@ type Props = {
   leaguePremium: boolean;
 };
 
-export default function LeagueSidebar(props: Props) {
+export default function LeagueSidebar({
+  user,
+  league,
+  isAdmin,
+  leaguePremium,
+}: Props) {
+  const visibleSections = sidebarSections.filter(
+    (section) => !(section.type === "private" && !isAdmin)
+  );
+
   return (
     <Sidebar>
       <SidebarHeader className="p-0">
-        <LeagueDropdown {...props} />
+        <LeagueDropdown user={user} league={league} />
         <div className="p-3">
           <Button asChild>
             <Link href="/user/premium">
@@ -59,46 +64,43 @@ export default function LeagueSidebar(props: Props) {
         </div>
       </SidebarHeader>
       <SidebarContent className="custom-scrollbar">
-        {sidebarSections.map(({ type, sections }) => (
-          <SidebarSection
-            key={type}
-            sections={sections}
-            type={type}
-            {...props}
+        {visibleSections.map((section) => (
+          <LeagueSidebarSection
+            key={section.title}
+            section={section}
+            leagueId={league.id}
+            leaguePremium={leaguePremium}
           />
         ))}
       </SidebarContent>
       <SidebarFooter className="hidden lg:block lg:border lg:border-border">
-        <UserDropdown {...props} />
+        <UserDropdown user={user} />
       </SidebarFooter>
     </Sidebar>
   );
 }
 
-async function SidebarSection({
-  league,
-  isAdmin,
+function LeagueSidebarSection({
+  section,
+  leagueId,
   leaguePremium,
-  sections,
-  type,
 }: {
-  sections: (typeof sidebarSections)[number]["sections"];
-  type?: "public" | "private" | "premium";
-} & Props) {
-  if (type === "private" && !isAdmin) return null;
-  if (type === "premium" && !leaguePremium) return null;
+  section: SidebarSectionConfig;
+  leagueId: string;
+  leaguePremium: boolean;
+}) {
+  const isLocked = section.type === "premium" && !leaguePremium;
 
-  return sections.map((section) => (
-    <SidebarGroup key={section.title} className="p-3">
+  return (
+    <SidebarGroup className="p-3">
       <SidebarGroupLabel
         className={cn(
           "font-heading text-lg mb-1",
-          !leaguePremium &&
-            `mb-0 bg-background rounded-2xl rounded-bl-none rounded-br-none
-            px-5 flex-col items-start h-fit pt-4`
+          isLocked &&
+            "mb-0 bg-background rounded-2xl rounded-bl-none rounded-br-none px-5 flex-col items-start h-fit pt-4"
         )}
       >
-        {!leaguePremium && (
+        {isLocked && (
           <div className="flex items-center gap-2 text-primary font-semibold mb-3">
             <Star className="size-5" />
             <p className="text-base">Premium</p>
@@ -108,40 +110,43 @@ async function SidebarSection({
       </SidebarGroupLabel>
       <SidebarGroupContent
         className={cn(
-          !leaguePremium &&
+          isLocked &&
             "p-2 bg-background rounded-2xl rounded-tl-none rounded-tr-none"
         )}
       >
-        <SidebarMenu className={cn(!leaguePremium && "pointer-events-none")}>
+        <SidebarMenu className={cn(isLocked && "pointer-events-none")}>
           {section.items.map((item) => (
             <SidebarItem
               key={item.name}
               item={item}
-              leagueId={league.id}
-              showLink={leaguePremium}
+              leagueId={leagueId}
+              showLink={!isLocked}
             />
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  ));
+  );
 }
 
-export type SidebarSection = {
-  title: string;
-  isPrivate?: boolean;
-  items: {
-    name: string;
-    href: string;
-    icon: React.ElementType;
-    basePath?: string;
-    exact?: boolean;
-  }[];
+export type SidebarLink = {
+  name: string;
+  href: string;
+  icon: React.ElementType;
+  basePath?: string;
+  exact?: boolean;
 };
 
-export const publicSection: SidebarSection[] = [
+export type SidebarSectionConfig = {
+  title: string;
+  items: SidebarLink[];
+  type: "public" | "private" | "premium";
+};
+
+const sidebarSections: SidebarSectionConfig[] = [
   {
     title: "Setup lega",
+    type: "public",
     items: [
       {
         name: "Profilo lega",
@@ -163,6 +168,7 @@ export const publicSection: SidebarSection[] = [
   },
   {
     title: "Mercato",
+    type: "public",
     items: [
       {
         name: "Listone giocatori",
@@ -181,12 +187,9 @@ export const publicSection: SidebarSection[] = [
       },
     ],
   },
-];
-
-export const privateSection: SidebarSection[] = [
   {
     title: "Gestione campionato",
-    isPrivate: true,
+    type: "private",
     items: [
       {
         name: "Calcola giornate",
@@ -205,11 +208,9 @@ export const privateSection: SidebarSection[] = [
       },
     ],
   },
-];
-
-export const premiumSection: SidebarSection[] = [
   {
     title: "Gestione aste",
+    type: "premium",
     items: [
       {
         name: "Crea asta",
@@ -225,9 +226,3 @@ export const premiumSection: SidebarSection[] = [
     ],
   },
 ];
-
-export const sidebarSections = [
-  { sections: publicSection, type: "public" },
-  { sections: privateSection, type: "private" },
-  { sections: premiumSection, type: "premium" },
-] as const;
