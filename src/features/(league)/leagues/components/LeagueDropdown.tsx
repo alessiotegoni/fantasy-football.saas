@@ -1,4 +1,4 @@
-import { ArrowSeparateVertical, NavArrowRight, Trophy } from "iconoir-react";
+import { ArrowSeparateVertical, NavArrowRight } from "iconoir-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -14,14 +14,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Suspense } from "react";
-import { getUserId } from "@/features/users/utils/user";
-import { getUserLeagues } from "@/features/users/queries/user";
-import { cn } from "@/lib/utils";
 import { InviteButton } from "./InviteButton";
-import Avatar from "@/components/Avatar";
 import { League } from "../queries/league";
+import { User } from "@supabase/supabase-js";
+import UserLeagues from "./UserLeagues";
 
-export default function LeagueDropdown({ league }: { league: League }) {
+export default function LeagueDropdown({
+  league,
+  user,
+}: {
+  league: League;
+  user?: User;
+}) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -39,7 +43,7 @@ export default function LeagueDropdown({ league }: { league: League }) {
           <DropdownMenuContent className="min-w-[18rem] rounded-xl border border-primary/20">
             <DropdownMenuLabel>Le mie leghe</DropdownMenuLabel>
             <Suspense>
-              <UserLeagues leagueId={leagueId} />
+              <UserLeagues leagueId={league.id} user={user} />
             </Suspense>
 
             <DropdownMenuSeparator />
@@ -68,63 +72,4 @@ export default function LeagueDropdown({ league }: { league: League }) {
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
-
-async function UserLeagues({ leagueId }: { leagueId: string }) {
-  const userId = await getUserId();
-  if (!userId) return;
-  const userLeagues = await getUserLeagues(userId);
-
-  const isCurrentLeague = (league: League) => leagueId === league.id;
-
-  return userLeagues.map((league) => {
-    const content = (
-      <div className="flex items-center gap-2">
-        <Avatar
-          imageUrl={league.imageUrl}
-          name={league.name}
-          className="size-12"
-          renderFallback={() => (
-            <div
-              className={cn(
-                "flex justify-center items-center rounded-full size-10",
-                isCurrentLeague(league) && "bg-primary group-hover:bg-secondary"
-              )}
-            >
-              <Trophy
-                className={cn(
-                  "size-6 text-white",
-                  isCurrentLeague(league) && "group-hover:text-white"
-                )}
-              />
-            </div>
-          )}
-        />
-        <p className={cn(isCurrentLeague(league) && "font-semibold")}>
-          {league.name}
-        </p>
-      </div>
-    );
-    {
-      !isCurrentLeague(league) && (
-        <NavArrowRight className="text-muted-foreground group-hover:text-white" />
-      );
-    }
-
-    return (
-      <DropdownMenuItem
-        key={league.id}
-        className="flex justify-between items-center gap-2 group"
-        asChild
-      >
-        {isCurrentLeague(league) ? (
-          <div>{content}</div>
-        ) : (
-          <Link key={league.id} href={`/leagues/${league.id}`}>
-            {content}
-          </Link>
-        )}
-      </DropdownMenuItem>
-    );
-  });
 }
