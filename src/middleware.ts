@@ -10,6 +10,7 @@ import {
   isRedaction,
 } from "./features/users/utils/user";
 import { getRedirectUrl } from "./utils/helpers";
+import { User } from "@supabase/supabase-js";
 
 const ROUTE_MATCHERS = {
   auth: createRouteMatcher(["/auth/*rest"]),
@@ -66,7 +67,7 @@ export async function middleware(request: NextRequest) {
   return supabaseResponse;
 }
 
-async function handlePrivateRoute(request: NextRequest, user: any) {
+async function handlePrivateRoute(request: NextRequest, user: User | null) {
   if (!user) {
     const { pathname, search } = request.nextUrl;
     const redirectTo = encodeURIComponent(`${pathname}${search}`);

@@ -1,7 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import LeagueSidebar from "@/features/(league)/leagues/components/LeagueSidebar";
 import { Topbar } from "@/features/(league)/leagues/components/TopBar";
-import { LeagueNav } from "../../../../features/(league)/leagues/components/LeagueNav";
+import { LeagueNav } from "../../../../../features/(league)/leagues/components/LeagueNav";
 import { getLeague, League } from "@/features/(league)/leagues/queries/league";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -19,7 +19,7 @@ export default async function LeagueLayout(
   if (!leagueId) notFound();
 
   return (
-    <Suspense fallback={<LeagueWrapper league={league} {...props} />}>
+    <Suspense fallback={<LeagueLayoutWrapper league={league} {...props} />}>
       <SuspenseBoundary league={league} {...props} />
     </Suspense>
   );
@@ -41,23 +41,23 @@ async function SuspenseBoundary({
   ]);
 
   return (
-    <LeagueWrapper
+    <LeagueLayoutWrapper
       league={league}
       user={user}
       isAdmin={isAdmin}
       leaguePremium={leaguePremium}
     >
       {children}
-    </LeagueWrapper>
+    </LeagueLayoutWrapper>
   );
 }
 
-function LeagueWrapper({
+function LeagueLayoutWrapper({
   children,
   league,
   user,
   isAdmin = false,
-  leaguePremium = true,
+  leaguePremium = false,
 }: {
   user?: User;
   isAdmin?: boolean;

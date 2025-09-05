@@ -30,8 +30,7 @@ import UserDropdown from "@/features/users/components/userDropdown";
 import { League } from "../queries/league";
 import { cn } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";
-
-// TODO: aggiungere a UserDropdown le sezioni private a seconda del ruolo (admin, content-creator, redazione)
+import { Suspense } from "react";
 
 type Props = {
   user?: User;
@@ -74,7 +73,9 @@ export default function LeagueSidebar({
         ))}
       </SidebarContent>
       <SidebarFooter className="hidden lg:block lg:border lg:border-border">
-        <UserDropdown user={user} />
+        <Suspense>
+          <UserDropdown user={user} />
+        </Suspense>
       </SidebarFooter>
     </Sidebar>
   );

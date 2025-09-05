@@ -4,6 +4,25 @@ import { getUserId } from "@/features/users/utils/user";
 import { count, and, eq } from "drizzle-orm";
 import { MemberActionSchema } from "../schema/leagueMember";
 
+export async function canPerformMemberAction({
+  leagueId,
+  userId: userMemberId,
+}: Omit<MemberActionSchema, "memberId">) {
+  const userId = await getUserId();
+  if (!userId) return false;
+
+  const [isUserAdmin, isUserMemberOwner] = await Promise.all([
+    isLeagueAdmin(userId, leagueId),
+    isLeagueOwner(userMemberId, leagueId),
+  ]);
+
+  if (!isUserAdmin || isUserMemberOwner || userId === userMemberId) {
+    return false;
+  }
+
+  return true;
+}
+
 export async function isLeagueAdmin(userId: string, leagueId: string) {
   const res = await db
     .select({ count: count() })
@@ -49,23 +68,4 @@ export async function isMemberOfALeague(userId: string) {
     .where(eq(leagueMembers.userId, userId));
 
   return res[0].count >= 1;
-}
-
-export async function canPerformMemberAction({
-  leagueId,
-  userId: userMemberId,
-}: Omit<MemberActionSchema, "memberId">) {
-  const userId = await getUserId();
-  if (!userId) return false;
-
-  const [isUserAdmin, isUserMemberOwner] = await Promise.all([
-    isLeagueAdmin(userId, leagueId),
-    isLeagueOwner(userMemberId, leagueId),
-  ]);
-
-  if (!isUserAdmin || isUserMemberOwner || userId === userMemberId) {
-    return false;
-  }
-
-  return true;
 }
