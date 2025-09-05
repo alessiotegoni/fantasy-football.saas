@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getItemHref } from "@/utils/helpers";
 import { League } from "../queries/league";
+import { ElementType } from "react";
 
 export function LeagueNav({ league }: { league: League }) {
   const isMobile = useIsMobile(1024);
@@ -70,7 +71,13 @@ export function LeagueNav({ league }: { league: League }) {
   );
 }
 
-const navItems = [
+type NavItem = {
+  name: string;
+  href: __next_route_internal_types__.RouteImpl<string>;
+  icon: ElementType
+}
+
+const navItems: NavItem[] = [
   {
     name: "Overview",
     href: "/leagues/:leagueId",

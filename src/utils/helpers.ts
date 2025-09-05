@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { UrlObject } from "url";
 
 export type ErrorResult = {
   error: true;
@@ -67,6 +68,8 @@ export function getUrl(pathname = "/"): string {
   return new URL(pathname, normalizedUrl).toString();
 }
 
-export function getItemHref(href: string, leagueId: string): string {
-  return href.replace(":leagueId", leagueId);
+export type Href = __next_route_internal_types__.RouteImpl<string>;
+
+export function getItemHref(href: Href, leagueId: string) {
+  return href.replace(":leagueId", leagueId) as Href;
 }

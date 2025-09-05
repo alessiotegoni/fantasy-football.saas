@@ -5,24 +5,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ComponentPropsWithoutRef } from "react";
 import { Button } from "./ui/button";
-import { UrlObject } from "url";
-
-type href =
-  | __next_route_internal_types__.RouteImpl<
-      UrlObject | __next_route_internal_types__.RouteImpl<unknown>
-    >;
+import { Href } from "@/utils/helpers";
 
 type Props = {
+  href: Href;
   render?: ({
     isActive,
     href,
   }: {
     isActive: boolean;
-    href: href;
+    href: Href;
   }) => React.ReactNode;
   activeBasePath?: string;
   exact?: boolean;
-} & ComponentPropsWithoutRef<typeof Link>;
+} & Omit<ComponentPropsWithoutRef<typeof Link>, "href">;
 
 export default function NavLink({
   href,
@@ -57,7 +53,7 @@ export default function NavLink({
   );
 }
 
-function getBasePath(activeBasePath: string | undefined, href: href) {
+function getBasePath(activeBasePath: string | undefined, href: Href) {
   const searchParamsIndex = href.indexOf("?");
   if (searchParamsIndex === -1) return activeBasePath || href;
 
