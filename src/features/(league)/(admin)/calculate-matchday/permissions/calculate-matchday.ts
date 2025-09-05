@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMatchdayCalculations } from "@/drizzle/schema";
-import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import {
   getLastEndedMatchday,
   getLiveSplit,
@@ -37,7 +37,7 @@ export async function basePermissions({
   if (!userId) return createError(VALIDATION_ERROR);
 
   const [isAdmin, liveSplit] = await Promise.all([
-    getLeagueAdmin(userId, leagueId),
+    isLeagueAdmin(userId, leagueId),
     getLiveSplit(),
   ]);
 

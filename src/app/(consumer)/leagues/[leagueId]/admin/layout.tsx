@@ -1,4 +1,4 @@
-import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getUserId } from "@/features/users/utils/user";
 import { redirect } from "next/navigation";
 import { PropsWithChildren, Suspense } from "react";
@@ -21,7 +21,7 @@ async function SuspenseBoundary({
   children,
 }: PropsWithChildren<{ leagueId: string }>) {
   const userId = await getUserId();
-  if (!userId || !(await getLeagueAdmin(userId, leagueId))) {
+  if (!userId || !(await isLeagueAdmin(userId, leagueId))) {
     redirect(`/leagues/${leagueId}`);
   }
 

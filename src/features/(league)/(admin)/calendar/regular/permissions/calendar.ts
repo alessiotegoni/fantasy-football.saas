@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
-import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { getUpcomingSplit } from "@/features/splits/queries/split";
 import { createError, createSuccess } from "@/utils/helpers";
@@ -14,7 +14,7 @@ enum GENERATE_CALENDAR_MESSAGES {
 
 export async function canGenerateCalendar(userId: string, leagueId: string) {
   const [isAdmin, upcomingSplit, leagueTeams] = await Promise.all([
-    getLeagueAdmin(userId, leagueId),
+    isLeagueAdmin(userId, leagueId),
     getUpcomingSplit(),
     getLeagueTeams(leagueId),
   ]);

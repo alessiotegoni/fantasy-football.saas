@@ -1,7 +1,7 @@
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { getLeagueAdmin, getLeaguePremium } from "../../leagues/queries/league";
+import { isLeagueAdmin, getLeaguePremium } from "../../leagues/queries/league";
 import {
   CreateAuctionSchema,
   UpdateAuctionSchema,
@@ -34,7 +34,7 @@ export async function basePermissions(leagueId: string) {
 
   const [isPremiumUnlocked, isLeagueAdmin, userTeamId] = await Promise.all([
     getLeaguePremium(leagueId),
-    getLeagueAdmin(userId, leagueId),
+    isLeagueAdmin(userId, leagueId),
     getUserTeamId(userId, leagueId),
   ]);
 

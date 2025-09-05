@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getUserId } from "@/features/users/utils/user";
-import { getLeagueAdmin } from "@/features/(league)/leagues/queries/league";
+import { isLeagueAdmin } from "@/features/(league)/leagues/queries/league";
 import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
 import Disclaimer from "@/components/Disclaimer";
 
@@ -141,7 +141,7 @@ async function SuspendedAuctionsList({
   const userId = await getUserId();
   if (!userId) return null;
 
-  const isLeagueAdmin = await getLeagueAdmin(userId, leagueId);
+  const isLeagueAdmin = await isLeagueAdmin(userId, leagueId);
 
   return (
     <AuctionsList

@@ -2,10 +2,6 @@ import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { Community, Shield } from "iconoir-react";
 import { InviteButton } from "@/features/(league)/leagues/components/InviteButton";
-import {
-  getLeagueAdmin,
-  getLeagueInviteCredentials,
-} from "@/features/(league)/leagues/queries/league";
 import { leagueMembers, leagueMemberTeams } from "@/drizzle/schema";
 import { authUsers } from "drizzle-orm/supabase";
 import { eq } from "drizzle-orm";
@@ -20,18 +16,20 @@ import {
   getTeamIdTag,
 } from "@/features/(league)/teams/db/cache/leagueTeam";
 import Container from "@/components/Container";
+import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 
 export default async function LeagueMembersPage({
   params,
 }: PageProps<"/leagues/[leagueId]/members">) {
   const { leagueId } = await params;
+  const members = await getLeagueMembers(leagueId)
+
 
   return (
     <Container leagueId={leagueId} headerLabel="Membri della lega">
-      <Suspense>
+      <Suspense fallback={<MembersWrapper />}>
         <SuspenseBoundary leagueId={leagueId} />
       </Suspense>
-      <Disclaimer />
     </Container>
   );
 }
@@ -41,10 +39,14 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
   if (!userId) return;
 
   const [isAdmin, members] = await Promise.all([
-    getLeagueAdmin(userId, leagueId),
+    isLeagueAdmin(userId, leagueId),
     getLeagueMembers(leagueId),
   ]);
 
+
+}
+
+function MembersWrapper({}: { members:  }) {
   const groupedMembers = Object.groupBy(members, (member) => member.role);
 
   if (!members.length)
@@ -134,41 +136,4 @@ function MemberSection({
       </div>
     </div>
   );
-}
-
-export async function getLeagueMembers(leagueId: string) {
-  "use cache";
-  cacheTag(getLeagueMembersTag(leagueId), getLeagueTeamsTag(leagueId));
-
-  const results = await db
-    .select({
-      id: leagueMembers.id,
-      role: leagueMembers.role,
-      joinedAt: leagueMembers.joinedAt,
-      user: {
-        id: leagueMembers.userId,
-        email: authUsers.email,
-      },
-      team: {
-        id: leagueMemberTeams.id,
-        name: leagueMemberTeams.name,
-        managerName: leagueMemberTeams.managerName,
-        imageUrl: leagueMemberTeams.imageUrl,
-      },
-    })
-    .from(leagueMembers)
-    .leftJoin(authUsers, eq(leagueMembers.userId, authUsers.id))
-    .leftJoin(
-      leagueMemberTeams,
-      eq(leagueMembers.id, leagueMemberTeams.leagueMemberId)
-    )
-    .where(eq(leagueMembers.leagueId, leagueId));
-
-  cacheTag(
-    ...results
-      .filter((member) => !!member.team?.id)
-      .map((member) => getTeamIdTag(member.team?.id ?? ""))
-  );
-
-  return results;
 }

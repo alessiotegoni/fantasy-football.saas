@@ -12,13 +12,6 @@ import {
   getLeagueSettingsTag,
 } from "../db/cache/setting";
 
-export async function getTacticalModules() {
-  "use cache";
-  cacheTag(getTacticalModulesTag());
-
-  return db.query.tacticalModules.findMany();
-}
-
 export async function getGeneralSettings(leagueId: string) {
   "use cache";
   cacheTag(
@@ -101,4 +94,11 @@ export async function getMarketSettings(leagueId: string) {
     .where(eq(leagueSettings.leagueId, leagueId));
 
   return result;
+}
+
+export async function getTacticalModules() {
+  "use cache";
+  cacheTag(getTacticalModulesTag());
+
+  return db.query.tacticalModules.findMany();
 }

@@ -1,7 +1,7 @@
 import { getUserId } from "@/features/users/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { getLeagueAdmin } from "../../leagues/queries/league";
+import { isLeagueAdmin } from "../../leagues/queries/league";
 import { AUCTION_PERMISSION_ERRORS, validatePlayerAndCredits } from "./shared";
 import { AddAcquisitionPlayerSchema } from "../schema/auctionAcquisition";
 import { db } from "@/drizzle/db";
@@ -90,7 +90,7 @@ async function basePermissions(auctionId: string) {
     return createError(AUCTION_PERMISSION_ERRORS.AUCTION_NOT_FOUND);
   }
 
-  const isLeagueAdmin = await getLeagueAdmin(userId, auction.leagueId);
+  const isLeagueAdmin = await isLeagueAdmin(userId, auction.leagueId);
   if (!isLeagueAdmin) {
     return createError(ACQUISITION_ERRORS.ADMIN_REQUIRED);
   }

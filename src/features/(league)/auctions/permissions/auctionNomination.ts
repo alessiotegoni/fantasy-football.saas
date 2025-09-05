@@ -1,6 +1,6 @@
 import { createError, createSuccess } from "@/utils/helpers";
 import { CreateNominationSchema } from "../schema/auctionNomination";
-import { getLeagueAdmin } from "../../leagues/queries/league";
+import { isLeagueAdmin } from "../../leagues/queries/league";
 import {
   getNomination,
   getNominationByPlayer,
@@ -58,7 +58,7 @@ export async function canDeleteNomination(nominationId: string) {
 
   const { userId, auction } = permissions.data;
 
-  const isLeagueAdmin = await getLeagueAdmin(userId, auction.leagueId);
+  const isLeagueAdmin = await isLeagueAdmin(userId, auction.leagueId);
   if (!isLeagueAdmin) {
     return createError(NOMINATION_ERRORS.ADMIN_REQUIRED);
   }
