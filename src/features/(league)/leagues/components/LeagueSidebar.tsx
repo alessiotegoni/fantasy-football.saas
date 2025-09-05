@@ -4,7 +4,7 @@ import {
   Calculator,
   Calendar,
   Refresh,
-  User,
+  User as UserIcon,
   Community,
   CoinsSwap,
   Coins,
@@ -28,26 +28,27 @@ import SidebarItem from "./SidebarItem";
 import { Suspense } from "react";
 import LeagueDropdown from "./LeagueDropdown";
 import UserDropdown from "@/features/users/components/userDropdown";
-import { getUser, getUserId } from "@/features/users/utils/user";
-import { getLeagueAdmin, getLeaguePremium, League } from "../queries/league";
+import { League } from "../queries/league";
 import { cn } from "@/lib/utils";
+import { User } from "@supabase/supabase-js";
 
 // FIXME: vedi sidebarSection e fixa perche ad ogni section va chiamate inutili,
 // utilizzare solita tecnica ovvero come suspense utilizzare scheletro della sidebar
 // e poi in suspenseBoundary fare i fetch che servono
 // TODO: aggiungere a UserDropdown le sezioni private a seconda del ruolo (admin, content-creator, redazione)
 
-export default function LeagueSidebar({
-  league,
-}: {
+type Props = {
+  user?: User;
   league: League;
-}) {
+  isAdmin: boolean;
+  leaguePremium: boolean;
+};
+
+export default function LeagueSidebar(props: Props) {
   return (
     <Sidebar>
       <SidebarHeader className="p-0">
-        <LeagueDropdown
-          league={league}
-        />
+        <LeagueDropdown {...props} />
         <div className="p-3">
           <Button asChild>
             <Link href="/user/premium">
@@ -64,7 +65,7 @@ export default function LeagueSidebar({
               key={type}
               sections={sections}
               type={type}
-              leagueId={leagueId}
+              leagueId={league.id}
             />
           );
 
@@ -74,9 +75,7 @@ export default function LeagueSidebar({
         })}
       </SidebarContent>
       <SidebarFooter className="hidden lg:block lg:border lg:border-border">
-        <Suspense>
-          <UserDropdown userPromise={getUser()} />
-        </Suspense>
+        <UserDropdown {...props} />
       </SidebarFooter>
     </Sidebar>
   );
@@ -176,7 +175,7 @@ export const publicSection: SidebarSection[] = [
       {
         name: "Partecipanti",
         href: "/leagues/:leagueId/members",
-        icon: User,
+        icon: UserIcon,
       },
     ],
   },

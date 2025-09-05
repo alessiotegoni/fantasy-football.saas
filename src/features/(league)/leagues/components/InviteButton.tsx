@@ -4,28 +4,23 @@ import { ShareAndroid } from "iconoir-react";
 import { toast } from "sonner";
 import { use, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { getLeagueInviteCredentials } from "../queries/league";
+import { League } from "../queries/league";
 
 export function InviteButton({
-  leagueId,
-  leagueCredentialsPromise,
+  league
 }: {
-  leagueId: string;
-  leagueCredentialsPromise: ReturnType<typeof getLeagueInviteCredentials>;
+  league: League
 }) {
   const [, setCopied] = useState(false);
 
-  const league = use(leagueCredentialsPromise);
-  if (!league) return null;
-
   const inviteUrl = useMemo(() => {
     const privateLeagueUrl = `private?code=${league.joinCode}`;
-    const publicLeagueUrl = `public/${leagueId}`;
+    const publicLeagueUrl = `public/${league.id}`;
 
     return `${window.location.origin}/leagues/join/${
       league.visibility === "public" ? publicLeagueUrl : privateLeagueUrl
     }`;
-  }, [leagueId, league]);
+  }, [league.id, league]);
 
   async function handleCopy() {
     try {

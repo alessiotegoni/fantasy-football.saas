@@ -18,17 +18,10 @@ import { getUserId } from "@/features/users/utils/user";
 import { getUserLeagues } from "@/features/users/queries/user";
 import { cn } from "@/lib/utils";
 import { InviteButton } from "./InviteButton";
-import LeagueName from "./LeagueName";
-import { getLeagueInviteCredentials } from "../queries/league";
 import Avatar from "@/components/Avatar";
+import { League } from "../queries/league";
 
-export default function LeagueDropdown({
-  leagueId,
-  leagueNamePromise,
-}: {
-  leagueId: string;
-  leagueNamePromise: Promise<string>;
-}) {
+export default function LeagueDropdown({ league }: { league: League }) {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -39,9 +32,7 @@ export default function LeagueDropdown({
               rounded-none rounded-br-xl rounded-bl-xl hover:text-white flex justify-between items-center"
           >
             <SidebarMenuButton>
-              <Suspense>
-                <LeagueName leagueNamePromise={leagueNamePromise} />
-              </Suspense>
+              <h2 className="font-heading text-lg">{league.name}</h2>
               <ArrowSeparateVertical className="!size-5" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
@@ -70,14 +61,7 @@ export default function LeagueDropdown({
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild>
-              <Suspense>
-                <InviteButton
-                  leagueId={leagueId}
-                  leagueCredentialsPromise={getLeagueInviteCredentials(
-                    leagueId
-                  )}
-                />
-              </Suspense>
+              <InviteButton league={league} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -91,8 +75,7 @@ async function UserLeagues({ leagueId }: { leagueId: string }) {
   if (!userId) return;
   const userLeagues = await getUserLeagues(userId);
 
-  const isCurrentLeague = (league: (typeof userLeagues)[number]) =>
-    leagueId === league.id;
+  const isCurrentLeague = (league: League) => leagueId === league.id;
 
   return userLeagues.map((league) => {
     const content = (

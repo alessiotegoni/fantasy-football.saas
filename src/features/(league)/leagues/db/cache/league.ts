@@ -4,7 +4,6 @@ import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
 
 export type LEAGUE_TAG =
-  | "league-premium"
   | "league-bans"
   | "league-available-players"
   | "league-matches"
@@ -13,9 +12,6 @@ export type LEAGUE_TAG =
 
 export const getLeagueIdTag = (leagueId: string) =>
   getIdTag("leagues", leagueId);
-
-export const getLeaguePremiumTag = (leagueId: string) =>
-  getIdTag("league-premium", leagueId);
 
 export const getLeagueAvailablePlayersTag = (leagueId: string) =>
   getLeagueTag("league-available-players", leagueId);
@@ -48,6 +44,3 @@ export const revalidateLeagueCache = ({
 
 export const revalidateLeaguePlayersCache = (leagueId: string) =>
   revalidateTag(getLeagueAvailablePlayersTag(leagueId));
-
-export const revalidateLeaguePremiumCache = (leagueId: string) =>
-  revalidateTag(getLeaguePremiumTag(leagueId));

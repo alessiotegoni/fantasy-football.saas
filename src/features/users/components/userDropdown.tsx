@@ -18,19 +18,17 @@ import {
   User as UserIcon,
 } from "iconoir-react";
 import { User } from "@supabase/supabase-js";
-import { use } from "react";
 import { logout } from "@/features/auth/actions/login";
 import Avatar from "@/components/Avatar";
 import ActionButton from "@/components/ActionButton";
 
 export default function UserDropdown({
-  userPromise,
+  user,
   variant = "sidebar",
 }: {
-  userPromise: Promise<User | null>;
+  user?: User;
   variant?: "sidebar" | "topbar";
 }) {
-  const user = use(userPromise);
   if (!user) return null;
 
   const { name, avatar_url } = getMetadataFromUser(user);

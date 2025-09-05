@@ -7,8 +7,9 @@ import { useIsMobile } from "@/hooks/useMobile";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getItemHref } from "@/utils/helpers";
+import { League } from "../queries/league";
 
-export function LeagueNav({ leagueId }: { leagueId: string }) {
+export function LeagueNav({ league }: { league: League }) {
   const isMobile = useIsMobile(1024);
 
   return isMobile ? (
@@ -21,7 +22,7 @@ export function LeagueNav({ leagueId }: { leagueId: string }) {
       {navItems.map((item) => (
         <NavLink
           key={item.name}
-          href={getItemHref(item.href, leagueId)}
+          href={getItemHref(item.href, league.id)}
           className="w-fit flex-col gap-1 xs:gap-0.5"
           exact
         >
@@ -38,7 +39,7 @@ export function LeagueNav({ leagueId }: { leagueId: string }) {
       {navItems.map((item) => (
         <NavLink
           key={item.name}
-          href={getItemHref(item.href, leagueId)}
+          href={getItemHref(item.href, league.id)}
           className="w-fit flex-col gap-1 xs:gap-0.5"
           exact
           render={({ isActive, href }) => (
