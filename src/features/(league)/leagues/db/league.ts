@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { leagues, leagueUserBans } from "@/drizzle/schema";
 import { eq } from "drizzle-orm";
 import { createError } from "@/utils/helpers";
-import { revalidateLeagueProfileCache } from "./cache/league";
+import { revalidateLeagueCache } from "./cache/league";
 import { revalidateLeagueMembersCache } from "../../members/db/cache/leagueMember";
 
 enum DB_ERROR_MESSAGES {
@@ -32,7 +32,7 @@ export async function insertLeague(
     );
   }
 
-  revalidateLeagueProfileCache({
+  revalidateLeagueCache({
     leagueId: result.leagueId,
     visibility: result.visibility,
   });
@@ -56,7 +56,7 @@ export async function updateLeague(
     );
   }
 
-  revalidateLeagueProfileCache({
+  revalidateLeagueCache({
     leagueId,
     visibility: result.visibility,
   });

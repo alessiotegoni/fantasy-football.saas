@@ -3,7 +3,6 @@ import { userSubscriptions } from "@/drizzle/schema";
 import { and, count, eq, gte, or } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getUserPremiumTag } from "../db/cache/user";
-import { SupabaseClient } from "@supabase/supabase-js";
 
 export const isValidSubscription = or(
   eq(userSubscriptions.status, "active"),

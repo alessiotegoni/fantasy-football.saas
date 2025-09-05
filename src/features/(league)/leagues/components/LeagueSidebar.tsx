@@ -32,6 +32,11 @@ import { getUser, getUserId } from "@/features/users/utils/user";
 import { getLeagueAdmin, getLeaguePremium } from "../queries/league";
 import { cn } from "@/lib/utils";
 
+// FIXME: vedi sidebarSection e fixa perche ad ogni section va chiamate inutili,
+// utilizzare solita tecnica ovvero come suspense utilizzare scheletro della sidebar
+// e poi in suspenseBoundary fare i fetch che servono
+// TODO: aggiungere a UserDropdown le sezioni private a seconda del ruolo (admin, content-creator, redazione)
+
 export default function LeagueSidebar({
   leagueId,
   leagueNamePromise,

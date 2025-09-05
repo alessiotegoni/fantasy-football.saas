@@ -4,7 +4,7 @@ import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import NavLink from "@/components/NavLink";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SidebarSection } from "./Sidebar";
+import { SidebarSection } from "./LeagueSidebar";
 import { getItemHref } from "@/utils/helpers";
 
 type Props = {

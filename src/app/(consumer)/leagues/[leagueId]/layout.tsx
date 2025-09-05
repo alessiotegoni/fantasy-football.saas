@@ -1,6 +1,6 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { db } from "@/drizzle/db";
-import LeagueSidebar from "@/features/(league)/leagues/components/Sidebar";
+import LeagueSidebar from "@/features/(league)/leagues/components/LeagueSidebar";
 import { Topbar } from "@/features/(league)/leagues/components/TopBar";
 import { getLeagueNameTag } from "@/features/(league)/leagues/db/cache/league";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";

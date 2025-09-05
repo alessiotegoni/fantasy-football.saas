@@ -4,16 +4,11 @@ import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueGlobalTag } from "@/cache/global";
 
 export type LEAGUE_TAG =
-  | "league-invite-credentials"
   | "league-premium"
-  | "league-name"
-  | "league-profile"
   | "league-bans"
   | "league-available-players"
   | "league-matches"
   | "league-matchdays-calculations"
-  | "league-free-agents-players"
-  | "league-players-list"
   | "league-standing";
 
 export const getLeagueIdTag = (leagueId: string) =>
@@ -21,15 +16,6 @@ export const getLeagueIdTag = (leagueId: string) =>
 
 export const getLeaguePremiumTag = (leagueId: string) =>
   getIdTag("league-premium", leagueId);
-
-export const getLeagueNameTag = (leagueId: string) =>
-  getIdTag("league-name", leagueId);
-
-export const getLeagueInviteCredentialsTag = (leagueId: string) =>
-  getIdTag("league-invite-credentials", leagueId);
-
-export const getLeagueProfileTag = (leagueId: string) =>
-  getLeagueTag("league-profile", leagueId);
 
 export const getLeagueAvailablePlayersTag = (leagueId: string) =>
   getLeagueTag("league-available-players", leagueId);
@@ -40,12 +26,6 @@ export const getLeagueMatchesTag = (leagueId: string) =>
 export const getLeagueMatchdaysCalculationsTag = (leagueId: string) =>
   getLeagueTag("league-matchdays-calculations", leagueId);
 
-export const getLeagueFreeAgentsPlayersTag = (leagueId: string) =>
-  getLeagueTag("league-free-agents-players", leagueId);
-
-export const getLeaguePlayersListTag = (leagueId: string) =>
-  getLeagueTag("league-players-list", leagueId);
-
 export const getLeagueStandingTag = (leagueId: string) =>
   getLeagueTag("league-standing", leagueId);
 
@@ -55,7 +35,7 @@ export const getLeagueBansTag = (leagueId: string) =>
 export const getLeagueMatchesResultsTag = (leagueId: string) =>
   getLeagueTag("matches-results", leagueId);
 
-export const revalidateLeagueProfileCache = ({
+export const revalidateLeagueCache = ({
   leagueId,
   visibility,
 }: {
@@ -64,7 +44,6 @@ export const revalidateLeagueProfileCache = ({
 }) => {
   if (visibility === "public") revalidateTag(getLeagueGlobalTag());
   revalidateTag(getLeagueIdTag(leagueId));
-  revalidateTag(getLeagueProfileTag(leagueId));
 };
 
 export const revalidateLeaguePlayersCache = (leagueId: string) =>

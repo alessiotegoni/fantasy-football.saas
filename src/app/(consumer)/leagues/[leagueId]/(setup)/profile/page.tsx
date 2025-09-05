@@ -1,15 +1,16 @@
-import { db } from "@/drizzle/db";
 import { LeagueProfileForm } from "@/features/(league)/leagues/components/forms/LeagueProfileForm";
-import { getLeagueProfileTag } from "@/features/(league)/leagues/db/cache/league";
+import { getLeague } from "@/features/(league)/leagues/queries/league";
 import { ArrowLeft } from "iconoir-react";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export default async function LeagueProfilePage({
   params,
 }: PageProps<"/leagues/[leagueId]/profile">) {
   const { leagueId } = await params;
-  const leagueProfile = await getLeagueProfile(leagueId);
+
+  const league = await getLeague(leagueId);
+  if (!league) notFound();
 
   return (
     <div className="max-w-[700px] mx-auto md:p-4">
@@ -22,25 +23,10 @@ export default async function LeagueProfilePage({
       <h2 className="hidden md:block text-3xl font-heading mb-8">
         Profilo lega
       </h2>
-      <LeagueProfileForm leagueId={leagueId} initialData={leagueProfile} />
+      <LeagueProfileForm
+        leagueId={leagueId}
+        initialData={{ ...league, image: null }}
+      />
     </div>
   );
-}
-
-async function getLeagueProfile(leagueId: string) {
-  "use cache";
-  cacheTag(getLeagueProfileTag(leagueId));
-
-  const leagueProfile = await db.query.leagues.findFirst({
-    columns: {
-      name: true,
-      imageUrl: true,
-      description: true,
-      visibility: true,
-      password: true,
-    },
-    where: (league, { eq }) => eq(league.id, leagueId),
-  });
-
-  return leagueProfile ? { ...leagueProfile, image: null } : undefined;
 }
