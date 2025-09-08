@@ -1,4 +1,4 @@
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import {
@@ -9,7 +9,7 @@ import {
 import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 import { getAuctionWithSettings } from "../queries/auction";
-import { getUserTeamId } from "@/features/users/queries/user";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { isPremiumUnlocked } from "../../leagues/permissions/league";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 

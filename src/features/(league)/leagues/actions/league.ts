@@ -7,7 +7,10 @@ import { uploadImage } from "@/services/supabase/storage/supabase";
 import { createError, createSuccess } from "@/utils/helpers";
 import { insertLeague, updateLeague } from "../db/league";
 import { canCreateLeague } from "../permissions/league";
-import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
+import {
+  addUserLeaguesMetadata,
+  getUser,
+} from "@/features/dashboard/user/utils/user";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { insertLeagueMember } from "../../members/db/leagueMember";
 import { createLeagueSchema, CreateLeagueSchema } from "../schema/createLeague";

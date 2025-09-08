@@ -14,7 +14,7 @@ import {
   rosterModulesSchema,
   RosterModulesSchema,
 } from "../schema/setting";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/utils/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";

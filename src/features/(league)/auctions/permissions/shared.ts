@@ -1,10 +1,13 @@
 import { getAuctionWithSettings } from "../queries/auction";
-import { getAuctionParticipant, getParticipantPlayersCountByRole } from "../queries/auctionParticipant";
-import { getUserTeamId } from "@/features/users/queries/user";
-import { getUserId } from "@/features/users/utils/user";
+import {
+  getAuctionParticipant,
+  getParticipantPlayersCountByRole,
+} from "../queries/auctionParticipant";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { getPlayer } from "@/features/players/queries/player";
+import { getPlayer } from "@/features/dashboard/admin/players/queries/player";
 import { getAuctionSettings } from "../queries/auctionSettings";
 import { getRemainingSlots, isRoleFull } from "../utils/auctionParticipant";
 import { validateBidCredits } from "../utils/auctionBid";

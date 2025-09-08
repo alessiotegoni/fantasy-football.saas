@@ -5,8 +5,8 @@ import {
   addUserLastLeagueMetadata,
   getCanRedirectUserToLeague,
   canAccessLeague,
-} from "./features/users/utils/user";
-import { handleDashboardRoute } from "./features/users/utils/roles";
+} from "./features/dashboard/user/utils/user";
+import { handleDashboardRoute } from "./features/dashboard/user/utils/roles";
 import { getRedirectUrl } from "./utils/helpers";
 import { User } from "@supabase/supabase-js";
 
@@ -38,7 +38,11 @@ export async function middleware(request: NextRequest) {
   }
 
   if (ROUTE_MATCHERS.dashboard(request)) {
-    const dashboardResponse = await handleDashboardRoute(request, user, supabase);
+    const dashboardResponse = await handleDashboardRoute(
+      request,
+      user,
+      supabase
+    );
     if (dashboardResponse) return dashboardResponse;
   }
 

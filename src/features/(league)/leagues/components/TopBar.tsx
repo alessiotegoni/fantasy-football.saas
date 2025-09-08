@@ -1,5 +1,5 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import UserDropdown from "@/features/users/components/userDropdown";
+import UserDropdown from "@/features/dashboard/user/components/userDropdown";
 import { League } from "../queries/league";
 import { User } from "@supabase/supabase-js";
 

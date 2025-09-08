@@ -23,7 +23,7 @@ import {
   getLeagueTeams,
 } from "@/features/(league)/teams/queries/leagueTeam";
 import Container from "@/components/Container";
-import { getTeams, Team } from "@/features/teams/queries/team";
+import { getTeams, Team } from "@/features/dashboard/admin/teams/queries/team";
 import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
 import { getLeaguePlayersPerRole } from "@/features/(league)/settings/queries/setting";
 

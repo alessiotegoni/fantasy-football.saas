@@ -12,7 +12,7 @@ import {
 } from "@/features/(league)/auctions/queries/auction";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
 import Disclaimer from "@/components/Disclaimer";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";

@@ -6,7 +6,7 @@ import {
   TacticalModule,
 } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/(league)/matches/queries/match";
-import { PlayerBonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
+import { PlayerBonusMalus } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 
 type EnrichLineupPlayersParams = {

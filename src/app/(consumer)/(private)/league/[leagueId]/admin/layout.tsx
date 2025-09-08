@@ -1,5 +1,5 @@
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
 import { PropsWithChildren, Suspense } from "react";
 

@@ -1,6 +1,6 @@
 import { SkeletonArray } from "@/components/Skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
-import PlayerSkeleton from "@/features/players/components/skeletons/PlayerSkeleton";
+import PlayerSkeleton from "@/features/dashboard/admin/players/components/skeletons/PlayerSkeleton";
 import { cn } from "@/lib/utils";
 
 export default function BenchSkeleton({ className }: { className?: string }) {

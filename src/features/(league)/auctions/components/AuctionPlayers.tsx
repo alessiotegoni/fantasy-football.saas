@@ -1,5 +1,5 @@
 import { getAuctionAvailablePlayers } from "@/features/(league)/auctions/queries/auction";
-import { getTeams } from "@/features/teams/queries/team";
+import { getTeams } from "@/features/dashboard/admin/teams/queries/team";
 import { AuctionWithSettings } from "../queries/auction";
 import AuctionPlayersDialog from "./AuctionPlayersDialog";
 import { PlayerRole, TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";

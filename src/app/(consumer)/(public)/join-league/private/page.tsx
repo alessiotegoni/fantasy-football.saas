@@ -1,11 +1,10 @@
-
 import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
 import Logo from "@/components/ui/logo";
 import Disclaimer from "@/components/Disclaimer";
 import JoinPrivateLeagueForm from "@/features/(league)/leagues/components/forms/JoinPrivateLeagueForm";
 import BackButton from "@/components/BackButton";
 import { JOIN_CODE_LENGTH } from "@/features/(league)/leagues/schema/leagueBase";
-import { getUser } from "@/features/users/utils/user";
+import { getUser } from "@/features/dashboard/user/utils/user";
 import { Suspense } from "react";
 
 export const experimental_ppr = true;

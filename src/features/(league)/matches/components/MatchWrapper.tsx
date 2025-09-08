@@ -15,7 +15,7 @@ import { getPresident, groupLineupsPlayers } from "../utils/LineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
 import BenchSkeleton from "./skeletons/BenchSkeleton";
 import { AwayLineupSlot, HomeLineupSlot } from "./LineupSlot";
-import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
+import { getTacticalModules } from "@/features/dashboard/admin/tacticalModules/queries/tacticalModule";
 import { getLeagueModules } from "../../settings/queries/setting";
 
 type Props = {

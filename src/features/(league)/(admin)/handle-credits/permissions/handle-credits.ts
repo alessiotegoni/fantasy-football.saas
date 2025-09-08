@@ -1,4 +1,4 @@
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";

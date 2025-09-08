@@ -1,6 +1,6 @@
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagues } from "@/drizzle/schema";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { count, and, eq } from "drizzle-orm";
 import { MemberActionSchema } from "../schema/leagueMember";
 

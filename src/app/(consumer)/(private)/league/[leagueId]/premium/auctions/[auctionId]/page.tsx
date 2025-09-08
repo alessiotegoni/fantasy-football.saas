@@ -14,8 +14,8 @@ import {
 } from "@/features/(league)/auctions/queries/auctionParticipant";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { getUserTeamId } from "@/features/users/queries/user";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 

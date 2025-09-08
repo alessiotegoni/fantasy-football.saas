@@ -1,5 +1,5 @@
 import { getIdTag } from "@/cache/helpers";
-import { getPlayerIdTag } from "@/features/players/db/cache/player";
+import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/player";
 import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { revalidateTag } from "next/cache";
 

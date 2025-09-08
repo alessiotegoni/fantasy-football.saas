@@ -9,7 +9,7 @@ import {
 import {
   isValidSubscription,
   userHasPremium,
-} from "@/features/users/permissions/user";
+} from "@/features/dashboard/user/permissions/user";
 import { and, count, eq, ilike } from "drizzle-orm";
 import {
   isLeagueMember,

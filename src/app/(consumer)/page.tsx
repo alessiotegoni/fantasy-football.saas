@@ -5,7 +5,10 @@ import { default as LeagueHeader } from "@/features/(league)/leagues/components/
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 import Disclaimer from "@/components/Disclaimer";
-import { getMetadataFromUser, getUser } from "@/features/users/utils/user";
+import {
+  getMetadataFromUser,
+  getUser,
+} from "@/features/dashboard/user/utils/user";
 
 export default function HomePage() {
   return (

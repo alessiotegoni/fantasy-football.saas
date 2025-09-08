@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import {
   deleteTrade as deleteTradeDb,

@@ -5,7 +5,10 @@ import {
   JoinPrivateLeagueSchema,
 } from "@/features/(league)/leagues/schema/privateLeague";
 import { insertLeagueMember } from "../db/leagueMember";
-import { addUserLeaguesMetadata, getUser } from "@/features/users/utils/user";
+import {
+  addUserLeaguesMetadata,
+  getUser,
+} from "@/features/dashboard/user/utils/user";
 import { db } from "@/drizzle/db";
 import { redirect } from "next/navigation";
 import { canJoinLeague } from "@/features/(league)/leagues/permissions/league";

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import Container from "@/components/Container";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import {

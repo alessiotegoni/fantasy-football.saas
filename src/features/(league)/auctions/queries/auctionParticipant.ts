@@ -11,7 +11,7 @@ import {
   getAuctionParticipantsTag,
   getParticipantsAcquisitionsTag,
 } from "../db/cache/auction";
-import { getPlayerIdTag } from "@/features/players/db/cache/player";
+import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/player";
 
 export async function getParticipantsWithAcquisitions(auctionId: string) {
   "use cache";
@@ -98,7 +98,7 @@ export async function getAuctionParticipant(auctionId: string, teamId: string) {
 export async function getParticipantPlayersCountByRole(
   auctionId: string,
   participantId: string,
-  tx: Omit<typeof db, "$client"> = db,
+  tx: Omit<typeof db, "$client"> = db
 ) {
   const playerCounts = await tx
     .select({
@@ -110,8 +110,8 @@ export async function getParticipantPlayersCountByRole(
     .where(
       and(
         eq(auctionAcquisitions.auctionId, auctionId),
-        eq(auctionAcquisitions.participantId, participantId),
-      ),
+        eq(auctionAcquisitions.participantId, participantId)
+      )
     )
     .groupBy(players.roleId);
 
@@ -120,7 +120,7 @@ export async function getParticipantPlayersCountByRole(
       acc[roleId] = count;
       return acc;
     },
-    {},
+    {}
   );
 }
 

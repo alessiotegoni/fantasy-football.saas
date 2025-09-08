@@ -1,4 +1,4 @@
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import PlayerSelectionButton from "./PlayerSelectionButton";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 

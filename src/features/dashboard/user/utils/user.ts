@@ -108,4 +108,3 @@ export async function getUserId(): Promise<string | undefined> {
   return user?.id;
 }
 
-

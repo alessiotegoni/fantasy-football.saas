@@ -14,7 +14,7 @@ import {
   getTradePlayersIdTag,
 } from "../db/cache/trade";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
-import { getPlayerIdTag } from "@/features/players/db/cache/player";
+import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/player";
 import { TradeContext } from "../components/TradesList";
 
 export async function getUserTrades(

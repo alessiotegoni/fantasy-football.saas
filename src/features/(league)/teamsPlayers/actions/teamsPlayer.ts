@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/drizzle/db";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { insertTeamsPlayers, deleteTeamsPlayers } from "../db/teamsPlayer";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {

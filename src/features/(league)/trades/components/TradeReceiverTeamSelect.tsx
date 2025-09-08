@@ -1,6 +1,6 @@
 "use client";
 
-import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
+import TeamsSelectField from "@/features/dashboard/admin/teams/components/TeamsSelectField";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createTradeProposalSchema } from "../schema/trade";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";

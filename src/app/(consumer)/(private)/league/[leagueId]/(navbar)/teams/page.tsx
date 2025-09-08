@@ -2,7 +2,7 @@ import Container from "@/components/Container";
 import { Button } from "@/components/ui/button";
 import TeamsList from "@/features/(league)/teams/components/TeamsList";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { NavArrowRight, Search } from "iconoir-react";
 import Link from "next/link";
 import { Suspense } from "react";

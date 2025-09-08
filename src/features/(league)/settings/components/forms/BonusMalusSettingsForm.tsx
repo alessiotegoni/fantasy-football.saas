@@ -8,7 +8,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { useLeagueSettings } from "@/hooks/useLeagueSettings";
 import { BonusMalusCategoriesType } from "@/drizzle/schema";
 import { BonusMaluses } from "@/components/BonusMaluses";
-import { BonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
+import { BonusMalus } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 
 type Props = {
   initialData: BonusMalusSchema;

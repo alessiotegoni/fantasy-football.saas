@@ -1,8 +1,8 @@
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { getAuctionWithSettings } from "../queries/auction";
-import { getUserTeamId } from "@/features/users/queries/user";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { getAuctionParticipant } from "../queries/auctionParticipant";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 

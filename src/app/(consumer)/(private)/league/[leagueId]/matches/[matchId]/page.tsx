@@ -7,10 +7,10 @@ import {
 } from "@/features/(league)/matches/queries/match";
 import { getMyTeam } from "@/features/(league)/matches/utils/match";
 import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
-import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
+import { getPlayersMatchdayBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { getCurrentMatchday } from "@/features/splits/queries/split";
-import { getUserTeamId } from "@/features/users/queries/user";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";

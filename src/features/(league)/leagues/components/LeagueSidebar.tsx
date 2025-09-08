@@ -26,7 +26,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import SidebarItem from "./SidebarItem";
 import LeagueDropdown from "./LeagueDropdown";
-import UserDropdown from "@/features/users/components/userDropdown";
+import UserDropdown from "@/features/dashboard/user/components/userDropdown";
 import { League } from "../queries/league";
 import { cn } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";

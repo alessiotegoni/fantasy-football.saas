@@ -1,10 +1,11 @@
 "use client";
 
-import { useDashboardRoles } from "@/contexts/DashboardRolesProvider";
-import Link from "next/link";
+import { Role, useDashboardRoles } from "@/contexts/DashboardRolesProvider";
 import { Shield, Palette, PenSquare } from "lucide-react";
-import { getMetadataFromUser } from "@/features/users/utils/user";
+import { getMetadataFromUser } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
+import { ElementType } from "react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { user, roles } = useDashboardRoles();
@@ -13,49 +14,69 @@ export default function DashboardPage() {
 
   const { name } = getMetadataFromUser(user);
 
+  const availableRoles = ROLES_INFO.filter((info) => roles.includes(info.role));
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-bold">
         {name} Benvenuto nella tua area privata 👋
       </h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {roles.includes("admin") && (
-          <Link href="/dashboard/admin">
-            <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                <Shield /> Admin
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Manage the application settings and users.
-              </p>
-            </div>
-          </Link>
-        )}
-        {roles.includes("content-creator") && (
-          <Link href="/dashboard/content-creator">
-            <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                <Palette /> Content Creator
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Create and manage the content of the application.
-              </p>
-            </div>
-          </Link>
-        )}
-        {roles.includes("redaction") && (
-          <Link href="/dashboard/redaction">
-            <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-              <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
-                <PenSquare /> Redaction
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Write and publish articles and news.
-              </p>
-            </div>
-          </Link>
-        )}
+        {availableRoles.map((roleInfo) => (
+          <RoleCard key={roleInfo.href} {...roleInfo} />
+        ))}
       </div>
     </div>
+  );
+}
+
+type RoleInfo = {
+  role: Role;
+  href: __next_route_internal_types__.RouteImpl<string>;
+  icon: ElementType;
+  title: string;
+  description: string;
+};
+
+const ROLES_INFO: readonly RoleInfo[] = [
+  {
+    role: "admin",
+    href: "/dashboard/admin",
+    icon: Shield,
+    title: "Admin",
+    description: "Manage the application settings and users.",
+  },
+  {
+    role: "content-creator",
+    href: "/dashboard/content-creator",
+    icon: Palette,
+    title: "Content Creator",
+    description: "Create and manage the content of the application.",
+  },
+  {
+    role: "redaction",
+    href: "/dashboard/redaction",
+    icon: PenSquare,
+    title: "Redaction",
+    description: "Write and publish articles and news.",
+  },
+];
+
+export function RoleCard({
+  href,
+  icon: Icon,
+  title,
+  description,
+}: Omit<RoleInfo, "role">) {
+  return (
+    <Link href={href}>
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <Icon className="size-7 mb-2" />
+        <h3 className="text-2xl font-semibold leading-none tracking-tight">
+          {title}
+        </h3>
+        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+      </div>
+    </Link>
   );
 }

@@ -7,7 +7,7 @@ import {
   getTeamsPlayers,
 } from "../../teamsPlayers/queries/teamsPlayer";
 import { isLeagueMember } from "../../members/permissions/leagueMember";
-import { getUserTeamId } from "@/features/users/queries/user";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { CreateTradeProposalSchema } from "../schema/trade";
 import { getTradeStatus } from "../queries/trade";
 import { isTeamRoleSlotFull } from "../../teamsPlayers/permissions/teamsPlayer";

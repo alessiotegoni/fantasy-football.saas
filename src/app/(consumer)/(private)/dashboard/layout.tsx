@@ -2,18 +2,15 @@ import {
   isAdmin,
   isContentCreator,
   isRedaction,
-} from "@/features/users/utils/roles";
+} from "@/features/dashboard/user/utils/roles";
 import DashboardRolesProvider, {
   Role,
 } from "@/contexts/DashboardRolesProvider";
 import { createClient } from "@/services/supabase/server/supabase";
-import { getUser } from "@/features/users/utils/user";
+import { getUser } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
 
-type Props = {
-  children: React.ReactNode;
-};
-export default async function DashboardLayout({ children }: Props) {
+export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const user = await getUser();
   if (!user) redirect("/");
 

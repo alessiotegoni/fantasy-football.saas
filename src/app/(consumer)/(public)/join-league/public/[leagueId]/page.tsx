@@ -18,8 +18,8 @@ import Avatar from "@/components/Avatar";
 import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
 import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMember";
 import { getLeagueModules } from "@/features/(league)/settings/queries/setting";
-import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
-import { getUser } from "@/features/users/utils/user";
+import { getTacticalModules } from "@/features/dashboard/admin/tacticalModules/queries/tacticalModule";
+import { getUser } from "@/features/dashboard/user/utils/user";
 import LinkButton from "@/components/LinkButton";
 
 // FIXME: migliorare fcp

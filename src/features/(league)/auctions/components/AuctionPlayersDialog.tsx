@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { InputSearch } from "iconoir-react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
-import { Team } from "@/features/teams/queries/team";
+import { Team } from "@/features/dashboard/admin/teams/queries/team";
 import { VirtualizedList } from "@/components/VirtualizedList";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";

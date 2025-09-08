@@ -8,7 +8,7 @@ import {
 import { leagueTeamSchema, LeagueTeamSchema } from "../schema/leagueTeam";
 import { leagueMembers, leagueMemberTeams } from "@/drizzle/schema";
 import { and, eq } from "drizzle-orm";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { memberHasTeam } from "../permissions/leagueTeam";
 import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";

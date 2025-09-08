@@ -11,7 +11,7 @@ import {
 import NumberInput from "@/components/ui/number-input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { BonusMalusSchema } from "@/features/(league)/settings/schema/setting";
-import { BonusMalus } from "@/features/bonusMaluses/queries/bonusMalus";
+import { BonusMalus } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 
 export function BonusMaluses({
   items,

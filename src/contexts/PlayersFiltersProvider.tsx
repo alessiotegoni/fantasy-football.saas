@@ -8,7 +8,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { getTeams, Team } from "@/features/teams/queries/team";
+import { getTeams, Team } from "@/features/dashboard/admin/teams/queries/team";
 import {
   getPlayersRoles,
   PlayerRole,
@@ -16,7 +16,7 @@ import {
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
 import { useFilter } from "@/hooks/useFilter";
 import PlayersListSearchBar from "@/features/(league)/teamsPlayers/components/PlayersListSearchBar";
-import TeamsFilters from "@/features/teams/components/TeamsFilters";
+import TeamsFilters from "@/features/dashboard/admin/teams/components/TeamsFilters";
 import PlayersRolesFilters from "@/features/(league)/teamsPlayers/components/PlayersRolesFilters";
 
 type Filters = {

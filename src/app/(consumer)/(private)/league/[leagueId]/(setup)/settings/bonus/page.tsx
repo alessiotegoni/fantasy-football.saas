@@ -1,6 +1,6 @@
 import { BonusMalusSettingsForm } from "@/features/(league)/settings/components/forms/BonusMalusSettingsForm";
 import { getBonusMalusesSettings } from "@/features/(league)/settings/queries/setting";
-import { getBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
+import { getBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 
 export default async function LeagueBonusMalusSettingsPage({
   params,

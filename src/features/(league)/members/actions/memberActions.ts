@@ -8,7 +8,7 @@ import {
   insertLeagueBan,
 } from "@/features/(league)/leagues/db/league";
 import { canPerformMemberAction } from "../permissions/leagueMember";
-import { removeUserLeagueMetadata } from "@/features/users/utils/user";
+import { removeUserLeagueMetadata } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { validateSchema } from "@/schema/helpers";
 import {

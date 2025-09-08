@@ -25,7 +25,7 @@ import {
   getCalculationSettings,
 } from "@/features/(league)/settings/queries/setting";
 import { getLineupsPlayers } from "@/features/(league)/matches/queries/match";
-import { getPlayersMatchdayBonusMaluses } from "@/features/bonusMaluses/queries/bonusMalus";
+import { getPlayersMatchdayBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
 import {

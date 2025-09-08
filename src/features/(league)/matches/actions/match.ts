@@ -3,7 +3,7 @@
 import { createError, createSuccess } from "@/utils/helpers";
 import { matchLineupSchema, MatchLineupSchema } from "../schema/match";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { canSaveLineup } from "../permissions/match";
 import { db } from "@/drizzle/db";
 import {

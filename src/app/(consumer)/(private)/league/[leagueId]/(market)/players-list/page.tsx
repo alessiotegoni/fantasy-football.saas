@@ -18,7 +18,7 @@ import {
   PlayerRole,
   TeamPlayer,
 } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import { getTeams, Team } from "@/features/teams/queries/team";
+import { getTeams, Team } from "@/features/dashboard/admin/teams/queries/team";
 import Container from "@/components/Container";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
 import { Suspense } from "react";

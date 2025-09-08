@@ -1,4 +1,4 @@
-import { getUserTeamId } from "@/features/users/queries/user";
+import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { MatchLineupSchema } from "../schema/match";
 import { getMatchInfo } from "../queries/match";
 import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";

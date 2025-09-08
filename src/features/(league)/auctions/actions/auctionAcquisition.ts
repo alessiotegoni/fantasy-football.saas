@@ -35,7 +35,7 @@ import {
   getParticipantPlayersCountByRole,
 } from "../queries/auctionParticipant";
 import { getHighestBid } from "../queries/auctionBid";
-import { Player } from "@/features/players/queries/player";
+import { Player } from "@/features/dashboard/admin/players/queries/player";
 
 enum ACQUISITION_MESSAGES {
   ACQUISITION_CONFIRMED_SUCCESSFULLY = "Giocatore confermato con successo",

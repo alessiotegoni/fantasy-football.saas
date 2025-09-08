@@ -1,6 +1,6 @@
 import Avatar from "@/components/Avatar";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { getUserLeagues } from "@/features/users/queries/user";
+import { getUserLeagues } from "@/features/dashboard/user/queries/user";
 import { cn } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";
 import { NavArrowRight, Trophy } from "iconoir-react";

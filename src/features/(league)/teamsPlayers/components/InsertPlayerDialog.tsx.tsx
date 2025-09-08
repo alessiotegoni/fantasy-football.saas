@@ -5,7 +5,7 @@ import {
   insertTeamPlayerSchema,
   InsertTeamPlayerSchema,
 } from "@/features/(league)/teamsPlayers/schema/teamsPlayer";
-import TeamsSelectField from "@/features/teams/components/TeamsSelectField";
+import TeamsSelectField from "@/features/dashboard/admin/teams/components/TeamsSelectField";
 import FormSliderField from "@/components/FormFieldSlider";
 import SubmitButton from "@/components/SubmitButton";
 import { use } from "react";
@@ -13,7 +13,7 @@ import NumberInput from "@/components/ui/number-input";
 import { useParams } from "next/navigation";
 import { addTeamPlayer } from "../actions/teamsPlayer";
 import { usePlayerSelection } from "@/contexts/PlayerSelectionProvider";
-import { Team } from "@/features/teams/queries/team";
+import { Team } from "@/features/dashboard/admin/teams/queries/team";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
 export default function InsertPlayerDialog({

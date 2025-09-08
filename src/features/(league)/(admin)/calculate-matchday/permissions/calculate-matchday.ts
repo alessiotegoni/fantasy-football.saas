@@ -6,7 +6,7 @@ import {
   getLiveSplit,
   getSplitMatchdays,
 } from "@/features/splits/queries/split";
-import { getUserId } from "@/features/users/utils/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
