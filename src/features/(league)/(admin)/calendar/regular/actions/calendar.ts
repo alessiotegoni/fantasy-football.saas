@@ -8,11 +8,11 @@ import {
   VALIDATION_ERROR,
 } from "@/schema/helpers";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
-import { getSplitMatchdays } from "@/features/splits/queries/split";
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
 import { deleteCalendar, insertCalendar } from "../../db/calendar";
 import { canGenerateCalendar } from "../permissions/calendar";
+import { getSplitMatchdays } from "@/features/dashboard/admin/splits/queries/split";
 
 export async function generateCalendar(leagueId: string) {
   const { error, message, data } = await calendarValidation(leagueId);
@@ -21,7 +21,7 @@ export async function generateCalendar(leagueId: string) {
   const calendar = await getCalendar(data);
   await insertCalendar(calendar);
 
-  redirect(`/leagues/${leagueId}/calendar`);
+  redirect(`/league/${leagueId}/calendar`);
 }
 
 export async function regenerateCalendar(leagueId: string) {
@@ -36,7 +36,7 @@ export async function regenerateCalendar(leagueId: string) {
     await insertCalendar(calendar, tx);
   });
 
-  redirect(`/leagues/${leagueId}/calendar`);
+  redirect(`/league/${leagueId}/calendar`);
 }
 
 async function getCalendar({

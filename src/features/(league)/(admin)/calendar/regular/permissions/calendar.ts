@@ -2,7 +2,7 @@ import { db } from "@/drizzle/db";
 import { leagueMatches, splitMatchdays, splits } from "@/drizzle/schema";
 import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
 import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
-import { getUpcomingSplit } from "@/features/splits/queries/split";
+import { getUpcomingSplit } from "@/features/dashboard/admin/splits/queries/split";
 import { createError, createSuccess } from "@/utils/helpers";
 import { and, count, eq } from "drizzle-orm";
 

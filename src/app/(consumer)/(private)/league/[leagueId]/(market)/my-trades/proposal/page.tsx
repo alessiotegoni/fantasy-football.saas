@@ -5,10 +5,12 @@ import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+type Props = PageProps<"/league/[leagueId]/my-trades/proposal">;
+
 export default async function TradeProposalPage({
   params,
   searchParams,
-}: PageProps<"/league/[leagueId]/my-trades/proposal">) {
+}: Props) {
   const { leagueId } = await params;
 
   return (
@@ -33,7 +35,7 @@ async function SuspenseBoundary({
   const searchP = await searchParams;
   if (!searchP?.proposerTeamId) notFound();
 
-  if (!validateUUIds(searchP).success) notFound();
+  if (!validateUUIds(searchP as {}).success) notFound();
 
   const leagueTeams = await getLeagueTeams(leagueId);
 

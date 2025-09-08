@@ -16,7 +16,7 @@ import {
   isMemberOfALeague,
 } from "../../members/permissions/leagueMember";
 import { createError, createSuccess } from "@/utils/helpers";
-import { getLiveSplit } from "@/features/splits/queries/split";
+import { getLiveSplit } from "@/features/dashboard/admin/splits/queries/split";
 
 enum JOIN_LEAGUE_MESSAGES {
   PREMIUM_REQUIRED = "Per entrare in più di una lega devi avere il premium.",

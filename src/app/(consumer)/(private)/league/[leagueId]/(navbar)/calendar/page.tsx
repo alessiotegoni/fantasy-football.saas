@@ -1,11 +1,4 @@
 import Container from "@/components/Container";
-import SplitSelect from "@/features/splits/components/SplitSelect";
-import {
-  getCurrentMatchday,
-  getSplits,
-  Split,
-  SplitMatchday,
-} from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { WarningTriangle } from "iconoir-react";
 import { Suspense } from "react";
@@ -17,6 +10,13 @@ import {
   Match,
 } from "@/features/(league)/(admin)/calendar/regular/queries/calendar";
 import MatchdaySection from "@/features/(league)/(admin)/calendar/regular/components/MatchdaySection";
+import SplitSelect from "@/features/dashboard/admin/splits/components/SplitSelect";
+import {
+  getCurrentMatchday,
+  getSplits,
+  Split,
+  SplitMatchday,
+} from "@/features/dashboard/admin/splits/queries/split";
 
 export default async function LeagueCalendarPage({
   params,
@@ -37,7 +37,7 @@ export default async function LeagueCalendarPage({
       <Suspense>
         <SuspenseBoundary
           leagueId={leagueId}
-          selectedSplitPromise={searchParams.then((sp) => sp.splitId)}
+          selectedSplitPromise={searchParams.then((sp) => sp.splitId as string)}
           splits={splits}
           lastSplit={lastSplit}
         />

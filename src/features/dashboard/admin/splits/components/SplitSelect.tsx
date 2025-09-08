@@ -8,8 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Split } from "@/features/splits/queries/split";
 import { useRouter } from "next/navigation";
+import { Split } from "../queries/split";
 
 export default function SplitSelect({
   splits,

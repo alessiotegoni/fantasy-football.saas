@@ -1,11 +1,10 @@
 "use client";
 
-import { Role, useDashboardRoles } from "@/contexts/DashboardRolesProvider";
+import { useDashboardRoles } from "@/contexts/DashboardRolesProvider";
 import { Shield, Palette, PenSquare } from "lucide-react";
 import { getMetadataFromUser } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
-import { ElementType } from "react";
-import Link from "next/link";
+import { RoleCard, RoleInfo } from "@/features/dashboard/components/RoleCard";
 
 export default function DashboardPage() {
   const { user, roles } = useDashboardRoles();
@@ -30,15 +29,7 @@ export default function DashboardPage() {
   );
 }
 
-type RoleInfo = {
-  role: Role;
-  href: __next_route_internal_types__.RouteImpl<string>;
-  icon: ElementType;
-  title: string;
-  description: string;
-};
-
-const ROLES_INFO: readonly RoleInfo[] = [
+const ROLES_INFO: RoleInfo[] = [
   {
     role: "admin",
     href: "/dashboard/admin",
@@ -61,22 +52,3 @@ const ROLES_INFO: readonly RoleInfo[] = [
     description: "Write and publish articles and news.",
   },
 ];
-
-export function RoleCard({
-  href,
-  icon: Icon,
-  title,
-  description,
-}: Omit<RoleInfo, "role">) {
-  return (
-    <Link href={href}>
-      <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-        <Icon className="size-7 mb-2" />
-        <h3 className="text-2xl font-semibold leading-none tracking-tight">
-          {title}
-        </h3>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
-      </div>
-    </Link>
-  );
-}
