@@ -5,22 +5,23 @@ import { Shield, Palette, PenSquare } from "lucide-react";
 import { getMetadataFromUser } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
 import { RoleCard, RoleInfo } from "@/features/dashboard/components/RoleCard";
+import Disclaimer from "@/components/Disclaimer";
 
 export default function DashboardPage() {
   const { user, userRoles } = useDashboardRoles();
 
   if (userRoles.length === 1) redirect(`/dashboard/${userRoles[0]}`);
 
-  const { name } = getMetadataFromUser(user);
-
   const availableRoles = ROLES_INFO.filter((info) =>
     userRoles.includes(info.role)
   );
 
   return (
-    <div className="h-full lg:text-center flex flex-col gap-5 lg:justify-center items-center max-w-3xl mx-auto">
+    <div className="h-full sm:text-center flex flex-col gap-5 lg:justify-center items-center max-w-3xl mx-auto">
       <div>
-        <h1 className="text-3xl font-bold mb-2">{name}</h1>
+        <h1 className="text-3xl font-bold mb-2">
+          {getMetadataFromUser(user).name}
+        </h1>
         <h2 className="text-2xl font-bold">
           Benvenuto nella tua area privata 👋
         </h2>
@@ -30,6 +31,7 @@ export default function DashboardPage() {
           <RoleCard key={roleInfo.href} {...roleInfo} />
         ))}
       </div>
+      <Disclaimer />
     </div>
   );
 }
