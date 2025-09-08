@@ -1,10 +1,8 @@
 "use client";
 
+import { Role } from "@/features/dashboard/user/utils/roles";
 import { User } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
-
-export const roles = ["superadmin", "admin", "content-creator", "redaction"] as const
-export type Role = (typeof roles)[number];
 
 type DashboardRolesContextType = {
   user: User

@@ -7,17 +7,18 @@ import {
   isAdmin,
   isContentCreator,
   isRedaction,
-} from "@/features/dashboard/user/utils/roles";
-import DashboardRolesProvider, {
   Role,
-} from "@/contexts/DashboardRolesProvider";
+  roles,
+} from "@/features/dashboard/user/utils/roles";
+import DashboardRolesProvider from "@/contexts/DashboardRolesProvider";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const user = await getUser();
   if (!user) redirect("/");
 
+  let userRoles: Role[] = [];
+
   const supabase = await createClient();
-  const userRoles: Role[] = [];
 
   const [admin, contentCreator, redaction] = await Promise.all([
     isAdmin(supabase, user.id),
@@ -25,12 +26,12 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
     isRedaction(supabase, user.id),
   ]);
 
-  const isSuperadmin = process.env.SUPERADMIN_ID === user.id;
-
-  if (isSuperadmin) userRoles.push("superadmin");
   if (admin) userRoles.push("admin");
   if (contentCreator) userRoles.push("content-creator");
   if (redaction) userRoles.push("redaction");
+
+  const isSuperadmin = process.env.SUPERADMIN_ID === user.id;
+  if (isSuperadmin) userRoles = roles.slice();
 
   return (
     <DashboardRolesProvider user={user} userRoles={userRoles}>

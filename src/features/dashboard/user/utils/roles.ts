@@ -73,3 +73,6 @@ export async function isRedaction(
 
   return !!data;
 }
+
+export const roles = ["superadmin", "admin", "content-creator", "redaction"] as const
+export type Role = (typeof roles)[number];
