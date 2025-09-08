@@ -1,28 +1,11 @@
-"use client";
-
 import Link from "next/link";
 import { Globe, Lock } from "iconoir-react";
-import { useRouter } from "next/navigation";
 
-export default function JoinLeagueLinks({
-  isAuthenticated = false,
-}: {
-  isAuthenticated?: boolean;
-}) {
-  const router = useRouter();
-
-  function handleLinkClick(e: React.MouseEvent<HTMLAnchorElement>) {
-    if (!isAuthenticated) {
-      e.preventDefault();
-      router.push("/auth/login");
-    }
-  }
-
+export default function JoinLeagueLinks() {
   return (
     <div className="grid gap-6 md:grid-cols-2 mx-auto max-w-[900px] px-6">
       <Link
         href="/join-league/public"
-        onClick={handleLinkClick}
         className="flex flex-col items-center text-center p-6 bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow"
       >
         <div className="size-20 sm:size-25 rounded-full bg-primary/10 flex items-center justify-center mb-4">
@@ -39,7 +22,6 @@ export default function JoinLeagueLinks({
 
       <Link
         href="/join-league/private"
-        onClick={handleLinkClick}
         className="flex flex-col items-center text-center p-6 bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow"
       >
         <div className="size-20 sm:size-25 rounded-full bg-primary/10 flex items-center justify-center mb-4">

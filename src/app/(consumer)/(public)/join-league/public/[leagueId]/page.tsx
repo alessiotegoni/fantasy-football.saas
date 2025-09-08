@@ -19,6 +19,9 @@ import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/league
 import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMember";
 import { getLeagueModules } from "@/features/(league)/settings/queries/setting";
 import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
+import { League } from "@/features/(league)/leagues/queries/league";
+import { getUser } from "@/features/users/utils/user";
+import LinkButton from "@/components/LinkButton";
 
 // FIXME: migliorare fcp
 
@@ -131,13 +134,21 @@ async function SuspenseBoundary({
               </div>
             </div>
 
-            <ActionButton
-              loadingText="Entrando nella lega"
-              disabled={occupancyPercentage === 100}
-              action={joinPublicLeague.bind(null, league.id)}
+            <Suspense
+              fallback={
+                <LinkButton
+                  disabled={occupancyPercentage === 100}
+                  href="/auth/login"
+                >
+                  Unisciti a {league.name}
+                </LinkButton>
+              }
             >
-              Unisciti a {league.name}
-            </ActionButton>
+              <JoinPublicLeagueButton
+                league={league}
+                occupancyPercentage={occupancyPercentage}
+              />
+            </Suspense>
           </div>
         </div>
       </main>
@@ -146,6 +157,34 @@ async function SuspenseBoundary({
         <Disclaimer />
       </footer>
     </>
+  );
+}
+
+async function JoinPublicLeagueButton({
+  league,
+  occupancyPercentage,
+}: {
+  league: { id: string; name: string };
+  occupancyPercentage: number;
+}) {
+  const user = await getUser();
+
+  if (!user) {
+    return (
+      <LinkButton disabled={occupancyPercentage === 100} href="/auth/login">
+        Unisciti a {league.name}
+      </LinkButton>
+    );
+  }
+
+  return (
+    <ActionButton
+      loadingText="Entrando nella lega"
+      disabled={occupancyPercentage === 100}
+      action={joinPublicLeague.bind(null, league.id)}
+    >
+      Unisciti a {league.name}
+    </ActionButton>
   );
 }
 

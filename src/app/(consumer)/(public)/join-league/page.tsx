@@ -3,10 +3,6 @@ import { default as LeagueHeader } from "@/features/(league)/leagues/components/
 import BackButton from "@/components/BackButton";
 import Disclaimer from "@/components/Disclaimer";
 import JoinLeagueLinks from "@/features/(league)/leagues/components/JoinLeagueLinks";
-import { getUser } from "@/features/users/utils/user";
-import { Suspense } from "react";
-
-export const experimental_ppr = true;
 
 export default function JoinLeaguePage() {
   return (
@@ -26,9 +22,7 @@ export default function JoinLeaguePage() {
 
       <main>
         <div className="flex-1 flex flex-col items-center">
-          <Suspense fallback={<JoinLeagueLinks />}>
-            <SuspenseBoundary />
-          </Suspense>
+          <JoinLeagueLinks />
         </div>
       </main>
 
@@ -37,9 +31,4 @@ export default function JoinLeaguePage() {
       </footer>
     </>
   );
-}
-
-async function SuspenseBoundary() {
-  const user = await getUser();
-  return <JoinLeagueLinks isAuthenticated={!!user} />;
 }
