@@ -49,7 +49,11 @@ export default function LoginForm() {
 
       if (data.type === "email") saveEmail(data.email);
 
-      if (!res.error) router.push(res.data.url);
+      if (!res.error) {
+        router.push(
+          res.data.url as __next_route_internal_types__.RouteImpl<string>
+        );
+      }
     });
   }
 

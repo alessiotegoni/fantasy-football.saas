@@ -50,7 +50,7 @@ export function VirtualizedLeaguesList({
             Prova a modificare i criteri di ricerca
           </p>
           <Button variant="gradient" asChild className="w-fit mt-7 gap-4 !px-4">
-            <Link href="/leagues/create">
+            <Link href="/create-league">
               Oppure crea la tua lega
               <NavArrowRight className="size-5" />
             </Link>
@@ -76,7 +76,7 @@ const LeagueCard = memo(
 
     return (
       <Link
-        href={`/leagues/join/public/${id}`}
+        href={`/join-league/public/${id}`}
         className="flex flex-col justify-between p-6 bg-background rounded-2xl border border-border shadow-sm hover:shadow-md transition-all hover:border-primary min-h-[166px]"
       >
         <div className="flex items-start justify-between mb-3">

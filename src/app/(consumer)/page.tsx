@@ -34,13 +34,13 @@ export default function HomePage() {
         <div className="flex-1 flex flex-col items-center">
           <div className="grid gap-6 md:grid-cols-2 mx-auto max-w-[900px] px-6">
             <Link
-              href="/leagues/create"
+              href="/create-league"
               className="flex flex-col items-center text-center p-6 bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="size-20 sm:size-25 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                 <Trophy className="size-10 sm:size-13 text-primary" />
               </div>
-              <span className="text-xl font-heading mb-2">
+              <span className="text-xl font-medium font-heading mb-2">
                 Crea una nuova Lega
               </span>
               <p className="text-sm text-muted-foreground">
@@ -51,13 +51,13 @@ export default function HomePage() {
             </Link>
 
             <Link
-              href="/leagues/join"
+              href="/join-league"
               className="flex flex-col items-center text-center p-6 bg-muted rounded-2xl shadow-sm hover:shadow-md transition-shadow"
             >
               <div className="size-20 sm:size-25 rounded-full bg-primary/10 flex items-center justify-center mb-4">
                 <Group className="size-10 sm:size-13 text-primary" />
               </div>
-              <span className="text-xl font-heading mb-2">
+              <span className="text-xl font-medium font-heading mb-2">
                 Unisciti a una Lega
               </span>
               <p className="text-sm text-muted-foreground">
