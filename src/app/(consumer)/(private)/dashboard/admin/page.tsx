@@ -4,7 +4,7 @@ import {
   RoleCard,
   type RoleInfo,
 } from "@/features/dashboard/components/RoleCard";
-import { Shield, Users, Spline, Shirt } from "lucide-react";
+import { Axes, Gift, Running, Shield } from "iconoir-react";
 
 export default function AdminPage() {
   return (
@@ -27,25 +27,25 @@ export default function AdminPage() {
 const LINKS_INFO: Omit<RoleInfo, "role">[] = [
   {
     href: "/dashboard/admin/splits",
-    icon: Spline,
+    icon: Axes,
     title: "Splits",
     description: "Gestisci gli split di campionato",
   },
   {
     href: "/dashboard/admin/teams",
-    icon: Shirt,
+    icon: Shield,
     title: "Squadre",
     description: "Gestisci le squadre di Serie A",
   },
   {
     href: "/dashboard/admin/players",
-    icon: Users,
+    icon: Running,
     title: "Giocatori",
     description: "Gestisci i giocatori e le loro quotazioni",
   },
   {
     href: "/dashboard/admin/bonus-maluses",
-    icon: Shield,
+    icon: Gift,
     title: "Bonus/Malus",
     description: "Gestisci i bonus e i malus del gioco",
   },

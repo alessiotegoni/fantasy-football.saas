@@ -24,7 +24,7 @@ export default function Container({
       {showHeader && (
         <header className="flex justify-between items-center gap-2 mb-4 md:mb-8">
           <div className="flex items-center md:hidden">
-            <Link href={`/leagues/${leagueId}`} className="mr-3">
+            <Link href={`/league/${leagueId}`} className="mr-3">
               <ArrowLeft className="size-5" />
             </Link>
             <h2
