@@ -19,10 +19,12 @@ export function RoleCard({
     <Link href={href}>
       <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
         <Icon className="size-7 mb-2" />
+        <div>
         <h3 className="text-2xl font-semibold leading-none tracking-tight">
           {title}
         </h3>
         <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        </div>
       </div>
     </Link>
   );

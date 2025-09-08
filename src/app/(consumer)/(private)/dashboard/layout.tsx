@@ -9,6 +9,8 @@ import DashboardRolesProvider, {
 import { createClient } from "@/services/supabase/server/supabase";
 import { getUser } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
+import DashboardSidebar from "@/features/dashboard/components/DashboardSidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const user = await getUser();
@@ -27,11 +29,12 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   if (contentCreator) roles.push("content-creator");
   if (redaction) roles.push("redaction");
 
-  console.log(roles);
-
   return (
     <DashboardRolesProvider user={user} roles={roles}>
-      {children}
+      <SidebarProvider className="flex">
+        <DashboardSidebar currentUserId={user.id} />
+        <main className="flex-1 p-8">{children}</main>
+      </SidebarProvider>
     </DashboardRolesProvider>
   );
 }
