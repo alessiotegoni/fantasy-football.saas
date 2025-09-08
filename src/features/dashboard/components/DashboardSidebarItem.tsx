@@ -3,7 +3,7 @@
 import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import NavLink from "@/components/NavLink";
 import Link from "next/link";
-import { SidebarLink } from "@/features/(league)/leagues/components/LeagueSidebar";
+import { SidebarLink } from "@/features/league/leagues/components/LeagueSidebar";
 
 type Props = {
   item: SidebarLink;

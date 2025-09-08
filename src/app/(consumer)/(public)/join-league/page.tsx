@@ -1,8 +1,8 @@
 import Logo from "@/components/ui/logo";
-import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
+import { default as LeagueHeader } from "@/features/league/leagues/components/Header";
 import BackButton from "@/components/BackButton";
 import Disclaimer from "@/components/Disclaimer";
-import JoinLeagueLinks from "@/features/(league)/leagues/components/JoinLeagueLinks";
+import JoinLeagueLinks from "@/features/league/leagues/components/JoinLeagueLinks";
 
 export default function JoinLeaguePage() {
   return (

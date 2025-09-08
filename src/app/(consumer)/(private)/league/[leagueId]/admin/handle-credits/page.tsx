@@ -1,12 +1,12 @@
 import Container from "@/components/Container";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import TeamsCreditsProvider from "@/contexts/TeamsCreditsProvider";
-import AddCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/AddCreditsDialog";
-import LeagueTeamCardWithCredits from "@/features/(league)/(admin)/handle-credits/components/LeagueTeamCardWithCredits";
-import ResetCreditsDialog from "@/features/(league)/(admin)/handle-credits/components/ResetCreditsDialog";
-import UpdateCreditsButton from "@/features/(league)/(admin)/handle-credits/components/UpdateCreditsButton";
-import { getGeneralSettings } from "@/features/(league)/settings/queries/setting";
-import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
+import AddCreditsDialog from "@/features/league/admin/handle-credits/components/AddCreditsDialog";
+import LeagueTeamCardWithCredits from "@/features/league/admin/handle-credits/components/LeagueTeamCardWithCredits";
+import ResetCreditsDialog from "@/features/league/admin/handle-credits/components/ResetCreditsDialog";
+import UpdateCreditsButton from "@/features/league/admin/handle-credits/components/UpdateCreditsButton";
+import { getGeneralSettings } from "@/features/league/settings/queries/setting";
+import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
 
 export default async function HandleCreditsPage({

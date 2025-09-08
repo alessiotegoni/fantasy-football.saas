@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/carousel";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Disclaimer from "@/components/Disclaimer";
-import LeagueSettingLink from "@/features/(league)/settings/components/LeagueSettingLink";
+import LeagueSettingLink from "@/features/league/settings/components/LeagueSettingLink";
 
 export default async function leagueSettingsLayout({
   children,

@@ -12,7 +12,7 @@ import {
   roles,
 } from "@/features/dashboard/user/utils/roles";
 import DashboardRolesProvider from "@/contexts/DashboardRolesProvider";
-import { Topbar } from "@/features/(league)/leagues/components/TopBar";
+import { Topbar } from "@/features/league/leagues/components/TopBar";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const user = await getUser();

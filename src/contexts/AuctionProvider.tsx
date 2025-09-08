@@ -1,10 +1,10 @@
 "use client";
 
-import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
-import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
-import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { AuctionWithSettings } from "@/features/league/auctions/queries/auction";
+import { ParticipantAcquisition } from "@/features/league/auctions/queries/auctionAcquisition";
+import { CurrentBid } from "@/features/league/auctions/queries/auctionBid";
+import { CurrentNomination } from "@/features/league/auctions/queries/auctionNomination";
+import { AuctionParticipant } from "@/features/league/auctions/queries/auctionParticipant";
 import useAuctionAcquisitions from "@/hooks/useAuctionAcquisitions";
 import useAuctionBid from "@/hooks/useAuctionBid";
 import useAuctionNomination from "@/hooks/useAuctionNomination";
@@ -12,7 +12,7 @@ import useAuctionParticipants from "@/hooks/useAuctionParticipants";
 import { createContext, useCallback, useContext, useState } from "react";
 import useAuctionPlayerAssign from "@/hooks/useAuctionPlayerAssign";
 import { playerRoles } from "@/drizzle/schema";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import useCustomBidMode from "@/hooks/useAuctionCustomBid";
 import useAuctionCustomBid from "@/hooks/useAuctionCustomBid";
 import useAuctionSettings from "@/hooks/useAuctionSettings";

@@ -4,12 +4,12 @@ import { WarningTriangle } from "iconoir-react";
 import { Suspense } from "react";
 import EmptyState from "@/components/EmptyState";
 import BackButton from "@/components/BackButton";
-import CalendarEmptyState from "@/features/(league)/(admin)/calendar/regular/components/CalendarEmptyState";
+import CalendarEmptyState from "@/features/league/admin/calendar/regular/components/CalendarEmptyState";
 import {
   getRegularCalendar,
   Match,
-} from "@/features/(league)/(admin)/calendar/regular/queries/calendar";
-import MatchdaySection from "@/features/(league)/(admin)/calendar/regular/components/MatchdaySection";
+} from "@/features/league/admin/calendar/regular/queries/calendar";
+import MatchdaySection from "@/features/league/admin/calendar/regular/components/MatchdaySection";
 import SplitSelect from "@/features/dashboard/admin/splits/components/SplitSelect";
 import {
   getCurrentMatchday,

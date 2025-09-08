@@ -1,6 +1,4 @@
 import Container from "@/components/Container";
-import SplitSelect from "@/features/splits/components/SplitSelect";
-import { getSplits, type Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { NavArrowRight } from "iconoir-react";
 import { Suspense } from "react";
@@ -9,13 +7,18 @@ import BackButton from "@/components/BackButton";
 import {
   type AuctionWithCreator,
   getLeagueAuctions,
-} from "@/features/(league)/auctions/queries/auction";
+} from "@/features/league/auctions/queries/auction";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getUserId } from "@/features/dashboard/user/utils/user";
-import AuctionsList from "@/features/(league)/auctions/components/AuctionsList";
+import AuctionsList from "@/features/league/auctions/components/AuctionsList";
 import Disclaimer from "@/components/Disclaimer";
-import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
+import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
+import {
+  getSplits,
+  Split,
+} from "@/features/dashboard/admin/splits/queries/split";
+import SplitSelect from "@/features/dashboard/admin/splits/components/SplitSelect";
 
 export default async function LeagueAuctionsPage({
   params,

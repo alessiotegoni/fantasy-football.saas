@@ -1,5 +1,5 @@
-import { CalculationSettingsForm } from "@/features/(league)/settings/components/forms/CalculationSettingsForm";
-import { getCalculationSettings } from "@/features/(league)/settings/queries/setting";
+import { CalculationSettingsForm } from "@/features/league/settings/components/forms/CalculationSettingsForm";
+import { getCalculationSettings } from "@/features/league/settings/queries/setting";
 
 export default async function LeagueCalculationSettingsPage({
   params,

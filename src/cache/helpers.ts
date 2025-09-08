@@ -1,18 +1,18 @@
-import { LEAGUE_TAG } from "@/features/(league)/leagues/db/cache/league";
-import { MATCH_TAG } from "@/features/(league)/matches/db/cache/match";
+import { LEAGUE_TAG } from "@/features/league/leagues/db/cache/league";
+import { MATCH_TAG } from "@/features/league/matches/db/cache/match";
 import { GLOBAL_TAG } from "./global";
 import { USER_TAG } from "@/features/dashboard/user/db/cache/user";
-import { AUCTION_TAG } from "@/features/(league)/auctions/db/cache/auction";
-import { LEAGUE_MEMBERS_TAG } from "@/features/(league)/members/db/cache/leagueMember";
-import { TEAM_PLAYERS_TAG } from "@/features/(league)/teamsPlayers/db/cache/teamsPlayer";
-import { TEAM_TAG } from "@/features/(league)/teams/db/cache/leagueTeam";
-import { TRADES_TAG } from "@/features/(league)/trades/db/cache/trade";
-import { LEAGUE_CALENDAR_TAG } from "@/features/(league)/(admin)/calendar/db/cache/calendar";
+import { AUCTION_TAG } from "@/features/league/auctions/db/cache/auction";
+import { LEAGUE_MEMBERS_TAG } from "@/features/league/members/db/cache/leagueMember";
+import { TEAM_PLAYERS_TAG } from "@/features/league/teamsPlayers/db/cache/teamsPlayer";
+import { TEAM_TAG } from "@/features/league/teams/db/cache/leagueTeam";
+import { TRADES_TAG } from "@/features/league/trades/db/cache/trade";
+import { LEAGUE_CALENDAR_TAG } from "@/features/league/admin/calendar/db/cache/calendar";
 import { MATCHDAY_VOTE_TAG } from "@/features/dashboard/redaction/votes/db/cache/vote";
 import { MATCHDAY_BONUS_MALUS_TAG } from "@/features/dashboard/admin/bonusMaluses/db/cache/bonusMalus";
-import { CALCULATIONS_TAG } from "@/features/(league)/(admin)/calculate-matchday/db/cache/calculate-matchday";
-import { LEAGUE_SETTINGS_TAG } from "@/features/(league)/settings/db/cache/setting";
-import { LEAGUE_STANDING_TAG } from "@/features/(league)/standing/db/cache/standing";
+import { CALCULATIONS_TAG } from "@/features/league/admin/calculate-matchday/db/cache/calculate-matchday";
+import { LEAGUE_SETTINGS_TAG } from "@/features/league/settings/db/cache/setting";
+import { LEAGUE_STANDING_TAG } from "@/features/league/standing/db/cache/standing";
 
 export type CACHE_TAG =
   | GLOBAL_TAG

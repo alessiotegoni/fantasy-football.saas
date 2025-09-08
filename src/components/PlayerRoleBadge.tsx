@@ -1,5 +1,5 @@
 import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { getPlayersRoles } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { cn } from "@/lib/utils";
 import { Crown } from "iconoir-react";
 

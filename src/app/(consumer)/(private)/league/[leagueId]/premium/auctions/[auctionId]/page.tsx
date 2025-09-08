@@ -1,19 +1,19 @@
 import { playerRoles } from "@/drizzle/schema";
-import AuctionHeader from "@/features/(league)/auctions/components/AuctionHeader";
-import AuctionWrapper from "@/features/(league)/auctions/components/AuctionWrapper";
+import AuctionHeader from "@/features/league/auctions/components/AuctionHeader";
+import AuctionWrapper from "@/features/league/auctions/components/AuctionWrapper";
 import {
   AuctionWithSettings,
   getAuctionWithSettings,
-} from "@/features/(league)/auctions/queries/auction";
-import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
-import { getHighestBid } from "@/features/(league)/auctions/queries/auctionBid";
-import { getCurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
+} from "@/features/league/auctions/queries/auction";
+import { ParticipantAcquisition } from "@/features/league/auctions/queries/auctionAcquisition";
+import { getHighestBid } from "@/features/league/auctions/queries/auctionBid";
+import { getCurrentNomination } from "@/features/league/auctions/queries/auctionNomination";
 import {
   AuctionParticipant,
   getParticipantsWithAcquisitions,
-} from "@/features/(league)/auctions/queries/auctionParticipant";
-import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
-import { getPlayersRoles } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+} from "@/features/league/auctions/queries/auctionParticipant";
+import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
+import { getPlayersRoles } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { notFound, redirect } from "next/navigation";

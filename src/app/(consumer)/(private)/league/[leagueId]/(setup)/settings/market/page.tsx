@@ -1,5 +1,5 @@
-import { MarketSettingsForm } from "@/features/(league)/settings/components/forms/MarketSettingsForm";
-import { getMarketSettings } from "@/features/(league)/settings/queries/setting";
+import { MarketSettingsForm } from "@/features/league/settings/components/forms/MarketSettingsForm";
+import { getMarketSettings } from "@/features/league/settings/queries/setting";
 
 export default async function LeagueMarketSettingsPage({
   params,

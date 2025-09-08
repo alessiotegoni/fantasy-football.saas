@@ -1,5 +1,5 @@
-import { LeagueProfileForm } from "@/features/(league)/leagues/components/forms/LeagueProfileForm";
-import { getLeague } from "@/features/(league)/leagues/queries/league";
+import { LeagueProfileForm } from "@/features/league/leagues/components/forms/LeagueProfileForm";
+import { getLeague } from "@/features/league/leagues/queries/league";
 import { ArrowLeft } from "iconoir-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

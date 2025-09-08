@@ -7,9 +7,9 @@ import {
   players,
   teams,
 } from "@/drizzle/schema";
-import { getLeagueAvailablePlayersTag } from "@/features/(league)/leagues/db/cache/league";
-import InsertPlayerDialog from "@/features/(league)/teamsPlayers/components/InsertPlayerDialog.tsx";
-import PlayersEmptyState from "@/features/(league)/teamsPlayers/components/PlayersEmptyState";
+import { getLeagueAvailablePlayersTag } from "@/features/league/leagues/db/cache/league";
+import InsertPlayerDialog from "@/features/league/teamsPlayers/components/InsertPlayerDialog.tsx";
+import PlayersEmptyState from "@/features/league/teamsPlayers/components/PlayersEmptyState";
 import PlayersList from "@/components/PlayersList";
 import { eq, notInArray } from "drizzle-orm";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
@@ -17,12 +17,12 @@ import {
   getPlayersRoles,
   PlayerRole,
   TeamPlayer,
-} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+} from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { getTeams, Team } from "@/features/dashboard/admin/teams/queries/team";
 import Container from "@/components/Container";
-import { getLeagueTeams } from "@/features/(league)/teams/queries/leagueTeam";
+import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
-import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
+import PlayerSelection from "@/features/league/teamsPlayers/components/PlayerSelection";
 
 export default async function LeaguePlayersListPage({
   params,

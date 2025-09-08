@@ -1,11 +1,11 @@
 import Container from "@/components/Container";
 import Disclaimer from "@/components/Disclaimer";
-import AuctionForm from "@/features/(league)/auctions/components/AuctionForm";
+import AuctionForm from "@/features/league/auctions/components/AuctionForm";
 import {
   AuctionWithSettings,
   getAuctionWithSettings,
-} from "@/features/(league)/auctions/queries/auction";
-import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+} from "@/features/league/auctions/queries/auction";
+import { getRolesWithoutPresident } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { getLiveSplit } from "@/features/splits/queries/split";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";

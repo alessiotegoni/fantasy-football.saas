@@ -1,13 +1,13 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
-import LeagueSidebar from "@/features/(league)/leagues/components/LeagueSidebar";
-import { Topbar } from "@/features/(league)/leagues/components/TopBar";
-import { LeagueNav } from "../../../../../features/(league)/leagues/components/LeagueNav";
-import { getLeague, League } from "@/features/(league)/leagues/queries/league";
+import LeagueSidebar from "@/features/league/leagues/components/LeagueSidebar";
+import { Topbar } from "@/features/league/leagues/components/TopBar";
+import { LeagueNav } from "../../../../../features/league/leagues/components/LeagueNav";
+import { getLeague, League } from "@/features/league/leagues/queries/league";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { getUser } from "@/features/dashboard/user/utils/user";
-import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
-import { isPremiumUnlocked } from "@/features/(league)/leagues/permissions/league";
+import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
+import { isPremiumUnlocked } from "@/features/league/leagues/permissions/league";
 import { User } from "@supabase/supabase-js";
 
 export default async function LeagueLayout(

@@ -1,5 +1,5 @@
 "use client";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { createContext, useCallback, useContext, useState } from "react";
 
 type PlayerSelectionContextType = {

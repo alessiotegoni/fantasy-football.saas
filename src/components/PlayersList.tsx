@@ -6,8 +6,8 @@ import {
   usePlayersFilters,
 } from "@/contexts/PlayersFiltersProvider";
 import { PlayerSelectionProvider } from "@/contexts/PlayerSelectionProvider";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
-import PlayersListContent from "../features/(league)/teamsPlayers/components/PlayerListContent";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
+import PlayersListContent from "../features/league/teamsPlayers/components/PlayerListContent";
 import useSortPlayers from "@/hooks/useSortPlayers";
 
 type PlayersListProps = {

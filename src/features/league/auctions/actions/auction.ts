@@ -1,0 +1,240 @@
+"use server";
+
+import { getUUIdSchema, validateSchema } from "@/schema/helpers";
+import {
+  AuctionSchema,
+  createAuctionSchema,
+  CreateAuctionSchema,
+  updateAuctionSchema,
+  UpdateAuctionSchema,
+  updateAuctionStatusSchema,
+  UpdateAuctionStatusSchema,
+} from "../schema/auctionSettings";
+import {
+  canCreateAuction,
+  canDeleteAuction,
+  canUpdateAuction,
+  canUpdateAuctionStatus,
+} from "../permissions/auction";
+import { createSuccess } from "@/utils/helpers";
+import { db } from "@/drizzle/db";
+import {
+  insertAuction,
+  updateAuction as updateAuctionDB,
+  deleteAuction as deleteAuctionDB,
+} from "../db/auction";
+import {
+  insertAuctionSettings,
+  updateAuctionSettings,
+} from "../db/auctionSettings";
+import { redirect } from "next/navigation";
+import { updateLeagueSettings } from "../../settings/db/setting";
+import { getLeagueVisibility } from "../../leagues/queries/league";
+import { updateLeagueTeams } from "../../teams/db/leagueTeam";
+import {
+  addTeamsCredits,
+  subtractTeamsCredits,
+} from "../../admin/handle-credits/db/handle-credits";
+import { getGeneralSettings } from "../../settings/queries/setting";
+import { getParticipantsWithAcquisitions } from "../queries/auctionParticipant";
+import {
+  deleteTeamsPlayers,
+  insertTeamsPlayers,
+} from "../../teamsPlayers/db/teamsPlayer";
+
+enum AUCTION_MESSAGES {
+  AUCTION_CREATED_SUCCESFULLY = "Asta creata con successo",
+  AUCTION_UPDATED_SUCCESFULLY = "Asta aggiornata con successo",
+  AUCTION_STATUS_UPDATED_SUCCESFULLY = "Stato dell'asta aggiornato con successo",
+  AUCTION_DELETED_SUCCESFULLY = "Asta eliminata con successo",
+}
+
+export async function createAuction(values: AuctionSchema) {
+  const { isValid, data, error } = validateSchema<CreateAuctionSchema>(
+    createAuctionSchema,
+    values
+  );
+  if (!isValid) return error;
+
+  const permissions = await canCreateAuction(data);
+  if (permissions.error) return permissions;
+
+  const { userTeamId, splitId, leagueTeams } = permissions.data;
+
+  await db.transaction(async (tx) => {
+    const auctionId = await insertAuction(
+      { ...data, createdBy: userTeamId, splitId },
+      tx
+    );
+    await insertAuctionSettings({ auctionId, ...data }, tx);
+
+    const teamsIds = leagueTeams.map((team) => team.id);
+
+    if (data.type === "classic") {
+      await createClassicAuction(data, teamsIds, tx);
+    }
+    if (data.type === "repair" && data.creditsToAdd) {
+      await createRepairAuction(data, teamsIds, tx);
+    }
+  });
+
+  return createSuccess(AUCTION_MESSAGES.AUCTION_CREATED_SUCCESFULLY, null);
+}
+
+export async function updateAuction(auctionId: string, values: AuctionSchema) {
+  const { isValid, data, error } = validateSchema<UpdateAuctionSchema>(
+    updateAuctionSchema,
+    { id: auctionId, ...values }
+  );
+  if (!isValid) return error;
+
+  const permissions = await canUpdateAuction(data);
+  if (permissions.error) return permissions;
+
+  const {
+    auction: { leagueId },
+  } = permissions.data;
+  const { id, type, ...updatedAuction } = data;
+
+  await db.transaction(async (tx) => {
+    await updateAuctionDB(id, updatedAuction, tx);
+    await updateAuctionSettings(id, updatedAuction, tx);
+
+    if (type === "classic") {
+      const visibility = await getLeagueVisibility(leagueId);
+      await updateLeagueSettings(
+        { playersPerRole: data.playersPerRole, leagueId },
+        visibility,
+        tx
+      );
+    }
+  });
+
+  redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
+}
+
+export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
+  const { isValid, data, error } = validateSchema<UpdateAuctionStatusSchema>(
+    updateAuctionStatusSchema,
+    values
+  );
+  if (!isValid) return error;
+
+  const permissions = await canUpdateAuctionStatus(data);
+  if (permissions.error) return permissions;
+
+  const { status } = data;
+  const { auction } = permissions.data;
+
+  const timestampts: { startedAt: Date | null; endedAt: Date | null } = {
+    startedAt: status === "active" ? new Date() : auction.startedAt,
+    endedAt: status === "ended" ? new Date() : auction.endedAt,
+  };
+
+  await db.transaction(async (tx) => {
+    await updateAuctionDB(auction.id, { status, ...timestampts }, tx);
+
+    if (status === "ended") await importTeamsPlayers(auction, tx);
+  });
+
+  return createSuccess(
+    AUCTION_MESSAGES.AUCTION_STATUS_UPDATED_SUCCESFULLY,
+    null
+  );
+}
+
+export async function deleteAuction(auctionId: string) {
+  const {
+    isValid,
+    data: id,
+    error,
+  } = validateSchema<string>(getUUIdSchema(), auctionId);
+  if (!isValid) return error;
+
+  const permissions = await canDeleteAuction(id);
+  if (permissions.error) return permissions;
+
+  await deleteAuctionDB(id);
+
+  return createSuccess(AUCTION_MESSAGES.AUCTION_DELETED_SUCCESFULLY, null);
+}
+
+async function createClassicAuction(
+  data: Extract<CreateAuctionSchema, { type: "classic" }>,
+  teamsIds: string[],
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const visibility = await getLeagueVisibility(data.leagueId);
+  await updateLeagueSettings(data, visibility, tx);
+
+  await updateLeagueTeams(
+    teamsIds,
+    data.leagueId,
+    {
+      credits: data.initialCredits,
+    },
+    tx
+  );
+}
+
+async function createRepairAuction(
+  data: Extract<CreateAuctionSchema, { type: "repair" }>,
+  teamsIds: string[],
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const { initialCredits } = await getGeneralSettings(data.leagueId);
+
+  await addTeamsCredits(
+    teamsIds,
+    data.leagueId,
+    data.creditsToAdd,
+    initialCredits,
+    tx
+  );
+}
+
+async function importTeamsPlayers(
+  auction: { id: string; leagueId: string },
+  tx: Omit<typeof db, "$client"> = db
+) {
+  const auctionParticipants = await getParticipantsWithAcquisitions(auction.id);
+
+  const validParticipants = auctionParticipants.filter((p) => p.team?.id);
+  if (!validParticipants.length) return;
+
+  const teamsIds = validParticipants.map((p) => p.team!.id);
+  await deleteTeamsPlayers(auction.leagueId, { membersTeamsIds: teamsIds }, tx);
+
+  const newTeamsPlayers = validParticipants.flatMap((p) =>
+    p.acquisitions.map((a) => ({
+      playerId: a.player.id,
+      purchaseCost: a.price,
+      memberTeamId: p.team!.id,
+    }))
+  );
+  if (!newTeamsPlayers.length) return;
+
+  const teamsSpentCredits = getTeamsCreditsSpent(newTeamsPlayers);
+
+  await insertTeamsPlayers(auction.leagueId, newTeamsPlayers, tx);
+  await subtractTeamsCredits(auction.leagueId, teamsSpentCredits, tx);
+}
+
+function getTeamsCreditsSpent(
+  teamsPlayers: { purchaseCost: number; memberTeamId: string }[]
+) {
+  const creditsByTeam = new Map<string, number>();
+
+  for (const player of teamsPlayers) {
+    const currentCredits = creditsByTeam.get(player.memberTeamId) || 0;
+    creditsByTeam.set(
+      player.memberTeamId,
+      currentCredits + player.purchaseCost
+    );
+  }
+
+  return Array.from(creditsByTeam, ([teamId, credits]) => ({
+    teamId,
+    credits,
+  }));
+}

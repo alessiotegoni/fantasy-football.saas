@@ -13,11 +13,11 @@ import {
   getPlayersRoles,
   PlayerRole,
   TeamPlayer,
-} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+} from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { useFilter } from "@/hooks/useFilter";
-import PlayersListSearchBar from "@/features/(league)/teamsPlayers/components/PlayersListSearchBar";
+import PlayersListSearchBar from "@/features/league/teamsPlayers/components/PlayersListSearchBar";
 import TeamsFilters from "@/features/dashboard/admin/teams/components/TeamsFilters";
-import PlayersRolesFilters from "@/features/(league)/teamsPlayers/components/PlayersRolesFilters";
+import PlayersRolesFilters from "@/features/league/teamsPlayers/components/PlayersRolesFilters";
 
 type Filters = {
   search: string;

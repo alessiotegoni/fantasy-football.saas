@@ -1,7 +1,7 @@
 import BackButton from "@/components/BackButton";
 import { MagicWand } from "iconoir-react";
-import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
-import CreateLeagueForm from "@/features/(league)/leagues/components/forms/CreateLeagueForm";
+import { default as LeagueHeader } from "@/features/league/leagues/components/Header";
+import CreateLeagueForm from "@/features/league/leagues/components/forms/CreateLeagueForm";
 import { getUser } from "@/features/dashboard/user/utils/user";
 import { Suspense } from "react";
 

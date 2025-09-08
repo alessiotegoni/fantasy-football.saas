@@ -1,12 +1,12 @@
 import MyLineupProvider from "@/contexts/MyLineupProvider";
-import MatchWrapper from "@/features/(league)/matches/components/MatchWrapper";
+import MatchWrapper from "@/features/league/matches/components/MatchWrapper";
 import {
   getLineupsPlayers,
   getMatchInfo,
   MatchInfo,
-} from "@/features/(league)/matches/queries/match";
-import { getMyTeam } from "@/features/(league)/matches/utils/match";
-import { enrichLineupPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
+} from "@/features/league/matches/queries/match";
+import { getMyTeam } from "@/features/league/matches/utils/match";
+import { enrichLineupPlayers } from "@/features/league/matches/utils/LineupPlayers";
 import { getPlayersMatchdayBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { getCurrentMatchday } from "@/features/splits/queries/split";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";

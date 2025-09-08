@@ -2,15 +2,15 @@
 
 import { useContext, useMemo } from "react";
 import { MyLineupContext } from "@/contexts/MyLineupProvider";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import useSortPlayers from "./useSortPlayers";
-import { LineupPlayer } from "@/features/(league)/matches/queries/match";
+import { LineupPlayer } from "@/features/league/matches/queries/match";
 import {
   formatTeamPlayer,
   getPositionOrder,
-} from "@/features/(league)/matches/utils/LineupPlayers";
+} from "@/features/league/matches/utils/LineupPlayers";
 import { PositionId } from "@/drizzle/schema";
-import { reorderBench } from "@/features/(league)/matches/utils/Lineup";
+import { reorderBench } from "@/features/league/matches/utils/Lineup";
 import { arrayMove } from "@dnd-kit/sortable";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {

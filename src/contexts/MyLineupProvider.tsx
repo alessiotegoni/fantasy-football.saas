@@ -1,10 +1,10 @@
 "use client";
 
 import { LineupPlayerType, PositionId, TacticalModule } from "@/drizzle/schema";
-import { LineupPlayer } from "@/features/(league)/matches/queries/match";
-import { tacticalModuleSchema } from "@/features/(league)/matches/schema/matchTacticalModule";
-import { groupLineupsPlayers } from "@/features/(league)/matches/utils/LineupPlayers";
-import { LineupTeam, MyTeam } from "@/features/(league)/matches/utils/match";
+import { LineupPlayer } from "@/features/league/matches/queries/match";
+import { tacticalModuleSchema } from "@/features/league/matches/schema/matchTacticalModule";
+import { groupLineupsPlayers } from "@/features/league/matches/utils/LineupPlayers";
+import { LineupTeam, MyTeam } from "@/features/league/matches/utils/match";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import {
   createContext,

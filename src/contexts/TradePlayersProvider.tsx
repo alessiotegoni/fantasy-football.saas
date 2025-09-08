@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useMemo } from "react";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import useSortPlayers from "@/hooks/useSortPlayers";
 
 interface TradePlayersContextType {

@@ -1,9 +1,12 @@
 import Container from "@/components/Container";
 import Disclaimer from "@/components/Disclaimer";
 import { PlayersPerRole } from "@/drizzle/schema";
-import AuctionForm from "@/features/(league)/auctions/components/AuctionForm";
-import { getGeneralSettings, getLeaguePlayersPerRole } from "@/features/(league)/settings/queries/setting";
-import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import AuctionForm from "@/features/league/auctions/components/AuctionForm";
+import {
+  getGeneralSettings,
+  getLeaguePlayersPerRole,
+} from "@/features/league/settings/queries/setting";
+import { getRolesWithoutPresident } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { getLiveSplit } from "@/features/splits/queries/split";
 import { Suspense } from "react";
 

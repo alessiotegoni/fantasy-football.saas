@@ -8,24 +8,24 @@ import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { NavArrowRight } from "iconoir-react";
-import ReleasePlayerDialog from "@/features/(league)/teamsPlayers/components/ReleasePlayerDialog";
+import ReleasePlayerDialog from "@/features/league/teamsPlayers/components/ReleasePlayerDialog";
 import {
   getPlayersRoles,
   getTeamPlayerPerRoles,
   getTeamsPlayers,
   PlayerRole,
-} from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+} from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { cn } from "@/lib/utils";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
-import LeagueTeamCard from "@/features/(league)/teams/components/LeagueTeamCard";
+import LeagueTeamCard from "@/features/league/teams/components/LeagueTeamCard";
 import {
   getLeagueTeam,
   getLeagueTeams,
-} from "@/features/(league)/teams/queries/leagueTeam";
+} from "@/features/league/teams/queries/leagueTeam";
 import Container from "@/components/Container";
 import { getTeams, Team } from "@/features/dashboard/admin/teams/queries/team";
-import PlayerSelection from "@/features/(league)/teamsPlayers/components/PlayerSelection";
-import { getLeaguePlayersPerRole } from "@/features/(league)/settings/queries/setting";
+import PlayerSelection from "@/features/league/teamsPlayers/components/PlayerSelection";
+import { getLeaguePlayersPerRole } from "@/features/league/settings/queries/setting";
 
 export default async function LeagueTeamPage({
   params,

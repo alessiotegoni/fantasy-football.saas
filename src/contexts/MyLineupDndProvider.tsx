@@ -1,7 +1,7 @@
 "use client";
 import { LineupPlayerType, PositionId } from "@/drizzle/schema";
-import { LineupPlayer } from "@/features/(league)/matches/queries/match";
-import { getPositionOrder } from "@/features/(league)/matches/utils/LineupPlayers";
+import { LineupPlayer } from "@/features/league/matches/queries/match";
+import { getPositionOrder } from "@/features/league/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
 import {
   Collision,
@@ -11,7 +11,7 @@ import {
   DragStartEvent,
 } from "@dnd-kit/core";
 import { useState } from "react";
-import LineupPlayerCard from "@/features/(league)/matches/components/LineupPlayerCard";
+import LineupPlayerCard from "@/features/league/matches/components/LineupPlayerCard";
 
 export default function MyLineupDndProvider({
   children,

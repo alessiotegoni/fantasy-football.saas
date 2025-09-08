@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
-import TradesList from "@/features/(league)/trades/components/TradesList";
-import { getLeagueTrades } from "@/features/(league)/trades/queries/trade";
+import TradesList from "@/features/league/trades/components/TradesList";
+import { getLeagueTrades } from "@/features/league/trades/queries/trade";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { Suspense } from "react";

@@ -1,12 +1,12 @@
-import TradesList from "@/features/(league)/trades/components/TradesList";
+import TradesList from "@/features/league/trades/components/TradesList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Suspense } from "react";
 import Container from "@/components/Container";
-import TradeProposalButton from "@/features/(league)/trades/components/TradeProposalButton";
+import TradeProposalButton from "@/features/league/trades/components/TradeProposalButton";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { redirect } from "next/navigation";
-import { getUserTrades } from "@/features/(league)/trades/queries/trade";
+import { getUserTrades } from "@/features/league/trades/queries/trade";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 
 export default async function MyTradesPage({

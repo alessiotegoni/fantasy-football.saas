@@ -2,10 +2,10 @@ import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
-import CalculateMatchdayBanner from "@/features/(league)/(admin)/calculate-matchday/components/CalculateMatchdayBanner";
-import CalculationsList from "@/features/(league)/(admin)/calculate-matchday/components/CalculationsList";
-import { getCalculations } from "@/features/(league)/(admin)/calculate-matchday/queries/calculate-matchday";
-import { hasGeneratedCalendar } from "@/features/(league)/(admin)/calendar/regular/permissions/calendar";
+import CalculateMatchdayBanner from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
+import CalculationsList from "@/features/league/admin/calculate-matchday/components/CalculationsList";
+import { getCalculations } from "@/features/league/admin/calculate-matchday/queries/calculate-matchday";
+import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import {
   getLastEndedMatchday,
   getLiveSplit,

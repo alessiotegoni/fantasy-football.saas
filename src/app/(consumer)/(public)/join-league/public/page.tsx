@@ -1,4 +1,4 @@
-import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
+import { default as LeagueHeader } from "@/features/league/leagues/components/Header";
 import Logo from "@/components/ui/logo";
 import Disclaimer from "@/components/Disclaimer";
 import BackButton from "@/components/BackButton";
@@ -7,8 +7,8 @@ import { getLeagueGlobalTag } from "@/cache/global";
 import { db } from "@/drizzle/db";
 import { leagueMembers, leagueSettings, leagues } from "@/drizzle/schema";
 import { count, eq, sql } from "drizzle-orm";
-import { VirtualizedLeaguesList } from "@/features/(league)/leagues/components/VirtualizedLeagueList";
-import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/leagueMember";
+import { VirtualizedLeaguesList } from "@/features/league/leagues/components/VirtualizedLeagueList";
+import { getLeagueMembersTag } from "@/features/league/members/db/cache/leagueMember";
 
 export default async function PublicLeaguesPage() {
   const publicLeagues = await getPublicLeagues();

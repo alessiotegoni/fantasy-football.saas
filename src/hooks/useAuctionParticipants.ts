@@ -1,7 +1,7 @@
 "use client";
 
-import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { AuctionWithSettings } from "@/features/league/auctions/queries/auction";
+import { AuctionParticipant } from "@/features/league/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";

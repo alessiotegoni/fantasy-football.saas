@@ -1,5 +1,5 @@
-import { GeneralSettingsForm } from "@/features/(league)/settings/components/forms/GeneralSettingsForm";
-import { getGeneralSettings } from "@/features/(league)/settings/queries/setting";
+import { GeneralSettingsForm } from "@/features/league/settings/components/forms/GeneralSettingsForm";
+import { getGeneralSettings } from "@/features/league/settings/queries/setting";
 
 export default async function LeagueGeneralSettingsPage({
   params,

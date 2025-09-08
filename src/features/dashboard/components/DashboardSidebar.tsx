@@ -27,7 +27,7 @@ import {
   Star,
 } from "iconoir-react";
 import DashboardSidebarItem from "./DashboardSidebarItem";
-import { SidebarLink } from "@/features/(league)/leagues/components/LeagueSidebar";
+import { SidebarLink } from "@/features/league/leagues/components/LeagueSidebar";
 import { cn } from "@/lib/utils";
 import UserDropdown from "../user/components/userDropdown";
 import { Role } from "../user/utils/roles";

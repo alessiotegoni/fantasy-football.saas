@@ -7,14 +7,14 @@ import {
   GeneralSettingsSchema,
   MarketSettingsSchema,
   RosterModulesSchema,
-} from "@/features/(league)/settings/schema/setting";
+} from "@/features/league/settings/schema/setting";
 import {
   updateCalculationSettings,
   updateBonusMalusSettings,
   updateGeneralSettings,
   updateMarketSettings,
   updateRosterModuleSettings,
-} from "@/features/(league)/settings/actions/setting";
+} from "@/features/league/settings/actions/setting";
 import useActionToast from "./useActionToast";
 
 export function useLeagueSettings(leagueId: string) {

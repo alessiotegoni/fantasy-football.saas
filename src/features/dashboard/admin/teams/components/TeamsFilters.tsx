@@ -9,7 +9,7 @@ import { useCallback } from "react";
 import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 
 export default function TeamsFilters() {
   const { teams, filters, handleSetFilters } = usePlayersFilters();

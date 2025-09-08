@@ -1,4 +1,4 @@
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
+import { AuctionParticipant } from "@/features/league/auctions/queries/auctionParticipant";
 import { useState, useCallback } from "react";
 
 export default function useAuctionPlayerAssign() {

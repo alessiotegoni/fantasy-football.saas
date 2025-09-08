@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Group, Trophy } from "iconoir-react";
 import Logo from "@/components/ui/logo";
-import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
+import { default as LeagueHeader } from "@/features/league/leagues/components/Header";
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 import Disclaimer from "@/components/Disclaimer";

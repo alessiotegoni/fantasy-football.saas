@@ -1,9 +1,9 @@
 "use client";
 
-import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
-import { TeamPlayer } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { AuctionWithSettings } from "@/features/league/auctions/queries/auction";
+import { CurrentNomination } from "@/features/league/auctions/queries/auctionNomination";
+import { AuctionParticipant } from "@/features/league/auctions/queries/auctionParticipant";
+import { TeamPlayer } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useMemo, useRef, useState } from "react";

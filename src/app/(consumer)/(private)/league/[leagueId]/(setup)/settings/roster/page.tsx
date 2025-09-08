@@ -1,6 +1,6 @@
-import { RosterSettingsForm } from "@/features/(league)/settings/components/forms/RosterSettingsForm";
-import { getRosterSettings } from "@/features/(league)/settings/queries/setting";
-import { getRolesWithoutPresident } from "@/features/(league)/teamsPlayers/queries/teamsPlayer";
+import { RosterSettingsForm } from "@/features/league/settings/components/forms/RosterSettingsForm";
+import { getRosterSettings } from "@/features/league/settings/queries/setting";
+import { getRolesWithoutPresident } from "@/features/league/teamsPlayers/queries/teamsPlayer";
 import { getTacticalModules } from "@/features/dashboard/admin/tacticalModules/queries/tacticalModule";
 
 export default async function LeagueRosterSettingsPage({

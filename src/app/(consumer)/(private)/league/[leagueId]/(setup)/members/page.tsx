@@ -1,13 +1,13 @@
 import { Suspense } from "react";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import Container from "@/components/Container";
-import { isLeagueAdmin } from "@/features/(league)/members/permissions/leagueMember";
+import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
 import {
   getLeagueMembers,
   LeagueMember,
-} from "@/features/(league)/members/queries/leagueMember";
-import { getLeague } from "@/features/(league)/leagues/queries/league";
-import MembersWrapper from "@/features/(league)/members/components/MembersWrapper";
+} from "@/features/league/members/queries/leagueMember";
+import { getLeague } from "@/features/league/leagues/queries/league";
+import MembersWrapper from "@/features/league/members/components/MembersWrapper";
 
 export default async function LeagueMembersPage({
   params,

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@/services/supabase/client/supabase";
-import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
-import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { CurrentBid } from "@/features/league/auctions/queries/auctionBid";
+import { CurrentNomination } from "@/features/league/auctions/queries/auctionNomination";
 import { RealtimeChannel } from "@supabase/supabase-js";
-import { AuctionParticipant } from "@/features/(league)/auctions/queries/auctionParticipant";
-import { validateBidCredits } from "@/features/(league)/auctions/utils/auctionBid";
-import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
-import { calculateRemainingSlots } from "@/features/(league)/auctions/utils/auctionParticipant";
-import { ParticipantAcquisition } from "@/features/(league)/auctions/queries/auctionAcquisition";
+import { AuctionParticipant } from "@/features/league/auctions/queries/auctionParticipant";
+import { validateBidCredits } from "@/features/league/auctions/utils/auctionBid";
+import { AuctionWithSettings } from "@/features/league/auctions/queries/auction";
+import { calculateRemainingSlots } from "@/features/league/auctions/utils/auctionParticipant";
+import { ParticipantAcquisition } from "@/features/league/auctions/queries/auctionAcquisition";
 
 type Args = {
   auction: NonNullable<AuctionWithSettings>;

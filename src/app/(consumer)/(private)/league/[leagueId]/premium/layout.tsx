@@ -1,4 +1,4 @@
-import { getLeaguePremium } from "@/features/(league)/leagues/queries/league";
+import { getLeaguePremium } from "@/features/league/leagues/queries/league";
 import { redirect } from "next/navigation";
 
 export default async function PremiumLayout({

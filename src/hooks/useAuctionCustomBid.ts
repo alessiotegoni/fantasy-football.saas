@@ -1,5 +1,5 @@
-import { CurrentBid } from "@/features/(league)/auctions/queries/auctionBid";
-import { CurrentNomination } from "@/features/(league)/auctions/queries/auctionNomination";
+import { CurrentBid } from "@/features/league/auctions/queries/auctionBid";
+import { CurrentNomination } from "@/features/league/auctions/queries/auctionNomination";
 import { useState, useCallback, useEffect } from "react";
 
 type Props = {

@@ -1,6 +1,6 @@
 "use client";
 
-import { AuctionWithSettings } from "@/features/(league)/auctions/queries/auction";
+import { AuctionWithSettings } from "@/features/league/auctions/queries/auction";
 import { createClient } from "@/services/supabase/client/supabase";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useEffect, useRef, useState } from "react";
