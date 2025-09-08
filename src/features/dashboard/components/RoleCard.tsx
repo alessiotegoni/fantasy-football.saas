@@ -1,9 +1,10 @@
 import { Role } from "@/contexts/DashboardRolesProvider";
+import { Href } from "@/utils/helpers";
 import Link from "next/link";
 
 export type RoleInfo = {
   role: Role;
-  href: __next_route_internal_types__.RouteImpl<string>;
+  href: Href;
   icon: React.ElementType;
   title: string;
   description: string;

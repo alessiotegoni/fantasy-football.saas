@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -12,17 +11,12 @@ import {
 import { useDashboardRoles } from "@/contexts/DashboardRolesProvider";
 import { usePathname } from "next/navigation";
 
-type Props = {
-  currentUserId: string;
-};
+export default function DashboardSidebar() {
+  const { user, userRoles } = useDashboardRoles();
 
-export default function DashboardSidebar({ currentUserId }: Props) {
-  const { roles } = useDashboardRoles();
   const pathname = usePathname();
 
   const isActive = (path: string) => pathname === path;
-
-  const isSuperAdmin = currentUserId === process.env.NEXT_PUBLIC_SUPERADMIN_ID;
 
   return (
     <Sidebar>
@@ -41,7 +35,7 @@ export default function DashboardSidebar({ currentUserId }: Props) {
           ))}
         </SidebarGroup>
 
-        {roles.includes(adminGroup.role) && (
+        {userRoles.includes(adminGroup.role) && (
           <SidebarGroup>
             <SidebarGroupLabel>{adminGroup.label}</SidebarGroupLabel>
             {adminGroup.links.map((item) => {
@@ -62,7 +56,7 @@ export default function DashboardSidebar({ currentUserId }: Props) {
           </SidebarGroup>
         )}
 
-        {roles.includes(creatorGroup.role) && (
+        {userRoles.includes(creatorGroup.role) && (
           <SidebarGroup>
             <SidebarGroupLabel>{creatorGroup.label}</SidebarGroupLabel>
             {creatorGroup.links.map((item) => (
@@ -78,7 +72,7 @@ export default function DashboardSidebar({ currentUserId }: Props) {
           </SidebarGroup>
         )}
 
-        {roles.includes(redactionGroup.role) && (
+        {userRoles.includes(redactionGroup.role) && (
           <SidebarGroup>
             <SidebarGroupLabel>{redactionGroup.label}</SidebarGroupLabel>
             {redactionGroup.links.map((item) => (
@@ -99,86 +93,92 @@ export default function DashboardSidebar({ currentUserId }: Props) {
 }
 
 const userGroup = [
+  {
+    label: "Profilo",
+    href: "/dashboard/user/profile",
+  },
+  {
+    label: "Premium",
+    href: "/dashboard/user/premium",
+  },
+];
+
+const superadminGroup = {
+  label: "Superadmin",
+  role: "superadmin",
+  links: [
     {
-      label: "Profilo",
-      href: "/dashboard/user/profile",
+      label: "Admins",
+      href: "/dashboard/admin/admins",
+    },
+    {
+      label: "Content creators",
+      href: "/dashboard/admin/content-creators",
+    },
+    {
+      label: "Redazione",
+      href: "/dashboard/admin/redactions",
     },
     {
       label: "Premium",
-      href: "/dashboard/user/premium",
+      href: "/dashboard/admin/premium",
     },
-  ];
+  ],
+};
 
-  const adminGroup = {
-    label: "Admin",
-    role: "admin",
-    links: [
-      {
-        label: "Splits",
-        href: "/dashboard/admin/splits",
-      },
-      {
-        label: "Squadre",
-        href: "/dashboard/admin/teams",
-      },
-      {
-        label: "Giocatori",
-        href: "/dashboard/admin/players",
-      },
-      {
-        label: "Assegna bonus/malus",
-        href: "/dashboard/admin/bonus",
-      },
-      {
-        label: "Admins",
-        href: "/dashboard/admin/admins",
-        superAdminOnly: true,
-      },
-      {
-        label: "Content creators",
-        href: "/dashboard/admin/content-creators",
-      },
-      {
-        label: "Redazione",
-        href: "/dashboard/admin/redactions",
-      },
-      {
-        label: "Premium",
-        href: "/dashboard/admin/premium",
-      },
-    ],
-  };
+const adminGroup = {
+  label: "Admin",
+  role: "admin",
+  links: [
+    {
+      label: "Splits",
+      href: "/dashboard/admin/splits",
+    },
+    {
+      label: "Squadre",
+      href: "/dashboard/admin/teams",
+    },
+    {
+      label: "Giocatori",
+      href: "/dashboard/admin/players",
+    },
+    {
+      label: "Assegna bonus/malus",
+      href: "/dashboard/admin/bonus",
+    },
+  ],
+};
 
-  const creatorGroup = {
-    label: "Content creators",
-    role: "content-creator",
-    links: [
-      {
-        label: "Codice sconto",
-        href: "/dashboard/creator/discount-code",
-      },
-      {
-        label: "Statistiche varie",
-        href: "/dashboard/creator/stats",
-      },
-    ],
-  };
+const creatorGroup = {
+  label: "Content creators",
+  role: "content-creator",
+  links: [
+    {
+      label: "Codice sconto",
+      href: "/dashboard/creator/discount-code",
+    },
+    {
+      label: "Statistiche varie",
+      href: "/dashboard/creator/stats",
+    },
+  ],
+};
 
-  const redactionGroup = {
-    label: "Redazione",
-    role: "redaction",
-    links: [
-      {
-        label: "Assegna voti",
-        href: "/dashboard/redaction/assign-votes",
-      },
-      {
-        label: "Modifica voti",
-        href: "/dashboard/redaction/edit-votes",
-      },
-      {
-        label: "Statistiche team",
-        href: "/dashboard/redaction/team-stats",
-      },
-    ],
-  };
+const redactionGroup = {
+  label: "Redazione",
+  role: "redaction",
+  links: [
+    {
+      label: "Assegna voti",
+      href: "/dashboard/redaction/assign-votes",
+    },
+    {
+      label: "Modifica voti",
+      href: "/dashboard/redaction/edit-votes",
+    },
+    {
+      label: "Statistiche team",
+      href: "/dashboard/redaction/team-stats",
+    },
+  ],
+};

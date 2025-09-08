@@ -19,6 +19,7 @@ import SubmitButton from "@/components/SubmitButton";
 import useActionToast from "@/hooks/useActionToast";
 import SocialLogin from "./SocialLogin";
 import { useTransition } from "react";
+import { Href } from "@/utils/helpers";
 
 export default function LoginForm() {
   const toast = useActionToast();
@@ -51,7 +52,7 @@ export default function LoginForm() {
 
       if (!res.error) {
         router.push(
-          res.data.url as __next_route_internal_types__.RouteImpl<string>
+          res.data.url as Href
         );
       }
     });

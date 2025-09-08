@@ -31,6 +31,7 @@ import { League } from "../queries/league";
 import { cn } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";
 import { Suspense } from "react";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   user?: User;
@@ -132,9 +133,9 @@ function LeagueSidebarSection({
 
 export type SidebarLink = {
   name: string;
-  href: string;
+  href: Href;
   icon: React.ElementType;
-  basePath?: string;
+  basePath?: Href;
   exact?: boolean;
 };
 

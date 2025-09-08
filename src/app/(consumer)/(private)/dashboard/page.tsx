@@ -7,13 +7,13 @@ import { redirect } from "next/navigation";
 import { RoleCard, RoleInfo } from "@/features/dashboard/components/RoleCard";
 
 export default function DashboardPage() {
-  const { user, roles } = useDashboardRoles();
+  const { user, userRoles } = useDashboardRoles();
 
-  if (roles.length === 1) redirect(`/dashboard/${roles[0]}`);
+  if (userRoles.length === 1) redirect(`/dashboard/${userRoles[0]}`);
 
   const { name } = getMetadataFromUser(user);
 
-  const availableRoles = ROLES_INFO.filter((info) => roles.includes(info.role));
+  const availableRoles = ROLES_INFO.filter((info) => userRoles.includes(info.role));
 
   return (
     <div className="space-y-4">

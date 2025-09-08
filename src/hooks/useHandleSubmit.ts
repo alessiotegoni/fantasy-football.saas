@@ -3,13 +3,14 @@
 import { useTransition, useState } from "react";
 import useActionToast from "./useActionToast";
 import { useParams, useRouter } from "next/navigation";
+import { Href } from "@/utils/helpers";
 
 export default function useHandleSubmit<T>(
   submitFn:
     | ((args: T) => Promise<{ error: boolean; message: string }>)
     | undefined,
   options?: {
-    redirectTo?: __next_route_internal_types__.RouteImpl<string>;
+    redirectTo?: Href;
     isLeaguePrefix?: boolean;
     onSuccess?: () => void;
     onError?: () => void;
@@ -56,7 +57,7 @@ export default function useHandleSubmit<T>(
 
     if (isLeaguePrefix && leagueId) {
       router.push(
-        `/league/${leagueId}${redirectTo}` as __next_route_internal_types__.RouteImpl<string>
+        `/league/${leagueId}${redirectTo}` as Href
       );
       return;
     }

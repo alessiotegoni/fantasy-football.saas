@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { ComponentPropsWithoutRef, useEffect } from "react";
 import { ExternalToast } from "sonner";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { Href } from "@/utils/helpers";
 
 export type ActionButtonProps = ComponentPropsWithoutRef<typeof Button> & {
   action: (() => Promise<{ error: boolean; message: string }>) | undefined;
@@ -28,7 +29,7 @@ export type ActionButtonProps = ComponentPropsWithoutRef<typeof Button> & {
   displayToast?: boolean;
   toastData?: ExternalToast;
   isLeaguePrefix?: boolean;
-  redirectTo?: __next_route_internal_types__.RouteImpl<string>;
+  redirectTo?: Href;
 };
 
 export default function ActionButton({

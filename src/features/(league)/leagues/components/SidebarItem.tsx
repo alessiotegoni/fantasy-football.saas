@@ -4,11 +4,11 @@ import { SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import NavLink from "@/components/NavLink";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SidebarSection } from "./LeagueSidebar";
 import { getItemHref } from "@/utils/helpers";
+import { SidebarSectionConfig } from "./LeagueSidebar";
 
 type Props = {
-  item: SidebarSection["items"][number];
+  item: SidebarSectionConfig["items"][number];
   leagueId: string;
   showLink?: boolean;
 };

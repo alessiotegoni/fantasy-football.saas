@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { Href } from "@/utils/helpers";
 
 type Props = {
-  href: __next_route_internal_types__.RouteImpl<string>;
+  href: Href;
   children: React.ReactNode;
 } & React.ComponentProps<typeof Button>;
 

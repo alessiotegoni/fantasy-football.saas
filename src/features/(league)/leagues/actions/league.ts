@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { db } from "@/drizzle/db";
 import { uploadImage } from "@/services/supabase/storage/supabase";
-import { createError, createSuccess } from "@/utils/helpers";
+import { createError, createSuccess, Href } from "@/utils/helpers";
 import { insertLeague, updateLeague } from "../db/league";
 import { canCreateLeague } from "../permissions/league";
 import {
@@ -131,8 +131,8 @@ async function updateLeagueImage(leagueId: string, file: File) {
 }
 
 function redirectToLeagueSetup(leagueId: string) {
-  const leagueUrl = `/leagues/${leagueId}`;
+  const leagueUrl = `/league/${leagueId}`;
   const redirectUrl =
-    `${leagueUrl}/teams/create?redirectUrl=${leagueUrl}//general` as __next_route_internal_types__.RouteImpl<string>;
+    `${leagueUrl}/teams/create?redirectUrl=${leagueUrl}//general` as Href;
   redirect(redirectUrl);
 }

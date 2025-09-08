@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/useMobile";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getItemHref } from "@/utils/helpers";
+import { getItemHref, Href } from "@/utils/helpers";
 import { League } from "../queries/league";
 import { ElementType } from "react";
 
@@ -73,7 +73,7 @@ export function LeagueNav({ league }: { league: League }) {
 
 type NavItem = {
   name: string;
-  href: __next_route_internal_types__.RouteImpl<string>;
+  href: Href
   icon: ElementType
 }
 

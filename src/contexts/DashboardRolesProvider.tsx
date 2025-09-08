@@ -3,11 +3,12 @@
 import { User } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
 
-export type Role = "admin" | "content-creator" | "redaction";
+export const roles = ["superadmin", "admin", "content-creator", "redaction"] as const
+export type Role = (typeof roles)[number];
 
 type DashboardRolesContextType = {
   user: User
-  roles: Role[];
+  userRoles: Role[];
 };
 
 const DashboardRolesContext = createContext<DashboardRolesContextType | null>(
@@ -17,7 +18,7 @@ const DashboardRolesContext = createContext<DashboardRolesContextType | null>(
 type Props = {
   children: React.ReactNode;
   user: User
-  roles: Role[];
+  userRoles: Role[];
 };
 
 export default function DashboardRolesProvider({ children, ...props }: Props) {
