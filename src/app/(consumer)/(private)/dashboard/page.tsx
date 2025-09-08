@@ -13,13 +13,18 @@ export default function DashboardPage() {
 
   const { name } = getMetadataFromUser(user);
 
-  const availableRoles = ROLES_INFO.filter((info) => userRoles.includes(info.role));
+  const availableRoles = ROLES_INFO.filter((info) =>
+    userRoles.includes(info.role)
+  );
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-bold">
-        {name} Benvenuto nella tua area privata 👋
-      </h1>
+    <div className="h-full lg:text-center flex flex-col gap-5 lg:justify-center items-center max-w-3xl mx-auto">
+      <div>
+        <h1 className="text-3xl font-bold mb-2">{name}</h1>
+        <h2 className="text-2xl font-bold">
+          Benvenuto nella tua area privata 👋
+        </h2>
+      </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {availableRoles.map((roleInfo) => (
           <RoleCard key={roleInfo.href} {...roleInfo} />
@@ -35,20 +40,20 @@ const ROLES_INFO: RoleInfo[] = [
     href: "/dashboard/admin",
     icon: Shield,
     title: "Admin",
-    description: "Manage the application settings and users.",
+    description: "Gestisci squadre, giocatori ed assegna bonus/malus",
   },
   {
     role: "content-creator",
     href: "/dashboard/content-creator",
     icon: Palette,
     title: "Content Creator",
-    description: "Create and manage the content of the application.",
+    description: "Crea contenuti e vedi statistiche",
   },
   {
     role: "redaction",
     href: "/dashboard/redaction",
     icon: PenSquare,
-    title: "Redaction",
-    description: "Write and publish articles and news.",
+    title: "Redazione",
+    description: "Assegna e modifica voti ai giocatori",
   },
 ];

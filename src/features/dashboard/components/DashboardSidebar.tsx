@@ -11,7 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { Role, useDashboardRoles } from "@/contexts/DashboardRolesProvider";
+import { useDashboardRoles } from "@/contexts/DashboardRolesProvider";
 import {
   User,
   Check,
@@ -30,6 +30,7 @@ import DashboardSidebarItem from "./DashboardSidebarItem";
 import { SidebarLink } from "@/features/(league)/leagues/components/LeagueSidebar";
 import { cn } from "@/lib/utils";
 import UserDropdown from "../user/components/userDropdown";
+import { Role } from "../user/utils/roles";
 
 export default function DashboardSidebar() {
   const { user, userRoles } = useDashboardRoles();

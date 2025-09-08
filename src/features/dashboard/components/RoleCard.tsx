@@ -1,6 +1,6 @@
-import { Role } from "@/contexts/DashboardRolesProvider";
 import { Href } from "@/utils/helpers";
 import Link from "next/link";
+import { Role } from "../user/utils/roles";
 
 export type RoleInfo = {
   role: Role;
@@ -18,10 +18,10 @@ export function RoleCard({
 }: Omit<RoleInfo, "role">) {
   return (
     <Link href={href}>
-      <div className="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
-        <Icon className="size-7 mb-2" />
+      <div className="h-28 lg:h-fit rounded-3xl flex gap-4 lg:gap-0 text-left lg:text-center lg:flex-col items-center border bg-card text-card-foreground shadow-sm p-6">
+        <Icon className="shrink-0 size-7 xs:size-9 lg:size-7 mb-3" />
         <div>
-        <h3 className="text-2xl font-semibold leading-none tracking-tight">
+        <h3 className="text-lg xs:text-2xl font-semibold leading-none tracking-tight">
           {title}
         </h3>
         <p className="text-sm text-muted-foreground mt-1">{description}</p>
