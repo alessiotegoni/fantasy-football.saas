@@ -1,10 +1,12 @@
-import Link from "next/link";
-import { Globe, Lock } from "iconoir-react";
 import Logo from "@/components/ui/logo";
 import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
 import BackButton from "@/components/BackButton";
 import Disclaimer from "@/components/Disclaimer";
 import JoinLeagueLinks from "@/features/(league)/leagues/components/JoinLeagueLinks";
+import { getUser } from "@/features/users/utils/user";
+import { Suspense } from "react";
+
+export const experimental_ppr = true;
 
 export default function JoinLeaguePage() {
   return (
@@ -24,7 +26,9 @@ export default function JoinLeaguePage() {
 
       <main>
         <div className="flex-1 flex flex-col items-center">
-          <JoinLeagueLinks />
+          <Suspense fallback={<JoinLeagueLinks />}>
+            <SuspenseBoundary />
+          </Suspense>
         </div>
       </main>
 
@@ -33,4 +37,9 @@ export default function JoinLeaguePage() {
       </footer>
     </>
   );
+}
+
+async function SuspenseBoundary() {
+  const user = await getUser();
+  return <JoinLeagueLinks isAuthenticated={!!user} />;
 }

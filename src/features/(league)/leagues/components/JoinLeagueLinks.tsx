@@ -2,19 +2,21 @@
 
 import Link from "next/link";
 import { Globe, Lock } from "iconoir-react";
-import { useUser } from "@/hooks/useUser";
 import { useRouter } from "next/navigation";
 
-export default function JoinLeagueLinks() {
-  const { user } = useUser();
+export default function JoinLeagueLinks({
+  isAuthenticated = false,
+}: {
+  isAuthenticated?: boolean;
+}) {
   const router = useRouter();
 
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!user) {
+  function handleLinkClick(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (!isAuthenticated) {
       e.preventDefault();
-      router.push("/login");
+      router.push("/auth/login");
     }
-  };
+  }
 
   return (
     <div className="grid gap-6 md:grid-cols-2 mx-auto max-w-[900px] px-6">
@@ -30,9 +32,8 @@ export default function JoinLeagueLinks() {
           Unisciti a una Lega Pubblica
         </span>
         <p className="text-sm text-muted-foreground">
-          Esplora le leghe pubbliche disponibili e trova quella perfetta per
-          te. Unisciti a giocatori da tutto il mondo e inizia subito a
-          competere.
+          Esplora le leghe pubbliche disponibili e trova quella perfetta per te.
+          Unisciti a giocatori da tutto il mondo e inizia subito a competere.
         </p>
       </Link>
 
