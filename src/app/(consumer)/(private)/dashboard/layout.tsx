@@ -7,10 +7,12 @@ import {
   isAdmin,
   isContentCreator,
   isRedaction,
+  isSuperadmin,
   Role,
   roles,
 } from "@/features/dashboard/user/utils/roles";
 import DashboardRolesProvider from "@/contexts/DashboardRolesProvider";
+import { Topbar } from "@/features/(league)/leagues/components/TopBar";
 
 export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   const user = await getUser();
@@ -30,14 +32,16 @@ export default async function DashboardLayout({ children }: LayoutProps<"/">) {
   if (contentCreator) userRoles.push("content-creator");
   if (redaction) userRoles.push("redaction");
 
-  const isSuperadmin = process.env.SUPERADMIN_ID === user.id;
-  if (isSuperadmin) userRoles = roles.slice();
+  if (isSuperadmin(user.id)) userRoles = roles.slice();
 
   return (
     <DashboardRolesProvider user={user} userRoles={userRoles}>
       <SidebarProvider className="flex">
         <DashboardSidebar />
-        <main className="flex-1 p-8">{children}</main>
+        <Topbar user={user} />
+        <main className="w-full pt-[calc(60px+20px)] pb-[calc(73px+20px)] p-3 lg:pt-2">
+          {children}
+        </main>
       </SidebarProvider>
     </DashboardRolesProvider>
   );

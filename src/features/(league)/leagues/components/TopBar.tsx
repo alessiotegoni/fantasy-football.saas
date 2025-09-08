@@ -1,9 +1,13 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import UserDropdown from "@/features/dashboard/user/components/userDropdown";
-import { League } from "../queries/league";
 import { User } from "@supabase/supabase-js";
 
-export function Topbar({ league, user }: { league: League; user?: User }) {
+type Props = {
+  league?: { name: string };
+  user?: User;
+};
+
+export function Topbar({ league, user }: Props) {
   return (
     <header
       className="bg-gradient-to-r from-primary to-secondary w-full
@@ -12,7 +16,7 @@ export function Topbar({ league, user }: { league: League; user?: User }) {
     >
       <div className="flex items-center gap-3">
         <SidebarTrigger />
-        <h2 className="font-heading text-lg">{league.name}</h2>
+        {league && <h2 className="font-heading text-lg">{league.name}</h2>}
       </div>
       <UserDropdown variant="topbar" user={user} />
     </header>

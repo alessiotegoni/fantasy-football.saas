@@ -7,7 +7,9 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
+  SidebarMenuButton,
 } from "@/components/ui/sidebar";
 import { Role, useDashboardRoles } from "@/contexts/DashboardRolesProvider";
 import {
@@ -33,15 +35,23 @@ export default function DashboardSidebar() {
   const { user, userRoles } = useDashboardRoles();
 
   const sidebarSections = [
-    users,
     ...(userRoles.includes("superadmin") ? [superadminGroup] : []),
     ...(userRoles.includes("admin") ? [adminGroup] : []),
     ...(userRoles.includes("content-creator") ? [creatorGroup] : []),
     ...(userRoles.includes("redaction") ? [redactionGroup] : []),
+    users,
   ];
 
   return (
     <Sidebar>
+      <SidebarHeader className="p-0">
+        <SidebarMenuButton
+          className="min-w-52 bg-gradient-to-r from-primary to-secondary text-primary-foreground p-4
+              rounded-none rounded-br-xl rounded-bl-xl hover:text-white flex justify-between items-center"
+        >
+          <h2 className="font-heading text-lg">Dashboard</h2>
+        </SidebarMenuButton>
+      </SidebarHeader>
       <SidebarContent className="custom-scrollbar">
         {sidebarSections.map((section) => (
           <SidebarGroup key={section.title} className="p-3">

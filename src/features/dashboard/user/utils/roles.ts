@@ -22,7 +22,9 @@ export async function handleDashboardRoute(
   const role = pathname.split("/")[2];
 
   if (user) {
-    if (pathname === "/dashboard" || role === "user") return null;
+    if (pathname === "/dashboard" || role === "user" || isSuperadmin(user.id)) {
+      return null;
+    }
 
     const checkRole = roleChecks[role];
 
@@ -74,5 +76,14 @@ export async function isRedaction(
   return !!data;
 }
 
-export const roles = ["superadmin", "admin", "content-creator", "redaction"] as const
+export function isSuperadmin(userId: string) {
+  return process.env.SUPERADMIN_ID === userId;
+}
+
+export const roles = [
+  "superadmin",
+  "admin",
+  "content-creator",
+  "redaction",
+] as const;
 export type Role = (typeof roles)[number];
