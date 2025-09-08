@@ -18,7 +18,7 @@ export function RoleCard({
 }: Omit<RoleInfo, "role">) {
   return (
     <Link href={href}>
-      <div className="h-28 lg:h-fit rounded-3xl flex gap-4 lg:gap-0 text-left lg:text-center lg:flex-col items-center border bg-card text-card-foreground shadow-sm p-6">
+      <div className="h-28 lg:h-full rounded-3xl flex gap-4 lg:gap-0 text-left lg:text-center lg:flex-col justify-center items-center border bg-card text-card-foreground shadow-sm p-6">
         <Icon className="shrink-0 size-7 xs:size-9 lg:size-7 mb-3" />
         <div>
         <h3 className="text-lg xs:text-2xl font-semibold leading-none tracking-tight">

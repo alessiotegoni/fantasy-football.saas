@@ -15,6 +15,8 @@ export default function DashboardPage() {
   const availableRoles = ROLES_INFO.filter((info) =>
     userRoles.includes(info.role)
   );
+  
+  if (!availableRoles.length) redirect("/dashboard/user/profile");
 
   return (
     <div className="h-full sm:text-center flex flex-col gap-5 lg:justify-center items-center max-w-3xl mx-auto">
