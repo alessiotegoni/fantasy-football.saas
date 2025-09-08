@@ -50,13 +50,13 @@ export default function LeagueDropdown({
 
             <DropdownMenuLabel>Gestione leghe</DropdownMenuLabel>
             <DropdownMenuItem asChild className="justify-between group">
-              <Link href="/leagues/create">
+              <Link href="/create-league">
                 Crea una lega
                 <NavArrowRight className="group-hover:text-white" />
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild className="justify-between group">
-              <Link href="/leagues/join">
+              <Link href="/join-league">
                 Entra in una lega
                 <NavArrowRight className="group-hover:text-white" />
               </Link>
