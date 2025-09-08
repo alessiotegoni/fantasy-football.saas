@@ -16,9 +16,15 @@ import LeagueNameField from "../../../../../components/NameField";
 import LeagueDescriptionField from "./fields/LeagueDescriptionField";
 import LeagueImageField from "../../../../../components/ImageField";
 import useActionToast from "@/hooks/useActionToast";
+import { useRouter } from "next/navigation";
 
-export default function CreateLeagueForm() {
+export default function CreateLeagueForm({
+  isAuthenticated = false,
+}: {
+  isAuthenticated?: boolean;
+}) {
   const toast = useActionToast();
+  const router = useRouter();
 
   const form = useForm<CreateLeagueSchema>({
     resolver: zodResolver(createLeagueSchema),
@@ -33,6 +39,9 @@ export default function CreateLeagueForm() {
   });
 
   async function onSubmit(data: CreateLeagueSchema) {
+    if (!isAuthenticated) {
+      return router.push("/login");
+    }
     const res = await createLeague(data);
 
     if (res?.error) toast(res);

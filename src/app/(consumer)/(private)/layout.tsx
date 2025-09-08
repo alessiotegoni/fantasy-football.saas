@@ -5,7 +5,7 @@ export default function PrivateLayout({ children }: LayoutProps<"/">) {
   return (
     <Suspense
       fallback={
-        <div className="size-full">
+        <div className="w-full h-dvh grid place-content-center">
           <LoaderCircle className="animate-spin" />
         </div>
       }

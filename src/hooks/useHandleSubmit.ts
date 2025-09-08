@@ -9,7 +9,7 @@ export default function useHandleSubmit<T>(
     | ((args: T) => Promise<{ error: boolean; message: string }>)
     | undefined,
   options?: {
-    redirectTo?: string;
+    redirectTo?: __next_route_internal_types__.RouteImpl<string>;
     isLeaguePrefix?: boolean;
     onSuccess?: () => void;
     onError?: () => void;
@@ -55,7 +55,9 @@ export default function useHandleSubmit<T>(
     if (!redirectTo) return;
 
     if (isLeaguePrefix && leagueId) {
-      router.push(`/leagues/${leagueId}${redirectTo}`);
+      router.push(
+        `/league/${leagueId}${redirectTo}` as __next_route_internal_types__.RouteImpl<string>
+      );
       return;
     }
 

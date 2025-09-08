@@ -2,8 +2,12 @@ import BackButton from "@/components/BackButton";
 import { MagicWand } from "iconoir-react";
 import { default as LeagueHeader } from "@/features/(league)/leagues/components/Header";
 import CreateLeagueForm from "@/features/(league)/leagues/components/forms/CreateLeagueForm";
+import { getUser } from "@/features/users/utils/user";
+import { Suspense } from "react";
 
-export default function CreateLeaguePage() {
+export const ppr = true;
+
+export default async function CreateLeaguePage() {
   return (
     <main className="flex flex-col">
       <LeagueHeader className="relative mb-5 mx-auto max-w-[800px]">
@@ -24,7 +28,9 @@ export default function CreateLeaguePage() {
 
       <div className="flex-1">
         <div className="mx-auto max-w-[800px] p-6">
-          <CreateLeagueForm />
+          <Suspense fallback={<CreateLeagueForm />}>
+            <CreateLeagueForm isAuthenticated={!!(await getUser())} />
+          </Suspense>
         </div>
       </div>
     </main>

@@ -33,7 +33,7 @@ export default async function UserDropdown({
   return (
     <DropdownMenu>
       <DropdownTrigger user={user} variant={variant} />
-      
+
       <DropdownMenuContent align="end" className="w-52 rounded-xl">
         <DropdownMenuLabel>Account</DropdownMenuLabel>
 
@@ -60,10 +60,11 @@ export default async function UserDropdown({
 
         <ActionButton
           action={logout}
-          redirectTo="/auth/login"
           variant="destructive"
           size="sm"
           className="justify-start !px-2 !py-1.5 gap-2 text-sm"
+          redirectTo="/auth/login"
+          isLeaguePrefix={false}
         >
           <LogOut className="size-4 text-white" /> Esci
         </ActionButton>

@@ -21,10 +21,13 @@ import {
 } from "../../schema/privateLeague";
 import { joinPrivateLeague } from "@/features/(league)/members/actions/leagueMember";
 import useActionToast from "@/hooks/useActionToast";
+import { useUser } from "@/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 export default function JoinPrivateLeagueForm() {
-
-  const toast = useActionToast()
+  const toast = useActionToast();
+  const { user } = useUser();
+  const router = useRouter();
 
   const searchParams = useSearchParams();
 
@@ -37,8 +40,11 @@ export default function JoinPrivateLeagueForm() {
   });
 
   async function onSubmit(data: JoinPrivateLeagueSchema) {
+    if (!user) {
+      return router.push("/login");
+    }
     const res = await joinPrivateLeague(data);
-    toast(res)
+    toast(res);
   }
 
   return (

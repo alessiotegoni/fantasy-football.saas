@@ -28,7 +28,7 @@ export type ActionButtonProps = ComponentPropsWithoutRef<typeof Button> & {
   displayToast?: boolean;
   toastData?: ExternalToast;
   isLeaguePrefix?: boolean;
-  redirectTo?: string;
+  redirectTo?: __next_route_internal_types__.RouteImpl<string>;
 };
 
 export default function ActionButton({
