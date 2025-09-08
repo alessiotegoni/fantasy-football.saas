@@ -1,8 +1,8 @@
 import Container from "@/components/Container";
 import LinkButton from "@/components/LinkButton";
 import { Plus } from "iconoir-react";
-import { SplitCard } from "@/features/dashboard/admin/splits/components/SplitCard";
 import { Split } from "@/features/dashboard/admin/splits/queries/split";
+import SplitCard from "@/features/dashboard/admin/splits/components/SplitCard";
 
 export default async function SplitsPage() {
   return (
@@ -15,7 +15,7 @@ export default async function SplitsPage() {
         </LinkButton>
       )}
     >
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="space-y-2">
         {splits.map((split) => (
           <SplitCard key={split.id} split={split} />
         ))}
@@ -27,21 +27,21 @@ export default async function SplitsPage() {
 const splits: Split[] = [
   {
     id: 1,
-    name: "Split 1 - Regular Season",
+    name: "Split 1",
     startDate: "2025-09-01",
     endDate: "2025-12-31",
     status: "live",
   },
   {
     id: 2,
-    name: "Split 2 - Playoffs",
+    name: "Split 2",
     startDate: "2026-01-01",
     endDate: "2026-02-28",
     status: "upcoming",
   },
   {
     id: 3,
-    name: "Split 3 - Pre-Season",
+    name: "Split 3",
     startDate: "2024-08-01",
     endDate: "2024-08-31",
     status: "ended",
