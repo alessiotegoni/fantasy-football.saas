@@ -5,6 +5,10 @@ import Disclaimer from "@/components/Disclaimer";
 import JoinPrivateLeagueForm from "@/features/(league)/leagues/components/forms/JoinPrivateLeagueForm";
 import BackButton from "@/components/BackButton";
 import { JOIN_CODE_LENGTH } from "@/features/(league)/leagues/schema/leagueBase";
+import { getUser } from "@/features/users/utils/user";
+import { Suspense } from "react";
+
+export const experimental_ppr = true;
 
 export default function JoinPrivateLeaguePage() {
   return (
@@ -34,7 +38,9 @@ export default function JoinPrivateLeaguePage() {
             </p>
           </div>
 
-          <JoinPrivateLeagueForm />
+          <Suspense fallback={<JoinPrivateLeagueForm />}>
+            <SuspenseBoundary />
+          </Suspense>
 
           <div className="mt-6 p-4 bg-muted/50 rounded-xl">
             <h3 className="text-sm font-medium mb-2">💡 Suggerimento</h3>
@@ -52,4 +58,9 @@ export default function JoinPrivateLeaguePage() {
       </footer>
     </>
   );
+}
+
+async function SuspenseBoundary() {
+  const user = await getUser();
+  return <JoinPrivateLeagueForm isAuthenticated={!!user} />;
 }
