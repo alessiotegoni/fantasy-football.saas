@@ -39,9 +39,8 @@ export default function CreateLeagueForm({
   });
 
   async function onSubmit(data: CreateLeagueSchema) {
-    if (!isAuthenticated) {
-      return router.push("/login");
-    }
+    if (!isAuthenticated) return router.push("/auth/login");
+
     const res = await createLeague(data);
 
     if (res?.error) toast(res);

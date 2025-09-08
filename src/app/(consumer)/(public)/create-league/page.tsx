@@ -5,9 +5,9 @@ import CreateLeagueForm from "@/features/(league)/leagues/components/forms/Creat
 import { getUser } from "@/features/users/utils/user";
 import { Suspense } from "react";
 
-export const ppr = true;
+export const experimental_ppr = true;
 
-export default async function CreateLeaguePage() {
+export default function CreateLeaguePage() {
   return (
     <main className="flex flex-col">
       <LeagueHeader className="relative mb-5 mx-auto max-w-[800px]">
@@ -29,10 +29,16 @@ export default async function CreateLeaguePage() {
       <div className="flex-1">
         <div className="mx-auto max-w-[800px] p-6">
           <Suspense fallback={<CreateLeagueForm />}>
-            <CreateLeagueForm isAuthenticated={!!(await getUser())} />
+            <SuspenseBoundary />
           </Suspense>
         </div>
       </div>
     </main>
   );
+}
+
+async function SuspenseBoundary() {
+  const user = await getUser();
+
+  return <CreateLeagueForm isAuthenticated={!!user} />;
 }
