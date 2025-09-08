@@ -15,7 +15,7 @@ export default function AdminPage() {
           Seleziona una delle seguenti sezioni
         </h2>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-4">
         {LINKS_INFO.map((linkInfo) => (
           <RoleCard key={linkInfo.href} {...linkInfo} />
         ))}

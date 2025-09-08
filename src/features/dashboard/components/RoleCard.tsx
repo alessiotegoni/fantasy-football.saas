@@ -17,14 +17,14 @@ export function RoleCard({
   description,
 }: Omit<RoleInfo, "role">) {
   return (
-    <Link href={href}>
-      <div className="h-28 lg:h-full rounded-3xl flex gap-4 lg:gap-0 text-left lg:text-center lg:flex-col justify-center items-center border bg-card text-card-foreground shadow-sm p-6">
-        <Icon className="shrink-0 size-7 xs:size-9 lg:size-7 mb-3" />
-        <div>
-        <h3 className="text-lg xs:text-2xl font-semibold leading-none tracking-tight">
-          {title}
-        </h3>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+    <Link href={href} className="h-full">
+      <div className="h-full rounded-3xl flex flex-col text-center items-center border bg-card text-card-foreground shadow-sm p-6">
+        <Icon className="shrink-0 size-9 mb-3" />
+        <div className="flex flex-col h-full gap-2">
+          <h3 className="text-2xl font-semibold leading-none tracking-tight grow">
+            {title}
+          </h3>
+          <p className="text-sm text-muted-foreground mt-1">{description}</p>
         </div>
       </div>
     </Link>

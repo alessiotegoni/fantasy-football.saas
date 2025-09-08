@@ -15,7 +15,7 @@ export default function DashboardPage() {
   const availableRoles = ROLES_INFO.filter((info) =>
     userRoles.includes(info.role)
   );
-  
+
   if (!availableRoles.length) redirect("/dashboard/user/profile");
 
   return (
@@ -28,7 +28,7 @@ export default function DashboardPage() {
           Benvenuto nella tua area privata 👋
         </h2>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 justify-center">
         {availableRoles.map((roleInfo) => (
           <RoleCard key={roleInfo.href} {...roleInfo} />
         ))}

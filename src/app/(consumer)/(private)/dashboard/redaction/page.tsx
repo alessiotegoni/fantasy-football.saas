@@ -12,7 +12,7 @@ export default function RedactionPage() {
           Seleziona una delle seguenti sezioni
         </h2>
       </div>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="w-full grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 justify-center">
         {LINKS_INFO.map((linkInfo) => (
           <RoleCard key={linkInfo.href} {...linkInfo} />
         ))}
@@ -37,7 +37,7 @@ const LINKS_INFO: Omit<RoleInfo, "role">[] = [
   {
     href: "/dashboard/redaction/team-stats",
     icon: BarChart3,
-    title: "Statistiche Squadra",
+    title: "Stats Squadra",
     description: "Visualizza le statistiche della tua redazione",
   },
 ];
