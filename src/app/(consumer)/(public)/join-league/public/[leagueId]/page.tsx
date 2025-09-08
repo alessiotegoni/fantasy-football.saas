@@ -19,7 +19,6 @@ import { getLeagueMembersTag } from "@/features/(league)/members/db/cache/league
 import { joinPublicLeague } from "@/features/(league)/members/actions/leagueMember";
 import { getLeagueModules } from "@/features/(league)/settings/queries/setting";
 import { getTacticalModules } from "@/features/tacticalModules/queries/tacticalModule";
-import { League } from "@/features/(league)/leagues/queries/league";
 import { getUser } from "@/features/users/utils/user";
 import LinkButton from "@/components/LinkButton";
 
