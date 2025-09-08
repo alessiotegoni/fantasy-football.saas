@@ -39,49 +39,37 @@ export async function isAdmin(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
-  const { count, error } = await supabase
+  const { data } = await supabase
     .from("admins")
-    .select("*", { count: "exact", head: true })
-    .eq("id", userId);
+    .select("*")
+    .eq("user_id", userId)
+    .single();
 
-  if (error) {
-    console.error("Error checking admin status:", error);
-    return false;
-  }
-
-  return count !== null && count > 0;
+  return !!data;
 }
 
 export async function isContentCreator(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
-  const { count, error } = await supabase
+  const { data } = await supabase
     .from("content_creators")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", userId);
+    .select("*")
+    .eq("user_id", userId)
+    .single();
 
-  if (error) {
-    console.error("Error checking content creator status:", error);
-    return false;
-  }
-
-  return count !== null && count > 0;
+  return !!data;
 }
 
 export async function isRedaction(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
-  const { count, error } = await supabase
+  const { data } = await supabase
     .from("redactions")
-    .select("*", { count: "exact", head: true })
-    .eq("user_id", userId);
+    .select("*")
+    .eq("user_id", userId)
+    .single();
 
-  if (error) {
-    console.error("Error checking redaction status:", error);
-    return false;
-  }
-
-  return count !== null && count > 0;
+  return !!data;
 }

@@ -30,7 +30,11 @@ export default async function DashboardLayout({ children }: Props) {
   if (contentCreator) roles.push("content-creator");
   if (redaction) roles.push("redaction");
 
+  console.log(roles);
+
   return (
-    <DashboardRolesProvider roles={roles}>{children}</DashboardRolesProvider>
+    <DashboardRolesProvider user={user} roles={roles}>
+      {children}
+    </DashboardRolesProvider>
   );
 }
