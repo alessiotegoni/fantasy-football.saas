@@ -21,7 +21,7 @@ import { logout } from "@/features/auth/actions/login";
 import Avatar from "@/components/Avatar";
 import ActionButton from "@/components/ActionButton";
 
-export default async function UserDropdown({
+export default function UserDropdown({
   user,
   variant = "sidebar",
 }: {

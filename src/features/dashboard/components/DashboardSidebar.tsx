@@ -2,183 +2,180 @@
 
 import {
   Sidebar,
+  SidebarContent,
+  SidebarFooter,
   SidebarGroup,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
 } from "@/components/ui/sidebar";
-import { useDashboardRoles } from "@/contexts/DashboardRolesProvider";
-import { usePathname } from "next/navigation";
+import { Role, useDashboardRoles } from "@/contexts/DashboardRolesProvider";
+import {
+  User,
+  Check,
+  Edit,
+  Gift,
+  Percentage,
+  Running,
+  Shield,
+  StatsUpSquare,
+  Axes,
+  EditPencil,
+  CreativeCommons,
+  Star,
+} from "iconoir-react";
+import DashboardSidebarItem from "./DashboardSidebarItem";
+import { SidebarLink } from "@/features/(league)/leagues/components/LeagueSidebar";
+import { cn } from "@/lib/utils";
+import UserDropdown from "../user/components/userDropdown";
 
 export default function DashboardSidebar() {
   const { user, userRoles } = useDashboardRoles();
 
-  const pathname = usePathname();
-
-  const isActive = (path: string) => pathname === path;
+  const sidebarSections = [
+    users,
+    ...(userRoles.includes("superadmin") ? [superadminGroup] : []),
+    ...(userRoles.includes("admin") ? [adminGroup] : []),
+    ...(userRoles.includes("content-creator") ? [creatorGroup] : []),
+    ...(userRoles.includes("redaction") ? [redactionGroup] : []),
+  ];
 
   return (
     <Sidebar>
-      <SidebarMenu>
-        <SidebarGroup>
-          <SidebarGroupLabel>Utente</SidebarGroupLabel>
-          {userGroup.map((item) => (
-            <SidebarMenuItem key={item.href}>
-              <SidebarMenuButton
-                href={item.href}
-                isActive={isActive(item.href)}
-              >
-                {item.label}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarGroup>
-
-        {userRoles.includes(adminGroup.role) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{adminGroup.label}</SidebarGroupLabel>
-            {adminGroup.links.map((item) => {
-              if (item.superAdminOnly && !isSuperAdmin) {
-                return null;
-              }
-              return (
-                <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton
-                    href={item.href}
-                    isActive={isActive(item.href)}
-                  >
-                    {item.label}
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              );
-            })}
+      <SidebarContent className="custom-scrollbar">
+        {sidebarSections.map((section) => (
+          <SidebarGroup key={section.title} className="p-3">
+            <SidebarGroupLabel className={cn("font-heading text-lg mb-1")}>
+              {section.title}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => (
+                  <DashboardSidebarItem key={item.href} item={item} />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
-        )}
-
-        {userRoles.includes(creatorGroup.role) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{creatorGroup.label}</SidebarGroupLabel>
-            {creatorGroup.links.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  href={item.href}
-                  isActive={isActive(item.href)}
-                >
-                  {item.label}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarGroup>
-        )}
-
-        {userRoles.includes(redactionGroup.role) && (
-          <SidebarGroup>
-            <SidebarGroupLabel>{redactionGroup.label}</SidebarGroupLabel>
-            {redactionGroup.links.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  href={item.href}
-                  isActive={isActive(item.href)}
-                >
-                  {item.label}
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarGroup>
-        )}
-      </SidebarMenu>
+        ))}
+      </SidebarContent>
+      <SidebarFooter>
+        <UserDropdown user={user} />
+      </SidebarFooter>
     </Sidebar>
   );
 }
 
-const userGroup = [
-  {
-    label: "Profilo",
-    href: "/dashboard/user/profile",
-  },
-  {
-    label: "Premium",
-    href: "/dashboard/user/premium",
-  },
-];
+type SidebarGroup = {
+  title: string;
+  role?: Role;
+  items: SidebarLink[];
+};
 
-const superadminGroup = {
-  label: "Superadmin",
+const users: SidebarGroup = {
+  title: "Utente",
+  items: [
+    {
+      name: "Profilo",
+      href: "/dashboard/user/profile",
+      icon: User,
+    },
+    {
+      name: "Premium",
+      href: "/dashboard/user/premium",
+      icon: Star,
+    },
+  ],
+};
+
+const superadminGroup: SidebarGroup = {
+  title: "Superadmin",
   role: "superadmin",
-  links: [
+  items: [
     {
-      label: "Admins",
+      name: "Admins",
       href: "/dashboard/admin/admins",
+      icon: Shield,
     },
     {
-      label: "Content creators",
+      name: "Content creators",
       href: "/dashboard/admin/content-creators",
+      icon: CreativeCommons,
     },
     {
-      label: "Redazione",
+      name: "Redazione",
       href: "/dashboard/admin/redactions",
+      icon: EditPencil,
     },
     {
-      label: "Premium",
+      name: "Premium",
       href: "/dashboard/admin/premium",
+      icon: Star,
     },
   ],
 };
 
-const adminGroup = {
-  label: "Admin",
+const adminGroup: SidebarGroup = {
+  title: "Admin",
   role: "admin",
-  links: [
+  items: [
     {
-      label: "Splits",
+      name: "Splits",
       href: "/dashboard/admin/splits",
+      icon: Axes,
     },
     {
-      label: "Squadre",
+      name: "Squadre",
       href: "/dashboard/admin/teams",
+      icon: Shield,
     },
     {
-      label: "Giocatori",
+      name: "Giocatori",
       href: "/dashboard/admin/players",
+      icon: Running,
     },
     {
-      label: "Assegna bonus/malus",
+      name: "Assegna bonus/malus",
       href: "/dashboard/admin/bonus",
+      icon: Gift,
     },
   ],
 };
 
-const creatorGroup = {
-  label: "Content creators",
+const creatorGroup: SidebarGroup = {
+  title: "Content creators",
   role: "content-creator",
-  links: [
+  items: [
     {
-      label: "Codice sconto",
+      name: "Codice sconto",
       href: "/dashboard/creator/discount-code",
+      icon: Percentage,
     },
     {
-      label: "Statistiche varie",
+      name: "Statistiche varie",
       href: "/dashboard/creator/stats",
+      icon: StatsUpSquare,
     },
   ],
 };
 
-const redactionGroup = {
-  label: "Redazione",
+const redactionGroup: SidebarGroup = {
+  title: "Redazione",
   role: "redaction",
-  links: [
+  items: [
     {
-      label: "Assegna voti",
+      name: "Assegna voti",
       href: "/dashboard/redaction/assign-votes",
+      icon: Check,
     },
     {
-      label: "Modifica voti",
+      name: "Modifica voti",
       href: "/dashboard/redaction/edit-votes",
+      icon: Edit,
     },
     {
-      label: "Statistiche team",
+      name: "Statistiche team",
       href: "/dashboard/redaction/team-stats",
+      icon: StatsUpSquare,
     },
   ],
 };

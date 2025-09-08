@@ -74,9 +74,7 @@ export default function LeagueSidebar({
         ))}
       </SidebarContent>
       <SidebarFooter className="hidden lg:block lg:border lg:border-border">
-        <Suspense>
-          <UserDropdown user={user} />
-        </Suspense>
+        <UserDropdown user={user} />
       </SidebarFooter>
     </Sidebar>
   );
