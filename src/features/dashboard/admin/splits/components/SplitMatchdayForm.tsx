@@ -21,6 +21,7 @@ import {
 } from "../schema/splitMatchday";
 import SplitStatus from "./SplitStatus";
 import SplitMatchdayType from "./SplitMatchdayType";
+import SplitMatchdayFormFields from "./SplitMatchdayFormFields";
 
 type Props = {
   matchday?: SplitMatchday;
@@ -49,81 +50,7 @@ export default function SplitMatchdayForm({ matchday }: Props) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="status"
-          render={({ field }) => (
-            <FormItem className="flex justify-between">
-              <FormLabel>Stato</FormLabel>
-              <FormControl>
-                <SplitStatus
-                  status={field.value}
-                  onStatusChange={field.onChange}
-                  canUpdate
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="flex justify-between">
-              <FormLabel>Tipo</FormLabel>
-              <FormControl>
-                <SplitMatchdayType
-                  type={field.value}
-                  onTypeChange={field.onChange}
-                  canUpdate
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Numero giornata</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="Numero della giornata"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid sm:grid-cols-2 sm:gap-4">
-          <FormField
-            control={form.control}
-            name="startAt"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Data di inizio</FormLabel>
-                <DatePicker date={field.value} setDate={field.onChange} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="endAt"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Data di fine</FormLabel>
-                <DatePicker date={field.value} setDate={field.onChange} />
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <SplitMatchdayFormFields />
         <SubmitButton isLoading={isPending}>
           {matchday ? "Salva modifiche" : "Crea giornata"}
         </SubmitButton>

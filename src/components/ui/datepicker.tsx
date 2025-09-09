@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -12,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { formatDate } from "@/utils/formatters";
+import { it } from "react-day-picker/locale";
 
 type Props = {
   date?: Date;
@@ -35,12 +35,12 @@ export function DatePicker({ date, setDate, className }: Props) {
           {date ? formatDate(date) : <span>Scegli data</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent className="rounded-2xl w-auto p-0">
         <Calendar
           mode="single"
           selected={date}
           onSelect={setDate}
-          initialFocus
+          locale={it}
         />
       </PopoverContent>
     </Popover>
