@@ -2,22 +2,24 @@ import Container from "@/components/Container";
 import LinkButton from "@/components/LinkButton";
 import { Plus } from "iconoir-react";
 import { SplitMatchdayCard } from "@/features/dashboard/admin/splits/components/SplitMatchdayCard";
-import SplitStatus from "@/features/dashboard/admin/splits/components/SplitStatus";
-import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import {
-  getSplitIdTag,
-  getSplitMatchdaysIdTag,
-} from "@/features/dashboard/admin/splits/db/cache/split";
-import { db } from "@/drizzle/db";
 import { notFound } from "next/navigation";
 import SplitForm from "@/features/dashboard/admin/splits/components/SplitForm";
+import {
+  getSplit,
+  getSplitMatchdays,
+} from "@/features/dashboard/admin/splits/queries/split";
 
 export default async function SplitDetailPage({
   params,
 }: PageProps<"/dashboard/admin/splits/[splitId]">) {
-  const { splitId } = await params;
+  const p = await params;
 
-  const split = await getSplitWithMatchdays(parseInt(splitId));
+  const splitId = parseInt(p.splitId);
+
+  const [split, splitMatchdays] = await Promise.all([
+    getSplit(splitId),
+    getSplitMatchdays(splitId),
+  ]);
   if (!split) notFound();
 
   return (
@@ -51,7 +53,7 @@ export default async function SplitDetailPage({
 
       <h2 className="text-xl font-semibold mb-4">Giornate</h2>
       <div className="space-y-2">
-        {split.matchdays.map((matchday) => (
+        {splitMatchdays.map((matchday) => (
           <SplitMatchdayCard key={matchday.id} matchday={matchday} />
         ))}
       </div>
@@ -67,29 +69,4 @@ export default async function SplitDetailPage({
         }
         canUpdate
       /> */
-}
-
-async function getSplitWithMatchdays(splitId: number) {
-  "use cache";
-  cacheTag(getSplitIdTag(splitId));
-
-  const result = await db.query.splits.findFirst({
-    with: {
-      matchdays: true,
-    },
-    where: (split, { eq }) => eq(split.id, splitId),
-  });
-
-  if (result) {
-    cacheTag(
-      ...result.matchdays.map((matchday) => getSplitMatchdaysIdTag(matchday.id))
-    );
-  }
-
-  return result
-    ? {
-        ...result,
-        matchdays: result.matchdays.sort((a, b) => a.number - b.number),
-      }
-    : undefined;
 }

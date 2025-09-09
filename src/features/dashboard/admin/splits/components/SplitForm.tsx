@@ -52,7 +52,7 @@ export default function SplitForm({ split }: Props) {
             </FormItem>
           )}
         />
-        <div className="flex gap-4">
+        <div className="grid sm:grid-cols-2 sm:gap-4">
           <FormField
             control={form.control}
             name="startDate"
