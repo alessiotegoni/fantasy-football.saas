@@ -5,6 +5,8 @@ import { getSplitsMatchdaysTag, getSplitsTag } from "@/cache/global";
 import { asc, eq } from "drizzle-orm";
 import { getSplitMatchdaysIdTag } from "../db/cache/split";
 
+export type Split = typeof splits.$inferSelect;
+
 export async function getSplits() {
   "use cache";
   cacheTag(getSplitsTag());
@@ -18,8 +20,6 @@ export async function getSplit(splitId: number) {
   return splits.find((split) => split.id === splitId);
 }
 
-export type Split = typeof splits.$inferSelect;
-
 export async function getUpcomingSplit() {
   const splits = await getSplits();
 
@@ -31,6 +31,8 @@ export async function getLiveSplit() {
 
   return splits.find((split) => split.status === "live");
 }
+
+export type SplitMatchday = typeof splitMatchdays.$inferSelect;
 
 export async function getSplitMatchdays(splitId: number) {
   "use cache";
@@ -47,9 +49,17 @@ export async function getSplitMatchdays(splitId: number) {
   return matchdays;
 }
 
-export type SplitMatchday = Awaited<
-  ReturnType<typeof getSplitMatchdays>
->[number];
+export async function getSplitMatchday(matchdayId: number) {
+  "use cache";
+  cacheTag(getSplitMatchdaysIdTag(matchdayId));
+
+  const matchday = await db
+    .select()
+    .from(splitMatchdays)
+    .where(eq(splitMatchdays.id, matchdayId));
+
+  return matchday;
+}
 
 export async function getCurrentMatchday(splitId: number) {
   const matchdays = await getSplitMatchdays(splitId);

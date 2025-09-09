@@ -51,13 +51,3 @@ export default async function SplitDetailPage({
     </Container>
   );
 }
-
-{
-  /* <SplitStatus
-        status={split.status}
-        onStatusChange={() =>
-          new Promise((resolve) => resolve({ error: false, message: "dwd" }))
-        }
-        canUpdate
-      /> */
-}

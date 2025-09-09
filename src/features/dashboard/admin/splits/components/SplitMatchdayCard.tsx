@@ -1,11 +1,17 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { default as SplitMatchdayStatus } from "./SplitStatus";
 import { SplitMatchday } from "../queries/split";
 import { formatDate } from "@/utils/formatters";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
+import { useForm } from "react-hook-form";
+import { SplitStatusType } from "@/drizzle/schema";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
+  // TODO: crea un form per la creazione/modifica della matchday da utilizzare nella pagina della creazione,
+  // nella pagina di modifica e qui, in modo che richiamino la stessa server action che gli passa tutti i dati
   return (
     <div className="rounded-3xl border bg-muted/30 text-card-foreground shadow-sm w-full">
       <div className="flex items-center justify-between p-6 pb-2">
@@ -26,7 +32,7 @@ export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
           </Button>
           <LinkButton
             className="w-36"
-            href={`/admin/splits/${matchday.splitId}/matchdays/${matchday.id}/edit`}
+            href={`/dashboard/admin/splits/${matchday.splitId}/matchdays/${matchday.id}/edit`}
           >
             Modifica
             <NavArrowRight className="size-5" />
