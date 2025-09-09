@@ -1,13 +1,5 @@
 import Container from "@/components/Container";
-import LinkButton from "@/components/LinkButton";
-import { Plus } from "iconoir-react";
-import { SplitStatusType } from "@/drizzle/schema/splits";
 import { SplitMatchdayCard } from "@/features/dashboard/admin/splits/components/SplitMatchdayCard";
-import {
-  Split,
-  SplitMatchday,
-} from "@/features/dashboard/admin/splits/queries/split";
-import SplitStatus from "@/features/dashboard/admin/splits/components/SplitStatus";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import {
   getSplitIdTag,
@@ -15,6 +7,7 @@ import {
 } from "@/features/dashboard/admin/splits/db/cache/split";
 import { db } from "@/drizzle/db";
 import { notFound } from "next/navigation";
+import SplitDetailRight from "@/features/dashboard/admin/splits/components/SplitDetailRight";
 
 export default async function SplitDetailPage({
   params,
@@ -22,30 +15,12 @@ export default async function SplitDetailPage({
   const { splitId } = await params;
 
   const split = await getSplitWithMatchdays(parseInt(splitId));
-  if (!split) notFound()
+  if (!split) notFound();
 
   return (
     <Container
       headerLabel={split.name}
-      renderHeaderRight={() => (
-        <div className="flex items-center space-x-4">
-          {/* <SplitStatus
-            status={split.status}
-            onStatusChange={() =>
-              new Promise((resolve) =>
-                resolve({ error: false, message: "dwd" })
-              )
-            }
-          /> */}
-          <LinkButton
-            href={`/admin/splits/${split.id}/matchdays/create`}
-            className="w-fit"
-          >
-            <Plus className="size-5" />
-            Crea giornate
-          </LinkButton>
-        </div>
-      )}
+      renderHeaderRight={() => <SplitDetailRight split={split} />}
     >
       <h2 className="text-xl font-semibold mb-4">Giornate</h2>
       <div className="space-y-2">
@@ -74,5 +49,10 @@ async function getSplitWithMatchdays(splitId: number) {
     );
   }
 
-  return result;
+  return result
+    ? {
+        ...result,
+        matchdays: result.matchdays.sort((a, b) => a.number - b.number),
+      }
+    : undefined;
 }

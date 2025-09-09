@@ -13,7 +13,7 @@ export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
         <h3 className="text-xl font-semibold leading-none tracking-tight">
           Giornata {matchday.number}
         </h3>
-        <SplitMatchdayType type={matchday.type} />
+        <SplitMatchdayType type={matchday.type} canUpdate />
       </div>
       <div className="p-6 pt-0">
         <div className="flex items-center gap-3 text-sm text-muted-foreground space-y-2">

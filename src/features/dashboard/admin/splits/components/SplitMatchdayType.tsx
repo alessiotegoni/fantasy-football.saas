@@ -8,6 +8,7 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { MatchdayType, matchdayTypes } from "@/drizzle/schema";
+import { getFinalPhaseColor } from "@/features/league/standing/utils/standing";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { cn } from "@/lib/utils";
 import { ChevronDown, LoaderCircle } from "lucide-react";
@@ -36,15 +37,13 @@ export default function SplitMatchdayType({ type, canUpdate = false }: Props) {
     }
   );
 
-  const currentStatusInfo = statusConfig[optimisticType];
+  const currentTypeInfo = typeConfig[optimisticType];
 
   return (
     <div className="flex items-center gap-2">
       <Badge variant="outline" className="p-2 px-2.5 gap-2 rounded-full">
-        <div
-          className={cn("size-2 rounded-full", currentStatusInfo.className)}
-        />
-        {currentStatusInfo.label}
+        <div className={cn("size-2 rounded-full", currentTypeInfo.className)} />
+        {currentTypeInfo.label}
       </Badge>
 
       {canUpdate && (
@@ -63,7 +62,7 @@ export default function SplitMatchdayType({ type, canUpdate = false }: Props) {
           </SelectTrigger>
           <SelectContent>
             {matchdayTypes.map((type) => {
-              const config = statusConfig[type];
+              const config = typeConfig[type];
               return (
                 <SelectItem key={type} value={type}>
                   <div className="flex items-center gap-2">
@@ -82,26 +81,25 @@ export default function SplitMatchdayType({ type, canUpdate = false }: Props) {
   );
 }
 
-const statusConfig: Record<MatchdayType, { label: string; className: string }> =
-  {
-    regular: {
-      label: "Regular",
-      className: "bg-blue-500",
-    },
-    play_in: {
-      label: "Play-in",
-      className: "bg-yellow-500",
-    },
-    quarter_final: {
-      label: "Quarter Final",
-      className: "bg-orange-500",
-    },
-    semi_final: {
-      label: "Semi Final",
-      className: "bg-purple-500",
-    },
-    final: {
-      label: "Final",
-      className: "bg-red-500",
-    },
-  };
+const typeConfig = {
+  regular: {
+    label: "Regolare",
+    className: "bg-blue-500",
+  },
+  play_in: {
+    label: "Play-in",
+    className: "bg-yellow-500",
+  },
+  quarter_final: {
+    label: "Quarti di finale",
+    className: "bg-orange-500",
+  },
+  semi_final: {
+    label: "Semi finale",
+    className: "bg-purple-500",
+  },
+  final: {
+    label: "Finale",
+    className: "bg-blue-500",
+  },
+};
