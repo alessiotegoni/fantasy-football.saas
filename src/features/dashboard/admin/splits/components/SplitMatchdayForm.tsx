@@ -19,14 +19,6 @@ import {
   EditSplitMatchdaySchema,
   editSplitMatchdaySchema,
 } from "../schema/splitMatchday";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { matchdayTypes } from "@/drizzle/schema/splitMatchdays";
 import SplitStatus from "./SplitStatus";
 import SplitMatchdayType from "./SplitMatchdayType";
 
@@ -81,7 +73,11 @@ export default function SplitMatchdayForm({ matchday }: Props) {
             <FormItem className="flex justify-between">
               <FormLabel>Tipo</FormLabel>
               <FormControl>
-                <SplitMatchdayType type={field.value} canUpdate />
+                <SplitMatchdayType
+                  type={field.value}
+                  onTypeChange={field.onChange}
+                  canUpdate
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

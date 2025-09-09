@@ -8,36 +8,21 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { MatchdayType, matchdayTypes } from "@/drizzle/schema";
-import { getFinalPhaseColor } from "@/features/league/standing/utils/standing";
-import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { cn } from "@/lib/utils";
-import { ChevronDown, LoaderCircle } from "lucide-react";
-import { useOptimistic } from "react";
+import { ChevronDown } from "lucide-react";
 
 type Props = {
   type: MatchdayType;
+  onTypeChange: (type: MatchdayType) => void;
   canUpdate?: boolean;
 };
 
-export default function SplitMatchdayType({ type, canUpdate = false }: Props) {
-  const [optimisticType, updateOptimisticType] = useOptimistic(
-    type,
-    (_, newType: MatchdayType) => newType
-  );
-
-  async function handleUpdateStatus(newType: MatchdayType) {
-    updateOptimisticType(newType);
-    return; // TODO: server action
-  }
-
-  const { isPending, onSubmit: updateStatus } = useHandleSubmit(
-    handleUpdateStatus,
-    {
-      onError: () => updateOptimisticType(type),
-    }
-  );
-
-  const currentTypeInfo = typeConfig[optimisticType];
+export default function SplitMatchdayType({
+  type,
+  onTypeChange,
+  canUpdate = false,
+}: Props) {
+  const currentTypeInfo = typeConfig[type];
 
   return (
     <div className="flex items-center gap-2">
@@ -47,18 +32,13 @@ export default function SplitMatchdayType({ type, canUpdate = false }: Props) {
       </Badge>
 
       {canUpdate && (
-        <Select value={optimisticType} onValueChange={updateStatus}>
+        <Select value={type} onValueChange={onTypeChange}>
           <SelectTrigger
             className="h-8 w-8 p-0 cursor-pointer !bg-transparent border-0
             hover:!bg-primary transition-colors justify-center"
             showChevron={false}
-            disabled={isPending}
           >
-            {isPending ? (
-              <LoaderCircle className="animate-spin !size-5" />
-            ) : (
-              <ChevronDown className="size-5" />
-            )}
+            <ChevronDown className="size-5" />
           </SelectTrigger>
           <SelectContent>
             {matchdayTypes.map((type) => {
