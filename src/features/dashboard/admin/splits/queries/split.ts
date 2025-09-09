@@ -53,7 +53,7 @@ export async function getSplitMatchday(matchdayId: number) {
   "use cache";
   cacheTag(getSplitMatchdaysIdTag(matchdayId));
 
-  const matchday = await db
+  const [matchday] = await db
     .select()
     .from(splitMatchdays)
     .where(eq(splitMatchdays.id, matchdayId));
