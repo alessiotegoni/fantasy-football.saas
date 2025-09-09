@@ -46,68 +46,66 @@ export default function SplitForm({ split }: Props) {
   // });
 
   return (
-    <>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem className="flex justify-between">
+              <FormLabel>Stato</FormLabel>
+              <FormControl>
+                <SplitStatus
+                  status={field.value}
+                  onStatusChange={field.onChange}
+                  canUpdate
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input placeholder="Nome dello split" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="grid sm:grid-cols-2 sm:gap-4">
           <FormField
             control={form.control}
-            name="status"
+            name="startDate"
             render={({ field }) => (
-              <FormItem className="flex justify-between">
-                <FormLabel>Stato</FormLabel>
-                <FormControl>
-                  <SplitStatus
-                    status={field.value}
-                    onStatusChange={field.onChange}
-                    canUpdate
-                  />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>Data di inizio</FormLabel>
+                <DatePicker date={field.value} setDate={field.onChange} />
                 <FormMessage />
               </FormItem>
             )}
           />
           <FormField
             control={form.control}
-            name="name"
+            name="endDate"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Nome</FormLabel>
-                <FormControl>
-                  <Input placeholder="Nome dello split" {...field} />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <FormLabel>Data di fine</FormLabel>
+                <DatePicker date={field.value} setDate={field.onChange} />
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="grid sm:grid-cols-2 sm:gap-4">
-            <FormField
-              control={form.control}
-              name="startDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Data di inizio</FormLabel>
-                  <DatePicker date={field.value} setDate={field.onChange} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="endDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Data di fine</FormLabel>
-                  <DatePicker date={field.value} setDate={field.onChange} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <SubmitButton>
-            {split ? "Salva modifiche" : "Crea split"}
-          </SubmitButton>
-        </form>
-      </Form>
-    </>
+        </div>
+        <SubmitButton isLoading={isPending}>
+          {split ? "Salva modifiche" : "Crea split"}
+        </SubmitButton>
+      </form>
+    </Form>
   );
 }

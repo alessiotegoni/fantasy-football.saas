@@ -4,7 +4,6 @@ import { SplitMatchday } from "../queries/split";
 import { formatDate } from "@/utils/formatters";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
-import SplitMatchdayType from "./SplitMatchdayType";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
   return (

@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { type SplitStatusType, splitStatuses } from "@/drizzle/schema/splits";
 import { cn } from "@/lib/utils";
-import { ChevronDown, LoaderCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 
 interface StatusBadgeProps {
   status: SplitStatusType;
