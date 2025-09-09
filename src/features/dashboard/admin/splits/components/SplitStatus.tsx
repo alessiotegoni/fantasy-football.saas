@@ -8,17 +8,13 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { type SplitStatusType, splitStatuses } from "@/drizzle/schema/splits";
-import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { cn } from "@/lib/utils";
 import { ChevronDown, LoaderCircle } from "lucide-react";
-import { useOptimistic } from "react";
 
 interface StatusBadgeProps {
   status: SplitStatusType;
   canUpdate?: boolean;
-  onStatusChange: (
-    status: SplitStatusType
-  ) => Promise<{ error: boolean; message: string }>;
+  onStatusChange?: (status: SplitStatusType) => void;
 }
 
 export default function SplitStatus({
@@ -26,24 +22,7 @@ export default function SplitStatus({
   canUpdate = false,
   onStatusChange,
 }: StatusBadgeProps) {
-  const [optimisticStatus, updateOptimisticStatus] = useOptimistic(
-    status,
-    (_, newStatus: SplitStatusType) => newStatus
-  );
-
-  async function handleUpdateStatus(newStatus: SplitStatusType) {
-    updateOptimisticStatus(newStatus);
-    return onStatusChange(newStatus);
-  }
-
-  const { isPending, onSubmit: updateStatus } = useHandleSubmit(
-    handleUpdateStatus,
-    {
-      onError: () => updateOptimisticStatus(status),
-    }
-  );
-
-  const currentStatusInfo = statusConfig[optimisticStatus];
+  const currentStatusInfo = statusConfig[status];
 
   return (
     <div className="flex items-center gap-2">
@@ -55,18 +34,13 @@ export default function SplitStatus({
       </Badge>
 
       {canUpdate && (
-        <Select value={optimisticStatus} onValueChange={updateStatus}>
+        <Select value={status} onValueChange={onStatusChange}>
           <SelectTrigger
             className="h-8 w-8 p-0 cursor-pointer !bg-transparent border-0
             hover:!bg-primary transition-colors justify-center"
             showChevron={false}
-            disabled={isPending}
           >
-            {isPending ? (
-              <LoaderCircle className="animate-spin !size-5" />
-            ) : (
-              <ChevronDown className="size-5" />
-            )}
+            <ChevronDown className="size-5" />
           </SelectTrigger>
           <SelectContent>
             {splitStatuses.map((statusValue) => {
