@@ -1,12 +1,7 @@
 import Container from "@/components/Container";
 import LinkButton from "@/components/LinkButton";
 import { Plus } from "iconoir-react";
-import { SplitStatusType } from "@/drizzle/schema/splits";
 import { SplitMatchdayCard } from "@/features/dashboard/admin/splits/components/SplitMatchdayCard";
-import {
-  Split,
-  SplitMatchday,
-} from "@/features/dashboard/admin/splits/queries/split";
 import SplitStatus from "@/features/dashboard/admin/splits/components/SplitStatus";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import {
@@ -15,6 +10,7 @@ import {
 } from "@/features/dashboard/admin/splits/db/cache/split";
 import { db } from "@/drizzle/db";
 import { notFound } from "next/navigation";
+import SplitForm from "@/features/dashboard/admin/splits/components/SplitForm";
 
 export default async function SplitDetailPage({
   params,
@@ -37,6 +33,22 @@ export default async function SplitDetailPage({
         </LinkButton>
       )}
     >
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Modifica</h2>
+          {/* <SplitStatus
+            status={split.status}
+            onStatusChange={() =>
+              new Promise((resolve) =>
+                resolve({ error: false, message: "Status updated" })
+              )
+            }
+            canUpdate
+          /> */}
+        </div>
+        <SplitForm split={split} />
+      </div>
+
       <h2 className="text-xl font-semibold mb-4">Giornate</h2>
       <div className="space-y-2">
         {split.matchdays.map((matchday) => (
