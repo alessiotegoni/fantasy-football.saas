@@ -1,10 +1,10 @@
 import Container from "@/components/Container";
 import LinkButton from "@/components/LinkButton";
-import { StatusBadge } from "@/features/dashboard/admin/splits/components/SplitStatus";
 import { Plus } from "iconoir-react";
-import { Split, SplitStatusType } from "@/drizzle/schema/splits";
-import { SplitMatchday } from "@/drizzle/schema/splitMatchdays";
+import { SplitStatusType } from "@/drizzle/schema/splits";
 import { SplitMatchdayCard } from "@/features/dashboard/admin/splits/components/SplitMatchdayCard";
+import { Split, SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
+import SplitStatus from "@/features/dashboard/admin/splits/components/SplitStatus";
 
 export default async function SplitDetailPage({
   params,
@@ -55,7 +55,7 @@ export default async function SplitDetailPage({
       headerLabel={split.name}
       renderHeaderRight={() => (
         <div className="flex items-center space-x-4">
-          <StatusBadge status={split.status} />
+          <SplitStatus status={split.status} />
           <LinkButton
             href={`/admin/splits/${split.id}/matchdays/create`}
             className="w-fit"

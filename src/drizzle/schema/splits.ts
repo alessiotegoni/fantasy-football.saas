@@ -2,7 +2,6 @@ import {
   pgTable,
   text,
   smallint,
-  primaryKey,
   date,
   pgEnum,
 } from "drizzle-orm/pg-core";

@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import SplitStatus from "./SplitStatus";
 import { Split } from "../queries/split";
@@ -16,20 +18,19 @@ export default function SplitCard({ split }: { split: Split }) {
 
   return (
     <div className="rounded-3xl border bg-input/30 text-card-foreground shadow-sm w-full">
-      {" "}
-      {/* Mimics Card */}
       <div className="flex flex-row items-center justify-between space-y-0 p-6 pb-2">
-        {" "}
-        {/* Mimics CardHeader */}
         <h3 className="text-2xl font-semibold leading-none tracking-tight">
           {split.name}
-        </h3>{" "}
-        {/* Mimics CardTitle */}
-        <SplitStatus status={split.status} />
+        </h3>
+        <SplitStatus
+          status={split.status}
+          onStatusChange={() =>
+            new Promise((resolve) => resolve({ error: false, message: "dwd" }))
+          }
+          canUpdate
+        />
       </div>
       <div className="p-6 pt-0">
-        {" "}
-        {/* Mimics CardContent */}
         <div className="flex items-center gap-3 text-sm text-muted-foreground space-y-2">
           {startDate}
           <span>•</span>
