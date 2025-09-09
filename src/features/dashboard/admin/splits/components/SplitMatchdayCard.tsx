@@ -1,65 +1,46 @@
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { SplitMatchday } from "@/drizzle/schema/splitMatchdays";
-import { StatusBadge } from "./SplitStatus";
+import { default as SplitMatchdayStatus } from "./SplitStatus";
+import { SplitMatchday } from "../queries/split";
+import { formatDate } from "@/utils/formatters";
+import LinkButton from "@/components/LinkButton";
+import { NavArrowRight } from "iconoir-react";
 
-interface SplitMatchdayCardProps {
-  matchday: SplitMatchday;
-  splitId: number;
-}
-
-export function SplitMatchdayCard({
-  matchday,
-  splitId,
-}: SplitMatchdayCardProps) {
+export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
   return (
-    <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full">
+    <div className="rounded-3xl border bg-muted/30 text-card-foreground shadow-sm w-full">
       {" "}
       {/* Mimics Card, changed to rounded-lg */}
       <div className="flex flex-row items-center justify-between space-y-0 p-6 pb-2">
         {" "}
         {/* Mimics CardHeader */}
         <h3 className="text-xl font-semibold leading-none tracking-tight">
-          Matchday {matchday.number}
+          Giornata {matchday.number}
         </h3>{" "}
         {/* Mimics CardTitle */}
-        <StatusBadge status={matchday.status} />
+        {/* <SplitMatchdayStatus status={matchday.status} /> */}
       </div>
       <div className="p-6 pt-0">
         {" "}
         {/* Mimics CardContent */}
         <div className="text-sm text-muted-foreground">
           <p>Type: {matchday.type}</p>
-          <p>
-            Start:{" "}
-            {new Date(matchday.startAt).toLocaleString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            })}
-          </p>
-          <p>
-            End:{" "}
-            {new Date(matchday.endAt).toLocaleString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "numeric",
-              hour: "numeric",
-              minute: "numeric",
-            })}
-          </p>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground space-y-2">
+            {formatDate(matchday.startAt)}
+            <span>•</span>
+            {formatDate(matchday.endAt)}
+          </div>
         </div>
         <div className="flex justify-end space-x-2 mt-4">
-          <Button variant="destructive" size="sm">
-            Delete
+          <Button variant="destructive" className="w-24">
+            Elimina
           </Button>
-          <Link href={`/admin/splits/${splitId}/matchdays/${matchday.id}/edit`}>
-            <Button variant="outline" size="sm">
-              Edit
-            </Button>
-          </Link>
+          <LinkButton
+            className="w-36"
+            href={`/admin/splits/${matchday.splitId}/matchdays/${matchday.id}/edit`}
+          >
+            Modifica
+            <NavArrowRight className="size-5" />
+          </LinkButton>
         </div>
       </div>
     </div>

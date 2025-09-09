@@ -9,7 +9,7 @@ export default async function SplitsPage() {
     <Container
       headerLabel="Splits"
       renderHeaderRight={() => (
-        <LinkButton href="/admin/splits/create" className="w-fit">
+        <LinkButton href="/dashboard/admin/splits/create" className="w-fit">
           <Plus className="size-5" />
           Crea split
         </LinkButton>
