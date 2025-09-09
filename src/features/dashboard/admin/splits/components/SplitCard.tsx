@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "./StatusBadge";
+import SplitStatus from "./SplitStatus";
 import { Split } from "../queries/split";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
@@ -25,7 +25,7 @@ export default function SplitCard({ split }: { split: Split }) {
           {split.name}
         </h3>{" "}
         {/* Mimics CardTitle */}
-        <StatusBadge status={split.status} />
+        <SplitStatus status={split.status} />
       </div>
       <div className="p-6 pt-0">
         {" "}

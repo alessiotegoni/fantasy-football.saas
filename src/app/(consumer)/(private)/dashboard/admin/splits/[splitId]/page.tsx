@@ -1,6 +1,6 @@
 import Container from "@/components/Container";
 import LinkButton from "@/components/LinkButton";
-import { StatusBadge } from "@/features/dashboard/admin/splits/components/StatusBadge";
+import { StatusBadge } from "@/features/dashboard/admin/splits/components/SplitStatus";
 import { Plus } from "iconoir-react";
 import { Split, SplitStatusType } from "@/drizzle/schema/splits";
 import { SplitMatchday } from "@/drizzle/schema/splitMatchdays";
