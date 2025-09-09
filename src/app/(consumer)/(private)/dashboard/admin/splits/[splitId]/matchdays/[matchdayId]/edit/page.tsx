@@ -1,7 +1,7 @@
 import Container from "@/components/Container";
 import { notFound } from "next/navigation";
 import { getSplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
-import SplitMatchdayForm from "@/features/dashboard/admin/splits/components/SplitMatchdayForm";
+import SplitMatchdayForm from "@/features/dashboard/admin/splits/components/EditSplitMatchdayForm";
 
 export default async function SplitMatchdayEditPage({
   params,

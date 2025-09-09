@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { DatePicker } from "@/components/ui/datepicker";
 import SplitMatchdayType from "./SplitMatchdayType";
 import SplitStatus from "./SplitStatus";
-import { FieldValues, useFormContext } from "react-hook-form";
+import { FieldValues, Path, useFormContext } from "react-hook-form";
 
 type Props = {
   namePrefix?: string;
@@ -22,9 +22,9 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
 }: Props) {
   const form = useFormContext<T>();
 
-  function getFieldName(namePrefix: string | undefined, fieldName: string) {
+  function getFieldName(namePrefix: string | undefined, fieldName: Path<T>): Path<T> {
     if (!namePrefix) return fieldName;
-    return `matchdays.${namePrefix}.${fieldName}`;
+    return `${namePrefix}.${fieldName}` as Path<T>;
   }
 
   return (
@@ -81,7 +81,7 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
           </FormItem>
         )}
       />
-      <div className="grid sm:grid-cols-2 sm:gap-4">
+      <div className="grid sm:grid-cols-2 gap-8 sm:gap-4">
         <FormField
           control={form.control}
           name={getFieldName(namePrefix, "startAt")}

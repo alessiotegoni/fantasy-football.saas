@@ -19,15 +19,13 @@ import {
   EditSplitMatchdaySchema,
   editSplitMatchdaySchema,
 } from "../schema/splitMatchday";
-import SplitStatus from "./SplitStatus";
-import SplitMatchdayType from "./SplitMatchdayType";
 import SplitMatchdayFormFields from "./SplitMatchdayFormFields";
 
 type Props = {
   matchday?: SplitMatchday;
 };
 
-export default function SplitMatchdayForm({ matchday }: Props) {
+export default function EditSplitMatchdayForm({ matchday }: Props) {
   const form = useForm<EditSplitMatchdaySchema>({
     resolver: zodResolver(editSplitMatchdaySchema),
     defaultValues: {
