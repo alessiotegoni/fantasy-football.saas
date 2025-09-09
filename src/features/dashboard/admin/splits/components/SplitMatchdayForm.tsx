@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/select";
 import { matchdayTypes } from "@/drizzle/schema/splitMatchdays";
 import SplitStatus from "./SplitStatus";
+import SplitMatchdayType from "./SplitMatchdayType";
 
 type Props = {
   matchday?: SplitMatchday;
@@ -56,61 +57,49 @@ export default function SplitMatchdayForm({ matchday }: Props) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid sm:grid-cols-2 sm:gap-4">
-          <FormField
-            control={form.control}
-            name="number"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Numero giornata</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Numero della giornata"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Stato</FormLabel>
-                <FormControl>
-                  <SplitStatus
-                    status={field.value}
-                    onStatusChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem className="flex justify-between">
+              <FormLabel>Stato</FormLabel>
+              <FormControl>
+                <SplitStatus
+                  status={field.value}
+                  onStatusChange={field.onChange}
+                  canUpdate
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="type"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex justify-between">
               <FormLabel>Tipo</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleziona il tipo" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {matchdayTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormControl>
+                <SplitMatchdayType type={field.value} canUpdate />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="number"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Numero giornata</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  placeholder="Numero della giornata"
+                  {...field}
+                />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}

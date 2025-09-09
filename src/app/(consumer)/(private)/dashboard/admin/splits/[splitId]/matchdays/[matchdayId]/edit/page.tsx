@@ -15,12 +15,7 @@ export default async function SplitMatchdayEditPage({
 
   return (
     <Container headerLabel={`Modifica giornata ${matchday.number}`}>
-      <div className="mb-8">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Modifica</h2>
-        </div>
-        <SplitMatchdayForm matchday={matchday} />
-      </div>
+      <SplitMatchdayForm matchday={matchday} />
     </Container>
   );
 }
