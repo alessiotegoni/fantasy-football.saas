@@ -27,7 +27,7 @@ export default async function SplitDetailPage({
       headerLabel={split.name}
       renderHeaderRight={() => (
         <LinkButton
-          href={`/admin/splits/${split.id}/matchdays/create`}
+          href={`/dashboard/admin/splits/${split.id}/matchdays/create`}
           className="w-fit"
         >
           <Plus className="size-5" />
