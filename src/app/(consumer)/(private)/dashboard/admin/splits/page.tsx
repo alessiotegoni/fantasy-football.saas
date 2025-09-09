@@ -1,10 +1,13 @@
 import Container from "@/components/Container";
 import LinkButton from "@/components/LinkButton";
 import { Plus } from "iconoir-react";
-import { Split } from "@/features/dashboard/admin/splits/queries/split";
+import { getSplits } from "@/features/dashboard/admin/splits/queries/split";
 import SplitCard from "@/features/dashboard/admin/splits/components/SplitCard";
 
 export default async function SplitsPage() {
+
+  const splits = await getSplits()
+
   return (
     <Container
       headerLabel="Splits"
@@ -23,27 +26,3 @@ export default async function SplitsPage() {
     </Container>
   );
 }
-
-const splits: Split[] = [
-  {
-    id: 1,
-    name: "Split 1",
-    startDate: "2025-09-01",
-    endDate: "2025-12-31",
-    status: "live",
-  },
-  {
-    id: 2,
-    name: "Split 2",
-    startDate: "2026-01-01",
-    endDate: "2026-02-28",
-    status: "upcoming",
-  },
-  {
-    id: 3,
-    name: "Split 3",
-    startDate: "2024-08-01",
-    endDate: "2024-08-31",
-    status: "ended",
-  },
-];

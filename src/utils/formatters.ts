@@ -18,8 +18,6 @@ export function formatDate(
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
     ...options,
   });
 

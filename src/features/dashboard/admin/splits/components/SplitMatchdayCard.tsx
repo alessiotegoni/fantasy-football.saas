@@ -13,13 +13,13 @@ export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
         <h3 className="text-xl font-semibold leading-none tracking-tight">
           Giornata {matchday.number}
         </h3>
-        <SplitMatchdayType type={matchday.type} canUpdate />
+        <SplitMatchdayStatus status={matchday.status} canUpdate />
       </div>
       <div className="p-6 pt-0">
         <div className="flex items-center gap-3 text-sm text-muted-foreground space-y-2">
-          {formatDate(matchday.startAt)}
+          {formatDate(matchday.startAt, { hour: "numeric", minute: "numeric" })}
           <span>•</span>
-          {formatDate(matchday.endAt)}
+          {formatDate(matchday.endAt, { hour: "numeric", minute: "numeric" })}
         </div>
         <div className="flex justify-end space-x-2 mt-4">
           <Button variant="destructive" className="w-24">
