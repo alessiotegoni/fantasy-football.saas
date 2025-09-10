@@ -11,20 +11,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { EditSplitSchema, editSplitSchema } from "../schema/split";
 import { Split } from "../queries/split";
 import { DatePicker } from "@/components/ui/datepicker";
 import SubmitButton from "@/components/SubmitButton";
 import SplitStatus from "./SplitStatus";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { splitSchema, SplitSchema } from "../schema/split";
 
 type Props = {
   split?: Split;
 };
 
 export default function SplitForm({ split }: Props) {
-  const form = useForm<EditSplitSchema>({
-    resolver: zodResolver(editSplitSchema),
+  const form = useForm<SplitSchema>({
+    resolver: zodResolver(splitSchema),
     defaultValues: {
       name: split?.name ?? "",
       startDate: split?.startDate ? new Date(split.startDate) : new Date(),

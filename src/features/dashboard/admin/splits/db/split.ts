@@ -10,7 +10,7 @@ enum DB_ERRORS {
   DELETE_ERROR = "Errore nell'eliminazione dello split",
 }
 
-export async function insertSplit(data: (typeof splits.$inferInsert)[]) {
+export async function insertSplit(data: typeof splits.$inferInsert) {
   const [res] = await db
     .insert(splits)
     .values(data)
