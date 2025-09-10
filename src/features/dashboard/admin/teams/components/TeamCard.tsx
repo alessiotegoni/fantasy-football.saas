@@ -11,7 +11,7 @@ type Props = {
 
 export default function TeamCard({ team }: Props) {
   return (
-    <div className="p-4 border rounded-lg flex justify-between items-center">
+    <div className="p-4 bg-muted/30 rounded-3xl flex justify-between items-center">
       <div>
         <h3 className="text-lg font-semibold">{team.displayName}</h3>
         <p className="text-sm text-muted-foreground">{team.name}</p>
