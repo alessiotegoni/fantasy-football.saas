@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Split } from "../queries/split";
-import { DatePicker } from "@/components/ui/datepicker";
+import { DatetimePicker } from "@/components/ui/datetimepicker";
 import SubmitButton from "@/components/SubmitButton";
 import SplitStatus from "./SplitStatus";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
@@ -83,7 +83,10 @@ export default function SplitForm({ split }: Props) {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Data di inizio</FormLabel>
-                <DatePicker date={field.value} onDateChange={field.onChange} />
+                <DatetimePicker
+                  date={field.value}
+                  onDateChange={field.onChange}
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -94,7 +97,10 @@ export default function SplitForm({ split }: Props) {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Data di fine</FormLabel>
-                <DatePicker date={field.value} onDateChange={field.onChange} />
+                <DatetimePicker
+                  date={field.value}
+                  onDateChange={field.onChange}
+                />
                 <FormMessage />
               </FormItem>
             )}

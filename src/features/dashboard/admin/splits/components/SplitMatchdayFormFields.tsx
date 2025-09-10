@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { DatePicker } from "@/components/ui/datepicker";
+import { DatetimePicker } from "@/components/ui/datetimepicker";
 import SplitMatchdayType from "./SplitMatchdayType";
 import SplitStatus from "./SplitStatus";
 import { FieldValues, Path, useFormContext } from "react-hook-form";
@@ -91,7 +91,11 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data di inizio</FormLabel>
-              <DatePicker date={field.value} onDateChange={field.onChange} />
+              <DatetimePicker
+                date={field.value}
+                onDateChange={field.onChange}
+                showTime
+              />
               <FormMessage />
             </FormItem>
           )}
@@ -102,7 +106,11 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data di fine</FormLabel>
-              <DatePicker date={field.value} onDateChange={field.onChange} />
+              <DatetimePicker
+                date={field.value}
+                onDateChange={field.onChange}
+                showTime
+              />
               <FormMessage />
             </FormItem>
           )}
