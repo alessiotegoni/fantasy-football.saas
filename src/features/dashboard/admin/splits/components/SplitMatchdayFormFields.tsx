@@ -22,7 +22,10 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
 }: Props) {
   const form = useFormContext<T>();
 
-  function getFieldName(namePrefix: string | undefined, fieldName: Path<T>): Path<T> {
+  function getFieldName(
+    namePrefix: string | undefined,
+    fieldName: Path<T>
+  ): Path<T> {
     if (!namePrefix) return fieldName;
     return `${namePrefix}.${fieldName}` as Path<T>;
   }
@@ -88,7 +91,7 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data di inizio</FormLabel>
-              <DatePicker date={field.value} setDate={field.onChange} />
+              <DatePicker date={field.value} onDateChange={field.onChange} />
               <FormMessage />
             </FormItem>
           )}
@@ -99,7 +102,7 @@ export default function SplitMatchdayFormFields<T extends FieldValues>({
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>Data di fine</FormLabel>
-              <DatePicker date={field.value} setDate={field.onChange} />
+              <DatePicker date={field.value} onDateChange={field.onChange} />
               <FormMessage />
             </FormItem>
           )}

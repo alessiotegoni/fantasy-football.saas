@@ -8,7 +8,8 @@ import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
 import { SplitStatusType } from "@/drizzle/schema";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
-import { updateSplitMatchday } from "../actions/splitMatchday";
+import { deleteSplitMatchday, updateSplitMatchday } from "../actions/splitMatchday";
+import ActionButton from "@/components/ActionButton";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
   const { isPending, onSubmit } = useHandleSubmit(updateSplitMatchday);
@@ -37,9 +38,15 @@ export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
           {formatDate(matchday.endAt, { hour: "numeric", minute: "numeric" })}
         </div>
         <div className="flex justify-end space-x-2 mt-4">
-          <Button variant="destructive" className="w-24">
+          <ActionButton
+            loadingText="Elimino"
+            variant="destructive"
+            className="min-w-24 max-w-fit"
+            action={deleteSplitMatchday.bind(null, matchday.id)}
+            requireAreYouSure
+          >
             Elimina
-          </Button>
+          </ActionButton>
           <LinkButton
             className="w-36"
             href={`/dashboard/admin/splits/${matchday.splitId}/matchdays/${matchday.id}/edit`}

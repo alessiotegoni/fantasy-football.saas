@@ -35,7 +35,12 @@ export default function SplitForm({ split }: Props) {
   });
 
   const { isPending, onSubmit } = useHandleSubmit(
-    split ? updateSplit.bind(null, split.id) : createSplit
+    split ? updateSplit.bind(null, split.id) : createSplit,
+    {
+      ...(!split
+        ? { isLeaguePrefix: false, redirectTo: `/dashboard/admin/splits` }
+        : {}),
+    }
   );
 
   return (

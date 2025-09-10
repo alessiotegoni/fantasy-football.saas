@@ -46,6 +46,7 @@ export default function SplitCard({ split }: { split: Split }) {
         </div>
         <div className="flex justify-end space-x-2 mt-4">
           <ActionButton
+            loadingText="Elimino"
             variant="destructive"
             className="min-w-24 max-w-fit"
             action={deleteSplit.bind(null, split.id)}
