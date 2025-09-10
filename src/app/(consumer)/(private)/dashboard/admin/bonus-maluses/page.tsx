@@ -52,6 +52,7 @@ export default async function AssignBonusMalusesPage() {
       >
         {matchdays.map((matchday) => (
           <MatchdayAccordionItem
+            key={matchday.id}
             matchday={matchday}
             bonusMaluses={matchdaysBonusMaluses.filter(
               (mb) => mb.matchdayId === matchday.id
