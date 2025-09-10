@@ -29,7 +29,6 @@ import {
 } from "../db/auctionSettings";
 import { redirect } from "next/navigation";
 import { updateLeagueSettings } from "../../settings/db/setting";
-import { getLeagueVisibility } from "../../leagues/queries/league";
 import { updateLeagueTeams } from "../../teams/db/leagueTeam";
 import {
   addTeamsCredits,
@@ -41,6 +40,7 @@ import {
   deleteTeamsPlayers,
   insertTeamsPlayers,
 } from "../../teamsPlayers/db/teamsPlayer";
+import { getLeague } from "../../leagues/queries/league";
 
 enum AUCTION_MESSAGES {
   AUCTION_CREATED_SUCCESFULLY = "Asta creata con successo",
@@ -101,7 +101,7 @@ export async function updateAuction(auctionId: string, values: AuctionSchema) {
     await updateAuctionSettings(id, updatedAuction, tx);
 
     if (type === "classic") {
-      const visibility = await getLeagueVisibility(leagueId);
+      const { visibility } = await getLeague(leagueId);
       await updateLeagueSettings(
         { playersPerRole: data.playersPerRole, leagueId },
         visibility,
@@ -110,7 +110,7 @@ export async function updateAuction(auctionId: string, values: AuctionSchema) {
     }
   });
 
-  redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
+  redirect(`/league/${leagueId}/premium/auctions/${id}`);
 }
 
 export async function updateAuctionStatus(values: UpdateAuctionStatusSchema) {
@@ -164,7 +164,7 @@ async function createClassicAuction(
   teamsIds: string[],
   tx: Omit<typeof db, "$client"> = db
 ) {
-  const visibility = await getLeagueVisibility(data.leagueId);
+  const { visibility } = await getLeague(data.leagueId);
   await updateLeagueSettings(data, visibility, tx);
 
   await updateLeagueTeams(

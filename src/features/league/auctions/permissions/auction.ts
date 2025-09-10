@@ -6,12 +6,12 @@ import {
   UpdateAuctionSchema,
   UpdateAuctionStatusSchema,
 } from "../schema/auctionSettings";
-import { getSplits } from "@/features/splits/queries/split";
 import { getLeagueTeams } from "../../teams/queries/leagueTeam";
 import { getAuctionWithSettings } from "../queries/auction";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { isPremiumUnlocked } from "../../leagues/permissions/league";
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
+import { getSplits } from "@/features/dashboard/admin/splits/queries/split";
 
 enum AUCTION_ERRORS {
   PREMIUM_NOT_UNLOCKED = "Per gestire le aste almeno un membro della lega deve avere il premium",

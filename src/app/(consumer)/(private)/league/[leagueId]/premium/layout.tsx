@@ -1,14 +1,14 @@
-import { getLeaguePremium } from "@/features/league/leagues/queries/league";
+import { isPremiumUnlocked } from "@/features/league/leagues/permissions/league";
 import { redirect } from "next/navigation";
 
-export default async function PremiumLayout({
+export default async function LeaguePremiumLayout({
   params,
   children,
 }: LayoutProps<"/league/[leagueId]/premium">) {
   const { leagueId } = await params;
 
-  const hasLeaguePremium = await getLeaguePremium(leagueId);
-  if (!hasLeaguePremium) redirect(`/league/${leagueId}`);
+  const leaguePremium = await isPremiumUnlocked(leagueId);
+  if (!leaguePremium) redirect(`/league/${leagueId}`);
 
   return children;
 }
