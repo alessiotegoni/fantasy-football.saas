@@ -10,4 +10,9 @@ export async function getTeams() {
   return db.query.teams.findMany();
 }
 
-export type Team = typeof teams.$inferSelect
+export async function getTeam(teamId: number) {
+  const teams = await getTeams();
+  return teams.find((team) => team.id === teamId);
+}
+
+export type Team = typeof teams.$inferSelect;
