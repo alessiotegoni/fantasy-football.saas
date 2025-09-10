@@ -2,7 +2,6 @@ import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { isAdmin } from "@/features/dashboard/user/utils/roles";
-import { db } from "@/drizzle/db";
 import { createClient } from "@/services/supabase/server/supabase";
 
 enum SPLIT_ERRORS {
