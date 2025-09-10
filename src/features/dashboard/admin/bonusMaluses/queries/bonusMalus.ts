@@ -45,6 +45,7 @@ export async function getMatchdaysBonusMaluses(matchdaysIds: number[]) {
     },
     where: (matchdayBonus, { inArray }) =>
       inArray(matchdayBonus.matchdayId, matchdaysIds),
+    orderBy: (matchdayBonus, { asc }) => asc(matchdayBonus.playerId),
   });
 
   cacheTag(...results.map((res) => getPlayerIdTag(res.player.id)));

@@ -21,14 +21,14 @@ function SearchBar({
   className,
   value: externalValue,
 }: Props) {
-  const [value, setValue] = useState(externalValue ?? "");
+  const [value, setValue] = useState(externalValue ?? undefined);
 
   useEffect(() => {
     if (externalValue !== undefined) setValue(externalValue);
   }, [externalValue]);
 
   useEffect(() => {
-    if (!value) return
+    if (value === undefined) return
 
     const timer = setTimeout(() => {
       onSearch(value);
@@ -42,7 +42,7 @@ function SearchBar({
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
       <Input
         type="text"
-        value={value}
+        value={value ?? ""}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
         className="pl-10"

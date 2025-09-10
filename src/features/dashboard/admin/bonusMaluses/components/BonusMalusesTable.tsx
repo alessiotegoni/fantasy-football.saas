@@ -28,6 +28,7 @@ export default function BonusMalusesTable({ bonusMaluses }: Props) {
       <SearchBar
         onSearch={(search) => handleFilter({ search })}
         className="mb-0"
+        placeholder="Cerca giocatore o bonus"
       />
       <div className="overflow-x-auto rounded-2xl">
         <Table>
@@ -40,16 +41,22 @@ export default function BonusMalusesTable({ bonusMaluses }: Props) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredItems.map((bm) => (
-              <TableRow key={bm.id}>
-                <TableCell>{bm.player.displayName}</TableCell>
-                <TableCell>{bm.bonusMalusType.name}</TableCell>
-                <TableCell>{bm.count}</TableCell>
-                <TableCell>
-                  <BonusMalusRowActions bonusMalus={bm} />
-                </TableCell>
-              </TableRow>
-            ))}
+            {filteredItems.length > 0 ? (
+              filteredItems.map((bm) => (
+                <TableRow key={bm.id}>
+                  <TableCell>{bm.player.displayName}</TableCell>
+                  <TableCell>{bm.bonusMalusType.name}</TableCell>
+                  <TableCell>{bm.count}</TableCell>
+                  <TableCell>
+                    <BonusMalusRowActions bonusMalus={bm} />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <p className="text-center text-muted-foreground py-4">
+                Nessun bonus/malus trovato
+              </p>
+            )}
           </TableBody>
         </Table>
       </div>

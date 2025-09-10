@@ -36,7 +36,7 @@ export default function MatchdayAccordionItem({
           <NavArrowDown className="text-muted-foreground size-5 group-[data-state=open]:rotate-180" />
         </div>
       </AccordionTrigger>
-      <AccordionContent className="bg-muted/30 p-4 my-2 mb-3 rounded-3xl flex flex-col gap-4 text-balance">
+      <AccordionContent className="bg-muted/30 p-4 my-2 rounded-3xl flex flex-col gap-4 text-balance">
         {bonusMaluses.length > 0 ? (
           <BonusMalusesTable bonusMaluses={bonusMaluses} />
         ) : (
