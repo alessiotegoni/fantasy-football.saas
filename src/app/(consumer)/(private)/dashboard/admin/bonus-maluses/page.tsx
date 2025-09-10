@@ -1,7 +1,13 @@
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import { getLiveSplit, getSplitMatchdays } from "@/features/dashboard/admin/splits/queries/split";
+import { getMatchdaysBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
+import { Accordion } from "@/components/ui/accordion";
+import {
+  getLiveSplit,
+  getSplitMatchdays,
+} from "@/features/dashboard/admin/splits/queries/split";
+import MatchdayAccordionItem from "@/features/dashboard/admin/bonusMaluses/components/MatchdayAccordionItem";
 
 export default async function AssignBonusMalusesPage() {
   const split = await getLiveSplit();
@@ -17,7 +23,7 @@ export default async function AssignBonusMalusesPage() {
     );
   }
 
-  const matchdays = await getSplitMatchdays(split.id)
+  const matchdays = await getSplitMatchdays(split.id);
   if (!matchdays.length) {
     return (
       <Container headerLabel="Assegna bonus malus">
@@ -30,5 +36,29 @@ export default async function AssignBonusMalusesPage() {
     );
   }
 
-  return <div>AssignBonusMalusesPage</div>;
+  const matchdaysBonusMaluses = await getMatchdaysBonusMaluses(
+    matchdays.map((m) => m.id)
+  );
+
+  const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
+
+  return (
+    <Container headerLabel="Assegna bonus malus">
+      <Accordion
+        type="single"
+        collapsible
+        className="space-y-3"
+        defaultValue={liveMatchday?.id.toString()}
+      >
+        {matchdays.map((matchday) => (
+          <MatchdayAccordionItem
+            matchday={matchday}
+            bonusMaluses={matchdaysBonusMaluses.filter(
+              (mb) => mb.matchdayId === matchday.id
+            )}
+          />
+        ))}
+      </Accordion>
+    </Container>
+  );
 }

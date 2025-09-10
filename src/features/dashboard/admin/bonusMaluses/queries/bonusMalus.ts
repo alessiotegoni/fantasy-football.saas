@@ -18,7 +18,7 @@ export async function getBonusMaluses() {
 
 export type BonusMalus = typeof bonusMalusTypes.$inferSelect;
 
-export async function getMatchdaysbonusMaluses(matchdaysIds: number[]) {
+export async function getMatchdaysBonusMaluses(matchdaysIds: number[]) {
   "use cache";
   cacheTag(getBonusMalusTag(), ...matchdaysIds.map(getMatchdayBonusMalusesTag));
 
@@ -51,6 +51,10 @@ export async function getMatchdaysbonusMaluses(matchdaysIds: number[]) {
 
   return results;
 }
+
+export type MatchdayBonusMalus = Awaited<
+  ReturnType<typeof getMatchdaysBonusMaluses>
+>[number];
 
 export async function getPlayersMatchdayBonusMaluses({
   matchdayId,
