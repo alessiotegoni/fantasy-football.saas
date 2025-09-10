@@ -4,6 +4,7 @@ import { getSerialIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 
 export const splitMatchdaySchema = z.object({
+  splitId: getSerialIdSchema(),
   number: z.number().min(1, "Il numero deve essere di almeno 1"),
   startAt: z.date(),
   endAt: z.date(),

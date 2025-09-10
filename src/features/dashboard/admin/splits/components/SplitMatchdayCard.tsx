@@ -8,10 +8,11 @@ import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
 import { SplitStatusType } from "@/drizzle/schema";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { updateSplitMatchday } from "../actions/splitMatchday";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
   const { isPending, onSubmit } = useHandleSubmit(
-    updateMatchday.bind(null, matchday.id)
+    updateSplitMatchday.bind(null, matchday.id)
   );
 
   async function handleUpdateMatchday(status: SplitStatusType) {
