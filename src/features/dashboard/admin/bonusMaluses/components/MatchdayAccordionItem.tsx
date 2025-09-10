@@ -13,26 +13,25 @@ type Props = {
   bonusMaluses: MatchdayBonusMalus[];
 };
 
-export default function MatchdayAccordionItem({
-  matchday,
-  bonusMaluses,
-}: Props) {
-
+export default function MatchdayAccordionItem(props: Props) {
   return (
-    <AccordionItem value={matchday.id.toString()} className="border-b-0">
-      <div className="bg-muted/30 px-4 rounded-3xl">
-        <MatchdayAccordionTrigger matchday={matchday} />
-      </div>
-      <AccordionContent className="bg-muted/30 p-4 my-2 mb-3 rounded-3xl flex flex-col gap-4 text-balance"></AccordionContent>
-
+    <AccordionItem value={props.matchday.id.toString()} className="border-b-0">
+      <MatchdayAccordionTrigger {...props} />
+      <MatchdayAccordionContent {...props} />
     </AccordionItem>
+  );
+}
+
+function MatchdayAccordionContent({}: Props) {
+  return (
+    <AccordionContent className="bg-muted/30 p-4 my-2 mb-3 rounded-3xl flex flex-col gap-4 text-balance"></AccordionContent>
   );
 }
 
 function MatchdayAccordionTrigger({ matchday }: Pick<Props, "matchday">) {
   return (
     <AccordionTrigger
-      className="text-xl font-semibold"
+      className="bg-muted/30 px-4 rounded-3xl text-xl font-semibold"
       chevronClassName="hidden"
     >
       Giornata {matchday.number}
