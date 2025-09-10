@@ -21,6 +21,8 @@ export async function insertSplit(data: typeof splits.$inferInsert) {
   }
 
   revalidateSplitsCache(res.splitId);
+
+  return res.splitId
 }
 
 export async function updateSplit(

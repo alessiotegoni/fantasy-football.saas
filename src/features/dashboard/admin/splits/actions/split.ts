@@ -9,7 +9,12 @@ import {
   updateSplitSchema,
   UpdateSplitSchema,
 } from "../schema/split";
-import { deleteSplit, insertSplit, updateSplit } from "../db/split";
+import {
+  insertSplit,
+  updateSplit as updateSplitDB,
+  deleteSplit as deleteSplitDB,
+} from "../db/split";
+import { redirect } from "next/navigation";
 
 enum SPLIT_MESSAGES {
   ADDED_SUCCESSFULLY = "Split aggiunto con successo!",
@@ -27,12 +32,18 @@ export async function addSplit(values: SplitSchema) {
   const permissions = await canManageSplit();
   if (permissions.error) return permissions;
 
-  await insertSplit(data);
+  const newSplit = {
+    ...data,
+    startDate: data.startDate.toDateString(),
+    endDate: data.endDate.toDateString()
+  }
 
-  return createSuccess(SPLIT_MESSAGES.ADDED_SUCCESSFULLY, null);
+  const splitId = await insertSplit(newSplit);
+
+  redirect(`/dashboard/admin/splits/${splitId}`)
 }
 
-export async function updateCurrentSplit(id: number, values: SplitSchema) {
+export async function updateSplit(id: number, values: SplitSchema) {
   const { isValid, data, error } = validateSchema<UpdateSplitSchema>(
     updateSplitSchema,
     { id, values }
@@ -42,14 +53,20 @@ export async function updateCurrentSplit(id: number, values: SplitSchema) {
   const permissions = await canManageSplit();
   if (permissions.error) return permissions;
 
-  const { id: splitId, ...split } = data
+  const { id: splitId, ...split } = data;
 
-  await updateSplit(splitId, split);
+  const updatedSplit = {
+    ...split,
+    startDate: data.startDate.toDateString(),
+    endDate: data.endDate.toDateString()
+  }
+
+  await updateSplitDB(splitId, updatedSplit);
 
   return createSuccess(SPLIT_MESSAGES.UPDATED_SUCCESSFULLY, null);
 }
 
-export async function deleteCurrentSplit(splitId: number) {
+export async function deleteSplit(splitId: number) {
   const { isValid, error } = validateSchema<number>(
     getSerialIdSchema(),
     splitId
@@ -59,7 +76,7 @@ export async function deleteCurrentSplit(splitId: number) {
   const permissions = await canManageSplit();
   if (permissions.error) return permissions;
 
-  await deleteSplit(splitId);
+  await deleteSplitDB(splitId);
 
   return createSuccess(SPLIT_MESSAGES.DELETED_SUCCESSFULLY, null);
 }

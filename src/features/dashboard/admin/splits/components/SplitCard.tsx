@@ -1,11 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import SplitStatus from "./SplitStatus";
 import { Split } from "../queries/split";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
 import { formatDate } from "@/utils/formatters";
+import ActionButton from "@/components/ActionButton";
+import { deleteSplit } from "../actions/split";
 
 export default function SplitCard({ split }: { split: Split }) {
   return (
@@ -29,9 +30,14 @@ export default function SplitCard({ split }: { split: Split }) {
           {formatDate(split.endDate)}
         </div>
         <div className="flex justify-end space-x-2 mt-4">
-          <Button variant="destructive" className="w-24">
+          <ActionButton
+            variant="destructive"
+            className="min-w-24 max-w-fit"
+            action={deleteSplit.bind(null, split.id)}
+            requireAreYouSure
+          >
             Elimina
-          </Button>
+          </ActionButton>
           <LinkButton
             href={`/dashboard/admin/splits/${split.id}`}
             className="w-24"
