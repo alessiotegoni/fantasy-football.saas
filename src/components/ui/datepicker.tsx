@@ -1,8 +1,8 @@
 "use client";
 
-import { Calendar as CalendarIcon } from "lucide-react";
+import * as React from "react";
+import { ChevronDownIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -10,37 +10,38 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { formatDate } from "@/utils/formatters";
-import { it } from "react-day-picker/locale";
 
 type Props = {
-  date?: Date;
-  setDate: (date?: Date) => void;
-  className?: string;
+  date: Date;
+  onDateChange: (date: Date | undefined) => void;
 };
 
-export function DatePicker({ date, setDate, className }: Props) {
+export function DatePicker({ date, onDateChange }: Props) {
+  const [open, setOpen] = React.useState(false);
+
+  function handleSelect(date: Date | undefined) {
+    onDateChange(date);
+    setOpen(false);
+  }
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant={"outline"}
-          className={cn(
-            "w-full justify-start text-left font-normal",
-            !date && "text-muted-foreground",
-            className
-          )}
+          variant="outline"
+          id="date"
+          className="justify-between font-normal"
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? formatDate(date) : <span>Scegli data</span>}
+          {date ? date.toLocaleDateString("it-IT") : "Seleziona data"}
+          <ChevronDownIcon />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="rounded-2xl w-auto p-0">
+      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
-          locale={it}
+          captionLayout="dropdown"
+          onSelect={handleSelect}
         />
       </PopoverContent>
     </Popover>

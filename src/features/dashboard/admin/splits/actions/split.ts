@@ -14,7 +14,6 @@ import {
   updateSplit as updateSplitDB,
   deleteSplit as deleteSplitDB,
 } from "../db/split";
-import { redirect } from "next/navigation";
 
 enum SPLIT_MESSAGES {
   ADDED_SUCCESSFULLY = "Split aggiunto con successo!",
@@ -46,7 +45,7 @@ export async function createSplit(values: SplitSchema) {
 export async function updateSplit(id: number, values: SplitSchema) {
   const { isValid, data, error } = validateSchema<UpdateSplitSchema>(
     updateSplitSchema,
-    { id, values }
+    { id, ...values }
   );
   if (!isValid) return error;
 

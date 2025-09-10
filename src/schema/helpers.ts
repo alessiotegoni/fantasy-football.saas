@@ -14,6 +14,9 @@ export function validateSchema<T>(
 ): ValidateSchema<T> {
   const { success, data, error } = schema.safeParse(values);
 
+  console.error(error);
+  
+
   if (!success) {
     return { isValid: false, error: createError(errorMessage) };
   }

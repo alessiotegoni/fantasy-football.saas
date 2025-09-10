@@ -35,11 +35,7 @@ export default function SplitForm({ split }: Props) {
   });
 
   const { isPending, onSubmit } = useHandleSubmit(
-    split ? updateSplit.bind(null, split.id) : createSplit,
-    {
-      isLeaguePrefix: false,
-      redirectTo: "/dashboard/admin/splits",
-    }
+    split ? updateSplit.bind(null, split.id) : createSplit
   );
 
   return (
@@ -82,7 +78,7 @@ export default function SplitForm({ split }: Props) {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Data di inizio</FormLabel>
-                <DatePicker date={field.value} setDate={field.onChange} />
+                <DatePicker date={field.value} onDateChange={field.onChange} />
                 <FormMessage />
               </FormItem>
             )}
@@ -93,7 +89,7 @@ export default function SplitForm({ split }: Props) {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Data di fine</FormLabel>
-                <DatePicker date={field.value} setDate={field.onChange} />
+                <DatePicker date={field.value} onDateChange={field.onChange} />
                 <FormMessage />
               </FormItem>
             )}
