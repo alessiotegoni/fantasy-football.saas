@@ -11,9 +11,7 @@ import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { updateSplitMatchday } from "../actions/splitMatchday";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
-  const { isPending, onSubmit } = useHandleSubmit(
-    updateSplitMatchday.bind(null, matchday.id)
-  );
+  const { isPending, onSubmit } = useHandleSubmit(updateSplitMatchday);
 
   async function handleUpdateMatchday(status: SplitStatusType) {
     onSubmit({ ...matchday, status });

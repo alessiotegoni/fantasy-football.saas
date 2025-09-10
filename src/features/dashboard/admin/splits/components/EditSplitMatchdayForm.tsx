@@ -2,48 +2,31 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { DatePicker } from "@/components/ui/datepicker";
+import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { SplitMatchday } from "../queries/split";
 import {
-  EditSplitMatchdaySchema,
-  editSplitMatchdaySchema,
+  UpdateSplitMatchdaySchema,
+  updateSplitMatchdaySchema,
 } from "../schema/splitMatchday";
 import SplitMatchdayFormFields from "./SplitMatchdayFormFields";
+import { updateSplitMatchday } from "../actions/splitMatchday";
 
 type Props = {
-  matchday?: SplitMatchday;
+  matchday: SplitMatchday;
 };
 
 export default function EditSplitMatchdayForm({ matchday }: Props) {
-  const form = useForm<EditSplitMatchdaySchema>({
-    resolver: zodResolver(editSplitMatchdaySchema),
-    defaultValues: {
-      number: matchday?.number ?? 1,
-      startAt: matchday?.startAt ? matchday.startAt : new Date(),
-      endAt: matchday?.endAt ? matchday.endAt : new Date(),
-      status: matchday?.status ?? "upcoming",
-      type: matchday?.type ?? "regular",
-    },
+  const form = useForm<UpdateSplitMatchdaySchema>({
+    resolver: zodResolver(updateSplitMatchdaySchema),
+    defaultValues: matchday,
   });
 
-  const { isPending, onSubmit } = useHandleSubmit(
-    () => new Promise((resolve) => resolve()), // Placeholder for action
-    {
-      isLeaguePrefix: false,
-      redirectTo: `/dashboard/admin/splits`,
-    }
-  );
+  const { isPending, onSubmit } = useHandleSubmit(updateSplitMatchday, {
+    isLeaguePrefix: false,
+    redirectTo: `/dashboard/admin/splits/${matchday.splitId}`,
+  });
 
   return (
     <Form {...form}>

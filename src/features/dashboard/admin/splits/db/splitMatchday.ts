@@ -11,7 +11,7 @@ enum DB_ERRORS {
 }
 
 export async function insertSplitMatchday(
-  data: typeof splitMatchdays.$inferInsert
+  data: (typeof splitMatchdays.$inferInsert)[]
 ) {
   const [res] = await db
     .insert(splitMatchdays)

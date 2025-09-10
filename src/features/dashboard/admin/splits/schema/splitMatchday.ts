@@ -3,7 +3,7 @@ import { matchdayTypes } from "@/drizzle/schema/splitMatchdays";
 import { getSerialIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 
-export const splitMatchdaySchema = z.object({
+const splitMatchdaySchema = z.object({
   splitId: getSerialIdSchema(),
   number: z.number().min(1, "Il numero deve essere di almeno 1"),
   startAt: z.date(),
@@ -12,13 +12,17 @@ export const splitMatchdaySchema = z.object({
   type: z.enum(matchdayTypes),
 });
 
+export const createSplitMatchdaysSchema = z.object({
+  matchdays: z.array(splitMatchdaySchema),
+});
+
 export const updateSplitMatchdaySchema = z
   .object({
     id: getSerialIdSchema(),
   })
   .merge(splitMatchdaySchema);
 
-export type SplitMatchdaySchema = z.infer<typeof splitMatchdaySchema>;
+export type CreateSplitMatchdaysSchema = z.infer<typeof createSplitMatchdaysSchema>;
 export type UpdateSplitMatchdaySchema = z.infer<
   typeof updateSplitMatchdaySchema
 >;

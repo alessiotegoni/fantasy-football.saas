@@ -6,18 +6,24 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import MatchdayFields from "@/features/dashboard/admin/splits/components/MatchdayFields";
 import {
-  createSplitMatchdaySchema,
-  CreateSplitMatchdaySchema,
+  createSplitMatchdaysSchema,
+  CreateSplitMatchdaysSchema,
 } from "@/features/dashboard/admin/splits/schema/splitMatchday";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "iconoir-react";
+import { use } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 
-export default function CreateMatchdayPage() {
-  const form = useForm<CreateSplitMatchdaySchema>({
-    resolver: zodResolver(createSplitMatchdaySchema),
+export default function CreateMatchdayPage({
+  params,
+}: PageProps<"/dashboard/admin/splits/[splitId]/matchdays/create">) {
+  const p = use(params);
+  const splitId = parseInt(p.splitId)
+
+  const form = useForm<CreateSplitMatchdaysSchema>({
+    resolver: zodResolver(createSplitMatchdaysSchema),
     defaultValues: {
-      matchdays: [defaultValue],
+      matchdays: [getDefaultValue(splitId)],
     },
   });
 
@@ -34,7 +40,7 @@ export default function CreateMatchdayPage() {
     <Container
       headerLabel="Crea giornate"
       renderHeaderRight={() => (
-        <Button className="w-fit" onClick={() => append(defaultValue)}>
+        <Button className="w-fit" onClick={() => append(getDefaultValue(splitId))}>
           <Plus className="size-5" />
           Aggiungi giornata
         </Button>
@@ -57,10 +63,13 @@ export default function CreateMatchdayPage() {
   );
 }
 
-const defaultValue = {
-  number: 1,
-  status: "upcoming",
-  type: "regular",
-  startAt: new Date(),
-  endAt: new Date(),
-} as const;
+function getDefaultValue(splitId: number) {
+  return {
+    splitId,
+    number: 1,
+    status: "upcoming",
+    type: "regular",
+    startAt: new Date(),
+    endAt: new Date(),
+  } as const;
+}

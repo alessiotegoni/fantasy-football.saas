@@ -4,8 +4,8 @@ import { getSerialIdSchema, validateSchema } from "@/schema/helpers";
 import { createSuccess } from "@/utils/helpers";
 import { canManageSplitMatchday } from "../permissions/splitMatchday";
 import {
-  splitMatchdaySchema,
-  SplitMatchdaySchema,
+  createSplitMatchdaysSchema,
+  CreateSplitMatchdaysSchema,
   updateSplitMatchdaySchema,
   UpdateSplitMatchdaySchema,
 } from "../schema/splitMatchday";
@@ -21,9 +21,9 @@ enum SPLIT_MATCHDAY_MESSAGES {
   DELETED_SUCCESSFULLY = "Giornata eliminata con successo!",
 }
 
-export async function createSplitMatchday(values: SplitMatchdaySchema) {
-  const { isValid, data, error } = validateSchema<SplitMatchdaySchema>(
-    splitMatchdaySchema,
+export async function createSplitMatchdays(values: CreateSplitMatchdaysSchema) {
+  const { isValid, data, error } = validateSchema<CreateSplitMatchdaysSchema>(
+    createSplitMatchdaysSchema,
     values
   );
   if (!isValid) return error;
@@ -31,18 +31,15 @@ export async function createSplitMatchday(values: SplitMatchdaySchema) {
   const permissions = await canManageSplitMatchday();
   if (permissions.error) return permissions;
 
-  await insertSplitMatchday(data);
+  await insertSplitMatchday(data.matchdays);
 
   return createSuccess(SPLIT_MATCHDAY_MESSAGES.ADDED_SUCCESSFULLY, null);
 }
 
-export async function updateSplitMatchday(
-  id: number,
-  values: SplitMatchdaySchema
-) {
+export async function updateSplitMatchday(values: UpdateSplitMatchdaySchema) {
   const { isValid, data, error } = validateSchema<UpdateSplitMatchdaySchema>(
     updateSplitMatchdaySchema,
-    { id, ...values }
+    values
   );
   if (!isValid) return error;
 
