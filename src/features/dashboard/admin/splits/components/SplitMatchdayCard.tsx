@@ -6,19 +6,30 @@ import { SplitMatchday } from "../queries/split";
 import { formatDate } from "@/utils/formatters";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
-import { useForm } from "react-hook-form";
 import { SplitStatusType } from "@/drizzle/schema";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
-  // TODO: crea un form per la creazione/modifica della matchday da utilizzare nella pagina della creazione,
-  // nella pagina di modifica e qui, in modo che richiamino la stessa server action che gli passa tutti i dati
+  const { isPending, onSubmit } = useHandleSubmit(
+    updateMatchday.bind(null, matchday.id)
+  );
+
+  async function handleUpdateMatchday(status: SplitStatusType) {
+    onSubmit({ ...matchday, status });
+  }
+
   return (
     <div className="rounded-3xl border bg-muted/30 text-card-foreground shadow-sm w-full">
       <div className="flex items-center justify-between p-6 pb-2">
         <h3 className="text-xl font-semibold leading-none tracking-tight">
           Giornata {matchday.number}
         </h3>
-        <SplitMatchdayStatus status={matchday.status} canUpdate />
+        <SplitMatchdayStatus
+          status={matchday.status}
+          isPending={isPending}
+          onStatusChange={handleUpdateMatchday}
+          canUpdate
+        />
       </div>
       <div className="p-6 pt-0">
         <div className="flex items-center gap-3 text-sm text-muted-foreground space-y-2">

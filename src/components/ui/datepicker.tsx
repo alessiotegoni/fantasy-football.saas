@@ -36,12 +36,13 @@ export function DatePicker({ date, onDateChange }: Props) {
           <ChevronDownIcon />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+      <PopoverContent className="w-auto overflow-hidden p-0 rounded-2xl" align="start">
         <Calendar
           mode="single"
           selected={date}
           captionLayout="dropdown"
           onSelect={handleSelect}
+          defaultMonth={date}
         />
       </PopoverContent>
     </Popover>
