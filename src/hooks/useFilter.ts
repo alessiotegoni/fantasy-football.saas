@@ -24,7 +24,7 @@ export function useFilter<TItem, TFilters>(
   const filteredItems = useMemo(() => {
     if (!defaultFilters) return items;
     return items.filter((item) => filterFn(item, filters));
-  }, [items, filters, filterFn]);
+  }, [items, filters]);
 
   return {
     filters,

@@ -19,22 +19,9 @@ type Props = {
 
 export default function BonusMalusesTable({ bonusMaluses }: Props) {
   const { filteredItems, handleFilter } = useFilter(bonusMaluses, {
-    filterFn: (item, filters) => {
-      if (!filters.search) return true;
-      return (
-        item.player.displayName
-          .toLowerCase()
-          .includes(filters.search.toLowerCase()) ||
-        item.bonusMalusType.name
-          .toLowerCase()
-          .includes(filters.search.toLowerCase())
-      );
-    },
-    defaultFilters: { search: "" },
+    filterFn: filterBonusMaluses,
+    defaultFilters,
   });
-
-  console.log(filteredItems);
-
 
   return (
     <>
@@ -42,7 +29,7 @@ export default function BonusMalusesTable({ bonusMaluses }: Props) {
         onSearch={(search) => handleFilter({ search })}
         className="mb-0"
       />
-      <div className="overflow-x-auto rounded-2xl border border-muted">
+      <div className="overflow-x-auto rounded-2xl">
         <Table>
           <TableHeader>
             <TableRow>
@@ -67,5 +54,18 @@ export default function BonusMalusesTable({ bonusMaluses }: Props) {
         </Table>
       </div>
     </>
+  );
+}
+
+const defaultFilters = { search: "" };
+
+function filterBonusMaluses(
+  { player, bonusMalusType }: MatchdayBonusMalus,
+  { search }: { search: string }
+) {
+  if (!search) return true;
+  return (
+    player.displayName.toLowerCase().includes(search.toLowerCase()) ||
+    bonusMalusType.name.toLowerCase().includes(search.toLowerCase())
   );
 }

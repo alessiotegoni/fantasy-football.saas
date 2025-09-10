@@ -28,12 +28,14 @@ function SearchBar({
   }, [externalValue]);
 
   useEffect(() => {
+    if (!value) return
+
     const timer = setTimeout(() => {
       onSearch(value);
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [value, delay, onSearch]);
+  }, [value, delay]);
 
   return (
     <div className={cn("relative w-full mb-6", className)}>
