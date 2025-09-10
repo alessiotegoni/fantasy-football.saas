@@ -22,8 +22,6 @@ import {
   Shield,
   StatsUpSquare,
   Axes,
-  EditPencil,
-  CreativeCommons,
   Star,
 } from "iconoir-react";
 import DashboardSidebarItem from "./DashboardSidebarItem";
@@ -36,7 +34,6 @@ export default function DashboardSidebar() {
   const { user, userRoles } = useDashboardRoles();
 
   const sidebarSections = [
-    ...(userRoles.includes("superadmin") ? [superadminGroup] : []),
     ...(userRoles.includes("admin") ? [adminGroup] : []),
     ...(userRoles.includes("content-creator") ? [creatorGroup] : []),
     ...(userRoles.includes("redaction") ? [redactionGroup] : []),
@@ -93,33 +90,6 @@ const users: SidebarGroup = {
     {
       name: "Premium",
       href: "/dashboard/user/premium",
-      icon: Star,
-    },
-  ],
-};
-
-const superadminGroup: SidebarGroup = {
-  title: "Superadmin",
-  role: "superadmin",
-  items: [
-    {
-      name: "Admins",
-      href: "/dashboard/admin/admins",
-      icon: Shield,
-    },
-    {
-      name: "Content creators",
-      href: "/dashboard/admin/content-creators",
-      icon: CreativeCommons,
-    },
-    {
-      name: "Redazione",
-      href: "/dashboard/admin/redactions",
-      icon: EditPencil,
-    },
-    {
-      name: "Premium",
-      href: "/dashboard/admin/premium",
       icon: Star,
     },
   ],
