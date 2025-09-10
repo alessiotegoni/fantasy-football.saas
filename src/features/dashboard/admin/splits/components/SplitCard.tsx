@@ -6,20 +6,35 @@ import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
 import { formatDate } from "@/utils/formatters";
 import ActionButton from "@/components/ActionButton";
-import { deleteSplit } from "../actions/split";
+import { deleteSplit, updateSplit } from "../actions/split";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { SplitStatusType } from "@/drizzle/schema";
 
 export default function SplitCard({ split }: { split: Split }) {
+  const { isPending, onSubmit } = useHandleSubmit(
+    updateSplit.bind(null, split.id)
+  );
+
+  async function handleUpdateSplit(status: SplitStatusType) {
+    const newSplit = {
+      ...split,
+      startDate: new Date(split.startDate),
+      endDate: new Date(split.endDate),
+    };
+    onSubmit({ ...newSplit, status });
+  }
+
   return (
     <div className="rounded-3xl border bg-input/30 text-card-foreground shadow-sm w-full">
       <div className="flex flex-row items-center justify-between space-y-0 p-6 pb-2">
         <h3 className="text-2xl font-semibold leading-none tracking-tight">
           {split.name}
         </h3>
+
         <SplitStatus
           status={split.status}
-          onStatusChange={() =>
-            new Promise((resolve) => resolve({ error: false, message: "dwd" }))
-          }
+          onStatusChange={handleUpdateSplit}
+          isPending={isPending}
           canUpdate
         />
       </div>

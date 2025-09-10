@@ -17,6 +17,7 @@ import SubmitButton from "@/components/SubmitButton";
 import SplitStatus from "./SplitStatus";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { splitSchema, SplitSchema } from "../schema/split";
+import { createSplit, updateSplit } from "../actions/split";
 
 type Props = {
   split?: Split;
@@ -34,16 +35,12 @@ export default function SplitForm({ split }: Props) {
   });
 
   const { isPending, onSubmit } = useHandleSubmit(
-    () => new Promise((resolve) => resolve()),
+    split ? updateSplit.bind(null, split.id) : createSplit,
     {
       isLeaguePrefix: false,
       redirectTo: "/dashboard/admin/splits",
     }
   );
-  // const { isPending, onSubmit } = useHandleSubmit(split ? editSplit : createSplit, {
-  //   isLeaguePrefix: false,
-  //   redirectTo: "/dashboard/admin/splits",
-  // });
 
   return (
     <Form {...form}>

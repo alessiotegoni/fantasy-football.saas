@@ -22,7 +22,7 @@ enum SPLIT_MESSAGES {
   DELETED_SUCCESSFULLY = "Split eliminato con successo!",
 }
 
-export async function addSplit(values: SplitSchema) {
+export async function createSplit(values: SplitSchema) {
   const { isValid, data, error } = validateSchema<SplitSchema>(
     splitSchema,
     values
@@ -35,12 +35,12 @@ export async function addSplit(values: SplitSchema) {
   const newSplit = {
     ...data,
     startDate: data.startDate.toDateString(),
-    endDate: data.endDate.toDateString()
-  }
+    endDate: data.endDate.toDateString(),
+  };
 
-  const splitId = await insertSplit(newSplit);
+  await insertSplit(newSplit);
 
-  redirect(`/dashboard/admin/splits/${splitId}`)
+  return createSuccess(SPLIT_MESSAGES.UPDATED_SUCCESSFULLY, null);
 }
 
 export async function updateSplit(id: number, values: SplitSchema) {
@@ -58,8 +58,8 @@ export async function updateSplit(id: number, values: SplitSchema) {
   const updatedSplit = {
     ...split,
     startDate: data.startDate.toDateString(),
-    endDate: data.endDate.toDateString()
-  }
+    endDate: data.endDate.toDateString(),
+  };
 
   await updateSplitDB(splitId, updatedSplit);
 

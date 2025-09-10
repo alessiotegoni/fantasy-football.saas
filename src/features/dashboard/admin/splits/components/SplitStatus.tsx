@@ -9,17 +9,19 @@ import {
 } from "@/components/ui/select";
 import { type SplitStatusType, splitStatuses } from "@/drizzle/schema/splits";
 import { cn } from "@/lib/utils";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LoaderCircle } from "lucide-react";
 
 interface StatusBadgeProps {
   status: SplitStatusType;
   canUpdate?: boolean;
   onStatusChange?: (status: SplitStatusType) => void;
+  isPending?: boolean;
 }
 
 export default function SplitStatus({
   status,
   canUpdate = false,
+  isPending = false,
   onStatusChange,
 }: StatusBadgeProps) {
   const currentStatusInfo = statusConfig[status];
@@ -39,8 +41,13 @@ export default function SplitStatus({
             className="h-8 w-8 p-0 cursor-pointer !bg-transparent border-0
             hover:!bg-primary transition-colors justify-center"
             showChevron={false}
+            disabled={isPending}
           >
-            <ChevronDown className="size-5" />
+            {isPending ? (
+              <LoaderCircle className="animate-spin !size-5" />
+            ) : (
+              <ChevronDown className="size-5" />
+            )}
           </SelectTrigger>
           <SelectContent>
             {splitStatuses.map((statusValue) => {
