@@ -116,7 +116,7 @@ const adminGroup: SidebarGroup = {
     },
     {
       name: "Assegna bonus/malus",
-      href: "/dashboard/admin/bonus",
+      href: "/dashboard/admin/bonus-maluses",
       icon: Gift,
     },
   ],

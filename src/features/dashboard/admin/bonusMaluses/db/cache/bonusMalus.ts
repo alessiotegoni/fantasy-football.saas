@@ -1,9 +1,14 @@
 import { getIdTag } from "@/cache/helpers";
 import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/player";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { revalidateTag } from "next/cache";
+import { getSplitMatchdaysIdTag } from "../../../splits/db/cache/split";
 
-export type MATCHDAY_BONUS_MALUS_TAG = "player-matchday-bonus-malus";
+export type MATCHDAY_BONUS_MALUS_TAG =
+  | "matchday-bonus-maluses"
+  | "player-matchday-bonus-malus";
+
+export const getMatchdayBonusMalusesTag = (matchdayId: number) =>
+  getIdTag("matchday-bonus-maluses", matchdayId.toString());
 
 export const getPlayerMatchdayBonusMalusTag = (
   playerId: number,
@@ -16,6 +21,12 @@ export const getPlayerMatchdayBonusMalusTag = (
     "player-matchday-bonus-malus",
     `${playerIdTag}-${matchdayIdTag}`
   );
+};
+
+export const revalidateSplitMatchdaysBonusMalusesCache = (
+  matchdayId: number
+) => {
+  revalidateTag(getMatchdayBonusMalusesTag(matchdayId));
 };
 
 export const revalidatePlayerMatchdayBonusMalusCache = (

@@ -6,9 +6,10 @@ import { Button } from "./ui/button";
 import Link from "next/link";
 import { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { Href } from "@/utils/helpers";
 
 interface Props extends ComponentProps<typeof Button> {
-  backTo?: string;
+  backTo?: Href;
 }
 
 export default function BackButton({

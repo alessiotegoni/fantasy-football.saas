@@ -9,7 +9,7 @@ export default async function TeamsPage() {
 
   return (
     <Container
-      headerLabel="Teams"
+      headerLabel="Squadre"
       renderHeaderRight={() => (
         <LinkButton href="/dashboard/admin/teams/create" className="w-fit">
           <Plus className="size-5" />

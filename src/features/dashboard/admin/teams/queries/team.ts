@@ -7,7 +7,9 @@ export async function getTeams() {
   "use cache";
   cacheTag(getTeamsTag());
 
-  return db.query.teams.findMany();
+  return db.query.teams.findMany({
+    orderBy: (team, { asc }) => asc(team.id),
+  });
 }
 
 export async function getTeam(teamId: number) {

@@ -10,7 +10,7 @@ export default async function TeamEditPage({ params }: PageProps<"/league/[leagu
   if (!team) notFound();
 
   return (
-    <Container headerLabel={`Modifica team ${team.name}`}>
+    <Container headerLabel={`Modifica squadra: ${team.name}`}>
       <TeamForm team={team} />
     </Container>
   );
