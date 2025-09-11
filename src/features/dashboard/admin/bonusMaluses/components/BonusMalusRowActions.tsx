@@ -1,13 +1,10 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Edit, MoreVert, Trash, TrashSolid } from "iconoir-react";
+import { Edit, MoreVert, TrashSolid } from "iconoir-react";
 import { MatchdayBonusMalus } from "../queries/bonusMalus";
 import {
   Dialog,
@@ -16,19 +13,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ActionButton from "@/components/ActionButton";
+import { SplitMatchday } from "../../splits/queries/split";
 
 type Props = {
+  matchday: SplitMatchday;
   bonusMalus: MatchdayBonusMalus;
 };
 
-export default function BonusMalusRowActions({ bonusMalus }: Props) {
+export default function BonusMalusRowActions({ matchday, bonusMalus }: Props) {
+  if (matchday.status === "upcoming") return null
+
   return (
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
-            <MoreVert className="h-4 w-4" />
+            <MoreVert className="size-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="space-y-1 max-w-40">

@@ -12,12 +12,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import BonusMalusRowActions from "./BonusMalusRowActions";
+import { SplitMatchday } from "../../splits/queries/split";
 
 type Props = {
+  matchday: SplitMatchday;
   bonusMaluses: MatchdayBonusMalus[];
 };
 
-export default function BonusMalusesTable({ bonusMaluses }: Props) {
+export default function BonusMalusesTable({ matchday, bonusMaluses }: Props) {
   const { filteredItems, handleFilter } = useFilter(bonusMaluses, {
     filterFn: filterBonusMaluses,
     defaultFilters,
@@ -30,36 +32,36 @@ export default function BonusMalusesTable({ bonusMaluses }: Props) {
         className="mb-0"
         placeholder="Cerca giocatore o bonus"
       />
-      <div className="overflow-x-auto rounded-2xl">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Giocatore</TableHead>
-              <TableHead>Bonus</TableHead>
-              <TableHead>Conteggio</TableHead>
-              <TableHead />
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredItems.length > 0 ? (
-              filteredItems.map((bm) => (
+      {filteredItems.length > 0 ? (
+        <div className="overflow-x-auto rounded-2xl">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Giocatore</TableHead>
+                <TableHead>Bonus</TableHead>
+                <TableHead>Conteggio</TableHead>
+                <TableHead />
+              </TableRow>
+            </TableHeader>
+            <TableBody className="overflow-y-auto max-h-[800px]">
+              {filteredItems.map((bm) => (
                 <TableRow key={bm.id}>
                   <TableCell>{bm.player.displayName}</TableCell>
                   <TableCell>{bm.bonusMalusType.name}</TableCell>
                   <TableCell>{bm.count}</TableCell>
                   <TableCell>
-                    <BonusMalusRowActions bonusMalus={bm} />
+                    <BonusMalusRowActions matchday={matchday} bonusMalus={bm} />
                   </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <p className="text-center text-muted-foreground py-4">
-                Nessun bonus/malus trovato
-              </p>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="text-center text-muted-foreground py-4">
+          Nessun bonus/malus trovato
+        </p>
+      )}
     </>
   );
 }
