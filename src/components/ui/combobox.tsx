@@ -31,6 +31,8 @@ type Props = {
   emptyText?: string;
 };
 
+// FIXME: filtering not working
+
 export function Combobox({
   items,
   value,
@@ -44,7 +46,7 @@ export function Combobox({
         <Button
           variant="outline"
           role="combobox"
-          className="w-[200px] justify-between"
+          className="min-w-[200px] w-fit justify-between"
         >
           {value
             ? items.find((item) => item.value === value)?.label
@@ -52,10 +54,10 @@ export function Combobox({
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="min-w-[200px] rounded-3xl p-0 overflow-hidden">
         <Command>
           <CommandInput placeholder={placeholder} className="h-9" />
-          <CommandList>
+          <CommandList className="custom-scrollbar">
             <CommandEmpty>{emptyText}</CommandEmpty>
             <CommandGroup>
               {items.map((item) => (
@@ -65,7 +67,9 @@ export function Combobox({
                   onSelect={onSelect}
                 >
                   {item.label}
-                  {item.value === value && <Check className="ml-auto" />}
+                  {item.value === value && (
+                    <Check className="ml-auto text-white" />
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>

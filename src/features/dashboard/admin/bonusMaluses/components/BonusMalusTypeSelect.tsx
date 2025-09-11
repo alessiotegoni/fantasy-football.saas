@@ -33,6 +33,8 @@ export default function BonusMalusTypeSelect({
               items={items}
               value={field.value.toString()}
               onSelect={field.onChange}
+              placeholder="Cerca bonus/malus"
+              emptyText="Nessun bonus/malus trovato"
             />
           </FormControl>
           <FormMessage />

@@ -16,9 +16,6 @@ type Props = {
   bonusMalusTypes: BonusMalusType[];
 };
 
-// TODO: fare editBonusMalusDialog che riceva come prop la matchday e il player e mostri
-// una select con i bonus da assegnare ed il conteggio (select di bonus riutilizzabile)
-
 // TODO: per la pagina di assegnazione del bonus fetchare la matchday dai searchParams
 //  fare una select di tutti i player (riutilizzabile), mettere il select dei bonus ed il conteggio
 

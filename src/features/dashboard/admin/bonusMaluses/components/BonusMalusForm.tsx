@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/form";
 import BonusMalusTypeSelect from "./BonusMalusTypeSelect";
 import NumberInput from "@/components/ui/number-input";
+import SubmitButton from "@/components/SubmitButton";
 
 type Props = {
   matchday: SplitMatchday;
@@ -41,21 +42,26 @@ export default function BonusMalusForm({
 
   return (
     <Form {...form}>
-      <form className="grid grid-cols-2">
-        <BonusMalusTypeSelect types={bonusMalusTypes} />
-        <FormField
-          control={form.control}
-          name="count"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Conteggio</FormLabel>
-              <FormControl>
-                <NumberInput {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form className="space-y-4 flex flex-col items-end">
+        <div className="grid sm:grid-cols-[minmax(215px,auto)_1fr] gap-4 w-full">
+          <BonusMalusTypeSelect types={bonusMalusTypes} />
+          <FormField
+            control={form.control}
+            name="count"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Conteggio</FormLabel>
+                <FormControl>
+                  <NumberInput {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+        <SubmitButton loadingText="Modifico" className="w-fit">
+          Modifica
+        </SubmitButton>
       </form>
     </Form>
   );
