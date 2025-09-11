@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -32,7 +31,7 @@ type Props = {
   emptyText?: string;
 };
 
-export function ComboboxDemo({
+export function Combobox({
   items,
   value,
   onSelect,
