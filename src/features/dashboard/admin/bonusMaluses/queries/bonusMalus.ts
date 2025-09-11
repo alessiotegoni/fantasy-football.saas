@@ -9,15 +9,6 @@ import {
 import { getBonusMalusTag } from "@/cache/global";
 import { getPlayerIdTag } from "../../players/db/cache/player";
 
-export async function getBonusMaluses() {
-  "use cache";
-  cacheTag(getBonusMalusTag());
-
-  return db.query.bonusMalusTypes.findMany();
-}
-
-export type BonusMalus = typeof bonusMalusTypes.$inferSelect;
-
 export async function getMatchdaysBonusMaluses(matchdaysIds: number[]) {
   "use cache";
   cacheTag(getBonusMalusTag(), ...matchdaysIds.map(getMatchdayBonusMalusesTag));

@@ -8,10 +8,12 @@ import { MatchdayBonusMalus } from "../queries/bonusMalus";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowDown } from "iconoir-react";
 import BonusMalusesTable from "./BonusMalusesTable";
+import { BonusMalusType } from "../queries/bonusMalusType";
 
 type Props = {
   matchday: SplitMatchday;
   bonusMaluses: MatchdayBonusMalus[];
+  bonusMalusTypes: BonusMalusType[];
 };
 
 // TODO: fare editBonusMalusDialog che riceva come prop la matchday e il player e mostri

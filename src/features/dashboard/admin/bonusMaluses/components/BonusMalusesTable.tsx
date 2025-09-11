@@ -13,13 +13,19 @@ import {
 } from "@/components/ui/table";
 import BonusMalusRowActions from "./BonusMalusRowActions";
 import { SplitMatchday } from "../../splits/queries/split";
+import { BonusMalusType } from "../queries/bonusMalusType";
 
 type Props = {
   matchday: SplitMatchday;
   bonusMaluses: MatchdayBonusMalus[];
+  bonusMalusTypes: BonusMalusType[];
 };
 
-export default function BonusMalusesTable({ matchday, bonusMaluses }: Props) {
+export default function BonusMalusesTable({
+  matchday,
+  bonusMaluses,
+  bonusMalusTypes,
+}: Props) {
   const { filteredItems, handleFilter } = useFilter(bonusMaluses, {
     filterFn: filterBonusMaluses,
     defaultFilters,
@@ -50,7 +56,11 @@ export default function BonusMalusesTable({ matchday, bonusMaluses }: Props) {
                   <TableCell>{bm.bonusMalusType.name}</TableCell>
                   <TableCell>{bm.count}</TableCell>
                   <TableCell>
-                    <BonusMalusRowActions matchday={matchday} bonusMalus={bm} />
+                    <BonusMalusRowActions
+                      matchday={matchday}
+                      bonusMalus={bm}
+                      bonusMalusTypes={bonusMalusTypes}
+                    />
                   </TableCell>
                 </TableRow>
               ))}

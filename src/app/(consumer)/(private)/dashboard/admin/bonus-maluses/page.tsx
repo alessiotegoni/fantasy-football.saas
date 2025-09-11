@@ -1,15 +1,24 @@
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import { getMatchdaysBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
+import {
+  getMatchdaysBonusMaluses,
+  MatchdayBonusMalus,
+} from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { Accordion } from "@/components/ui/accordion";
 import {
   getLiveSplit,
   getSplitMatchdays,
+  SplitMatchday,
 } from "@/features/dashboard/admin/splits/queries/split";
 import MatchdayAccordionItem from "@/features/dashboard/admin/bonusMaluses/components/MatchdayAccordionItem";
+import { Suspense } from "react";
+import {
+  BonusMalusType,
+  getBonusMalusTypes,
+} from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalusType";
 
-export default async function AssignBonusMalusesPage() {
+export default async function BonusMalusesPage() {
   const split = await getLiveSplit();
   if (!split) {
     return (
@@ -36,30 +45,60 @@ export default async function AssignBonusMalusesPage() {
     );
   }
 
-  const matchdaysBonusMaluses = await getMatchdaysBonusMaluses(
-    matchdays.map((m) => m.id)
+  return (
+    <Container headerLabel="Assegna bonus malus">
+      <Suspense fallback={<BonusMalusWrapper matchdays={matchdays} />}>
+        <SuspenseBoundary matchdays={matchdays} />
+      </Suspense>
+    </Container>
   );
+}
 
+function BonusMalusWrapper({
+  matchdays,
+  bonusMaluses = [],
+  bonusMalusTypes = [],
+}: {
+  matchdays: SplitMatchday[];
+  bonusMaluses?: MatchdayBonusMalus[];
+  bonusMalusTypes?: BonusMalusType[];
+}) {
   const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
 
   return (
-    <Container headerLabel="Assegna bonus malus">
-      <Accordion
-        type="single"
-        collapsible
-        className="space-y-3"
-        defaultValue={liveMatchday?.id.toString()}
-      >
-        {matchdays.map((matchday) => (
-          <MatchdayAccordionItem
-            key={matchday.id}
-            matchday={matchday}
-            bonusMaluses={matchdaysBonusMaluses.filter(
-              (mb) => mb.matchdayId === matchday.id
-            )}
-          />
-        ))}
-      </Accordion>
-    </Container>
+    <Accordion
+      type="single"
+      collapsible
+      className="space-y-3"
+      defaultValue={liveMatchday?.id.toString()}
+    >
+      {matchdays.map((matchday) => (
+        <MatchdayAccordionItem
+          key={matchday.id}
+          matchday={matchday}
+          bonusMaluses={bonusMaluses.filter(
+            (mb) => mb.matchdayId === matchday.id
+          )}
+          bonusMalusTypes={bonusMalusTypes}
+        />
+      ))}
+    </Accordion>
+  );
+}
+
+async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
+  const matchdaysIds = matchdays.map((m) => m.id);
+  
+  const [bonusMaluses, bonusMalusTypes] = await Promise.all([
+    getMatchdaysBonusMaluses(matchdaysIds),
+    getBonusMalusTypes(),
+  ]);
+
+  return (
+    <BonusMalusWrapper
+      matchdays={matchdays}
+      bonusMaluses={bonusMaluses}
+      bonusMalusTypes={bonusMalusTypes}
+    />
   );
 }

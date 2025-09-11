@@ -14,14 +14,20 @@ import {
 } from "@/components/ui/dialog";
 import ActionButton from "@/components/ActionButton";
 import { SplitMatchday } from "../../splits/queries/split";
+import { BonusMalusType } from "../queries/bonusMalusType";
 
 type Props = {
   matchday: SplitMatchday;
   bonusMalus: MatchdayBonusMalus;
+  bonusMalusTypes: BonusMalusType[];
 };
 
-export default function BonusMalusRowActions({ matchday, bonusMalus }: Props) {
-  if (matchday.status === "upcoming") return null
+export default function BonusMalusRowActions({
+  matchday,
+  bonusMalus,
+  bonusMalusTypes,
+}: Props) {
+  if (matchday.status === "upcoming") return null;
 
   return (
     <Dialog>
