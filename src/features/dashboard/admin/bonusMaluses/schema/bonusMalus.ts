@@ -1,7 +1,7 @@
 import { getSerialIdSchema, getUUIdSchema } from "@/schema/helpers";
 import { z } from "zod";
 
-const assignBonusMalusSchema = z.object({
+export const assignBonusMalusSchema = z.object({
   playerId: getSerialIdSchema(),
   matchdayId: getSerialIdSchema(),
   bonusMalusTypeId: getSerialIdSchema(),
@@ -14,5 +14,5 @@ export const editBonusMaluSchema = z
   })
   .merge(assignBonusMalusSchema);
 
-export type CreateBonusMalusSchema = z.infer<typeof assignBonusMalusSchema>;
+export type AssignBonusMalusSchema = z.infer<typeof assignBonusMalusSchema>
 export type EditBonusMalusSchema = z.infer<typeof editBonusMaluSchema>;
