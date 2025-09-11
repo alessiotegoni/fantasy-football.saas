@@ -88,7 +88,7 @@ function BonusMalusWrapper({
 
 async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
   const matchdaysIds = matchdays.map((m) => m.id);
-  
+
   const [bonusMaluses, bonusMalusTypes] = await Promise.all([
     getMatchdaysBonusMaluses(matchdaysIds),
     getBonusMalusTypes(),

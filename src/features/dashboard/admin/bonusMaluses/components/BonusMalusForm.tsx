@@ -7,8 +7,16 @@ import {
   AssignBonusMalusSchema,
 } from "../schema/bonusMalus";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import BonusMalusTypeSelect from "./BonusMalusTypeSelect";
+import NumberInput from "@/components/ui/number-input";
 
 type Props = {
   matchday: SplitMatchday;
@@ -33,8 +41,21 @@ export default function BonusMalusForm({
 
   return (
     <Form {...form}>
-      <form>
+      <form className="grid grid-cols-2">
         <BonusMalusTypeSelect types={bonusMalusTypes} />
+        <FormField
+          control={form.control}
+          name="count"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Conteggio</FormLabel>
+              <FormControl>
+                <NumberInput {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </form>
     </Form>
   );

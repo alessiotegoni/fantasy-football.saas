@@ -50,7 +50,7 @@ export default function NumberInput({
     <div
       className={cn(
         "flex items-center",
-        "border border-transparent rounded-xl focus-within:border-primary",
+        "border border-transparent rounded-xl focus-within:border-primary size-fit",
         containerClassName
       )}
     >

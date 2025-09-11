@@ -22,10 +22,7 @@ type Props = {
 // TODO: per la pagina di assegnazione del bonus fetchare la matchday dai searchParams
 //  fare una select di tutti i player (riutilizzabile), mettere il select dei bonus ed il conteggio
 
-export default function MatchdayAccordionItem({
-  matchday,
-  bonusMaluses,
-}: Props) {
+export default function MatchdayAccordionItem({ matchday, ...props }: Props) {
   return (
     <AccordionItem value={matchday.id.toString()} className="border-b-0">
       <AccordionTrigger
@@ -47,8 +44,8 @@ export default function MatchdayAccordionItem({
         </div>
       </AccordionTrigger>
       <AccordionContent className="bg-muted/30 p-4 my-2 rounded-3xl flex flex-col gap-4 text-balance">
-        {bonusMaluses.length > 0 ? (
-          <BonusMalusesTable matchday={matchday} bonusMaluses={bonusMaluses} />
+        {props.bonusMaluses.length > 0 ? (
+          <BonusMalusesTable matchday={matchday} {...props} />
         ) : (
           <p className="text-center text-muted-foreground py-4">
             Nessun bonus/malus assegnato per questa giornata.
