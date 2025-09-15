@@ -73,24 +73,34 @@ function BonusMalusWrapper({
       className="space-y-3"
       defaultValue={liveMatchday?.id.toString()}
     >
-      {matchdays.map((matchday) => (
-        <MatchdayAccordionItem key={matchday.id} matchday={matchday}>
-          {bonusMaluses.length > 0 ? (
-            <BonusMalusesTable
-              matchday={matchday}
-              bonusMaluses={bonusMaluses}
-              bonusMalusTypes={bonusMalusTypes}
-            />
-          ) : (
-            <p className="text-center text-muted-foreground py-4">
-              Nessun bonus/malus assegnato per questa giornata.
-            </p>
-          )}
-        </MatchdayAccordionItem>
-      ))}
+      {matchdays.map((matchday) => {
+        const matchdayBonusMaluses = bonusMaluses.filter(
+          (bm) => bm.matchdayId === matchday.id
+        );
+        return (
+          <MatchdayAccordionItem
+            key={matchday.id}
+            matchday={matchday}
+            assignHref="/dashboard/admin/bonus-maluses/assign"
+          >
+            {matchdayBonusMaluses.length > 0 ? (
+              <BonusMalusesTable
+                matchday={matchday}
+                bonusMaluses={matchdayBonusMaluses}
+                bonusMalusTypes={bonusMalusTypes}
+              />
+            ) : (
+              <p className="text-center text-muted-foreground py-4">
+                Nessun bonus/malus assegnato per questa giornata.
+              </p>
+            )}
+          </MatchdayAccordionItem>
+        );
+      })}
     </Accordion>
   );
 }
+
 
 async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
   const matchdaysIds = matchdays.map((m) => m.id);

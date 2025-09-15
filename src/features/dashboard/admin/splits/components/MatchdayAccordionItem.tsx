@@ -6,13 +6,15 @@ import {
 import { SplitMatchday } from "../queries/split";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowDown } from "iconoir-react";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   matchday: SplitMatchday;
   children: React.ReactNode;
+  assignHref?: Href;
 };
 
-export default function MatchdayAccordionItem({ matchday, children }: Props) {
+export default function MatchdayAccordionItem({ matchday, children, assignHref }: Props) {
   return (
     <AccordionItem value={matchday.id.toString()} className="border-b-0">
       <AccordionTrigger
@@ -21,11 +23,11 @@ export default function MatchdayAccordionItem({ matchday, children }: Props) {
       >
         Giornata {matchday.number}
         <div className="flex items-center gap-4">
-          {matchday.status !== "upcoming" && (
+          {matchday.status !== "upcoming" && assignHref && (
             <LinkButton
               size="sm"
               className="w-fit text-base"
-              href={`/dashboard/admin/bonus-maluses/assign?matchdayId=${matchday.id}`}
+              href={`${assignHref}?matchdayId=${matchday.id}`}
             >
               Assegna
             </LinkButton>

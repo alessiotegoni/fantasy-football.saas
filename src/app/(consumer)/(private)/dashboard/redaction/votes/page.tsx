@@ -70,7 +70,11 @@ function VotesWrapper({
       {matchdays.map((matchday) => {
         const matchdayVotes = votes.filter((v) => v.matchdayId === matchday.id);
         return (
-          <MatchdayAccordionItem key={matchday.id} matchday={matchday}>
+          <MatchdayAccordionItem
+            key={matchday.id}
+            matchday={matchday}
+            assignHref="/dashboard/redaction/votes/assign"
+          >
             {matchdayVotes.length > 0 ? (
               <VotesTable matchday={matchday} votes={matchdayVotes} />
             ) : (
