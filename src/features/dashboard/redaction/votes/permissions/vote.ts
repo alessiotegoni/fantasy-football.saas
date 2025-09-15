@@ -2,8 +2,6 @@ import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { createClient } from "@/services/supabase/server/supabase";
-import { getSplitMatchday } from "../../admin/splits/queries/split";
-import { getPlayersMatchdayVotes } from "../../queries/vote";
 import {
   CreateVotesSchema,
   DeleteVoteSchema,
@@ -12,6 +10,8 @@ import {
 import { db } from "@/drizzle/db";
 import { matchdayVotes } from "@/drizzle/schema";
 import { isRedaction } from "@/features/dashboard/user/utils/roles";
+import { getSplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
+import { and, count, eq, inArray } from "drizzle-orm";
 
 enum VOTE_ERRORS {
   REQUIRE_REDACTION = "Devi essere parte della redazione per gestire i voti",
@@ -47,7 +47,7 @@ export async function canCreateVotes(data: CreateVotesSchema["votes"]) {
   const matchdayId = data[0].matchdayId;
 
   const playersIds = data.map((v) => v.playerId);
-  const existingVotes = await getPlayersMatchdayVotes({
+  const existingVotes = await getPlayersMatchdayVote({
     matchdayId,
     playersIds,
   });
@@ -64,8 +64,7 @@ export async function canUpdateVote(data: EditVoteSchema) {
   const validation = await baseValidation(data.matchdayId);
   if (validation.error) return validation;
 
-  const existing = await getPlayerMatchdayVote(data);
-  if (existing && existing.id !== data.id) {
+  if (await hasVote([data])) {
     return createError(VOTE_ERRORS.ALREADY_ASSIGNED);
   }
 
@@ -86,21 +85,28 @@ export async function canDeleteVote(data: DeleteVoteSchema) {
 
 async function getMatchdayVote(id: string) {
   return db.query.matchdayVotes.findFirst({
-    where: (vote, { eq }) => eq(vote.id, id),
     columns: {
       matchdayId: true,
     },
+    where: (vote, { eq }) => eq(vote.id, id),
   });
 }
 
-async function getPlayerMatchdayVote(
-  data: Pick<typeof matchdayVotes.$inferSelect, "matchdayId" | "playerId" | "id">
+async function hasVote(
+  data: Omit<typeof matchdayVotes.$inferSelect, "vote">[]
 ) {
-  return db.query.matchdayVotes.findFirst({
-    where: (v, { and, eq }) =>
-      and(eq(v.matchdayId, data.matchdayId), eq(v.playerId, data.playerId)),
-    columns: {
-      id: true,
-    },
-  });
+  const matchdayId = data[0].matchdayId;
+  const playersIds = data.map((d) => d.playerId);
+
+  const [res] = await db
+    .select({ count: count() })
+    .from(matchdayVotes)
+    .where(
+      and(
+        eq(matchdayVotes.matchdayId, matchdayId),
+        inArray(matchdayVotes.playerId, playersIds)
+      )
+    );
+
+  return res.count > 0;
 }

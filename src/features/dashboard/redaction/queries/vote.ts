@@ -33,35 +33,3 @@ export async function getMatchdaysVotes(matchdaysIds: number[]) {
 }
 
 export type MatchdayVote = Awaited<ReturnType<typeof getMatchdaysVotes>>[number];
-
-export async function getPlayersMatchdayVotes({
-  matchdayId,
-  playersIds,
-}: {
-  matchdayId: number;
-  playersIds: number[];
-}) {
-  "use cache";
-
-  if (!playersIds.length) return [];
-
-  const results = await db
-    .select({
-      playerId: matchdayVotes.playerId,
-    })
-    .from(matchdayVotes)
-    .where(
-      and(
-        eq(matchdayVotes.matchdayId, matchdayId),
-        inArray(matchdayVotes.playerId, playersIds)
-      )
-    );
-
-  cacheTag(
-    ...results.map((result) =>
-      getPlayerMatchdayVoteTag(result.playerId, matchdayId)
-    )
-  );
-
-  return results;
-}
