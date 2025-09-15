@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Dialog,
   DialogContent,
@@ -11,7 +13,14 @@ import { MatchdayBonusMalus } from "../queries/bonusMalus";
 import { BonusMalusType } from "../queries/bonusMalusType";
 import { Button } from "@/components/ui/button";
 import { Edit } from "iconoir-react";
-import BonusMalusForm from "./BonusMalusForm";
+import { useForm } from "react-hook-form";
+import {
+  editBonusMalusSchema,
+  EditBonusMalusSchema,
+} from "../schema/bonusMalus";
+import { zodResolver } from "@hookform/resolvers/zod";
+import BonusMalusFormFields from "./BonusMalusFormFields";
+import { Form } from "@/components/ui/form";
 
 type Props = {
   matchday: SplitMatchday;
@@ -24,6 +33,17 @@ export default function EditBonusMalusDialog({
   bonusMalus,
   ...props
 }: Props) {
+  const form = useForm<EditBonusMalusSchema>({
+    resolver: zodResolver(editBonusMalusSchema),
+    defaultValues: {
+      id: bonusMalus.id,
+      playerId: bonusMalus.player.id,
+      matchdayId: matchday.id,
+      bonusMalusTypeId: bonusMalus.bonusMalusType.id,
+      count: bonusMalus.count,
+    },
+  });
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -41,11 +61,11 @@ export default function EditBonusMalusDialog({
           <DialogTitle>Modifca bonus/malus</DialogTitle>
         </DialogHeader>
         <h3 className="font-medium">Giornata: {matchday.number}</h3>
-        <BonusMalusForm
-          matchday={matchday}
-          bonusMalus={bonusMalus}
-          {...props}
-        />
+        <Form {...form}>
+          <form>
+            <BonusMalusFormFields bonusMalus={bonusMalus} {...props} />
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
