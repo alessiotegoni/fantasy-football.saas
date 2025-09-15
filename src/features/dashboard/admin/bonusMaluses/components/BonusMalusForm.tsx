@@ -1,3 +1,5 @@
+"use client";
+
 import { SplitMatchday } from "../../splits/queries/split";
 import { MatchdayBonusMalus } from "../queries/bonusMalus";
 import { BonusMalusType } from "../queries/bonusMalusType";
@@ -20,6 +22,7 @@ import SubmitButton from "@/components/SubmitButton";
 import { Combobox } from "@/components/ui/combobox";
 import PlayersSelect from "../../players/components/PlayersSelect";
 import { Player } from "../../players/queries/player";
+import { cn } from "@/lib/utils";
 
 type Props = {
   matchday: SplitMatchday;
@@ -47,7 +50,14 @@ export default function BonusMalusForm({
   return (
     <Form {...form}>
       <form className="space-y-4 flex flex-col items-end">
-        <div className="grid sm:grid-cols-[minmax(215px,auto)_1fr] gap-4 w-full">
+        <div
+          className={cn(
+            "grid gap-4 w-full",
+            bonusMalus
+              ? "sm:grid-cols-[minmax(215px,auto)_1fr]"
+              : "sm:grid-cols-2"
+          )}
+        >
           <PlayersSelect
             players={
               players ? players : bonusMalus?.player ? [bonusMalus.player] : []
@@ -90,8 +100,11 @@ export default function BonusMalusForm({
             )}
           />
         </div>
-        <SubmitButton loadingText="Modifico" className="w-fit">
-          Modifica
+        <SubmitButton
+          loadingText={bonusMalus ? "Modifico" : "Creo"}
+          className={cn(bonusMalus && "w-fit")}
+        >
+          {bonusMalus ? "Modifica" : "Crea"}
         </SubmitButton>
       </form>
     </Form>
