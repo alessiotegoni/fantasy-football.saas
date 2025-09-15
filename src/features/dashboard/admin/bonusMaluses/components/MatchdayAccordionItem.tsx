@@ -16,9 +16,6 @@ type Props = {
   bonusMalusTypes: BonusMalusType[];
 };
 
-// TODO: per la pagina di assegnazione del bonus fetchare la matchday dai searchParams
-//  fare una select di tutti i player (riutilizzabile), mettere il select dei bonus ed il conteggio
-
 export default function MatchdayAccordionItem({ matchday, ...props }: Props) {
   return (
     <AccordionItem value={matchday.id.toString()} className="border-b-0">

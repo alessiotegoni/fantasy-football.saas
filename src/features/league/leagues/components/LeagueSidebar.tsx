@@ -30,7 +30,6 @@ import UserDropdown from "@/features/dashboard/user/components/userDropdown";
 import { League } from "../queries/league";
 import { cn } from "@/lib/utils";
 import { User } from "@supabase/supabase-js";
-import { Suspense } from "react";
 import { Href } from "@/utils/helpers";
 
 type Props = {

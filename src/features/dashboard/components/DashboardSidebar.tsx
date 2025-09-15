@@ -145,13 +145,8 @@ const redactionGroup: SidebarGroup = {
   items: [
     {
       name: "Assegna voti",
-      href: "/dashboard/redaction/assign-votes",
+      href: "/dashboard/redaction/votes",
       icon: Check,
-    },
-    {
-      name: "Modifica voti",
-      href: "/dashboard/redaction/edit-votes",
-      icon: Edit,
     },
     {
       name: "Statistiche team",
