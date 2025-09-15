@@ -1,5 +1,4 @@
 import TableRowActions from "@/components/TableRowActions";
-import EditBonusMalusDialog from "../../admin/bonusMaluses/components/EditBonusMalusDialog";
 import ActionButton from "@/components/ActionButton";
 import { TrashSolid } from "iconoir-react";
 

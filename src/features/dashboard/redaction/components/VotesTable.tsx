@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/table";
 import { MatchdayVote } from "../queries/vote";
 import { SplitMatchday } from "../../admin/splits/queries/split";
-import BonusMalusRowActions from "../../admin/bonusMaluses/components/BonusMalusRowActions";
-import TableRowActions from "@/components/TableRowActions";
 import VotesRowActions from "./VotesRowActions";
 
 type Props = {

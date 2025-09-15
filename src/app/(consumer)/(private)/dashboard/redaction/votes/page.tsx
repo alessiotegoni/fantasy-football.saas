@@ -1,10 +1,6 @@
 import BackButton from "@/components/BackButton";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import {
-  getMatchdaysBonusMaluses,
-  MatchdayBonusMalus,
-} from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { Accordion } from "@/components/ui/accordion";
 import {
   getLiveSplit,
@@ -13,11 +9,6 @@ import {
 } from "@/features/dashboard/admin/splits/queries/split";
 import MatchdayAccordionItem from "@/features/dashboard/admin/splits/components/MatchdayAccordionItem";
 import { Suspense } from "react";
-import {
-  BonusMalusType,
-  getBonusMalusTypes,
-} from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalusType";
-import { getPlayerMatchdayVoteTag } from "@/features/dashboard/redaction/votes/db/cache/vote";
 import {
   getMatchdaysVotes,
   MatchdayVote,
