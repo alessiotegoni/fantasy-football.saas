@@ -67,17 +67,20 @@ function VotesWrapper({
       className="space-y-3"
       defaultValue={liveMatchday?.id.toString()}
     >
-      {matchdays.map((matchday) => (
-        <MatchdayAccordionItem key={matchday.id} matchday={matchday}>
-          {votes.length > 0 ? (
-            <VotesTable matchday={matchday} votes={votes} />
-          ) : (
-            <p className="text-center text-muted-foreground py-4">
-              Nessun voto assegnato per questa giornata.
-            </p>
-          )}
-        </MatchdayAccordionItem>
-      ))}
+      {matchdays.map((matchday) => {
+        const matchdayVotes = votes.filter((v) => v.matchdayId === matchday.id);
+        return (
+          <MatchdayAccordionItem key={matchday.id} matchday={matchday}>
+            {matchdayVotes.length > 0 ? (
+              <VotesTable matchday={matchday} votes={matchdayVotes} />
+            ) : (
+              <p className="text-center text-muted-foreground py-4">
+                Nessun voto assegnato per questa giornata.
+              </p>
+            )}
+          </MatchdayAccordionItem>
+        );
+      })}
     </Accordion>
   );
 }
