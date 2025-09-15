@@ -48,7 +48,7 @@ export default function VotesTable({ matchday, votes }: Props) {
                   <TableCell>{item.player.displayName}</TableCell>
                   <TableCell>{item.vote}</TableCell>
                   <TableCell>
-                    <VotesRowActions />
+                    <VotesRowActions matchday={matchday} vote={item} />
                   </TableCell>
                 </TableRow>
               ))}

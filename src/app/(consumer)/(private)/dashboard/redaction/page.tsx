@@ -23,21 +23,15 @@ export default function RedactionPage() {
 
 const LINKS_INFO: Omit<RoleInfo, "role">[] = [
   {
-    href: "/dashboard/redaction/assign-votes",
+    href: "/dashboard/redaction/votes",
     icon: ClipboardCheck,
     title: "Assegna Voti",
     description: "Assegna i voti ai giocatori per la giornata corrente",
   },
   {
-    href: "/dashboard/redaction/edit-votes",
+    href: "/dashboard/redaction/votes",
     icon: ClipboardEdit,
     title: "Modifica Voti",
     description: "Modifica i voti assegnati in precedenza",
-  },
-  {
-    href: "/dashboard/redaction/team-stats",
-    icon: BarChart3,
-    title: "Stats Squadra",
-    description: "Visualizza le statistiche della tua redazione",
   },
 ];
