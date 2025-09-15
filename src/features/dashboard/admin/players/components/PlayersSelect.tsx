@@ -10,11 +10,16 @@ import { Combobox } from "@/components/ui/combobox";
 import { Player } from "../queries/player";
 
 type Props = {
+  fieldName?: string;
   players: Pick<Player, "id" | "displayName">[];
   disabled?: boolean;
 };
 
-export default function PlayersSelect({ players, disabled }: Props) {
+export default function PlayersSelect({
+  fieldName = "playerId",
+  players,
+  disabled,
+}: Props) {
   const form = useFormContext<{ playerId: number }>();
 
   const items = players.map((player) => ({
@@ -25,7 +30,7 @@ export default function PlayersSelect({ players, disabled }: Props) {
   return (
     <FormField
       control={form.control}
-      name="playerId"
+      name={fieldName}
       render={({ field }) => (
         <FormItem>
           <FormLabel>Giocatori</FormLabel>

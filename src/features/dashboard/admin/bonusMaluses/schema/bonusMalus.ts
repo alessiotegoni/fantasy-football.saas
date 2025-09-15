@@ -8,11 +8,17 @@ export const assignBonusMalusSchema = z.object({
   count: z.number().positive("Il conteggio deve essere un numero positivo"),
 });
 
-export const editBonusMaluSchema = z
+export const createBonusMalusSchema = z.object({
+  bonusMaluses: z.array(assignBonusMalusSchema),
+});
+
+export const editBonusMalusSchema = z
   .object({
     id: getUUIdSchema(),
   })
   .merge(assignBonusMalusSchema);
 
-export type AssignBonusMalusSchema = z.infer<typeof assignBonusMalusSchema>
-export type EditBonusMalusSchema = z.infer<typeof editBonusMaluSchema>;
+export type AssignBonusMalusSchema = z.infer<typeof assignBonusMalusSchema>;
+
+export type CreateBonusMalusSchema = z.infer<typeof createBonusMalusSchema>;
+export type EditBonusMalusSchema = z.infer<typeof editBonusMalusSchema>;
