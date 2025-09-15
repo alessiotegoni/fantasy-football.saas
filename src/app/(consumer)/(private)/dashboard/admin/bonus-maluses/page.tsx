@@ -11,12 +11,13 @@ import {
   getSplitMatchdays,
   SplitMatchday,
 } from "@/features/dashboard/admin/splits/queries/split";
-import MatchdayAccordionItem from "@/features/dashboard/admin/bonusMaluses/components/MatchdayAccordionItem";
+import MatchdayAccordionItem from "@/features/dashboard/admin/splits/components/MatchdayAccordionItem";
 import { Suspense } from "react";
 import {
   BonusMalusType,
   getBonusMalusTypes,
 } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalusType";
+import BonusMalusesTable from "@/features/dashboard/admin/bonusMaluses/components/BonusMalusesTable";
 
 export default async function BonusMalusesPage() {
   const split = await getLiveSplit();
@@ -73,14 +74,19 @@ function BonusMalusWrapper({
       defaultValue={liveMatchday?.id.toString()}
     >
       {matchdays.map((matchday) => (
-        <MatchdayAccordionItem
-          key={matchday.id}
-          matchday={matchday}
-          bonusMaluses={bonusMaluses.filter(
-            (mb) => mb.matchdayId === matchday.id
+        <MatchdayAccordionItem key={matchday.id} matchday={matchday}>
+          {bonusMaluses.length > 0 ? (
+            <BonusMalusesTable
+              matchday={matchday}
+              bonusMaluses={bonusMaluses}
+              bonusMalusTypes={bonusMalusTypes}
+            />
+          ) : (
+            <p className="text-center text-muted-foreground py-4">
+              Nessun bonus/malus assegnato per questa giornata.
+            </p>
           )}
-          bonusMalusTypes={bonusMalusTypes}
-        />
+        </MatchdayAccordionItem>
       ))}
     </Accordion>
   );

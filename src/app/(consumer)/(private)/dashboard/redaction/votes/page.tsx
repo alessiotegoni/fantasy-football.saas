@@ -11,7 +11,7 @@ import {
   getSplitMatchdays,
   SplitMatchday,
 } from "@/features/dashboard/admin/splits/queries/split";
-import MatchdayAccordionItem from "@/features/dashboard/admin/bonusMaluses/components/MatchdayAccordionItem";
+import MatchdayAccordionItem from "@/features/dashboard/admin/splits/components/MatchdayAccordionItem";
 import { Suspense } from "react";
 import {
   BonusMalusType,
@@ -22,6 +22,7 @@ import {
   getMatchdaysVotes,
   MatchdayVote,
 } from "@/features/dashboard/redaction/queries/vote";
+import VotesTable from "@/features/dashboard/redaction/components/VotesTable";
 
 export default async function VotesPage() {
   const split = await getLiveSplit();
@@ -61,10 +62,10 @@ export default async function VotesPage() {
 
 function VotesWrapper({
   matchdays,
-  votes,
+  votes = [],
 }: {
   matchdays: SplitMatchday[];
-  votes: MatchdayVote[];
+  votes?: MatchdayVote[];
 }) {
   const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
 
@@ -76,7 +77,15 @@ function VotesWrapper({
       defaultValue={liveMatchday?.id.toString()}
     >
       {matchdays.map((matchday) => (
-        <MatchdayAccordionItem key={matchday.id} matchday={matchday} />
+        <MatchdayAccordionItem key={matchday.id} matchday={matchday}>
+          {votes.length > 0 ? (
+            <VotesTable matchday={matchday} votes={votes} />
+          ) : (
+            <p className="text-center text-muted-foreground py-4">
+              Nessun voto assegnato per questa giornata.
+            </p>
+          )}
+        </MatchdayAccordionItem>
       ))}
     </Accordion>
   );

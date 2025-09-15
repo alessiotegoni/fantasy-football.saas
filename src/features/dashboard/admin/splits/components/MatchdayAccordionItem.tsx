@@ -3,20 +3,17 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SplitMatchday } from "../../splits/queries/split";
-import { MatchdayBonusMalus } from "../queries/bonusMalus";
+import { SplitMatchday } from "../queries/split";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowDown } from "iconoir-react";
-import BonusMalusesTable from "./BonusMalusesTable";
-import { BonusMalusType } from "../queries/bonusMalusType";
+import BonusMalusesTable from "../../bonusMaluses/components/BonusMalusesTable";
 
 type Props = {
   matchday: SplitMatchday;
-  bonusMaluses: MatchdayBonusMalus[];
-  bonusMalusTypes: BonusMalusType[];
+  children: React.ReactNode;
 };
 
-export default function MatchdayAccordionItem({ matchday, ...props }: Props) {
+export default function MatchdayAccordionItem({ matchday, children }: Props) {
   return (
     <AccordionItem value={matchday.id.toString()} className="border-b-0">
       <AccordionTrigger
@@ -38,13 +35,7 @@ export default function MatchdayAccordionItem({ matchday, ...props }: Props) {
         </div>
       </AccordionTrigger>
       <AccordionContent className="bg-muted/30 p-4 my-2 rounded-3xl flex flex-col gap-4 text-balance">
-        {props.bonusMaluses.length > 0 ? (
-          <BonusMalusesTable matchday={matchday} {...props} />
-        ) : (
-          <p className="text-center text-muted-foreground py-4">
-            Nessun bonus/malus assegnato per questa giornata.
-          </p>
-        )}
+        {children}
       </AccordionContent>
     </AccordionItem>
   );
