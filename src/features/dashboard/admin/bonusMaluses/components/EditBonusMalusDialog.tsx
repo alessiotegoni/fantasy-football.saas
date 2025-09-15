@@ -21,6 +21,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import BonusMalusFormFields from "./BonusMalusFormFields";
 import { Form } from "@/components/ui/form";
+import SubmitButton from "@/components/SubmitButton";
 
 type Props = {
   matchday: SplitMatchday;
@@ -62,8 +63,11 @@ export default function EditBonusMalusDialog({
         </DialogHeader>
         <h3 className="font-medium">Giornata: {matchday.number}</h3>
         <Form {...form}>
-          <form>
+          <form className="space-y-4 flex flex-col items-end">
             <BonusMalusFormFields bonusMalus={bonusMalus} {...props} />
+            <SubmitButton loadingText="Modifico" className="sm:w-fit">
+              Modifica
+            </SubmitButton>
           </form>
         </Form>
       </DialogContent>
