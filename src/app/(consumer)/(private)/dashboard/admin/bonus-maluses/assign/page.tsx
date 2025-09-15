@@ -1,5 +1,4 @@
-import Container from "@/components/Container";
-import BonusMalusForm from "@/features/dashboard/admin/bonusMaluses/components/BonusMalusForm";
+import AssignBonusMalusPageContent from "@/features/dashboard/admin/bonusMaluses/components/AssignBonusMalusPageContent";
 import { getBonusMalusTypes } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalusType";
 import { getPlayers } from "@/features/dashboard/admin/players/queries/player";
 import { getSplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
@@ -23,13 +22,10 @@ export default async function AssignBonusMalusesPage({
   ]);
 
   return (
-    <Container headerLabel="Assegna bonus/malus">
-      <h3 className="text-xl font-medium mb-4">Giornata: {matchday.number}</h3>
-      <BonusMalusForm
-        matchday={matchday}
-        bonusMalusTypes={bonusMalusTypes}
-        players={players}
-      />
-    </Container>
+    <AssignBonusMalusPageContent
+      matchday={matchday}
+      players={players}
+      bonusMalusTypes={bonusMalusTypes}
+    />
   );
 }
