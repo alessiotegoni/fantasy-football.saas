@@ -45,7 +45,7 @@ export default function AssignBonusMalusPageContent(props: Props) {
 
   const { isPending, onSubmit } = useHandleSubmit(createBonusMaluses, {
     isLeaguePrefix: false,
-    redirectTo: `/dashboard/admin/bonus-maluses?splitId=${props.matchday.splitId}`,
+    redirectTo: `/dashboard/admin/bonus-maluses`,
   });
 
   return (
@@ -87,7 +87,9 @@ export default function AssignBonusMalusPageContent(props: Props) {
             </div>
           ))}
           <MobileButtonsContainer className="sm:w-full bottom-5">
-            <SubmitButton isLoading={isPending}>Assegna</SubmitButton>
+            <SubmitButton isLoading={isPending} loadingText="Assegno">
+              Assegna
+            </SubmitButton>
           </MobileButtonsContainer>
         </form>
       </Form>
