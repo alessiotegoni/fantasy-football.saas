@@ -3,9 +3,9 @@ import {
   numeric,
   smallint,
   uniqueIndex,
-  index,
   check,
   integer,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import { players } from "./players";
@@ -14,6 +14,7 @@ import { splitMatchdays } from "./splitMatchdays";
 export const matchdayVotes = pgTable(
   "matchday_votes",
   {
+    id: uuid("id").primaryKey().defaultRandom(),
     playerId: integer("player_id")
       .notNull()
       .references(() => players.id, { onDelete: "cascade" }),
@@ -25,12 +26,6 @@ export const matchdayVotes = pgTable(
   (t) => ({
     uniquePlayerMatchdayVote: uniqueIndex("unique_player_matchday_vote").on(
       t.playerId,
-      t.matchdayId
-    ),
-    matchdayVotesPlayerIdIndex: index("idx_matchday_votes_player_id").on(
-      t.playerId
-    ),
-    matchdayVotesMatchdayIdIndex: index("idx_matchday_votes_matchday_id").on(
       t.matchdayId
     ),
     voteCheck: check(

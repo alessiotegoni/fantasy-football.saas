@@ -24,11 +24,10 @@ import {
 } from "@/features/league/matches/db/cache/match";
 import { getLeagueSettingsTag } from "@/features/league/settings/db/cache/setting";
 import { getTeamIdTag } from "../../teams/db/cache/leagueTeam";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
 import { getPlayerMatchdayVoteTag } from "@/features/dashboard/redaction/votes/db/cache/vote";
 import { formatTeamData } from "../utils/match";
 import { PlayerBonusMalus } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
-import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
+import { getSplitMatchdaysIdTag } from "@/features/dashboard/admin/splits/db/cache/split";
 
 export async function getMatchInfo({
   leagueId,

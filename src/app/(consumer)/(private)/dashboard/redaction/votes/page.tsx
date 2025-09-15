@@ -18,6 +18,10 @@ import {
   getBonusMalusTypes,
 } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalusType";
 import { getPlayerMatchdayVoteTag } from "@/features/dashboard/redaction/votes/db/cache/vote";
+import {
+  getMatchdaysVotes,
+  MatchdayVote,
+} from "@/features/dashboard/redaction/queries/vote";
 
 export default async function VotesPage() {
   const split = await getLiveSplit();
@@ -57,12 +61,10 @@ export default async function VotesPage() {
 
 function VotesWrapper({
   matchdays,
-  bonusMaluses = [],
-  bonusMalusTypes = [],
+  votes,
 }: {
   matchdays: SplitMatchday[];
-  bonusMaluses?: MatchdayBonusMalus[];
-  bonusMalusTypes?: BonusMalusType[];
+  votes: MatchdayVote[];
 }) {
   const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
 
@@ -74,14 +76,7 @@ function VotesWrapper({
       defaultValue={liveMatchday?.id.toString()}
     >
       {matchdays.map((matchday) => (
-        <MatchdayAccordionItem
-          key={matchday.id}
-          matchday={matchday}
-          bonusMaluses={bonusMaluses.filter(
-            (mb) => mb.matchdayId === matchday.id
-          )}
-          bonusMalusTypes={bonusMalusTypes}
-        />
+        <MatchdayAccordionItem key={matchday.id} matchday={matchday} />
       ))}
     </Accordion>
   );
@@ -89,17 +84,7 @@ function VotesWrapper({
 
 async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
   const matchdaysIds = matchdays.map((m) => m.id);
+  const votes = await getMatchdaysVotes(matchdaysIds);
 
-  const [bonusMaluses, bonusMalusTypes] = await Promise.all([
-    getMatchdaysBonusMaluses(matchdaysIds),
-    getBonusMalusTypes(),
-  ]);
-  getPlayerMatchdayVoteTag
-  return (
-    <VotesWrapper
-      matchdays={matchdays}
-      bonusMaluses={bonusMaluses}
-      bonusMalusTypes={bonusMalusTypes}
-    />
-  );
+  return <VotesWrapper matchdays={matchdays} votes={votes} />;
 }

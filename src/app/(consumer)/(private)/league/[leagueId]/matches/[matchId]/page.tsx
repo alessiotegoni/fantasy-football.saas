@@ -8,13 +8,13 @@ import {
 import { getMyTeam } from "@/features/league/matches/utils/match";
 import { enrichLineupPlayers } from "@/features/league/matches/utils/LineupPlayers";
 import { getPlayersMatchdayBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
-import { getCurrentMatchday } from "@/features/splits/queries/split";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { validateUUIds } from "@/schema/helpers";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import MyLineupDndProvider from "@/contexts/MyLineupDndProvider";
+import { getCurrentMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 export default async function MatchPage({
   params,
