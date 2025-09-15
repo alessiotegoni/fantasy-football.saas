@@ -32,7 +32,10 @@ export default function BonusMalusRowActions({ matchday, ...props }: Props) {
       <DropdownMenuContent align="end" className="space-y-1 max-w-40">
         <EditBonusMalusDialog matchday={matchday} {...props} />
         <ActionButton
-          action={deleteBonusMalus.bind(null, props.bonusMalus.id)}
+          action={deleteBonusMalus.bind(null, {
+            bonusMalusId: props.bonusMalus.id,
+            matchdayId: matchday.id,
+          })}
           loadingText="Elimino..."
           requireAreYouSure
           className="px-2 py-1.5 text-sm rounded-lg justify-start"

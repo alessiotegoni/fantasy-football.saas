@@ -22,7 +22,7 @@ import {
 } from "../db/bonusMalus";
 
 enum BONUS_MALUS_MESSAGES {
-  ADDED_SUCCESSFULLY = "Bonus/malus assegnato con successo!",
+  ADDED_SUCCESSFULLY = "Bonus/malus assegnati con successo!",
   UPDATED_SUCCESSFULLY = "Bonus/malus aggiornato con successo!",
   DELETED_SUCCESSFULLY = "Bonus/malus eliminato con successo!",
 }

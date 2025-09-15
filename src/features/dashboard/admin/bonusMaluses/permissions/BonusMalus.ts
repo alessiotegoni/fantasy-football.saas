@@ -17,7 +17,7 @@ enum BONUS_MALUS_ERRORS {
   REQUIRE_ADMIN = "Devi essere un admin per gestire i bonus/malus",
   BONUS_MALUS_NOT_FOUND = "Bonus/malus non trovato",
   MATCHDAY_UPCOMING = "Non puoi gestire i bonus/malus per una giornata non ancora iniziata.",
-  ALREADY_ASSIGNED = "Questo tipo di bonus/malus è già stato assegnato a questo giocatore per questa giornata.",
+  ALREADY_ASSIGNED = "Un bonus/malus è già stato assegnato ad un giocatore per questa giornata.",
 }
 
 async function baseValidation(matchdayId: number) {
@@ -27,7 +27,7 @@ async function baseValidation(matchdayId: number) {
   const supabase = await createClient();
   const userIsAdmin = await isAdmin(supabase, userId);
 
-  if (!userIsAdmin || !isSuperadmin(userId)) {
+  if (!userIsAdmin && !isSuperadmin(userId)) {
     return createError(BONUS_MALUS_ERRORS.REQUIRE_ADMIN);
   }
 

@@ -1,4 +1,4 @@
-import { useFormContext } from "react-hook-form";
+import { Path, useFormContext } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -10,7 +10,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Player } from "../queries/player";
 
 type Props = {
-  fieldName?: string;
+  fieldName?: Path<{ playerId: number }>;
   players: Pick<Player, "id" | "displayName">[];
   disabled?: boolean;
 };
@@ -38,7 +38,7 @@ export default function PlayersSelect({
             <Combobox
               items={items}
               value={field.value.toString()}
-              onSelect={field.onChange}
+              onSelect={(value) => field.onChange(parseInt(value))}
               disabled={disabled}
               placeholder="Cerca gioatori"
               emptyText="Nessun giocatore trovato"
