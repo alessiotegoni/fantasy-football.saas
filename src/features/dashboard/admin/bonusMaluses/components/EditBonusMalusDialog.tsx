@@ -47,12 +47,16 @@ export default function EditBonusMalusDialog({
     },
   });
 
-  const { isPending, onSubmit } = useHandleSubmit(updateBonusMalus, {
-    isLeaguePrefix: false,
-  });
+  const { isPending, onSubmit, dialogProps } = useHandleSubmit(
+    updateBonusMalus,
+    {
+      isLeaguePrefix: false,
+      isDialogControlled: true,
+    }
+  );
 
   return (
-    <Dialog>
+    <Dialog {...dialogProps}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"

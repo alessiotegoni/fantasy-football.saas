@@ -64,7 +64,7 @@ export default function BonusMalusFormFields<T extends FieldValues>({
                   label: type.name,
                 }))}
                 value={field.value.toString()}
-                onSelect={field.onChange}
+                onSelect={(value) => field.onChange(parseInt(value))}
                 placeholder="Cerca bonus/malus"
                 emptyText="Nessun bonus/malus trovato"
               />
