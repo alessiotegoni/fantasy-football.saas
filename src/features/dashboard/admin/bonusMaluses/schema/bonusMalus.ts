@@ -18,7 +18,13 @@ export const editBonusMalusSchema = z
   })
   .merge(assignBonusMalusSchema);
 
+export const deleteBonusMalusSchema = z.object({
+  bonusMalusId: getUUIdSchema(),
+  matchdayId: getSerialIdSchema()
+})
+
 export type AssignBonusMalusSchema = z.infer<typeof assignBonusMalusSchema>;
 
 export type CreateBonusMalusSchema = z.infer<typeof createBonusMalusSchema>;
 export type EditBonusMalusSchema = z.infer<typeof editBonusMalusSchema>;
+export type DeleteBonusMalusSchema = z.infer<typeof deleteBonusMalusSchema>;

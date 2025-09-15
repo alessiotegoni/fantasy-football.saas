@@ -7,6 +7,7 @@ import { getSplitMatchday } from "../../splits/queries/split";
 import { getPlayersMatchdayBonusMaluses } from "../queries/bonusMalus";
 import {
   CreateBonusMalusSchema,
+  DeleteBonusMalusSchema,
   EditBonusMalusSchema,
 } from "../schema/bonusMalus";
 import { db } from "@/drizzle/db";
@@ -14,6 +15,7 @@ import { matchdayBonusMalus } from "@/drizzle/schema";
 
 enum BONUS_MALUS_ERRORS {
   REQUIRE_ADMIN = "Devi essere un admin per gestire i bonus/malus",
+  BONUS_MALUS_NOT_FOUND = "Bonus/malus non trovato",
   MATCHDAY_UPCOMING = "Non puoi gestire i bonus/malus per una giornata non ancora iniziata.",
   ALREADY_ASSIGNED = "Questo tipo di bonus/malus è già stato assegnato a questo giocatore per questa giornata.",
 }
@@ -22,12 +24,10 @@ async function baseValidation(matchdayId: number) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  if (isSuperadmin(userId)) return createSuccess("", null);
-
   const supabase = await createClient();
   const userIsAdmin = await isAdmin(supabase, userId);
 
-  if (!userIsAdmin) {
+  if (!userIsAdmin || !isSuperadmin(userId)) {
     return createError(BONUS_MALUS_ERRORS.REQUIRE_ADMIN);
   }
 
@@ -37,7 +37,7 @@ async function baseValidation(matchdayId: number) {
     return createError(BONUS_MALUS_ERRORS.MATCHDAY_UPCOMING);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", { matchday });
 }
 
 export async function canCreateBonusMaluses(
@@ -78,12 +78,14 @@ export async function canUpdateBonusMalus(data: EditBonusMalusSchema) {
   return createSuccess("", null);
 }
 
-export async function canDeleteBonusMalus(
-  bonusMalusId: string,
-  matchdayId: number
-) {
-  const validation = await baseValidation(matchdayId);
+export async function canDeleteBonusMalus(data: DeleteBonusMalusSchema) {
+  const validation = await baseValidation(data.matchdayId);
   if (validation.error) return validation;
+
+  const bonusMalus = await getMatchdayBonusMalus(data.bonusMalusId);
+  if (!bonusMalus || bonusMalus.matchdayId !== validation.data.matchday.id) {
+    return createError(BONUS_MALUS_ERRORS.BONUS_MALUS_NOT_FOUND);
+  }
 
   return createSuccess("", null);
 }

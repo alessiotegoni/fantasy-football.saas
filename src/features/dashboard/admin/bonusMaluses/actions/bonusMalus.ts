@@ -1,15 +1,17 @@
 "use server";
 
-import { getUUIdSchema, validateSchema } from "@/schema/helpers";
-import { createError, createSuccess } from "@/utils/helpers";
+import { validateSchema } from "@/schema/helpers";
+import { createSuccess } from "@/utils/helpers";
 import {
   canCreateBonusMaluses,
   canDeleteBonusMalus,
-  canManageBonusMalusForMatchday,
+  canUpdateBonusMalus,
 } from "../permissions/BonusMalus";
 import {
   createBonusMalusSchema,
   CreateBonusMalusSchema,
+  deleteBonusMalusSchema,
+  DeleteBonusMalusSchema,
   editBonusMalusSchema,
   EditBonusMalusSchema,
 } from "../schema/bonusMalus";
@@ -23,11 +25,6 @@ enum BONUS_MALUS_MESSAGES {
   ADDED_SUCCESSFULLY = "Bonus/malus assegnato con successo!",
   UPDATED_SUCCESSFULLY = "Bonus/malus aggiornato con successo!",
   DELETED_SUCCESSFULLY = "Bonus/malus eliminato con successo!",
-}
-
-enum BONUS_MALUS_ERRORS {
-  ALREADY_ASSIGNED = "Questo tipo di bonus/malus è già stato assegnato a questo giocatore per questa giornata.",
-  NOT_FOUND = "Bonus/malus non trovato.",
 }
 
 export async function createBonusMaluses(values: CreateBonusMalusSchema) {
@@ -52,9 +49,8 @@ export async function updateBonusMalus(values: EditBonusMalusSchema) {
   );
   if (!isValid) return error;
 
-  const permissions = await canManageBonusMalusForMatchday(data.matchdayId);
+  const permissions = await canUpdateBonusMalus(data);
   if (permissions.error) return permissions;
-
 
   const { id, bonusMalusTypeId, count } = data;
 
@@ -63,19 +59,17 @@ export async function updateBonusMalus(values: EditBonusMalusSchema) {
   return createSuccess(BONUS_MALUS_MESSAGES.UPDATED_SUCCESSFULLY, null);
 }
 
-export async function deleteBonusMalus(bonusMalusId: string) {
-  const { isValid, error } = validateSchema<string>(
-    getUUIdSchema(),
-    bonusMalusId
+export async function deleteBonusMalus(values: DeleteBonusMalusSchema) {
+  const { isValid, data, error } = validateSchema<DeleteBonusMalusSchema>(
+    deleteBonusMalusSchema,
+    values
   );
   if (!isValid) return error;
 
-  const permissions = await canDeleteBonusMalus(
-    bonusMalus.matchdayId
-  );
+  const permissions = await canDeleteBonusMalus(data);
   if (permissions.error) return permissions;
 
-  await deleteBonusMalusDB(bonusMalusId);
+  await deleteBonusMalusDB(data.bonusMalusId);
 
   return createSuccess(BONUS_MALUS_MESSAGES.DELETED_SUCCESSFULLY, null);
 }
