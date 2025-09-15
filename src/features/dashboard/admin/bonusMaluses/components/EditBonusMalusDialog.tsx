@@ -40,12 +40,7 @@ export default function EditBonusMalusDialog({
         <DialogHeader>
           <DialogTitle>Modifca bonus/malus</DialogTitle>
         </DialogHeader>
-        <div>
-          <h3 className="font-medium">Giornata: {matchday.number}</h3>
-          <h3 className="font-medium">
-            Giocatore: {bonusMalus.player.displayName}
-          </h3>
-        </div>
+        <h3 className="font-medium">Giornata: {matchday.number}</h3>
         <BonusMalusForm
           matchday={matchday}
           bonusMalus={bonusMalus}

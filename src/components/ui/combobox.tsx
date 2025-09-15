@@ -27,6 +27,7 @@ type Props = {
   items: Item[];
   value: string;
   onSelect: (value: string) => void;
+  disabled?: boolean;
   placeholder?: string;
   emptyText?: string;
 };
@@ -37,6 +38,7 @@ export function Combobox({
   items,
   value,
   onSelect,
+  disabled = false,
   placeholder = "Cerca",
   emptyText = "Nessun risultato trovato",
 }: Props) {
@@ -47,6 +49,7 @@ export function Combobox({
           variant="outline"
           role="combobox"
           className="min-w-[200px] w-fit justify-between"
+          disabled={disabled}
         >
           {value
             ? items.find((item) => item.value === value)?.label

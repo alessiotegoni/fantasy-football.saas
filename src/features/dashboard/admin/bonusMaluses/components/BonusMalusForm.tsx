@@ -15,25 +15,29 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import BonusMalusTypeSelect from "./BonusMalusTypeSelect";
 import NumberInput from "@/components/ui/number-input";
 import SubmitButton from "@/components/SubmitButton";
+import { Combobox } from "@/components/ui/combobox";
+import PlayersSelect from "../../players/components/PlayersSelect";
+import { Player } from "../../players/queries/player";
 
 type Props = {
   matchday: SplitMatchday;
-  bonusMalus?: MatchdayBonusMalus;
   bonusMalusTypes: BonusMalusType[];
+  bonusMalus?: MatchdayBonusMalus;
+  players?: Player[];
 };
 
 export default function BonusMalusForm({
   matchday,
-  bonusMalus,
   bonusMalusTypes,
+  bonusMalus,
+  players = [],
 }: Props) {
   const form = useForm<AssignBonusMalusSchema>({
     resolver: zodResolver(assignBonusMalusSchema),
     defaultValues: {
-      playerId: bonusMalus?.player.id,
+      playerId: bonusMalus?.player.id ?? players[0].id,
       matchdayId: matchday.id,
       bonusMalusTypeId: bonusMalus?.bonusMalusType.id ?? bonusMalusTypes[0].id,
       count: bonusMalus?.count ?? 1,
@@ -44,7 +48,29 @@ export default function BonusMalusForm({
     <Form {...form}>
       <form className="space-y-4 flex flex-col items-end">
         <div className="grid sm:grid-cols-[minmax(215px,auto)_1fr] gap-4 w-full">
-          <BonusMalusTypeSelect types={bonusMalusTypes} />
+          <PlayersSelect players={players} disabled={!!bonusMalus?.player} />
+          <FormField
+            control={form.control}
+            name="bonusMalusTypeId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Bonus e malus</FormLabel>
+                <FormControl>
+                  <Combobox
+                    items={bonusMalusTypes.map((type) => ({
+                      value: type.id.toString(),
+                      label: type.name,
+                    }))}
+                    value={field.value.toString()}
+                    onSelect={field.onChange}
+                    placeholder="Cerca bonus/malus"
+                    emptyText="Nessun bonus/malus trovato"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="count"

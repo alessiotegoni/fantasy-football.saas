@@ -1,5 +1,4 @@
 import { useFormContext } from "react-hook-form";
-import { BonusMalusType } from "../queries/bonusMalusType";
 import {
   FormControl,
   FormField,
@@ -8,33 +7,36 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Combobox } from "@/components/ui/combobox";
+import { Player } from "../queries/player";
 
-export default function BonusMalusTypeSelect({
-  types,
-}: {
-  types: BonusMalusType[];
-}) {
-  const form = useFormContext<{ bonusMalusTypeId: number }>();
+type Props = {
+  players: Player[];
+  disabled?: boolean;
+};
 
-  const items = types.map((type) => ({
-    value: type.id.toString(),
-    label: type.name,
+export default function PlayersSelect({ players, disabled }: Props) {
+  const form = useFormContext<{ playerId: number }>();
+
+  const items = players.map((player) => ({
+    value: player.id.toString(),
+    label: player.displayName,
   }));
 
   return (
     <FormField
       control={form.control}
-      name="bonusMalusTypeId"
+      name="playerId"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Bonus e malus</FormLabel>
+          <FormLabel>Giocatori</FormLabel>
           <FormControl>
             <Combobox
               items={items}
               value={field.value.toString()}
               onSelect={field.onChange}
-              placeholder="Cerca bonus/malus"
-              emptyText="Nessun bonus/malus trovato"
+              disabled={disabled}
+              placeholder="Cerca gioatori"
+              emptyText="Nessun giocatore trovato"
             />
           </FormControl>
           <FormMessage />
