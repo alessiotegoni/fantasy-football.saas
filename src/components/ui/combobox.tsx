@@ -52,7 +52,7 @@ export function Combobox({
           disabled={disabled}
         >
           {value
-            ? items.find((item) => item.value === value)?.label
+            ? items.find((item) => item.value == value)?.label
             : placeholder}
           <ChevronsUpDown className="opacity-50" />
         </Button>

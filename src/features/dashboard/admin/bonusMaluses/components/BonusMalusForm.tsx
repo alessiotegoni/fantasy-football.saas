@@ -25,19 +25,19 @@ type Props = {
   matchday: SplitMatchday;
   bonusMalusTypes: BonusMalusType[];
   bonusMalus?: MatchdayBonusMalus;
-  players?: Player[];
+  players?: Pick<Player, "id" | "displayName">[];
 };
 
 export default function BonusMalusForm({
   matchday,
   bonusMalusTypes,
   bonusMalus,
-  players = [],
+  players,
 }: Props) {
   const form = useForm<AssignBonusMalusSchema>({
     resolver: zodResolver(assignBonusMalusSchema),
     defaultValues: {
-      playerId: bonusMalus?.player.id ?? players[0].id,
+      playerId: bonusMalus?.player.id ?? players?.[0].id,
       matchdayId: matchday.id,
       bonusMalusTypeId: bonusMalus?.bonusMalusType.id ?? bonusMalusTypes[0].id,
       count: bonusMalus?.count ?? 1,
@@ -48,7 +48,12 @@ export default function BonusMalusForm({
     <Form {...form}>
       <form className="space-y-4 flex flex-col items-end">
         <div className="grid sm:grid-cols-[minmax(215px,auto)_1fr] gap-4 w-full">
-          <PlayersSelect players={players} disabled={!!bonusMalus?.player} />
+          <PlayersSelect
+            players={
+              players ? players : bonusMalus?.player ? [bonusMalus.player] : []
+            }
+            disabled={!!bonusMalus?.player}
+          />
           <FormField
             control={form.control}
             name="bonusMalusTypeId"

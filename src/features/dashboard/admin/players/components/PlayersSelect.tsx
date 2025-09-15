@@ -10,7 +10,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Player } from "../queries/player";
 
 type Props = {
-  players: Player[];
+  players: Pick<Player, "id" | "displayName">[];
   disabled?: boolean;
 };
 
