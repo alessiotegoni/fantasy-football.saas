@@ -4,7 +4,6 @@ import Container from "@/components/Container";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import MatchdayFields from "@/features/dashboard/admin/splits/components/MatchdayFields";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "iconoir-react";
@@ -18,6 +17,8 @@ import { SplitMatchday } from "../../splits/queries/split";
 import { Player } from "../../players/queries/player";
 import BonusMalusFormFields from "./BonusMalusFormFields";
 import { Separator } from "@/components/ui/separator";
+import MobileButtonsContainer from "@/components/MobileButtonsContainer";
+import { createBonusMaluses } from "../actions/bonusMalus";
 
 type Props = {
   matchday: SplitMatchday;
@@ -42,12 +43,10 @@ export default function AssignBonusMalusPageContent(props: Props) {
     name: "bonusMaluses",
   });
 
-  //   const { isPending, onSubmit } = useHandleSubmit(createSplitBonusMaluses, {
-  //     isLeaguePrefix: false,
-  //     redirectTo: `/dashboard/admin/bonus-maluses`,
-  //   });
-
-  function onSubmit() {}
+  const { isPending, onSubmit } = useHandleSubmit(createBonusMaluses, {
+    isLeaguePrefix: false,
+    redirectTo: `/dashboard/admin/bonus-maluses?splitId=${props.matchday.splitId}`,
+  });
 
   return (
     <Container
@@ -58,10 +57,14 @@ export default function AssignBonusMalusPageContent(props: Props) {
           onClick={() => append(getDefaultValue(props))}
         >
           <Plus className="size-5" />
-          Aggiungi bonus/malus
+          Aggiungi
         </Button>
       )}
     >
+      <h3 className="text-xl font-semibold mb-4">
+        Giornata: {props.matchday.number}
+      </h3>
+
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>
           {bonusMaluses.map((bonusMalus, index) => (
@@ -80,10 +83,12 @@ export default function AssignBonusMalusPageContent(props: Props) {
                   Rimuovi
                 </Button>
               </div>
-              {index === bonusMaluses.length - 1 && <Separator />}
+              {index !== bonusMaluses.length - 1 && <Separator />}
             </div>
           ))}
-          <SubmitButton>Assegna bonus/malus</SubmitButton>
+          <MobileButtonsContainer className="sm:w-full bottom-5">
+            <SubmitButton isLoading={isPending}>Assegna</SubmitButton>
+          </MobileButtonsContainer>
         </form>
       </Form>
     </Container>
@@ -100,5 +105,5 @@ function getDefaultValue({
     bonusMalusTypeId: bonusMalusTypes[0].id,
     playerId: players[0].id,
     count: 1,
-  } as const;
+  };
 }

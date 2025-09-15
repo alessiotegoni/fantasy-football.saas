@@ -22,6 +22,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import BonusMalusFormFields from "./BonusMalusFormFields";
 import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
+import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { updateBonusMalus } from "../actions/bonusMalus";
 
 type Props = {
   matchday: SplitMatchday;
@@ -45,6 +47,10 @@ export default function EditBonusMalusDialog({
     },
   });
 
+  const { isPending, onSubmit } = useHandleSubmit(updateBonusMalus, {
+    isLeaguePrefix: false,
+  });
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -63,9 +69,16 @@ export default function EditBonusMalusDialog({
         </DialogHeader>
         <h3 className="font-medium">Giornata: {matchday.number}</h3>
         <Form {...form}>
-          <form className="space-y-4 flex flex-col items-end">
+          <form
+            className="space-y-4 flex flex-col items-end"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <BonusMalusFormFields bonusMalus={bonusMalus} {...props} />
-            <SubmitButton loadingText="Modifico" className="sm:w-fit">
+            <SubmitButton
+              loadingText="Modifico"
+              className="sm:w-fit"
+              isLoading={isPending}
+            >
               Modifica
             </SubmitButton>
           </form>

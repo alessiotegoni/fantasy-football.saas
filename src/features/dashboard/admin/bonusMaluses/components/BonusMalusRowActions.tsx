@@ -9,6 +9,7 @@ import { MatchdayBonusMalus } from "../queries/bonusMalus";
 import ActionButton from "@/components/ActionButton";
 import { SplitMatchday } from "../../splits/queries/split";
 import { BonusMalusType } from "../queries/bonusMalusType";
+import { deleteBonusMalus } from "../actions/bonusMalus";
 import EditBonusMalusDialog from "./EditBonusMalusDialog";
 
 type Props = {
@@ -31,7 +32,8 @@ export default function BonusMalusRowActions({ matchday, ...props }: Props) {
       <DropdownMenuContent align="end" className="space-y-1 max-w-40">
         <EditBonusMalusDialog matchday={matchday} {...props} />
         <ActionButton
-          action={() => ""}
+          action={deleteBonusMalus.bind(null, props.bonusMalus.id)}
+          loadingText="Elimino..."
           requireAreYouSure
           className="px-2 py-1.5 text-sm rounded-lg justify-start"
         >
