@@ -41,6 +41,8 @@ export async function isAdmin(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
+  if (isSuperadmin(userId)) return true;
+
   const { data } = await supabase
     .from("admins")
     .select("*")
@@ -54,6 +56,8 @@ export async function isContentCreator(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
+  if (isSuperadmin(userId)) return true;
+
   const { data } = await supabase
     .from("content_creators")
     .select("*")
@@ -67,6 +71,8 @@ export async function isRedaction(
   supabase: SupabaseClient<any, "public", any>,
   userId: string
 ): Promise<boolean> {
+  if (isSuperadmin(userId)) return true;
+
   const { data } = await supabase
     .from("redactions")
     .select("*")

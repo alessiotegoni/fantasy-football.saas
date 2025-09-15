@@ -2,7 +2,7 @@ import {
   createAdminClient,
   createClient,
 } from "@/services/supabase/server/supabase";
-import { SupabaseClient, User } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { NextRequest } from "next/server";
 
 export interface UserMetadata {
@@ -107,4 +107,3 @@ export async function getUserId(): Promise<string | undefined> {
   const user = await getUser();
   return user?.id;
 }
-

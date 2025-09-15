@@ -1,7 +1,7 @@
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
-import { isAdmin, isSuperadmin } from "@/features/dashboard/user/utils/roles";
+import { isAdmin } from "@/features/dashboard/user/utils/roles";
 import { createClient } from "@/services/supabase/server/supabase";
 import { getSplitMatchday } from "../../splits/queries/split";
 import { getPlayersMatchdayBonusMaluses } from "../queries/bonusMalus";
@@ -27,7 +27,7 @@ async function baseValidation(matchdayId: number) {
   const supabase = await createClient();
   const userIsAdmin = await isAdmin(supabase, userId);
 
-  if (!userIsAdmin && !isSuperadmin(userId)) {
+  if (!userIsAdmin) {
     return createError(BONUS_MALUS_ERRORS.REQUIRE_ADMIN);
   }
 
