@@ -13,6 +13,7 @@ import {
 import { MatchdayVote } from "../queries/vote";
 import { SplitMatchday } from "../../admin/splits/queries/split";
 import BonusMalusRowActions from "../../admin/bonusMaluses/components/BonusMalusRowActions";
+import TableRowActions from "@/components/TableRowActions";
 
 type Props = {
   matchday: SplitMatchday;
@@ -48,11 +49,7 @@ export default function VotesTable({ matchday, votes }: Props) {
                   <TableCell>{item.player.displayName}</TableCell>
                   <TableCell>{item.vote}</TableCell>
                   <TableCell>
-                    <BonusMalusRowActions
-                      matchday={matchday}
-                      bonusMalus={bm}
-                      bonusMalusTypes={bonusMalusTypes}
-                    />
+                    <TableRowActions></TableRowActions>
                   </TableCell>
                 </TableRow>
               ))}

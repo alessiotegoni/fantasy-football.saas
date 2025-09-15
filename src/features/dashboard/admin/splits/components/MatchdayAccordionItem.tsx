@@ -6,7 +6,6 @@ import {
 import { SplitMatchday } from "../queries/split";
 import LinkButton from "@/components/LinkButton";
 import { NavArrowDown } from "iconoir-react";
-import BonusMalusesTable from "../../bonusMaluses/components/BonusMalusesTable";
 
 type Props = {
   matchday: SplitMatchday;
