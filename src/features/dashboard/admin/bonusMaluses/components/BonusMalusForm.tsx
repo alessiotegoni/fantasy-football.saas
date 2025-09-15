@@ -102,7 +102,7 @@ export default function BonusMalusForm({
         </div>
         <SubmitButton
           loadingText={bonusMalus ? "Modifico" : "Creo"}
-          className={cn(bonusMalus && "w-fit")}
+          className={cn(bonusMalus && "sm:w-fit")}
         >
           {bonusMalus ? "Modifica" : "Crea"}
         </SubmitButton>
