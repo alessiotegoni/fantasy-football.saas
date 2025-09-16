@@ -48,5 +48,3 @@ export async function getUserRedaction(userId: string) {
 
   return res;
 }
-
-export type UserRedaction = typeof redactions.$inferSelect;

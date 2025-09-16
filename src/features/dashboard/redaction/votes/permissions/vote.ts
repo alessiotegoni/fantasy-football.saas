@@ -13,6 +13,8 @@ import { matchdayVotes } from "@/drizzle/schema";
 import { isRedaction } from "@/features/dashboard/user/utils/roles";
 import { getSplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 import { and, count, eq, inArray } from "drizzle-orm";
+import { getRedaction } from "../../queries/redaction";
+import { getUserRedaction } from "@/features/dashboard/user/queries/user";
 
 enum VOTE_ERRORS {
   REQUIRE_REDACTION = "Devi essere parte della redazione per gestire i voti",
@@ -25,10 +27,9 @@ async function baseValidation(matchdayId: number) {
   const userId = await getUserId();
   if (!userId) return createError(VALIDATION_ERROR);
 
-  const supabase = await createClient();
-  const userIsRedaction = await isRedaction(supabase, userId);
+  const userRedaction = await getUserRedaction(userId);
 
-  if (!userIsRedaction) {
+  if (!userRedaction) {
     return createError(VOTE_ERRORS.REQUIRE_REDACTION);
   }
 
@@ -56,8 +57,9 @@ export async function canUpdateVote(data: EditVoteSchema) {
   const validation = await baseValidation(data.matchdayId);
   if (validation.error) return validation;
 
-  if (await hasVote([data])) {
-    return createError(VOTE_ERRORS.ALREADY_ASSIGNED);
+  const vote = await getMatchdayVote(data.id);
+  if (!vote || vote.matchdayId !== validation.data.matchday.id) {
+    return createError(VOTE_ERRORS.VOTE_NOT_FOUND);
   }
 
   return createSuccess("", null);
