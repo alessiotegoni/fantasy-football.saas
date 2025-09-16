@@ -2,7 +2,12 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getUserLeaguesTag, getUserTeamTag } from "../db/cache/user";
 import { db } from "@/drizzle/db";
 import { and, eq } from "drizzle-orm";
-import { leagueMembers, leagueMemberTeams, leagues } from "@/drizzle/schema";
+import {
+  leagueMembers,
+  leagueMemberTeams,
+  leagues,
+  redactions,
+} from "@/drizzle/schema";
 import { authUsers } from "drizzle-orm/supabase";
 
 export async function getUserLeagues(userId: string) {
@@ -34,3 +39,14 @@ export async function getUserTeamId(userId: string, leagueId: string) {
 
   return res.teamId;
 }
+
+export async function getUserRedaction(userId: string) {
+  const [res] = await db
+    .select()
+    .from(redactions)
+    .where(eq(redactions.userId, userId));
+
+  return res;
+}
+
+export type UserRedaction = typeof redactions.$inferSelect;

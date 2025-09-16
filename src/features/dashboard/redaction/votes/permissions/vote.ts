@@ -3,6 +3,7 @@ import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { createClient } from "@/services/supabase/server/supabase";
 import {
+  AssignVoteSchema,
   CreateVotesSchema,
   DeleteVoteSchema,
   EditVoteSchema,
@@ -44,18 +45,9 @@ export async function canCreateVotes(data: CreateVotesSchema["votes"]) {
   const validation = await baseValidation(data[0].matchdayId);
   if (validation.error) return validation;
 
-  const matchdayId = data[0].matchdayId;
-
-  const playersIds = data.map((v) => v.playerId);
-  const existingVotes = await getPlayersMatchdayVote({
-    matchdayId,
-    playersIds,
-  });
-
-  const existingSet = new Set(existingVotes.map((v) => v.playerId));
-
-  const hasVote = data.some((v) => existingSet.has(v.playerId));
-  if (hasVote) return createError(VOTE_ERRORS.ALREADY_ASSIGNED);
+  if (await hasVote(data)) {
+    return createError(VOTE_ERRORS.ALREADY_ASSIGNED);
+  }
 
   return createSuccess("", null);
 }
@@ -92,10 +84,9 @@ async function getMatchdayVote(id: string) {
   });
 }
 
-async function hasVote(
-  data: Omit<typeof matchdayVotes.$inferSelect, "vote">[]
-) {
+async function hasVote(data: AssignVoteSchema[]) {
   const matchdayId = data[0].matchdayId;
+  const redactionId = data[0].redactionId;
   const playersIds = data.map((d) => d.playerId);
 
   const [res] = await db
@@ -104,6 +95,7 @@ async function hasVote(
     .where(
       and(
         eq(matchdayVotes.matchdayId, matchdayId),
+        eq(matchdayVotes.redactionId, redactionId),
         inArray(matchdayVotes.playerId, playersIds)
       )
     );

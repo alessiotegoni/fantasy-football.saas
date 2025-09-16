@@ -1,8 +1,17 @@
 import AssignVotePageContent from "@/features/dashboard/redaction/components/AssignVotePageContent";
-import { getPlayers } from "@/features/dashboard/admin/players/queries/player";
-import { getSplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
+import {
+  getPlayers,
+  Player,
+} from "@/features/dashboard/admin/players/queries/player";
+import {
+  getSplitMatchday,
+  SplitMatchday,
+} from "@/features/dashboard/admin/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { getUserId } from "@/features/dashboard/user/utils/user";
+import { getUserRedaction } from "@/features/dashboard/user/queries/user";
 
 export default async function AssignVotesPage({
   searchParams,
@@ -19,5 +28,23 @@ export default async function AssignVotesPage({
     getPlayers(),
   ]);
 
-  return <AssignVotePageContent matchday={matchday} players={players} />;
+  return (
+    <Suspense
+      fallback={<AssignVotePageContent matchday={matchday} players={players} />}
+    >
+      <SuspenseBoundary matchday={matchday} players={players} />
+    </Suspense>
+  );
+}
+
+async function SuspenseBoundary(props: {
+  matchday: SplitMatchday;
+  players: Player[];
+}) {
+  const userId = await getUserId();
+  if (!userId) return null;
+
+  const userRedaction = await getUserRedaction(userId);
+
+  return <AssignVotePageContent {...props} userRedaction={userRedaction} />;
 }

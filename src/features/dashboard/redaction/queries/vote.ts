@@ -1,9 +1,7 @@
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getMatchdayVotesTag, getPlayerMatchdayVoteTag } from "../votes/db/cache/vote";
+import { getMatchdayVotesTag } from "../votes/db/cache/vote";
 import { getPlayerIdTag } from "../../admin/players/db/cache/player";
-import { and, eq, inArray } from "drizzle-orm";
-import { matchdayVotes } from "@/drizzle/schema";
 
 export async function getMatchdaysVotes(matchdaysIds: number[]) {
   "use cache";
