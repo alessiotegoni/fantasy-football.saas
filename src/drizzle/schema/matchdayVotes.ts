@@ -10,6 +10,7 @@ import {
 import { relations, sql } from "drizzle-orm";
 import { players } from "./players";
 import { splitMatchdays } from "./splitMatchdays";
+import { redactions } from "./redactions";
 
 export const matchdayVotes = pgTable(
   "matchday_votes",
@@ -21,12 +22,16 @@ export const matchdayVotes = pgTable(
     matchdayId: smallint("matchday_id")
       .notNull()
       .references(() => splitMatchdays.id, { onDelete: "restrict" }),
+    redactionId: uuid("redaction_id")
+      .notNull()
+      .references(() => redactions.id, { onDelete: "set null" }),
     vote: numeric("vote").notNull(),
   },
   (t) => ({
     uniquePlayerMatchdayVote: uniqueIndex("unique_player_matchday_vote").on(
       t.playerId,
-      t.matchdayId
+      t.matchdayId,
+      t.redactionId
     ),
     voteCheck: check(
       "matchday_votes_vote_check",
@@ -46,5 +51,9 @@ export const matchdayVotesRelations = relations(matchdayVotes, ({ one }) => ({
   matchday: one(splitMatchdays, {
     fields: [matchdayVotes.matchdayId],
     references: [splitMatchdays.id],
+  }),
+  redaction: one(redactions, {
+    fields: [matchdayVotes.redactionId],
+    references: [redactions.id],
   }),
 }));
