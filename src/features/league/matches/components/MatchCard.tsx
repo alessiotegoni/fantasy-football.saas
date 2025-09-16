@@ -90,7 +90,7 @@ export default function MatchCard({
   return isBye || !isLink ? (
     <div className="group">{content}</div>
   ) : (
-    <Link href={`/leagues/${leagueId}/matches/${id}`} className="group">
+    <Link href={`/league/${leagueId}/matches/${id}`} className="group">
       {content}
     </Link>
   );

@@ -2,9 +2,9 @@
 
 import { useParams } from "next/navigation";
 import { Match } from "../queries/calendar";
-import { SplitMatchday } from "@/features/splits/queries/split";
 import { useEffect, useRef } from "react";
 import MatchCard from "@/features/league/matches/components/MatchCard";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 type Props = {
   matchday: Match["splitMatchday"];

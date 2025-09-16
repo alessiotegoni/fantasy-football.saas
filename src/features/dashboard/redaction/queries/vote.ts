@@ -22,7 +22,7 @@ export async function getMatchdaysVotes(matchdaysIds: number[]) {
       },
     },
     where: (votes, { inArray }) => inArray(votes.matchdayId, matchdaysIds),
-    orderBy: (votes, { asc, desc }) => [asc(votes.playerId), desc(votes.vote)],
+    orderBy: (votes, { desc }) => desc(votes.vote),
   });
 
   cacheTag(...results.map((res) => getPlayerIdTag(res.player.id)));
