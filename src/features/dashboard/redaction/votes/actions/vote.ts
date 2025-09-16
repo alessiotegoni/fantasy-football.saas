@@ -2,7 +2,11 @@
 
 import { validateSchema } from "@/schema/helpers";
 import { createSuccess } from "@/utils/helpers";
-import { canCreateVotes, canDeleteVote, canUpdateVote } from "../permissions/vote";
+import {
+  canCreateVotes,
+  canDeleteVote,
+  canUpdateVote,
+} from "../permissions/vote";
 import {
   createVotesSchema,
   CreateVotesSchema,
@@ -33,8 +37,14 @@ export async function createVotes(values: CreateVotesSchema) {
   const permissions = await canCreateVotes(data.votes);
   if (permissions.error) return permissions;
 
+  const { userRedaction } = permissions.data;
+
   await insertVotes(
-    data.votes.map((vote) => ({ ...vote, vote: vote.vote.toString() }))
+    data.votes.map((vote) => ({
+      ...vote,
+      redactionId: userRedaction.id,
+      vote: vote.vote.toString(),
+    }))
   );
 
   return createSuccess(VOTE_MESSAGES.ADDED_SUCCESSFULLY, null);

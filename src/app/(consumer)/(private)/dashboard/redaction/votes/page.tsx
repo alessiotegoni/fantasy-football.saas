@@ -59,11 +59,9 @@ export default async function VotesPage() {
 function VotesWrapper({
   matchdays,
   votes = [],
-  userRedaction,
 }: {
   matchdays: SplitMatchday[];
   votes?: MatchdayVote[];
-  userRedaction?: UserRedaction;
 }) {
   const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
 
@@ -86,7 +84,6 @@ function VotesWrapper({
               <VotesTable
                 matchday={matchday}
                 votes={matchdayVotes}
-                userRedaction={userRedaction}
               />
             ) : (
               <p className="text-center text-muted-foreground py-4">
@@ -101,20 +98,8 @@ function VotesWrapper({
 }
 
 async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
-  const userId = await getUserId();
-  if (!userId) return null;
-
   const matchdaysIds = matchdays.map((m) => m.id);
-  const [votes, userRedaction] = await Promise.all([
-    getMatchdaysVotes(matchdaysIds),
-    getUserRedaction(userId),
-  ]);
+  const votes = await getMatchdaysVotes(matchdaysIds);
 
-  return (
-    <VotesWrapper
-      matchdays={matchdays}
-      votes={votes}
-      userRedaction={userRedaction}
-    />
-  );
+  return <VotesWrapper matchdays={matchdays} votes={votes} />;
 }

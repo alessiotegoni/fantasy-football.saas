@@ -4,7 +4,6 @@ import { z } from "zod";
 export const assignVoteSchema = z.object({
   playerId: getSerialIdSchema(),
   matchdayId: getSerialIdSchema(),
-  redactionId: getUUIdSchema(),
   vote: z
     .number()
     .min(0, "Il voto non può essere minore di 0")

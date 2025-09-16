@@ -39,18 +39,18 @@ async function baseValidation(matchdayId: number) {
     return createError(VOTE_ERRORS.MATCHDAY_UPCOMING);
   }
 
-  return createSuccess("", { matchday });
+  return createSuccess("", { matchday, userRedaction });
 }
 
 export async function canCreateVotes(data: CreateVotesSchema["votes"]) {
   const validation = await baseValidation(data[0].matchdayId);
   if (validation.error) return validation;
 
-  if (await hasVote(data)) {
+  if (await hasVote(data, validation.data.userRedaction.id)) {
     return createError(VOTE_ERRORS.ALREADY_ASSIGNED);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", validation.data);
 }
 
 export async function canUpdateVote(data: EditVoteSchema) {
@@ -62,7 +62,7 @@ export async function canUpdateVote(data: EditVoteSchema) {
     return createError(VOTE_ERRORS.VOTE_NOT_FOUND);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", validation.data);
 }
 
 export async function canDeleteVote(data: DeleteVoteSchema) {
@@ -74,7 +74,7 @@ export async function canDeleteVote(data: DeleteVoteSchema) {
     return createError(VOTE_ERRORS.VOTE_NOT_FOUND);
   }
 
-  return createSuccess("", null);
+  return createSuccess("", validation.data);
 }
 
 async function getMatchdayVote(id: string) {
@@ -86,9 +86,8 @@ async function getMatchdayVote(id: string) {
   });
 }
 
-async function hasVote(data: AssignVoteSchema[]) {
+async function hasVote(data: AssignVoteSchema[], redactionId: string) {
   const matchdayId = data[0].matchdayId;
-  const redactionId = data[0].redactionId;
   const playersIds = data.map((d) => d.playerId);
 
   const [res] = await db

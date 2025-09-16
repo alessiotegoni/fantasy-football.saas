@@ -15,12 +15,10 @@ import VoteFormFields from "./VoteFormFields";
 import { Separator } from "@/components/ui/separator";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import { createVotes } from "../votes/actions/vote";
-import { UserRedaction } from "../../user/queries/user";
 
 type Props = {
   matchday: SplitMatchday;
   players: Player[];
-  userRedaction?: UserRedaction
 };
 
 export default function AssignVotePageContent(props: Props) {
@@ -49,7 +47,10 @@ export default function AssignVotePageContent(props: Props) {
     <Container
       headerLabel="Assegna voti"
       renderHeaderRight={() => (
-        <Button className="w-fit" onClick={() => append(getDefaultValue(props))}>
+        <Button
+          className="w-fit"
+          onClick={() => append(getDefaultValue(props))}
+        >
           <Plus className="size-5" />
           Aggiungi
         </Button>
@@ -91,12 +92,10 @@ export default function AssignVotePageContent(props: Props) {
 function getDefaultValue({
   matchday,
   players,
-  userRedaction
 }: Props): CreateVotesSchema["votes"][number] {
   return {
     matchdayId: matchday.id,
     playerId: players[0].id,
-    redactionId: userRedaction?.id ?? "",
     vote: 6,
   };
 }

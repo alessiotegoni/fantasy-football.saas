@@ -13,12 +13,10 @@ import {
 import { MatchdayVote } from "../queries/vote";
 import { SplitMatchday } from "../../admin/splits/queries/split";
 import VotesRowActions from "./VotesRowActions";
-import { UserRedaction } from "../../user/queries/user";
 
 type Props = {
   matchday: SplitMatchday;
   votes: MatchdayVote[];
-  userRedaction: UserRedaction | undefined;
 };
 
 export default function VotesTable(props: Props) {
