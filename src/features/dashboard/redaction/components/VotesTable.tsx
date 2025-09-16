@@ -13,9 +13,22 @@ import {
 import { MatchdayVote } from "../queries/vote";
 import { SplitMatchday } from "../../admin/splits/queries/split";
 import VotesRowActions from "./VotesRowActions";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
+
+const defaultFilters = { search: "" };
+
+function filterVotes(
+  { player, vote }: MatchdayVote,
+  { search }: typeof defaultFilters
+) {
+  if (!search) return true;
+  return (
+    player.displayName.toLowerCase().includes(search.toLowerCase()) ||
+    vote.includes(search)
+  );
+}
 
 type Props = {
   matchday: SplitMatchday;
@@ -23,35 +36,12 @@ type Props = {
 };
 
 export default function VotesTable(props: Props) {
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-
   const { filteredItems, handleFilter } = useFilter(props.votes, {
     filterFn: filterVotes,
     defaultFilters,
   });
 
-  const sortedItems = useMemo(
-    () =>
-      filteredItems.toSorted((a, b) => {
-        const voteA = parseFloat(a.vote);
-        const voteB = parseFloat(b.vote);
-
-        if (isNaN(voteA) || isNaN(voteB)) {
-          return 0;
-        }
-
-        if (sortOrder === "asc") {
-          return voteA - voteB;
-        } else {
-          return voteB - voteA;
-        }
-      }),
-    [filteredItems]
-  );
-
-  const toggleSortOrder = () => {
-    setSortOrder((current) => (current === "asc" ? "desc" : "asc"));
-  };
+  const { sortedItems, toggleSortOrder } = useSortVotes(filteredItems);
 
   return (
     <>
@@ -66,10 +56,19 @@ export default function VotesTable(props: Props) {
             <TableHeader>
               <TableRow>
                 <TableHead>Giocatore</TableHead>
-                <TableHead>
-                  <Button variant="ghost" onClick={toggleSortOrder}>
-                    Voto
-                    <ArrowUpDown className="ml-2 size-4" />
+                <TableHead className="px-0">
+                  <Button
+                    variant="ghost"
+                    onClick={toggleSortOrder}
+                    className="p-0 justify-start hover:bg-transparent"
+                  >
+                    <div
+                      className="flex items-center transition-colors
+                     rounded-lg gap-2 p-2 hover:bg-primary"
+                    >
+                      Voto
+                      <ArrowUpDown className="ml-2 size-4" />
+                    </div>
                   </Button>
                 </TableHead>
                 <TableHead />
@@ -97,15 +96,32 @@ export default function VotesTable(props: Props) {
   );
 }
 
-const defaultFilters = { search: "" };
+function useSortVotes(items: MatchdayVote[]) {
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-function filterVotes(
-  { player, vote }: MatchdayVote,
-  { search }: typeof defaultFilters
-) {
-  if (!search) return true;
-  return (
-    player.displayName.toLowerCase().includes(search.toLowerCase()) ||
-    vote.includes(search)
+  const sortedItems = useMemo(
+    () =>
+      items.toSorted((a, b) => {
+        const voteA = parseFloat(a.vote);
+        const voteB = parseFloat(b.vote);
+
+        if (isNaN(voteA) || isNaN(voteB)) {
+          return 0;
+        }
+
+        if (sortOrder === "asc") {
+          return voteA - voteB;
+        } else {
+          return voteB - voteA;
+        }
+      }),
+    [items, sortOrder]
   );
+
+  const toggleSortOrder = useCallback(
+    () => setSortOrder((current) => (current === "asc" ? "desc" : "asc")),
+    []
+  );
+
+  return { sortedItems, toggleSortOrder };
 }
