@@ -19,23 +19,22 @@ import { Form } from "@/components/ui/form";
 import SubmitButton from "@/components/SubmitButton";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { updateVote } from "../votes/actions/vote";
+import { UserRedaction } from "../../user/queries/user";
 
 type Props = {
   matchday: SplitMatchday;
   vote: MatchdayVote;
+  userRedaction: UserRedaction | undefined;
 };
 
-export default function EditVoteDialog({
-  matchday,
-  vote,
-  ...props
-}: Props) {
+export default function EditVoteDialog({ matchday, vote, userRedaction }: Props) {
   const form = useForm<EditVoteSchema>({
     resolver: zodResolver(editVoteSchema),
     defaultValues: {
       id: vote.id,
       playerId: vote.player.id,
       matchdayId: matchday.id,
+      redactionId: userRedaction?.id,
       vote: parseFloat(vote.vote),
     },
   });
@@ -67,7 +66,7 @@ export default function EditVoteDialog({
             className="space-y-4 flex flex-col items-end"
             onSubmit={form.handleSubmit(onSubmit)}
           >
-            <VoteFormFields vote={vote} {...props} />
+            <VoteFormFields vote={vote} />
             <SubmitButton
               loadingText="Modifico"
               className="sm:w-fit"

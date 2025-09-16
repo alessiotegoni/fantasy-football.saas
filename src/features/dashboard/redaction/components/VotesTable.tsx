@@ -13,14 +13,16 @@ import {
 import { MatchdayVote } from "../queries/vote";
 import { SplitMatchday } from "../../admin/splits/queries/split";
 import VotesRowActions from "./VotesRowActions";
+import { UserRedaction } from "../../user/queries/user";
 
 type Props = {
   matchday: SplitMatchday;
   votes: MatchdayVote[];
+  userRedaction: UserRedaction | undefined;
 };
 
-export default function VotesTable({ matchday, votes }: Props) {
-  const { filteredItems, handleFilter } = useFilter(votes, {
+export default function VotesTable(props: Props) {
+  const { filteredItems, handleFilter } = useFilter(props.votes, {
     filterFn: filterVotes,
     defaultFilters,
   });
@@ -48,7 +50,7 @@ export default function VotesTable({ matchday, votes }: Props) {
                   <TableCell>{item.player.displayName}</TableCell>
                   <TableCell>{item.vote}</TableCell>
                   <TableCell>
-                    <VotesRowActions matchday={matchday} vote={item} />
+                    <VotesRowActions vote={item} {...props} />
                   </TableCell>
                 </TableRow>
               ))}

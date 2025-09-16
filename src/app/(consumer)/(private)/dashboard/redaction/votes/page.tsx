@@ -14,6 +14,11 @@ import {
   MatchdayVote,
 } from "@/features/dashboard/redaction/queries/vote";
 import VotesTable from "@/features/dashboard/redaction/components/VotesTable";
+import { getUserId } from "@/features/dashboard/user/utils/user";
+import {
+  getUserRedaction,
+  UserRedaction,
+} from "@/features/dashboard/user/queries/user";
 
 export default async function VotesPage() {
   const split = await getLiveSplit();
@@ -54,9 +59,11 @@ export default async function VotesPage() {
 function VotesWrapper({
   matchdays,
   votes = [],
+  userRedaction,
 }: {
   matchdays: SplitMatchday[];
   votes?: MatchdayVote[];
+  userRedaction?: UserRedaction;
 }) {
   const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
 
@@ -76,7 +83,11 @@ function VotesWrapper({
             assignHref="/dashboard/redaction/votes/assign"
           >
             {matchdayVotes.length > 0 ? (
-              <VotesTable matchday={matchday} votes={matchdayVotes} />
+              <VotesTable
+                matchday={matchday}
+                votes={matchdayVotes}
+                userRedaction={userRedaction}
+              />
             ) : (
               <p className="text-center text-muted-foreground py-4">
                 Nessun voto assegnato per questa giornata.
@@ -90,8 +101,20 @@ function VotesWrapper({
 }
 
 async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
-  const matchdaysIds = matchdays.map((m) => m.id);
-  const votes = await getMatchdaysVotes(matchdaysIds);
+  const userId = await getUserId();
+  if (!userId) return null;
 
-  return <VotesWrapper matchdays={matchdays} votes={votes} />;
+  const matchdaysIds = matchdays.map((m) => m.id);
+  const [votes, userRedaction] = await Promise.all([
+    getMatchdaysVotes(matchdaysIds),
+    getUserRedaction(userId),
+  ]);
+
+  return (
+    <VotesWrapper
+      matchdays={matchdays}
+      votes={votes}
+      userRedaction={userRedaction}
+    />
+  );
 }

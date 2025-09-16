@@ -5,18 +5,28 @@ import { deleteVote } from "../votes/actions/vote";
 import TableRowActions from "@/components/TableRowActions";
 import { MatchdayVote } from "../queries/vote";
 import EditVoteDialog from "./EditVoteDialog";
+import { UserRedaction } from "../../user/queries/user";
 
 type Props = {
   matchday: SplitMatchday;
   vote: MatchdayVote;
+  userRedaction: UserRedaction | undefined;
 };
 
-export default function VotesRowActions({ matchday, vote }: Props) {
+export default function VotesRowActions({
+  matchday,
+  vote,
+  userRedaction,
+}: Props) {
   if (matchday.status === "upcoming") return null;
 
   return (
     <TableRowActions>
-      <EditVoteDialog matchday={matchday} vote={vote} />
+      <EditVoteDialog
+        matchday={matchday}
+        vote={vote}
+        userRedaction={userRedaction}
+      />
       <ActionButton
         action={deleteVote.bind(null, {
           voteId: vote.id,
