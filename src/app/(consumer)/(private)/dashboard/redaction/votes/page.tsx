@@ -14,11 +14,6 @@ import {
   MatchdayVote,
 } from "@/features/dashboard/redaction/queries/vote";
 import VotesTable from "@/features/dashboard/redaction/components/VotesTable";
-import { getUserId } from "@/features/dashboard/user/utils/user";
-import {
-  getUserRedaction,
-  UserRedaction,
-} from "@/features/dashboard/user/queries/user";
 
 export default async function VotesPage() {
   const split = await getLiveSplit();
@@ -64,13 +59,18 @@ function VotesWrapper({
   votes?: MatchdayVote[];
 }) {
   const liveMatchday = matchdays.find((matchday) => matchday.status === "live");
+  const lastEndedMatchday = matchdays.findLast(
+    (matchday) => matchday.status === "ended"
+  );
 
   return (
     <Accordion
       type="single"
       collapsible
       className="space-y-3"
-      defaultValue={liveMatchday?.id.toString()}
+      defaultValue={
+        liveMatchday?.id.toString() ?? lastEndedMatchday?.id.toString()
+      }
     >
       {matchdays.map((matchday) => {
         const matchdayVotes = votes.filter((v) => v.matchdayId === matchday.id);
@@ -81,10 +81,7 @@ function VotesWrapper({
             assignHref="/dashboard/redaction/votes/assign"
           >
             {matchdayVotes.length > 0 ? (
-              <VotesTable
-                matchday={matchday}
-                votes={matchdayVotes}
-              />
+              <VotesTable matchday={matchday} votes={matchdayVotes} />
             ) : (
               <p className="text-center text-muted-foreground py-4">
                 Nessun voto assegnato per questa giornata.
