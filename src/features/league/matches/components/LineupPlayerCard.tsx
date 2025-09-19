@@ -26,7 +26,8 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
       className={cn(
         "relative group flex items-center gap-2 p-2 rounded-md *:select-none",
         isStarter && "flex-col text-center",
-        isBench && "hover:cursor-grab flex-row",
+        isBench && "flex-row",
+        isBench && canEdit && "hover:cursor-grab",
         className
       )}
     >
