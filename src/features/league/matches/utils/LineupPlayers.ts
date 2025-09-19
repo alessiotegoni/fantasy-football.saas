@@ -20,13 +20,7 @@ export function enrichLineupPlayers({
   playersBonusMaluses,
   leagueBonusMalus,
 }: EnrichLineupPlayersParams) {
-  const playersBonusMalusesMap = new Map<number, PlayerBonusMalus[]>();
-  for (const bonusMalus of playersBonusMaluses) {
-    const playerBonusMaluses =
-      playersBonusMalusesMap.get(bonusMalus.playerId) ?? [];
-    playerBonusMaluses.push(bonusMalus);
-    playersBonusMalusesMap.set(bonusMalus.playerId, playerBonusMaluses);
-  }
+  const playersBonusMalusesMap = getPlayersBonusMalusesMap(playersBonusMaluses);
 
   return lineupsPlayers.map((player) => {
     const playerBonusMaluses = playersBonusMalusesMap.get(player.id) ?? [];
@@ -44,8 +38,22 @@ export function enrichLineupPlayers({
   });
 }
 
+function getPlayersBonusMalusesMap(playersBonusMaluses: PlayerBonusMalus[]) {
+  const playersBonusMalusesMap = new Map<number, PlayerBonusMalus[]>();
+
+  for (const bonusMalus of playersBonusMaluses) {
+    const playerBonusMaluses =
+      playersBonusMalusesMap.get(bonusMalus.playerId) ?? [];
+
+    playerBonusMaluses.push(bonusMalus);
+    playersBonusMalusesMap.set(bonusMalus.playerId, playerBonusMaluses);
+  }
+
+  return playersBonusMalusesMap;
+}
+
 export function calculatePlayerTotalVote(
-  vote: string | null,
+  vote: number | null,
   bonusMaluses: PlayerBonusMalus[],
   leagueCustomBonusMalus: Record<string, number>
 ) {

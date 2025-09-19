@@ -164,7 +164,8 @@ export async function getLineupsPlayers(
     positionOrder: positionOrder as number | null,
     lineupPlayerType: lineupPlayerType as LineupPlayerType | null,
     bonusMaluses: [] as PlayerBonusMalus[],
-    totalVote: null as string | null,
+    vote: player.vote as number | null,
+    totalVote: null as number | null,
   }));
 }
 
