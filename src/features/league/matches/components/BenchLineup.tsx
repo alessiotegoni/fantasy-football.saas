@@ -12,12 +12,14 @@ type Props = {
   players: LineupPlayer[];
   canEditLineup: boolean;
   className?: string;
+  isAwayTeam: boolean;
 };
 
 export default function BenchLineup({
   players: lineupPlayers,
   canEditLineup,
   className,
+  isAwayTeam,
 }: Props) {
   const {
     myLineup: { benchPlayers },
@@ -45,7 +47,11 @@ export default function BenchLineup({
         )}
       </div>
 
-      <BenchPlayersList players={players} canEditLineup={canEditLineup} />
+      <BenchPlayersList
+        players={players}
+        canEditLineup={canEditLineup}
+        isAwayTeam={isAwayTeam}
+      />
 
       {canEditLineup && <RemovePlayerDroppableArea />}
     </div>

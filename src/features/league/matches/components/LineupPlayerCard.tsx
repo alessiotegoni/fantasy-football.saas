@@ -14,12 +14,19 @@ type Props = {
   type: LineupPlayerType;
   className?: string;
   canEdit: boolean;
+  isAwayTeam?: boolean;
 };
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 // FIXME: President lineup card ui
 
-function LineupPlayerCard({ player, type, className, canEdit }: Props) {
+function LineupPlayerCard({
+  player,
+  type,
+  className,
+  canEdit,
+  isAwayTeam,
+}: Props) {
   const isStarter = type === "starter";
   const isBench = type === "bench";
 
@@ -29,13 +36,19 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
         "relative group flex justify-between items-center gap-2 rounded-md *:select-none",
         isStarter && "flex-col text-center",
         isBench && "flex-row px-2",
+        isBench && isAwayTeam && "flex-row-reverse 2xl:flex-row",
         isBench && canEdit && "hover:cursor-grab",
         isBench && !canEdit && "!pr-0.5",
         !canEdit && !player.vote && "opacity-60",
         className
       )}
     >
-      <div className={cn(isBench && "flex items-center gap-2")}>
+      <div
+        className={cn(
+          isBench && "flex items-center gap-2",
+          isBench && isAwayTeam && "flex-row-reverse 2xl:flex-row"
+        )}
+      >
         <div className="relative flex flex-col justify-center items-center gap-0.5">
           <LineupPlayerBonusMaluses {...player} />
           <Avatar

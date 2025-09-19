@@ -3,7 +3,7 @@ import PresidentSlot from "./PresidentSlot";
 import BenchLineup from "./BenchLineup";
 
 type Props = ComponentPropsWithoutRef<typeof PresidentSlot> &
-  ComponentPropsWithoutRef<typeof BenchLineup>;
+  ComponentPropsWithoutRef<typeof BenchLineup> & { isAwayTeam: boolean };
 
 function LineupSlot({ className, ...props }: Props) {
   return (

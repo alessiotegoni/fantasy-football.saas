@@ -71,6 +71,7 @@ export default function MatchWrapper({
                 players={getBenchPlayers(matchInfo.homeTeam.id)}
                 canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
                 className="2xl:border-r"
+                isAwayTeam={false}
               />
             </>
           ) : (
@@ -117,6 +118,7 @@ export default function MatchWrapper({
                 players={getBenchPlayers(matchInfo.awayTeam.id)}
                 canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
                 className="2xl:border-l"
+                isAwayTeam
               />
             </>
           ) : (
