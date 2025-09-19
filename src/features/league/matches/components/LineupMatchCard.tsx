@@ -1,9 +1,9 @@
-import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer } from "../queries/match";
 import { calculateLineupsTotalVote } from "../utils/Lineup";
 import { LineupTeam } from "../utils/match";
 import MatchCard from "./MatchCard";
 import LiveMatchScore from "./LiveMatchScore";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 type Props = {
   id: string;

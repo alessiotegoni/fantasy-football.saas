@@ -20,7 +20,7 @@ export default function MatchdaySection({
   const matchdayRef = useRef<HTMLDivElement>(null);
   const { leagueId } = useParams<{ leagueId: string }>();
 
-  const scrollToMatchday = () => {
+  function scrollToMatchday() {
     matchdayRef.current!.scrollIntoView({
       behavior: "smooth",
       block: "center",

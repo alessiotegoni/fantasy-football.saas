@@ -1,5 +1,5 @@
-import { SplitMatchday } from "@/features/splits/queries/split";
-import { calculateLineupsTotalVote } from "../utils/LineupPlayers";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
+import { calculateLineupsTotalVote } from "../utils/Lineup";
 import ScoresSeparator from "./ScoresSeparator";
 
 type Props = {
@@ -30,8 +30,8 @@ export default function LiveMatchScore({
     px-3 sm:px-4.5 py-1 sm:py-1.5 mb-1.5 sm:mb-2"
     >
       <span className="text-xl font-bold text-primary">
-        <span className="font-bold">{totalVotes.home}</span> -{" "}
-        <span className="font-bold">{totalVotes.away}</span>
+        <span className="font-bold">{totalVotes.home ?? 0}</span> -{" "}
+        <span className="font-bold">{totalVotes.away ?? 0}</span>
       </span>
     </div>
   );
