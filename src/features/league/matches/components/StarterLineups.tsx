@@ -46,20 +46,28 @@ export default function StarterLineups({
           );
         }
 
-        if (!isMatchdayClosed) {
-          const teamPlayers = players.filter(
-            (player) => player.leagueTeamId === team.id
-          );
+        const teamPlayers = players.filter(
+          (player) => player.leagueTeamId === team.id
+        );
 
+        if (!teamPlayers.length) {
           return (
-            <StarterLineupField
-              key={team.id}
+            <LineupEmptyState
+              key={i}
               team={team}
-              players={teamPlayers}
-              canEdit={!isMatchdayClosed && team.id === myTeam?.id}
+              matchMatchday={matchMatchday}
             />
           );
         }
+
+        return (
+          <StarterLineupField
+            key={team.id}
+            team={team}
+            players={teamPlayers}
+            canEdit={!isMatchdayClosed && team.id === myTeam?.id}
+          />
+        );
       })}
     </div>
   );

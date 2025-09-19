@@ -12,12 +12,14 @@ export default function LineupEmptyState({
 }) {
   const { myTeam } = useMyLineup();
 
-  const isMatchdayEnded = matchMatchday.status === "ended";
+  const isMatchdayUpcoming = matchMatchday.status === "upcoming";
 
   const text =
     myTeam?.id !== team.id
       ? "Formazione non inserita"
-      : `Non puoi ${isMatchdayEnded ? "piu'" : "ancora"} mettere la formazione`;
+      : `Non puoi ${
+          !isMatchdayUpcoming ? "piu'" : "ancora"
+        } mettere la formazione`;
 
   return (
     <div className="flex justify-center items-center">
