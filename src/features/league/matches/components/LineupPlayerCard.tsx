@@ -6,6 +6,8 @@ import RemovePlayerButton from "./RemovePlayerButton";
 import { User } from "iconoir-react";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
+import LineupPlayerVotes from "./LineupPlayerVotes";
+import LineupPlayerBonusMaluses from "./LineupPlayerBonusMaluses";
 
 type Props = {
   player: LineupPlayer;
@@ -32,6 +34,7 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
       )}
     >
       <div className="relative">
+        <LineupPlayerBonusMaluses {...player} />
         <Avatar
           imageUrl={player.avatarUrl}
           name={player.displayName}
@@ -46,6 +49,7 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
         )}
       </div>
       <div className={cn("text-xs max-w-20", isBench && "truncate")}>
+        {isStarter && <LineupPlayerVotes {...player} />}
         <p className="font-semibold">
           {player.displayName.split(" ").slice(1).join(" ")}
         </p>
@@ -53,26 +57,6 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
           <span className="text-[11px] text-muted-foreground">
             {player.team.displayName}
           </span>
-        )}
-        {player.vote !== null && (
-          <div className="flex items-center gap-1">
-            <span className="text-muted-foreground">
-              Voto: {player.vote ?? "-"}
-            </span>
-            {player.bonusMaluses && player.bonusMaluses.length > 0 && (
-              <div className="flex gap-1">
-                {player.bonusMaluses.map((bm, index) => (
-                  <div key={index} className="flex items-center">
-                    {bm.imageUrl && <></>}
-                    <span>{bm.count > 0 ? `+${bm.count}` : bm.count}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-        {player.totalVote !== null && (
-          <p className="font-bold">Totale: {player.totalVote}</p>
         )}
       </div>
       {canEdit && isStarter && (
