@@ -2,10 +2,11 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getPlayerIdTag } from "../db/cache/player";
 import { db } from "@/drizzle/db";
 import { getPlayersTag } from "@/cache/global";
+import { PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 
 export async function getPlayers() {
-  "use cache"
-  cacheTag(getPlayersTag())
+  "use cache";
+  cacheTag(getPlayersTag());
 
   return db.query.players.findMany({
     columns: {
@@ -17,6 +18,11 @@ export async function getPlayers() {
       team: true,
     },
   });
+}
+
+export async function getPlayersWithoutPresidents() {
+  const players = await getPlayers();
+  return players.filter((p) => p.role.id !== PRESIDENT_ROLE_ID);
 }
 
 export async function getPlayer(playerId: number) {

@@ -11,7 +11,7 @@ export const assignVoteSchema = z.object({
 });
 
 export const createVotesSchema = z.object({
-  votes: z.array(assignVoteSchema),
+  votes: z.array(assignVoteSchema).min(1),
 });
 
 export const editVoteSchema = z

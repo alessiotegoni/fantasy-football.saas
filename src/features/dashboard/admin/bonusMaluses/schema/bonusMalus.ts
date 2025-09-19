@@ -9,7 +9,7 @@ export const assignBonusMalusSchema = z.object({
 });
 
 export const createBonusMalusSchema = z.object({
-  bonusMaluses: z.array(assignBonusMalusSchema),
+  bonusMaluses: z.array(assignBonusMalusSchema).min(1),
 });
 
 export const editBonusMalusSchema = z

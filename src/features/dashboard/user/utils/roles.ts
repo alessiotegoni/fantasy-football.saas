@@ -43,13 +43,12 @@ export async function isAdmin(
 ): Promise<boolean> {
   if (isSuperadmin(userId)) return true;
 
-  const { data } = await supabase
+  const { count } = await supabase
     .from("admins")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
 
-  return !!data;
+  return (count ?? 0) > 0;
 }
 
 export async function isContentCreator(
@@ -58,13 +57,12 @@ export async function isContentCreator(
 ): Promise<boolean> {
   if (isSuperadmin(userId)) return true;
 
-  const { data } = await supabase
+  const { count } = await supabase
     .from("content_creators")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
 
-  return !!data;
+  return (count ?? 0) > 0;
 }
 
 export async function isRedaction(
@@ -73,13 +71,12 @@ export async function isRedaction(
 ): Promise<boolean> {
   if (isSuperadmin(userId)) return true;
 
-  const { data } = await supabase
+  const { count } = await supabase
     .from("redactions")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId);
 
-  return !!data;
+  return (count ?? 0) > 0;
 }
 
 export function isSuperadmin(userId: string) {

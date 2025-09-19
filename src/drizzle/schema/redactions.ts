@@ -7,7 +7,8 @@ export const redactions = pgTable("redactions", {
   id: uuid("id").defaultRandom().primaryKey(),
   userId: uuid("user_id")
     .notNull()
-    .references(() => authUsers.id, { onDelete: "cascade" }),
+    .references(() => authUsers.id, { onDelete: "cascade" })
+    .unique("redactions_user_id_key"),
   teamId: smallint("team_id").references(() => teams.id, {
     onDelete: "cascade",
   }),

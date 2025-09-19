@@ -1,5 +1,5 @@
 import AssignVotePageContent from "@/features/dashboard/redaction/components/AssignVotePageContent";
-import { getPlayers } from "@/features/dashboard/admin/players/queries/player";
+import { getPlayersWithoutPresidents } from "@/features/dashboard/admin/players/queries/player";
 import { getSplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { redirect } from "next/navigation";
@@ -16,7 +16,7 @@ export default async function AssignVotesPage({
 
   const [matchday, players] = await Promise.all([
     getSplitMatchday(matchdayId),
-    getPlayers(),
+    getPlayersWithoutPresidents(),
   ]);
 
   return <AssignVotePageContent matchday={matchday} players={players} />;
