@@ -14,15 +14,11 @@ import { LineupPlayer } from "../queries/match";
 import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
 import SwipeableLineupPlayerCard from "./SwipeableLineupPlayerCard";
 
-type Props = {
-  players: LineupPlayer[];
-  canEditLineup: boolean;
-};
-
 export default function EditableBenchPlayersList({
   players,
-  canEditLineup,
-}: Props) {
+}: {
+  players: LineupPlayer[];
+}) {
   const isMobile = useIsMobile(640);
 
   return (
