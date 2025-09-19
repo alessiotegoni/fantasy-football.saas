@@ -10,7 +10,7 @@ import {
   players,
   teams,
 } from "@/drizzle/schema";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, sql } from "drizzle-orm";
 import {
   getPlayerRolesTag,
   getPlayersTag,
@@ -116,7 +116,7 @@ export async function getLineupsPlayers(
       leagueTeamId: leagueMatchTeamLineup.teamId,
       positionId: leagueMatchLineupPlayers.positionId,
       positionOrder: leagueMatchLineupPlayers.positionOrder,
-      vote: matchdayVotes.vote,
+      vote: sql`ROUND(AVG(${matchdayVotes.vote}), 2)`.mapWith(Number),
       lineupPlayerType: leagueMatchLineupPlayers.playerType,
     })
     .from(leagueMatchLineupPlayers)
@@ -139,7 +139,16 @@ export async function getLineupsPlayers(
       )
     )
     .where(inArray(leagueMatches.id, matchesIds))
-    .orderBy(asc(leagueMatchLineupPlayers.positionOrder));
+    .orderBy(asc(leagueMatchLineupPlayers.positionOrder))
+    .groupBy(
+      leagueMatchTeamLineup.teamId,
+      leagueMatchLineupPlayers.positionId,
+      leagueMatchLineupPlayers.positionOrder,
+      leagueMatchLineupPlayers.playerType,
+      players.id,
+      playerRoles.id,
+      teams.id
+    );
 
   cacheTag(
     ...getLineupsPlayersTags({
