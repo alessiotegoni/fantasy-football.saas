@@ -3,7 +3,7 @@ import { matchdayVotes } from "@/drizzle/schema";
 import { createError } from "@/utils/helpers";
 import { eq } from "drizzle-orm";
 import {
-  revalidateMatchdayVotesCache,
+  revalidateRedactionMatchdaysVotesCache,
   revalidatePlayerMatchdayVoteCache,
 } from "./cache/vote";
 
@@ -14,13 +14,9 @@ enum DB_ERRORS {
 }
 
 export async function insertVotes(data: (typeof matchdayVotes.$inferInsert)[]) {
-  const res = await db.insert(matchdayVotes).values(data).returning({
-    id: matchdayVotes.id,
-    playerId: matchdayVotes.playerId,
-    matchdayId: matchdayVotes.matchdayId,
-  });
+  const res = await db.insert(matchdayVotes).values(data).returning();
 
-  if (res.length === 0) {
+  if (!res.length) {
     throw new Error(createError(DB_ERRORS.INSERT_ERROR).message);
   }
 
@@ -39,11 +35,7 @@ export async function updateVote(
     .update(matchdayVotes)
     .set(data)
     .where(eq(matchdayVotes.id, id))
-    .returning({
-      id: matchdayVotes.id,
-      playerId: matchdayVotes.playerId,
-      matchdayId: matchdayVotes.matchdayId,
-    });
+    .returning();
 
   if (!res.id) {
     throw new Error(createError(DB_ERRORS.UPDATE_ERROR).message);
@@ -56,11 +48,7 @@ export async function deleteVote(id: string) {
   const [res] = await db
     .delete(matchdayVotes)
     .where(eq(matchdayVotes.id, id))
-    .returning({
-      id: matchdayVotes.id,
-      playerId: matchdayVotes.playerId,
-      matchdayId: matchdayVotes.matchdayId,
-    });
+    .returning();
 
   if (!res.id) {
     throw new Error(createError(DB_ERRORS.DELETE_ERROR).message);
@@ -69,10 +57,13 @@ export async function deleteVote(id: string) {
   revalidateCaches([res]);
 }
 
-function revalidateCaches(data: { matchdayId: number; playerId: number }[]) {
+function revalidateCaches(
+  data: { redactionId: string; matchdayId: number; playerId: number }[]
+) {
   const matchdayId = data[0].matchdayId;
+  const redactionId = data[0].redactionId;
   const playersIds = data.map(({ playerId }) => playerId);
 
-  revalidateMatchdayVotesCache(matchdayId);
+  revalidateRedactionMatchdaysVotesCache(redactionId);
   revalidatePlayerMatchdayVoteCache(playersIds, matchdayId);
 }
