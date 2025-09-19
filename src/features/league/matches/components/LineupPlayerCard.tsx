@@ -26,39 +26,45 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
   return (
     <div
       className={cn(
-        "relative group flex items-center gap-2 p-2 rounded-md *:select-none",
+        "relative group flex justify-between items-center gap-2 rounded-md *:select-none",
         isStarter && "flex-col text-center",
-        isBench && "flex-row",
+        isBench && "flex-row px-2",
         isBench && canEdit && "hover:cursor-grab",
+        isBench && !canEdit && "!pr-0.5",
+        !canEdit && !player.vote && "opacity-60",
         className
       )}
     >
-      <div className="relative">
-        <LineupPlayerBonusMaluses {...player} />
-        <Avatar
-          imageUrl={player.avatarUrl}
-          name={player.displayName}
-          className={cn(isStarter ? "size-12" : "size-10")}
-          renderFallback={() => <User />}
-        />
-        {isBench && player.role && (
-          <PlayerRoleBadge
-            role={player.role}
-            className="absolute -top-1 -left-1 size-4 text-[10px]"
+      <div className={cn(isBench && "flex items-center gap-2")}>
+        <div className="relative flex flex-col justify-center items-center gap-0.5">
+          <LineupPlayerBonusMaluses {...player} />
+          <Avatar
+            imageUrl={player.avatarUrl}
+            name={player.displayName}
+            className={cn(isStarter ? "size-12" : "size-10")}
+            renderFallback={() => <User />}
           />
-        )}
+          {isStarter && <LineupPlayerVotes {...player} />}
+          {isBench && player.role && (
+            <PlayerRoleBadge
+              role={player.role}
+              className="absolute -top-1 -left-1 size-4 text-[10px]"
+            />
+          )}
+        </div>
+        <div className={cn("text-xs max-w-20", isBench && "truncate")}>
+          <p className="font-semibold">
+            {player.displayName.split(" ").slice(1).join(" ")}
+          </p>
+          {isBench && player.team && (
+            <span className="text-[11px] text-muted-foreground">
+              {player.team.displayName}
+            </span>
+          )}
+        </div>
       </div>
-      <div className={cn("text-xs max-w-20", isBench && "truncate")}>
-        {isStarter && <LineupPlayerVotes {...player} />}
-        <p className="font-semibold">
-          {player.displayName.split(" ").slice(1).join(" ")}
-        </p>
-        {isBench && player.team && (
-          <span className="text-[11px] text-muted-foreground">
-            {player.team.displayName}
-          </span>
-        )}
-      </div>
+      {isBench && <LineupPlayerVotes {...player} />}
+
       {canEdit && isStarter && (
         <RemovePlayerButton
           playerId={player.id}

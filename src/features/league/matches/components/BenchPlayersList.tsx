@@ -4,6 +4,7 @@ import ScrollArea from "@/components/ui/scroll-area";
 import { LineupPlayer } from "../queries/match";
 import EditableBenchPlayersList from "./EditableBenchPlayersList";
 import LineupPlayerCard from "./LineupPlayerCard";
+import useMyLineup from "@/hooks/useMyLineup";
 
 type Props = {
   players: LineupPlayer[];
@@ -11,9 +12,12 @@ type Props = {
 };
 
 export default function BenchPlayersList({ players, canEditLineup }: Props) {
+
+  const { myTeam } = useMyLineup()
+
   if (!canEditLineup) {
     return (
-      <ScrollArea className="space-y-0 max-h-[calc(500px-12px)] grow">
+      <ScrollArea className="max-h-[calc(500px-12px)] grow">
         {players.map((player) => (
           <LineupPlayerCard
             key={player.id}
