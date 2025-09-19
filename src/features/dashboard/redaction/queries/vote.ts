@@ -1,11 +1,14 @@
 import { db } from "@/drizzle/db";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
-import { getMatchdayVotesTag } from "../votes/db/cache/vote";
+import { getRedactionMatchdaysVotesTag } from "../votes/db/cache/vote";
 import { getPlayerIdTag } from "../../admin/players/db/cache/player";
 
-export async function getMatchdaysVotes(matchdaysIds: number[]) {
+export async function getRedactionMatchdaysVotes(
+  redactionId: string,
+  matchdaysIds: number[]
+) {
   "use cache";
-  cacheTag(...matchdaysIds.map(getMatchdayVotesTag));
+  cacheTag(getRedactionMatchdaysVotesTag(redactionId));
 
   const results = await db.query.matchdayVotes.findMany({
     columns: {
@@ -21,7 +24,11 @@ export async function getMatchdaysVotes(matchdaysIds: number[]) {
         },
       },
     },
-    where: (votes, { inArray }) => inArray(votes.matchdayId, matchdaysIds),
+    where: (votes, { eq, and, inArray }) =>
+      and(
+        eq(votes.redactionId, redactionId),
+        inArray(votes.matchdayId, matchdaysIds)
+      ),
     orderBy: (votes, { desc }) => desc(votes.vote),
   });
 
@@ -30,4 +37,6 @@ export async function getMatchdaysVotes(matchdaysIds: number[]) {
   return results;
 }
 
-export type MatchdayVote = Awaited<ReturnType<typeof getMatchdaysVotes>>[number];
+export type MatchdayVote = Awaited<
+  ReturnType<typeof getRedactionMatchdaysVotes>
+>[number];

@@ -3,10 +3,12 @@ import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/play
 import { getSplitMatchdaysIdTag } from "@/features/dashboard/admin/splits/db/cache/split";
 import { revalidateTag } from "next/cache";
 
-export type MATCHDAY_VOTE_TAG = "matchday-votes" | "player-matchday-vote";
+export type MATCHDAY_VOTE_TAG =
+  | "redaction-matchdays-votes"
+  | "player-matchday-vote";
 
-export const getMatchdayVotesTag = (matchdayId: number) =>
-  getIdTag("matchday-votes", matchdayId.toString());
+export const getRedactionMatchdaysVotesTag = (redactionId: string) =>
+  getIdTag("redaction-matchdays-votes", redactionId);
 
 export const getPlayerMatchdayVoteTag = (
   playerId: number,
@@ -18,10 +20,8 @@ export const getPlayerMatchdayVoteTag = (
   return getIdTag("player-matchday-vote", `${playerIdTag}-${matchdayIdTag}`);
 };
 
-export const revalidateMatchdayVotesCache = (
-  matchdayId: number
-) => {
-  revalidateTag(getMatchdayVotesTag(matchdayId));
+export const revalidateRedactionMatchdaysVotesCache = (redactionId: string) => {
+  revalidateTag(getRedactionMatchdaysVotesTag(redactionId));
 };
 
 export const revalidatePlayerMatchdayVoteCache = (

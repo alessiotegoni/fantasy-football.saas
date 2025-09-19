@@ -10,10 +10,12 @@ import {
 import MatchdayAccordionItem from "@/features/dashboard/admin/splits/components/MatchdayAccordionItem";
 import { Suspense } from "react";
 import {
-  getMatchdaysVotes,
+  getRedactionMatchdaysVotes,
   MatchdayVote,
 } from "@/features/dashboard/redaction/queries/vote";
 import VotesTable from "@/features/dashboard/redaction/components/VotesTable";
+import { getUserRedaction } from "@/features/dashboard/user/queries/user";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 
 export default async function VotesPage() {
   const split = await getLiveSplit();
@@ -95,8 +97,15 @@ function VotesWrapper({
 }
 
 async function SuspenseBoundary({ matchdays }: { matchdays: SplitMatchday[] }) {
+  const userId = await getUserId();
+  if (!userId) return null;
+
+  const userRedaction = await getUserRedaction(userId);
+  if (!userRedaction) return null;
+
   const matchdaysIds = matchdays.map((m) => m.id);
-  const votes = await getMatchdaysVotes(matchdaysIds);
+
+  const votes = await getRedactionMatchdaysVotes(userRedaction.id, matchdaysIds);
 
   return <VotesWrapper matchdays={matchdays} votes={votes} />;
 }
