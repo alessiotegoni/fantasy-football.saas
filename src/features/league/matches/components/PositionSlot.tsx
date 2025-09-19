@@ -23,17 +23,19 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
     );
   }
 
-  if (!player && !canEdit) {
-    return (
-      <div className="h-[72px]">
-        <div className="size-12 bg-muted rounded-full grid place-content-center">
-          <UserXmark />
-        </div>
-      </div>
-    );
-  }
+  if (!player && !canEdit) return <LineupPlayerPlaceholder />;
 
   if (canEdit) return <EditablePositionSlot player={player} {...ids} />;
 
   return null;
+}
+
+function LineupPlayerPlaceholder() {
+  return (
+    <div className="h-[72px]">
+      <div className="size-12 bg-muted rounded-full grid place-content-center">
+        <UserXmark />
+      </div>
+    </div>
+  );
 }
