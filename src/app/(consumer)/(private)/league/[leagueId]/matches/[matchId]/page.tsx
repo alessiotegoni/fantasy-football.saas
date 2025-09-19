@@ -15,6 +15,8 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import MyLineupDndProvider from "@/contexts/MyLineupDndProvider";
 import { getCurrentMatchday } from "@/features/dashboard/admin/splits/queries/split";
+import { getBonusMalusesSettings } from "@/features/league/settings/queries/setting";
+import { CustomBonusMalus } from "@/drizzle/schema";
 
 export default async function MatchPage({
   params,
@@ -22,23 +24,32 @@ export default async function MatchPage({
   const { success, ...ids } = validateUUIds(await params);
   if (!success) notFound();
 
-  const matchInfo = await getMatchInfo(ids);
+  const [matchInfo, { bonusMalusSettings }] = await Promise.all([
+    getMatchInfo(ids),
+    getBonusMalusesSettings(ids.leagueId),
+  ]);
   if (!matchInfo) notFound();
 
   return (
     <Suspense fallback={<MatchWrapper matchInfo={matchInfo} {...ids} />}>
-      <SuspenseBoundary matchInfo={matchInfo} {...ids} />
+      <SuspenseBoundary
+        matchInfo={matchInfo}
+        leagueBonusMalus={bonusMalusSettings}
+        {...ids}
+      />
     </Suspense>
   );
 }
 
 async function SuspenseBoundary({
   matchInfo,
+  leagueBonusMalus,
   ...ids
 }: {
   matchId: string;
   leagueId: string;
   matchInfo: MatchInfo;
+  leagueBonusMalus: CustomBonusMalus;
 }) {
   const userId = await getUserId();
   if (!userId) return;
@@ -57,6 +68,7 @@ async function SuspenseBoundary({
   const enrichedLineupPlayers = enrichLineupPlayers({
     lineupsPlayers,
     playersBonusMaluses,
+    leagueBonusMalus,
     ...matchInfo,
   });
 

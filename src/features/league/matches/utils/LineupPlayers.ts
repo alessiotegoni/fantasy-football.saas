@@ -12,13 +12,13 @@ import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 type EnrichLineupPlayersParams = {
   lineupsPlayers: LineupPlayer[];
   playersBonusMaluses: PlayerBonusMalus[];
-  leagueCustomBonusMalus: CustomBonusMalus;
+  leagueBonusMalus: CustomBonusMalus;
 };
 
 export function enrichLineupPlayers({
   lineupsPlayers,
   playersBonusMaluses,
-  leagueCustomBonusMalus,
+  leagueBonusMalus,
 }: EnrichLineupPlayersParams) {
   const playersBonusMalusesMap = new Map<number, PlayerBonusMalus[]>();
   for (const bonusMalus of playersBonusMaluses) {
@@ -33,7 +33,7 @@ export function enrichLineupPlayers({
     const totalVote = calculatePlayerTotalVote(
       player.vote,
       playerBonusMaluses,
-      leagueCustomBonusMalus
+      leagueBonusMalus
     );
 
     return {
