@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { LineupPlayer } from "../queries/match";
 import { cn } from "@/lib/utils";
+import { formatVoteValue } from "@/features/dashboard/redaction/votes/utils/vote";
 
 export default function LineupPlayerVotes({
   vote,
@@ -17,10 +18,10 @@ export default function LineupPlayerVotes({
       )}
     >
       <div className="bg-muted flex justify-center items-center py-0.5 px-1 basis-1/2 w-full">
-        {vote ?? "-"}
+        {formatVoteValue(vote)}
       </div>
       <div className="bg-primary flex justify-center items-center py-0.5 px-1 basis-1/2 w-full">
-        {totalVote ?? "-"}
+        {formatVoteValue(totalVote)}
       </div>
     </Badge>
   );

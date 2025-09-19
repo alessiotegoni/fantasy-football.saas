@@ -58,6 +58,7 @@ export function calculatePlayerTotalVote(
   leagueCustomBonusMalus: Record<string, number>
 ) {
   if (!vote) return null;
+  if (!bonusMaluses.length) return vote
 
   return bonusMaluses.reduce((total, bonusMalus) => {
     const value = leagueCustomBonusMalus[bonusMalus.id];
