@@ -1,12 +1,15 @@
 import { LineupPlayer } from "../queries/match";
 
+// FIXME: mandare a schermo immagine bonus (immagini soprapposte se piu bonus)
+// che al click aprono dialog con legenda es. immagine x2 goal fatti ecc.
+
 export default function LineupPlayerBonusMaluses({
   bonusMaluses,
 }: Pick<LineupPlayer, "bonusMaluses">) {
   if (!bonusMaluses.length) return null;
 
   return (
-    <div className="flex gap-1">
+    <div className="absolute -top-1 -right-1 flex gap-1">
       {bonusMaluses.map((bm, index) => (
         <div key={index} className="flex items-center">
           {bm.imageUrl && <></>}

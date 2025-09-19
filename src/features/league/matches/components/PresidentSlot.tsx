@@ -13,11 +13,13 @@ import DroppablePlayerArea from "./DroppablePlayerArea";
 type Props = {
   canEditLineup: boolean;
   starterPresident: LineupPlayer | undefined;
+  isAwayTeam: boolean;
 };
 
 export default function PresidentSlot({
   canEditLineup,
   starterPresident,
+  isAwayTeam,
 }: Props) {
   const {
     myTeam,
@@ -28,32 +30,30 @@ export default function PresidentSlot({
     ? getPresident(starterPlayers, myTeam.id)
     : starterPresident;
 
-  const hasPresident = !!president;
-
   return (
     <div
       className={cn(
         `relative min-h-36 2xl:size-full bg-input/30 rounded-3xl 2xl:rounded-4xl p-3 sm:p-4`,
-        !hasPresident && !canEditLineup && "border-transparent",
-        hasPresident && "border border-primary"
+        !president && !canEditLineup && "border-transparent",
+        president && "border border-primary flex flex-col justify-between"
       )}
     >
       <div className="flex justify-between items-center gap-2 sm:h-7">
         <Crown
           className={cn(
             "absolute -top-8.5 left-1/2 -translate-x-1/2 text-3xl",
-            hasPresident ? "text-primary" : "text-input"
+            president ? "text-primary" : "text-input"
           )}
-          fill={hasPresident ? "var(--primary)" : "currentColor"}
+          fill={president ? "var(--primary)" : "currentColor"}
         />
         <h2 className="text-sm xs:text-base">Presidente</h2>
-        {!hasPresident && canEditLineup && (
+        {!president && canEditLineup && (
           <AddPresidentButton className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0">
             <Plus className="size-5 font-semibold" />
           </AddPresidentButton>
         )}
       </div>
-      {!hasPresident && !canEditLineup && (
+      {!president && !canEditLineup && (
         <div className="mt-3 sm:mt-2 2xl:size-full flex flex-col gap-2 justify-center 2xl:justify-start 2xl:mt-6.5 items-center">
           <UserXmark className="size-8 text-muted-foreground" />
           <p className="max-w-28 sm:max-w-fit text-sm font-medium text-muted-foreground text-center">
@@ -61,7 +61,7 @@ export default function PresidentSlot({
           </p>
         </div>
       )}
-      {!hasPresident && canEditLineup && (
+      {!president && canEditLineup && (
         <DroppablePlayerArea
           id={PRESIDENT_POSITION_ID}
           lineupType="starter"
@@ -76,8 +76,12 @@ export default function PresidentSlot({
           </AddPresidentButton>
         </DroppablePlayerArea>
       )}
-      {hasPresident && (
-        <PresidentCard player={president} canEdit={canEditLineup} />
+      {president && (
+        <PresidentCard
+          player={president}
+          canEdit={canEditLineup}
+          isAwayTeam={isAwayTeam}
+        />
       )}
     </div>
   );

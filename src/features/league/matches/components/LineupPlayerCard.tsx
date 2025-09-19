@@ -14,7 +14,7 @@ type Props = {
   type: LineupPlayerType;
   className?: string;
   canEdit: boolean;
-  isAwayTeam?: boolean;
+  isAwayTeam: boolean;
 };
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
