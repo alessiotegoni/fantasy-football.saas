@@ -54,7 +54,8 @@ function calculateTeamTotalVote(
   if (!freeSlots.length) return calculatePlayersTotalVote(starterPlayers);
 
   const benchPlayers = players.filter(
-    (player) => player.lineupPlayerType === "bench"
+    (player) =>
+      player.lineupPlayerType === "bench" && player.leagueTeamId === team.id
   );
   if (!benchPlayers.length) return calculatePlayersTotalVote(starterPlayers);
 
@@ -63,14 +64,13 @@ function calculateTeamTotalVote(
   return calculatePlayersTotalVote(newPlayers);
 }
 
-function calculatePlayersTotalVote(players: { totalVote: string | null }[]) {
-  const totalVote = players.reduce((acc, player) => {
-    const totalVote = player.totalVote ? parseFloat(player.totalVote) : 0;
+function calculatePlayersTotalVote(players: { totalVote: number | null }[]) {
+  const totalVote = players.reduce(
+    (acc, player) => (acc += player?.totalVote ?? 0),
+    0
+  );
 
-    return (acc += totalVote);
-  }, 0);
-
-  return totalVote.toString();
+  return totalVote
 }
 
 function replacePlayers(
