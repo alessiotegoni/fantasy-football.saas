@@ -21,8 +21,6 @@ function LineupPlayerCard({ player, type, className, canEdit }: Props) {
   const isStarter = type === "starter";
   const isBench = type === "bench";
 
-  console.log(player);
-
   return (
     <div
       className={cn(

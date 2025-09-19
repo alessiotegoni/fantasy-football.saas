@@ -4,9 +4,10 @@ import { LineupPlayer } from "../queries/match";
 import { LineupTeam } from "../utils/match";
 import { useIsMobile } from "@/hooks/useMobile";
 import RoleGroup from "./RoleGroup";
+import { cn } from "@/lib/utils";
 
 type Props = {
-  team: NonNullable<LineupTeam>;
+  team: NonNullable<LineupTeam & { isHome: boolean }>;
   canEdit: boolean;
   players: LineupPlayer[];
 };
@@ -18,16 +19,27 @@ export default function StarterLineupField(props: Props) {
 }
 
 function MobileField(props: Props) {
+  const isAway = props.team.isHome === false;
+
   return (
-    <div className="flex flex-col gap-4 p-4">
+    <div
+      className={cn("flex flex-col gap-4 p-4", isAway && "flex-col-reverse")}
+    >
       <RoleRow {...props} />
     </div>
   );
 }
 
 function DesktopField(props: Props) {
+  const isAway = props.team.isHome === false;
+
   return (
-    <div className="ml-3 flex items-center gap-3 md:gap-4">
+    <div
+      className={cn(
+        "ml-3 flex items-center gap-3 md:gap-4",
+        isAway && "flex-row-reverse"
+      )}
+    >
       <RoleColumn {...props} />
     </div>
   );

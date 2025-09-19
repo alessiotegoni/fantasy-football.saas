@@ -71,7 +71,7 @@ export default function AuctionCard({
         </ActionButton>
       ) : (
         <Button asChild className="self-end w-fit mt-3 sm:mt-0">
-          <Link href={`/leagues/${leagueId}/premium/auctions/${auction.id}`}>
+          <Link href={`/league/${leagueId}/premium/auctions/${auction.id}`}>
             Vedi asta
             <NavArrowRight className="size-5" />
           </Link>

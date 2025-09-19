@@ -3,7 +3,7 @@ import { getLeagueCalculationsTag } from "../db/cache/calculate-matchday";
 import { db } from "@/drizzle/db";
 import { leagueMatchdayCalculations, splitMatchdays } from "@/drizzle/schema";
 import { and, asc, eq } from "drizzle-orm";
-import { getSplitMatchdaysIdTag } from "@/features/splits/db/cache/split";
+import { getSplitMatchdaysIdTag } from "@/features/dashboard/admin/splits/db/cache/split";
 
 export async function getCalculations(leagueId: string, splitId: number) {
   "use cache";

@@ -1,5 +1,5 @@
 "use client";
-import { LineupPlayerType, PositionId } from "@/drizzle/schema";
+import { PositionId } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/league/matches/queries/match";
 import { getPositionOrder } from "@/features/league/matches/utils/LineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";

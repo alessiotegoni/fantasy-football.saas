@@ -1,10 +1,11 @@
 "use client";
 
 import { LineupPlayer, MatchInfo } from "../queries/match";
-import { SplitMatchday } from "@/features/splits/queries/split";
+
 import StarterLineupField from "./StarterLineupField";
 import LineupEmptyState from "./LineupEmptyState";
 import useMyLineup from "@/hooks/useMyLineup";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 type Props = {
   match: MatchInfo;
@@ -22,9 +23,14 @@ export default function StarterLineups({
 
   const { myTeam } = useMyLineup();
 
+  const teams = [
+    { ...homeTeam, isHome: true },
+    { ...awayTeam, isHome: false },
+  ];
+
   return (
     <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px] xl:min-h-[500px]">
-      {[homeTeam, awayTeam].map((team, i) => {
+      {teams.map((team, i) => {
         if (!team) return null;
 
         if (
@@ -49,7 +55,7 @@ export default function StarterLineups({
             <StarterLineupField
               key={team.id}
               team={team}
-              players={teamPlayers ?? []}
+              players={teamPlayers}
               canEdit={!isMatchdayClosed && team.id === myTeam?.id}
             />
           );

@@ -1,14 +1,17 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
+import SplitSelect from "@/features/dashboard/admin/splits/components/SplitSelect";
+import {
+  getSplits,
+  Split,
+} from "@/features/dashboard/admin/splits/queries/split";
 import { getFinalPhaseAccess } from "@/features/league/admin/calendar/final-phase/utils/calendar";
 import StandingWrapper from "@/features/league/standing/components/StandingWrapper";
 import {
   getDefaultStandingData,
   getLeagueStandingData,
 } from "@/features/league/standing/queries/standing";
-import SplitSelect from "@/features/splits/components/SplitSelect";
-import { getSplits, Split } from "@/features/splits/queries/split";
 import { validateSerialId } from "@/schema/helpers";
 import { NavArrowRight } from "iconoir-react";
 import Link from "next/link";
@@ -34,7 +37,7 @@ export default async function LeagueStandingPage({
       <Suspense>
         <SuspenseBoundary
           leagueId={leagueId}
-          selectedSplitPromise={searchParams.then((sp) => sp.splitId)}
+          selectedSplitPromise={searchParams.then((sp) => sp.splitId as string)}
           splits={splits}
           lastSplit={lastSplit}
         />

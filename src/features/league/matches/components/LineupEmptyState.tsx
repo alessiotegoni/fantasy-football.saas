@@ -1,7 +1,7 @@
 import { WarningTriangle } from "iconoir-react";
 import { LineupTeam } from "../utils/match";
-import { SplitMatchday } from "@/features/splits/queries/split";
 import useMyLineup from "@/hooks/useMyLineup";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 export default function LineupEmptyState({
   team,

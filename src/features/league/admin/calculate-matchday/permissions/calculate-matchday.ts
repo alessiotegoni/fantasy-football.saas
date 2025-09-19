@@ -1,17 +1,13 @@
 import { db } from "@/drizzle/db";
 import { leagueMatchdayCalculations } from "@/drizzle/schema";
-import { isLeagueAdmin } from "@/features/league/leagues/queries/league";
-import {
-  getLastEndedMatchday,
-  getLiveSplit,
-  getSplitMatchdays,
-} from "@/features/splits/queries/split";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { createError, createSuccess } from "@/utils/helpers";
 import { VALIDATION_ERROR } from "@/schema/helpers";
 import { and, count, eq } from "drizzle-orm";
 import { isMatchdayCalculable } from "../utils/calculate-matchday";
 import { hasGeneratedCalendar } from "../../calendar/regular/permissions/calendar";
+import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
+import { getLastEndedMatchday, getLiveSplit, getSplitMatchdays } from "@/features/dashboard/admin/splits/queries/split";
 
 enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",

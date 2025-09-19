@@ -1,4 +1,3 @@
-import { SplitMatchday } from "@/features/splits/queries/split";
 import { LineupPlayer, MatchInfo } from "../queries/match";
 import Container from "@/components/Container";
 import { Suspense } from "react";
@@ -17,6 +16,7 @@ import BenchSkeleton from "./skeletons/BenchSkeleton";
 import { AwayLineupSlot, HomeLineupSlot } from "./LineupSlot";
 import { getTacticalModules } from "@/features/dashboard/admin/tacticalModules/queries/tacticalModule";
 import { getLeagueModules } from "../../settings/queries/setting";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 type Props = {
   matchInfo: MatchInfo;
