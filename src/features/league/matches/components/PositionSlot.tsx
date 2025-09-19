@@ -1,9 +1,5 @@
-import { Plus } from "lucide-react";
 import { LineupPlayer } from "../queries/match";
-import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import { PositionId } from "@/drizzle/schema";
-import DroppablePlayerArea from "./DroppablePlayerArea";
-import DraggableLineupPlayerCard from "./DraggableLineupPlayerCard";
 import LineupPlayerCard from "./LineupPlayerCard";
 import EditablePositionSlot from "./EditablePositionSlot";
 

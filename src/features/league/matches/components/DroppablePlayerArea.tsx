@@ -3,7 +3,6 @@
 import { UniqueIdentifier, useDroppable } from "@dnd-kit/core";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType, PositionId } from "@/drizzle/schema";
-import { useId } from "react";
 
 type Props = DroppablePlayerArea & {
   children: React.ReactNode;
@@ -11,7 +10,7 @@ type Props = DroppablePlayerArea & {
 };
 
 export type DroppablePlayerArea = {
-  id?: UniqueIdentifier;
+  id: UniqueIdentifier;
   player?: LineupPlayer;
   roleId?: number;
   positionId?: PositionId;
@@ -28,7 +27,7 @@ export default function DroppablePlayerArea({
   className = "",
 }: Props) {
   const { setNodeRef } = useDroppable({
-    id: id ? id : player ? player.id : useId(),
+    id,
     data: {
       player,
       roleId,

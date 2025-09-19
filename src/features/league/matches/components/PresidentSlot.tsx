@@ -63,6 +63,7 @@ export default function PresidentSlot({
       )}
       {!hasPresident && canEditLineup && (
         <DroppablePlayerArea
+          id={PRESIDENT_POSITION_ID}
           lineupType="starter"
           roleId={PRESIDENT_ROLE_ID}
           positionId={PRESIDENT_POSITION_ID}

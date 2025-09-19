@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button";
 import { DragHandGesture } from "iconoir-react";
 import { LineupPlayer } from "../queries/match";
 
-type Props = {
+export default function DraggableLineupPlayerCard({
+  player,
+}: {
   player: LineupPlayer;
-  canEdit: boolean;
-};
-
-export default function DraggableLineupPlayerCard({ player, canEdit }: Props) {
+}) {
   const { attributes, listeners, transform, isDragging, setNodeRef } =
     useDraggable({
       id: player.id,
@@ -38,7 +37,7 @@ export default function DraggableLineupPlayerCard({ player, canEdit }: Props) {
       <LineupPlayerCard
         type="starter"
         player={player}
-        canEdit={canEdit}
+        canEdit
         className={cn(
           "size-14 sm:size-16 xl:size-18 flex items-center justify-center",
           isDragging && "opacity-0 pointer-events-none"

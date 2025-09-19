@@ -13,7 +13,7 @@ type Props = {
 
 export default function EditablePositionSlot({ player, ...ids }: Props) {
   const content = player ? (
-    <DraggableLineupPlayerCard player={player} canEdit={true} />
+    <DraggableLineupPlayerCard player={player} />
   ) : (
     <PlayersSelectTrigger
       lineupType="starter"
@@ -25,7 +25,12 @@ export default function EditablePositionSlot({ player, ...ids }: Props) {
   );
 
   return (
-    <DroppablePlayerArea lineupType="starter" player={player} {...ids}>
+    <DroppablePlayerArea
+      id={ids.positionId}
+      lineupType="starter"
+      player={player}
+      {...ids}
+    >
       {content}
     </DroppablePlayerArea>
   );
