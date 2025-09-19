@@ -2,6 +2,7 @@ import { LineupPlayer } from "../queries/match";
 import { PositionId } from "@/drizzle/schema";
 import LineupPlayerCard from "./LineupPlayerCard";
 import EditablePositionSlot from "./EditablePositionSlot";
+import { UserXmark } from "iconoir-react";
 
 type Props = {
   player: LineupPlayer | undefined;
@@ -22,7 +23,17 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
     );
   }
 
- if (canEdit) return <EditablePositionSlot player={player} {...ids} />
+  if (!player && !canEdit) {
+    return (
+      <div className="h-[72px]">
+        <div className="size-12 bg-muted rounded-full grid place-content-center">
+          <UserXmark />
+        </div>
+      </div>
+    );
+  }
 
- return null
+  if (canEdit) return <EditablePositionSlot player={player} {...ids} />;
+
+  return null;
 }

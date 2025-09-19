@@ -41,7 +41,7 @@ export default function LeagueTeamCard({
       )}
     >
       <Link
-        href={`/leagues/${leagueId}/teams/${team.id}`}
+        href={`/league/${leagueId}/teams/${team.id}`}
         className="flex items-center gap-4 grow"
       >
         <Avatar
@@ -73,7 +73,7 @@ export default function LeagueTeamCard({
         {showIsUserTeam && team.userId === teamUserId && (
           <Button variant="gradient" size="sm" className="mt-2">
             <Link
-              href={`/leagues/${leagueId}/teams/${team.id}/edit`}
+              href={`/league/${leagueId}/teams/${team.id}/edit`}
               className="text-xs"
             >
               Modifica

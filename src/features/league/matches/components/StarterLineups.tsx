@@ -50,7 +50,7 @@ export default function StarterLineups({
           (player) => player.leagueTeamId === team.id
         );
 
-        if (!teamPlayers.length) {
+        if (isMatchdayClosed && !teamPlayers.length) {
           return (
             <LineupEmptyState
               key={i}
