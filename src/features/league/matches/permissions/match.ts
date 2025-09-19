@@ -7,8 +7,9 @@ import { createError, createSuccess } from "@/utils/helpers";
 enum LINEUP_ERRORS {
   MATCH_NOT_FOUND = "Partita non trovata",
   USER_TEAM_NOT_FOUND = "La tua squadra non e' stata trovata",
-  INVALID_TEAM = "Non partecipa a questa partita",
+  INVALID_TEAM = "Non partecipi a questa partita",
   INVALID_PLAYERS = "Alcuni giocatori scelti nella formazione non fanno parte della tua squadra",
+  INVALID_MATCHDAY_STATUS = "Giornata gia iniziata o terminata",
 }
 
 export async function canSaveLineup({
@@ -24,6 +25,10 @@ export async function canSaveLineup({
 
   if (!matchInfo) return createError(LINEUP_ERRORS.MATCH_NOT_FOUND);
   if (!userTeamId) return createError(LINEUP_ERRORS.USER_TEAM_NOT_FOUND);
+
+  if (matchInfo.splitMatchday.status !== "upcoming") {
+    return createError(LINEUP_ERRORS.INVALID_MATCHDAY_STATUS);
+  }
 
   const { homeTeam, awayTeam } = matchInfo;
 

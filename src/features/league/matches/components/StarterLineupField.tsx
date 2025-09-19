@@ -36,7 +36,8 @@ function DesktopField(props: Props) {
   return (
     <div
       className={cn(
-        "ml-3 flex items-center gap-3 md:gap-4",
+        "flex items-center gap-3 md:gap-4",
+        isAway ? "mr-3" : "ml-3",
         isAway && "flex-row-reverse"
       )}
     >
