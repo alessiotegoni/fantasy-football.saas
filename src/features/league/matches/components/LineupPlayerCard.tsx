@@ -3,11 +3,11 @@ import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import { LineupPlayerType } from "@/drizzle/schema";
 import RemovePlayerButton from "./RemovePlayerButton";
-import { User } from "iconoir-react";
 import PlayerRoleBadge from "@/components/PlayerRoleBadge";
 import { memo } from "react";
 import LineupPlayerVotes from "./LineupPlayerVotes";
 import LineupPlayerBonusMaluses from "./LineupPlayerBonusMaluses";
+import PlayerFallbackImage from "@/components/PlayerFallbackImage";
 
 type Props = {
   player: LineupPlayer;
@@ -16,10 +16,6 @@ type Props = {
   canEdit: boolean;
   isAwayTeam: boolean;
 };
-
-// FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
-// FIXME: President lineup card ui
-// FIXME: I nomi dei giocatori isAwayTeam devono iniziare dalla destra
 
 function LineupPlayerCard({
   player,
@@ -60,11 +56,7 @@ function LineupPlayerCard({
               isStarter ? "size-12" : "size-10"
             )}
             renderFallback={() => (
-              <img
-                src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/players-avatars/player-placeholder-2.png"
-                alt="player placeholder"
-                className="size-12"
-              />
+              <PlayerFallbackImage {...player} className="size-12" />
             )}
           />
           {isStarter && <LineupPlayerVotes {...player} />}

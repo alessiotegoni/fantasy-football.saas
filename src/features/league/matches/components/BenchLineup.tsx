@@ -35,7 +35,12 @@ export default function BenchLineup({
         className
       )}
     >
-      <div className="flex justify-between items-center gap-2 p-3 sm:p-4 !pb-2">
+      <div
+        className={cn(
+          "flex justify-between items-center gap-2 p-3 sm:p-4 !pb-2",
+          isAwayTeam && "flex-row-reverse 2xl:flex-row"
+        )}
+      >
         <h2 className="text-sm xs:text-base">Panchina</h2>
         {canEditLineup && (
           <PlayersSelectTrigger

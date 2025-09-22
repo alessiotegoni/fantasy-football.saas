@@ -38,7 +38,12 @@ export default function PresidentSlot({
         president && "border border-primary flex flex-col justify-between"
       )}
     >
-      <div className="flex justify-between items-center gap-2 sm:h-7">
+      <div
+        className={cn(
+          "flex justify-between items-center gap-2 sm:h-7",
+          isAwayTeam && "flex-row-reverse 2xl:flex-row"
+        )}
+      >
         <Crown
           className={cn(
             "absolute -top-8.5 left-1/2 -translate-x-1/2 text-3xl",
@@ -46,7 +51,7 @@ export default function PresidentSlot({
           )}
           fill={president ? "var(--primary)" : "currentColor"}
         />
-        <h2 className="text-sm xs:text-base">Presidente</h2>
+        <h2 className={cn("text-sm xs:text-base")}>Presidente</h2>
         {!president && canEditLineup && (
           <AddPresidentButton className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0">
             <Plus className="size-5 font-semibold" />

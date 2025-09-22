@@ -3,9 +3,14 @@ import { LineupPlayer } from "../queries/match";
 // FIXME: mandare a schermo immagine bonus (immagini soprapposte se piu bonus)
 // che al click aprono dialog con legenda es. immagine x2 goal fatti ecc.
 
+type Props = {
+  className?: string;
+} & Pick<LineupPlayer, "bonusMaluses">;
+
 export default function LineupPlayerBonusMaluses({
   bonusMaluses,
-}: Pick<LineupPlayer, "bonusMaluses">) {
+  className,
+}: Props) {
   if (!bonusMaluses.length) return null;
 
   return (

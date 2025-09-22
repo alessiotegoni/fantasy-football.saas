@@ -3,14 +3,13 @@ import { LineupPlayer } from "../queries/match";
 import RemovePlayerButton from "./RemovePlayerButton";
 import LineupPlayerBonusMaluses from "./LineupPlayerBonusMaluses";
 import { cn } from "@/lib/utils";
+import PlayerFallbackImage from "@/components/PlayerFallbackImage";
 
 type Props = {
   player: LineupPlayer;
   isAwayTeam: boolean;
   canEdit?: boolean;
 };
-
-// FIXME: base ui + bonusMalus ui
 
 export default function PresidentCard({ player, isAwayTeam, canEdit }: Props) {
   return (
@@ -26,11 +25,7 @@ export default function PresidentCard({ player, isAwayTeam, canEdit }: Props) {
         name={player.displayName}
         className="size-16 *:bg-transparent !overflow-visible"
         renderFallback={() => (
-          <img
-            src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/players-avatars/president-placeholder.png"
-            alt="president placeholder"
-            className="size-16"
-          />
+          <PlayerFallbackImage {...player} className="size-16" />
         )}
       />
       <div>

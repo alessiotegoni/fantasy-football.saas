@@ -10,6 +10,7 @@ import { useParams } from "next/navigation";
 import TeamCreditsBadge from "../../teams/components/TeamCreditsBadge";
 import { cn } from "@/lib/utils";
 import { TeamPlayer } from "../queries/teamsPlayer";
+import PlayerFallbackImage from "@/components/PlayerFallbackImage";
 
 type Props = TeamPlayer & {
   showSelectButton?: boolean;
@@ -45,10 +46,12 @@ export default memo(function PlayerCard({
           <Avatar
             imageUrl={player.avatarUrl}
             name={player.displayName}
-            renderFallback={() => <User />}
             className={cn(
-              avatarSize && `size-${avatarSize}`,
-              "ring-1 ring-zinc-700"
+              "*:bg-transparent !overflow-visible",
+              avatarSize && `size-${avatarSize}`
+            )}
+            renderFallback={() => (
+              <PlayerFallbackImage {...player} className="size-12" />
             )}
           />
           {player.role && (
