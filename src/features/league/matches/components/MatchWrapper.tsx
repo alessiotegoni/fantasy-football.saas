@@ -62,18 +62,16 @@ export default function MatchWrapper({
       <div className="grid grid-cols-2 gap-3 sm:gap-5 2xl:grid-cols-[180px_1fr_180px]">
         <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
-            <>
-              <HomeLineupSlot
-                starterPresident={getPresident(
-                  groupedPlayers["starter"] ?? [],
-                  matchInfo.homeTeam.id
-                )}
-                players={getBenchPlayers(matchInfo.homeTeam.id)}
-                canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
-                className="2xl:border-r"
-                isAwayTeam={false}
-              />
-            </>
+            <HomeLineupSlot
+              starterPresident={getPresident(
+                groupedPlayers["starter"] ?? [],
+                matchInfo.homeTeam.id
+              )}
+              players={getBenchPlayers(matchInfo.homeTeam.id)}
+              canEditLineup={getCanEditLineup(matchInfo.homeTeam)}
+              className="2xl:border-r"
+              isAwayTeam={false}
+            />
           ) : (
             <BenchSkeleton className="2xl:border-r" />
           )}
@@ -109,18 +107,16 @@ export default function MatchWrapper({
         </div>
         <div className="mt-7 sm:mt-5 2xl:mt-0 row-start-2 2xl:row-start-auto flex flex-col justify-between gap-3 sm:gap-5">
           {showLineups ? (
-            <>
-              <AwayLineupSlot
-                starterPresident={getPresident(
-                  groupedPlayers["starter"] ?? [],
-                  matchInfo.awayTeam.id
-                )}
-                players={getBenchPlayers(matchInfo.awayTeam.id)}
-                canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
-                className="2xl:border-l"
-                isAwayTeam
-              />
-            </>
+            <AwayLineupSlot
+              starterPresident={getPresident(
+                groupedPlayers["starter"] ?? [],
+                matchInfo.awayTeam.id
+              )}
+              players={getBenchPlayers(matchInfo.awayTeam.id)}
+              canEditLineup={getCanEditLineup(matchInfo.awayTeam)}
+              className="2xl:border-l"
+              isAwayTeam
+            />
           ) : (
             <BenchSkeleton className="2xl:border-l" />
           )}

@@ -75,7 +75,7 @@ async function SuspenseBoundary({
   const myTeam = getMyTeam(myTeamId, matchInfo, enrichedLineupPlayers);
 
   return (
-    <MyLineupProvider myTeam={myTeam}>
+    <MyLineupProvider myTeam={myTeam} leagueBonusMalus={leagueBonusMalus}>
       <MyLineupDndProvider>
         <MatchWrapper
           matchInfo={matchInfo}

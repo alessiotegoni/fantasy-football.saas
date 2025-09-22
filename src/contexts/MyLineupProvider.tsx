@@ -1,6 +1,11 @@
 "use client";
 
-import { LineupPlayerType, PositionId, TacticalModule } from "@/drizzle/schema";
+import {
+  CustomBonusMalus,
+  LineupPlayerType,
+  PositionId,
+  TacticalModule,
+} from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/league/matches/queries/match";
 import { tacticalModuleSchema } from "@/features/league/matches/schema/matchTacticalModule";
 import { groupLineupsPlayers } from "@/features/league/matches/utils/LineupPlayers";
@@ -29,6 +34,7 @@ type PlayersDialog = {
 };
 
 export type MyLineupContext = {
+  leagueBonusMalus: CustomBonusMalus;
   myTeam: Omit<LineupTeam, "lineup">;
   myLineup: MyLineup;
   playersDialog: PlayersDialog;
@@ -45,8 +51,10 @@ export const MyLineupContext = createContext<MyLineupContext | null>(null);
 export default function MyLineupProvider({
   children,
   myTeam,
+  ...props
 }: {
   children: React.ReactNode;
+  leagueBonusMalus: CustomBonusMalus;
   myTeam: MyTeam;
 }) {
   const [initialLineup, setInitialLineup] = useState<MyLineup>(
@@ -125,6 +133,7 @@ export default function MyLineupProvider({
   return (
     <MyLineupContext.Provider
       value={{
+        ...props,
         myTeam: {
           id: myTeam?.id ?? null,
           imageUrl: myTeam?.imageUrl ?? null,

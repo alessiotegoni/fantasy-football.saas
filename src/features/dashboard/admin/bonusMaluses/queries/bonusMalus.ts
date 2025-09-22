@@ -63,8 +63,9 @@ export async function getPlayersMatchdayBonusMaluses({
     .select({
       playerId: matchdayBonusMalus.playerId,
       id: matchdayBonusMalus.bonusMalusTypeId,
-      count: matchdayBonusMalus.count,
+      name: bonusMalusTypes.name,
       imageUrl: bonusMalusTypes.imageUrl,
+      count: matchdayBonusMalus.count,
     })
     .from(matchdayBonusMalus)
     .innerJoin(
@@ -91,4 +92,3 @@ export async function getPlayersMatchdayBonusMaluses({
 export type PlayerBonusMalus = Awaited<
   ReturnType<typeof getPlayersMatchdayBonusMaluses>
 >[number];
-
