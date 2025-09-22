@@ -1,8 +1,5 @@
-type Rounding = "up" | "down";
-
 export function formatVoteValue(
-  value: number | string | null | undefined,
-  rounding: Rounding = "up"
+  value: number | string | null | undefined
 ): string {
   if (value === null || value === undefined) return "-";
 
@@ -10,10 +7,7 @@ export function formatVoteValue(
 
   if (isNaN(num)) return "-";
 
-  const calculation =
-    rounding === "up"
-      ? Math.ceil(num * 2) / 2
-      : Math.floor(num * 2) / 2;
+  const calculation = Math.ceil(num * 2) / 2;
 
   return String(calculation);
 }

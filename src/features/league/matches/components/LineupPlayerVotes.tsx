@@ -18,10 +18,10 @@ export default function LineupPlayerVotes({
       )}
     >
       <div className="bg-muted flex justify-center items-center py-0.5 px-1 basis-1/2 w-full">
-        {formatVoteValue(vote, "up")}
+        {formatVoteValue(vote)}
       </div>
       <div className="bg-primary flex justify-center items-center py-0.5 px-1 basis-1/2 w-full">
-        {formatVoteValue(totalVote, "up")}
+        {formatVoteValue(totalVote)}
       </div>
     </Badge>
   );

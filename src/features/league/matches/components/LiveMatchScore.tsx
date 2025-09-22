@@ -27,11 +27,11 @@ export default function LiveMatchScore({
     >
       <span className="text-xl font-bold text-primary">
         <span className="font-bold">
-          {formatVoteValue(totalVotes.home ?? 0, "down")}
+          {formatVoteValue(totalVotes.home ?? 0)}
         </span>{" "}
         -{" "}
         <span className="font-bold">
-          {formatVoteValue(totalVotes.away ?? 0, "down")}
+          {formatVoteValue(totalVotes.away ?? 0)}
         </span>
       </span>
     </Badge>

@@ -19,6 +19,7 @@ type Props = {
 
 // FIXME: UI LineupPlayerCard (verticale mobile, orizzontale desktop)
 // FIXME: President lineup card ui
+// FIXME: I nomi dei giocatori isAwayTeam devono iniziare dalla destra
 
 function LineupPlayerCard({
   player,
@@ -70,9 +71,9 @@ function LineupPlayerCard({
             {player.displayName.split(" ").slice(1).join(" ")}
           </p>
           {isBench && player.team && (
-            <span className="text-[11px] text-muted-foreground">
+            <p className="text-[11px] text-muted-foreground">
               {player.team.displayName}
-            </span>
+            </p>
           )}
         </div>
       </div>
