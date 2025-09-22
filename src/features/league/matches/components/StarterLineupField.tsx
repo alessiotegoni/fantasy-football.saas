@@ -7,7 +7,7 @@ import RoleGroup from "./RoleGroup";
 import { cn } from "@/lib/utils";
 
 type Props = {
-  team: NonNullable<LineupTeam & { isHome: boolean }>;
+  team: NonNullable<LineupTeam & { isAway: boolean }>;
   canEdit: boolean;
   players: LineupPlayer[];
 };
@@ -19,11 +19,11 @@ export default function StarterLineupField(props: Props) {
 }
 
 function MobileField(props: Props) {
-  const isAway = props.team.isHome === false;
+  const isAway = props.team.isAway;
 
   return (
     <div
-      className={cn("flex flex-col gap-4 p-4", isAway && "flex-col-reverse")}
+      className={cn("flex flex-col gap-4 pt-4 sm:p-4", isAway && "flex-col-reverse pt-0 pb-4")}
     >
       <RoleRow {...props} />
     </div>
@@ -31,7 +31,7 @@ function MobileField(props: Props) {
 }
 
 function DesktopField(props: Props) {
-  const isAway = props.team.isHome === false;
+  const isAway = props.team.isAway;
 
   return (
     <div

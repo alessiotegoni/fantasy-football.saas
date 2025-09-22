@@ -28,7 +28,7 @@ export default function PresidentCard({ player, isAwayTeam, canEdit }: Props) {
         renderFallback={() => (
           <img
             src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/players-avatars/president-placeholder.png"
-            alt="player placeholder"
+            alt="president placeholder"
             className="size-16"
           />
         )}

@@ -5,12 +5,13 @@ import EditablePositionSlot from "./EditablePositionSlot";
 
 type Props = {
   player: LineupPlayer | undefined;
+  isAway: boolean
   roleId: number;
   positionId: PositionId;
   canEdit: boolean;
 };
 
-export default function PositionSlot({ player, canEdit, ...ids }: Props) {
+export default function PositionSlot({ player, canEdit, isAway, ...ids }: Props) {
   if (player && !canEdit) {
     return (
       <LineupPlayerCard
@@ -18,6 +19,7 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
         player={player}
         className="size-14 sm:size-16 xl:size-18 flex items-center justify-center"
         canEdit={false}
+        isAwayTeam={isAway}
       />
     );
   }
@@ -31,7 +33,7 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
 
 function LineupPlayerPlaceholder() {
   return (
-    <div className="h-20">
+    <div className={"my-2 sm:mt-0 sm:h-20"}>
       <img
         src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/players-avatars/player-placeholder-2.png"
         alt="player placeholder"

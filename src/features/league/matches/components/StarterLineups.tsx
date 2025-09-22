@@ -24,8 +24,8 @@ export default function StarterLineups({
   const { myTeam } = useMyLineup();
 
   const teams = [
-    { ...homeTeam, isHome: true },
-    { ...awayTeam, isHome: false },
+    { ...homeTeam, isAway: false },
+    { ...awayTeam, isAway: true },
   ];
 
   return (

@@ -8,7 +8,7 @@ import useMyLineup from "@/hooks/useMyLineup";
 import { PositionId } from "@/drizzle/schema";
 
 type Props = {
-  team: NonNullable<LineupTeam>;
+  team: NonNullable<LineupTeam> & { isAway: boolean };
   players: LineupPlayer[];
   canEdit: boolean;
   className?: string;
@@ -49,5 +49,5 @@ function PositionsList(
   const players = props.canEdit ? starterPlayers : props.players;
   const player = players.find((p) => p.positionId === props.positionId);
 
-  return <PositionSlot player={player} {...props} />;
+  return <PositionSlot player={player} isAway={props.team.isAway} {...props} />;
 }
