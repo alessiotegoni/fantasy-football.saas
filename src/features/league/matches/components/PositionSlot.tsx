@@ -2,7 +2,6 @@ import { LineupPlayer } from "../queries/match";
 import { PositionId } from "@/drizzle/schema";
 import LineupPlayerCard from "./LineupPlayerCard";
 import EditablePositionSlot from "./EditablePositionSlot";
-import { UserXmark } from "iconoir-react";
 
 type Props = {
   player: LineupPlayer | undefined;
@@ -32,10 +31,12 @@ export default function PositionSlot({ player, canEdit, ...ids }: Props) {
 
 function LineupPlayerPlaceholder() {
   return (
-    <div className="h-[72px]">
-      <div className="size-12 bg-muted rounded-full grid place-content-center">
-        <UserXmark />
-      </div>
+    <div className="h-20">
+      <img
+        src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/players-avatars/player-placeholder-2.png"
+        alt="player placeholder"
+        className="size-12"
+      />
     </div>
   );
 }
