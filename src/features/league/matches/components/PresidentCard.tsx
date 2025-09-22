@@ -11,6 +11,9 @@ type Props = {
   canEdit?: boolean;
 };
 
+// TODO: aggiungere icone per rigori presidenziali
+// e cambiare stile
+
 export default function PresidentCard({ player, isAwayTeam, canEdit }: Props) {
   return (
     <div

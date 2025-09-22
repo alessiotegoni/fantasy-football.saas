@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/dialog";
 import useMyLineup from "@/hooks/useMyLineup";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { LineupPlayer } from "../queries/match";
+import { formatPlural } from "@/utils/formatters";
 
 type BonusMalus = LineupPlayer["bonusMaluses"][number];
 
@@ -41,32 +41,30 @@ function BonusMalusTrigger({
   bonusMaluses,
   className,
 }: BonusMalusTriggerProps) {
+  const allBonusMaluses = bonusMaluses.flatMap((bm) =>
+    Array.from({ length: bm.count }, () => bm)
+  );
+  const visibleIcons = allBonusMaluses.toReversed().slice(0, 2);
+  const hiddenCount = allBonusMaluses.length - visibleIcons.length;
+
   return (
-    <DialogTrigger asChild>
-      <div
-        className={cn(
-          "absolute -top-2 -right-2 flex cursor-pointer",
-          className
-        )}
-      >
-        {bonusMaluses.map((bm, i) => (
-          <div
-            key={bm.id}
-            className="relative h-6 w-6"
-            style={{
-              zIndex: bonusMaluses.length - i,
-              marginLeft: i > 0 ? "-8px" : 0,
-            }}
-          >
-            <Image
-              src={bm.imageUrl}
-              alt={bm.name}
-              fill
-              className="rounded-full border-2 border-background"
-            />
-          </div>
-        ))}
-      </div>
+    <DialogTrigger
+      className={cn(
+        "absolute flex-col items-center justify-center -space-y-1 -top-5 -right-2 cursor-pointer",
+        className
+      )}
+    >
+      {visibleIcons.map((bm, i) => (
+        <img key={i} src={bm.imageUrl} alt={bm.name} className="size-6" />
+      ))}
+      {hiddenCount > 0 && (
+        <div
+          className="rounded-full bg-muted size-5 text-[10px]
+        grid place-content-center font-heading z-50"
+        >
+          +{hiddenCount}
+        </div>
+      )}
     </DialogTrigger>
   );
 }
@@ -83,7 +81,7 @@ function BonusMalusesDialogContent({
   return (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Dettaglio Bonus e Malus</DialogTitle>
+        <DialogTitle>Tutti bonus e malus</DialogTitle>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         {bonusMaluses.map((bm) => (
@@ -106,16 +104,16 @@ type BonusMalusDetailsProps = {
 function BonusMalusDetails({ bonusMalus, points }: BonusMalusDetailsProps) {
   const totalPoints = points * bonusMalus.count;
   return (
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-2">
-        <div className="relative h-6 w-6">
-          <Image
-            src={bonusMalus.imageUrl}
-            alt={bonusMalus.name}
-            fill
-            className="rounded-full"
-          />
-        </div>
+    <div
+      className="flex items-center justify-between gap-4
+     border-b border-muted pb-2 last:border-none last:pb-0"
+    >
+      <div className="flex items-center gap-3">
+        <img
+          src={bonusMalus.imageUrl}
+          alt={bonusMalus.name}
+          className="size-10"
+        />
         <span className="font-medium">{bonusMalus.name}</span>
       </div>
       <div className="text-right">
@@ -126,7 +124,12 @@ function BonusMalusDetails({ bonusMalus, points }: BonusMalusDetailsProps) {
             totalPoints > 0 ? "text-green-500" : "text-red-500"
           )}
         >
-          {totalPoints > 0 ? `+${totalPoints}` : totalPoints} punti
+          {totalPoints > 0 ? `+${totalPoints}` : totalPoints}{" "}
+          {formatPlural(
+            totalPoints === -1 ? 1 : totalPoints,
+            { plural: "punti", singular: "punto" },
+            { includeCount: false }
+          )}
         </p>
       </div>
     </div>

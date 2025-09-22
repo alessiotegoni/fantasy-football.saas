@@ -17,6 +17,8 @@ type Props = {
   isAwayTeam: boolean;
 };
 
+// TODO: mostrare in qualche modo i bonus dei giocatori in panchina
+
 function LineupPlayerCard({
   player,
   type,
