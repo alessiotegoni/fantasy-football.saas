@@ -25,7 +25,7 @@ export function enrichLineupPlayers({
   return lineupsPlayers.map((player) => {
     const playerBonusMaluses = playersBonusMalusesMap.get(player.id) ?? [];
     const totalVote = calculatePlayerTotalVote(
-      player.vote,
+      player,
       playerBonusMaluses,
       leagueBonusMalus
     );
@@ -53,17 +53,17 @@ function getPlayersBonusMalusesMap(playersBonusMaluses: PlayerBonusMalus[]) {
 }
 
 export function calculatePlayerTotalVote(
-  vote: number | null,
+  player: LineupPlayer,
   bonusMaluses: PlayerBonusMalus[],
   leagueCustomBonusMalus: Record<string, number>
 ) {
-  if (!vote) return null;
-  if (!bonusMaluses.length) return vote
+  const isPresident = player.role.id === PRESIDENT_ROLE_ID;
+  if (!isPresident && !player.vote) return null;
 
   return bonusMaluses.reduce((total, bonusMalus) => {
     const value = leagueCustomBonusMalus[bonusMalus.id];
     return total + value * bonusMalus.count;
-  }, vote);
+  }, player.vote ?? 0);
 }
 
 export function getPresident(players: LineupPlayer[], teamId: string | null) {
