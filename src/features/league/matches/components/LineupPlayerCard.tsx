@@ -50,13 +50,22 @@ function LineupPlayerCard({
           isBench && isAwayTeam && "flex-row-reverse 2xl:flex-row"
         )}
       >
-        <div className="relative flex flex-col justify-center items-center gap-0.5">
+        <div className="relative flex flex-col justify-center items-center">
           <LineupPlayerBonusMaluses {...player} />
           <Avatar
             imageUrl={player.avatarUrl}
             name={player.displayName}
-            className={cn(isStarter ? "size-12" : "size-10")}
-            renderFallback={() => <User />}
+            className={cn(
+              "*:bg-transparent !overflow-visible",
+              isStarter ? "size-12" : "size-10"
+            )}
+            renderFallback={() => (
+              <img
+                src="https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/players-avatars/player-placeholder-2.png"
+                alt="player placeholder"
+                className="size-12"
+              />
+            )}
           />
           {isStarter && <LineupPlayerVotes {...player} />}
           {isBench && player.role && (
