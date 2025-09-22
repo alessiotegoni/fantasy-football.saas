@@ -1,13 +1,12 @@
 export function getGoals(
-  score: string,
+  score: number,
   settings: { base: number; interval: number }
 ) {
   const { base, interval } = settings;
 
-  const parsedScore = parseFloat(score);
-  if (parsedScore < base) return 0;
+  if (score < base) return 0;
 
-  return Math.floor((parsedScore - base) / interval) + 1;
+  return Math.floor((score - base) / interval) + 1;
 }
 
 export function getPoints(homeGoals: number, awayGoals: number) {

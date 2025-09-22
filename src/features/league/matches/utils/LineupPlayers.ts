@@ -61,7 +61,7 @@ export function calculatePlayerTotalVote(
   if (!isPresident && !player.vote) return null;
 
   return bonusMaluses.reduce((total, bonusMalus) => {
-    const value = leagueCustomBonusMalus[bonusMalus.id];
+    const value = leagueCustomBonusMalus?.[bonusMalus.id.toString()] ?? 0;
     return total + value * bonusMalus.count;
   }, player.vote ?? 0);
 }

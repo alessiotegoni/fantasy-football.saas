@@ -1,6 +1,6 @@
 "use server";
 
-import { getUUIdSchema, validateSchema } from "@/schema/helpers";
+import { validateSchema } from "@/schema/helpers";
 import {
   calculateMatchdaySchema,
   CalculateMatchdaySchema,
@@ -136,15 +136,12 @@ export async function cancelCalculation(values: CancelCalculationSchema) {
 }
 
 async function calculateMatchesResults(data: CalculateMatchdaySchema) {
-  const [
-    { bonusMalusSettings: leagueCustomBonusMalus },
-    { goalThresholdSettings },
-    matches,
-  ] = await Promise.all([
-    getBonusMalusesSettings(data.leagueId),
-    getCalculationSettings(data.leagueId),
-    getLeagueMatchdayMatches(data),
-  ]);
+  const [{ bonusMalusSettings }, { goalThresholdSettings }, matches] =
+    await Promise.all([
+      getBonusMalusesSettings(data.leagueId),
+      getCalculationSettings(data.leagueId),
+      getLeagueMatchdayMatches(data),
+    ]);
 
   const matchesIds = matches.map((match) => match.id);
   const teamsIds = getMatchesTeamsIds(matches);
@@ -162,7 +159,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
   const players = enrichLineupPlayers({
     lineupsPlayers,
     playersBonusMaluses,
-    leagueCustomBonusMalus,
+    leagueBonusMalus: bonusMalusSettings,
   });
 
   const matchesResults: (typeof leagueMatchResults.$inferInsert)[] = [];
@@ -203,7 +200,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       matchesResults.push({
         leagueMatchId: matchId,
         teamId: homeTeamId,
-        totalScore: totalVotes.home,
+        totalScore: totalVotes.home.toString(),
         points: homePoints,
         goals: homeGoals,
       });
@@ -213,7 +210,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       matchesResults.push({
         leagueMatchId: matchId,
         teamId: awayTeamId,
-        totalScore: totalVotes.away,
+        totalScore: totalVotes.away.toString(),
         points: awayPoints,
         goals: awayGoals,
       });
@@ -273,7 +270,7 @@ async function getMatchesTeamsTacticalModules(
     },
     where: (matchLineup, { and, inArray }) =>
       and(
-        inArray(matchLineup.id, matchesIds),
+        inArray(matchLineup.matchId, matchesIds),
         inArray(matchLineup.teamId, teamsIds)
       ),
   });
