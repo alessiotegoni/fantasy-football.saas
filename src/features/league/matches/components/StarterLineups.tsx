@@ -29,7 +29,7 @@ export default function StarterLineups({
   ];
 
   return (
-    <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[600px] sm:min-h-[400px] xl:min-h-[500px]">
+    <div className="absolute grid grid-rows-2 sm:grid-rows-none sm:grid-cols-2 w-full min-h-[800px] sm:min-h-[400px] xl:min-h-[500px]">
       {teams.map((team, i) => {
         if (!team) return null;
 

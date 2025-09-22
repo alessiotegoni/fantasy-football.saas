@@ -94,14 +94,12 @@ export default function MatchWrapper({
               </MobileButtonsContainer>
             )}
             {showLineups && (
-              <Suspense>
-                <StarterLineups
-                  players={groupedPlayers["starter"] ?? []}
-                  match={matchInfo}
-                  currentMatchday={currentMatchday}
-                  isMatchdayClosed={isMatchdayClosed}
-                />
-              </Suspense>
+              <StarterLineups
+                players={groupedPlayers["starter"] ?? []}
+                match={matchInfo}
+                currentMatchday={currentMatchday}
+                isMatchdayClosed={isMatchdayClosed}
+              />
             )}
           </FootballFieldBg>
         </div>

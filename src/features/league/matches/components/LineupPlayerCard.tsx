@@ -44,7 +44,7 @@ function LineupPlayerCard({
     >
       <div
         className={cn(
-          isBench && "flex items-center gap-2",
+          isBench && "flex items-center gap-2 w-full",
           isBench && isAwayTeam && "flex-row-reverse 2xl:flex-row"
         )}
       >
@@ -69,7 +69,13 @@ function LineupPlayerCard({
             />
           )}
         </div>
-        <div className={cn("text-xs max-w-20", isBench && "truncate")}>
+        <div
+          className={cn(
+            "text-xs max-w-20",
+            isBench && "truncate grow",
+            isBench && isAwayTeam && "text-right"
+          )}
+        >
           <p className="font-semibold">
             {player.displayName.split(" ").slice(1).join(" ")}
           </p>

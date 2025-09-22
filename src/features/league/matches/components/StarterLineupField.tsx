@@ -23,7 +23,10 @@ function MobileField(props: Props) {
 
   return (
     <div
-      className={cn("flex flex-col gap-4 pt-4 sm:p-4", isAway && "flex-col-reverse pt-0 pb-4")}
+      className={cn(
+        "flex flex-col justify-between gap-4 pt-4 sm:p-4",
+        isAway && "flex-col-reverse pt-0 pb-4"
+      )}
     >
       <RoleRow {...props} />
     </div>

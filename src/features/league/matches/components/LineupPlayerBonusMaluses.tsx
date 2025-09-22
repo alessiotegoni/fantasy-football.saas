@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -82,6 +83,9 @@ function BonusMalusesDialogContent({
     <DialogContent>
       <DialogHeader>
         <DialogTitle>Tutti bonus e malus</DialogTitle>
+        <DialogDescription>
+          Questi bonus/malus verrano sommati/sotratti al voto del giocatore
+        </DialogDescription>
       </DialogHeader>
       <div className="grid gap-4 py-4">
         {bonusMaluses.map((bm) => (
