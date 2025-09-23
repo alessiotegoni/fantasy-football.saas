@@ -40,7 +40,7 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
       leagueMatches,
       eq(leagueMatchResults.leagueMatchId, leagueMatches.id)
     )
-    .innerJoin(
+    .leftJoin(
       opponentResults,
       and(
         eq(leagueMatches.id, opponentResults.leagueMatchId),
