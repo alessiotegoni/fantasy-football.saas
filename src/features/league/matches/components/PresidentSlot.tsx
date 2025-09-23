@@ -53,7 +53,7 @@ export default function PresidentSlot({
         />
         <h2 className={cn("text-sm xs:text-base")}>Presidente</h2>
         {!president && canEditLineup && (
-          <AddPresidentButton className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0">
+          <AddPresidentButton className="bg-primary text-primary-foreground size-[26px] p-0 rounded-full 2xl:size-6 shrink-0">
             <Plus className="size-5 font-semibold" />
           </AddPresidentButton>
         )}

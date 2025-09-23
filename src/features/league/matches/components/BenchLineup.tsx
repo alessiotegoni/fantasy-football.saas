@@ -45,7 +45,7 @@ export default function BenchLineup({
         {canEditLineup && (
           <PlayersSelectTrigger
             lineupType="bench"
-            className="bg-primary text-primary-foreground size-6 sm:size-7 p-0 rounded-full 2xl:size-6 shrink-0"
+            className="bg-primary text-primary-foreground size-[26px] p-0 rounded-full 2xl:size-6 shrink-0"
           >
             <Plus className="size-5 font-semibold" />
           </PlayersSelectTrigger>

@@ -14,11 +14,12 @@ import { LineupPlayer } from "../queries/match";
 import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
 import SwipeableLineupPlayerCard from "./SwipeableLineupPlayerCard";
 
-export default function EditableBenchPlayersList({
-  players,
-}: {
+type Props = {
   players: LineupPlayer[];
-}) {
+  isAwayTeam: boolean;
+};
+
+export default function EditableBenchPlayersList({ players, isAwayTeam }: Props) {
   const isMobile = useIsMobile(640);
 
   return (
@@ -38,7 +39,7 @@ export default function EditableBenchPlayersList({
               <SwipeableLineupPlayerCard
                 key={player.id}
                 player={player}
-                canEditLineup
+                isAwayTeam={isAwayTeam}
               />
             ))}
           </SwipeableList>
@@ -47,8 +48,11 @@ export default function EditableBenchPlayersList({
             <SortableLineupPlayerCard
               key={player.id}
               player={player}
-              canEdit
-              className="p-3 sm:p-4 !py-0 first:!pt-1.5 first:sm:!pt-2.5"
+              className={cn(
+                "p-3 sm:p-4 !py-0 first:2xl:!pt-2.5",
+                players.length > 6 && "!pr-0"
+              )}
+              isAwayTeam={isAwayTeam}
             />
           ))
         )}

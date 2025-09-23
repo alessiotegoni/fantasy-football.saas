@@ -33,5 +33,5 @@ export default function BenchPlayersList({
     );
   }
 
-  return <EditableBenchPlayersList players={players} />;
+  return <EditableBenchPlayersList players={players} isAwayTeam={isAwayTeam} />;
 }

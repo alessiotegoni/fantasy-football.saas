@@ -5,13 +5,13 @@ import { LineupPlayer } from "../queries/match";
 
 type Props = {
   player: LineupPlayer;
-  canEdit: boolean;
+  isAwayTeam: boolean;
   className?: string;
 };
 
 export default function SortableLineupPlayerCard({
   player,
-  canEdit,
+  isAwayTeam,
   className = "",
 }: Props) {
   const {
@@ -42,8 +42,9 @@ export default function SortableLineupPlayerCard({
       <LineupPlayerCard
         type="bench"
         player={player}
-        canEdit={canEdit}
+        isAwayTeam={isAwayTeam}
         className="p-0 w-full text-left text-xs"
+        canEdit
       />
     </div>
   );

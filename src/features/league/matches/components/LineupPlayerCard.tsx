@@ -76,9 +76,7 @@ function LineupPlayerCard({
             isBench && isAwayTeam && "text-right"
           )}
         >
-          <p className="font-semibold">
-            {player.displayName.split(" ").slice(1).join(" ")}
-          </p>
+          <p className="font-semibold">{player.displayName}</p>
           {isBench && player.team && (
             <p className="text-[11px] text-muted-foreground">
               {player.team.displayName}

@@ -14,12 +14,12 @@ import { useRef } from "react";
 
 type Props = {
   player: LineupPlayer;
-  canEditLineup: boolean;
+  isAwayTeam: boolean;
 };
 
 export default function SwipeableLineupPlayerCard({
   player,
-  canEditLineup,
+  isAwayTeam,
 }: Props) {
   const { removePlayerFromLineup } = useMyLineup();
   const triggeredRef = useRef(false);
@@ -36,15 +36,16 @@ export default function SwipeableLineupPlayerCard({
     <SwipeableListItem
       trailingActions={<RemovePlayer playerId={player.id} />}
       onSwipeProgress={handleSwipeProgress}
-    //   onSwipeEnd={handleSwipeEnd}
+      //   onSwipeEnd={handleSwipeEnd}
       className="p-3 sm:p-4 !pt-3 sm:!pt-3.5 first:!pt-1.5 !pb-0"
     >
       <LineupPlayerCard
         key={player.id}
         player={player}
-        canEdit={canEditLineup}
         type="bench"
-        className="p-0"
+        className="p-0 w-full"
+        isAwayTeam={isAwayTeam}
+        canEdit
       />
     </SwipeableListItem>
   );

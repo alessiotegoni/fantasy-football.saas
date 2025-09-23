@@ -44,7 +44,7 @@ export default function PresidentCard({ player, isAwayTeam, canEdit }: Props) {
           isAwayTeam && "left-0 2xl:left-auto sm:ml-0 sm:mr-auto"
         )}
       />
-      {canEdit && <RemovePlayerButton playerId={player.id} />}
+      {canEdit && <RemovePlayerButton playerId={player.id} className="top-0 sm:top-1/2 2xl:top-0" />}
     </div>
   );
 }
