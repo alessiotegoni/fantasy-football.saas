@@ -18,6 +18,58 @@ import { getCurrentMatchday } from "@/features/dashboard/admin/splits/queries/sp
 import { getBonusMalusesSettings } from "@/features/league/settings/queries/setting";
 import { CustomBonusMalus } from "@/drizzle/schema";
 
+// React instrumentation encountered an error: RangeError: Maximum call stack size exceeded
+//     at unmountInstanceRecursively (renderer.js:2757:12)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+//     at unmountInstanceRecursively (renderer.js:2773:7)
+//     at unmountRemainingChildren (renderer.js:2427:7)
+
 export default async function MatchPage({
   params,
 }: PageProps<"/league/[leagueId]/matches/[matchId]">) {
@@ -52,7 +104,7 @@ async function SuspenseBoundary({
   leagueBonusMalus: CustomBonusMalus;
 }) {
   const userId = await getUserId();
-  if (!userId) return;
+  if (!userId) return null;
 
   const [myTeamId, currentMatchday, lineupsPlayers] = await Promise.all([
     getUserTeamId(userId, ids.leagueId),

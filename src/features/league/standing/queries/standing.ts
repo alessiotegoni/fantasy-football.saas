@@ -16,11 +16,11 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
 
   const opponentResults = alias(leagueMatchResults, "opponent_results");
 
-  const goalDifference = sql<number>`${sum(leagueMatchResults.goals)} - ${sum(
+  const goalDifference = sql<string>`${sum(leagueMatchResults.goals)} - ${sum(
     opponentResults.goals
   )}`;
 
-  const results = await db
+  const rawResults = await db
     .select({
       team: {
         id: leagueMatchResults.teamId,
@@ -31,9 +31,9 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
       goalsScored: sum(leagueMatchResults.goals),
       goalsConceded: sum(opponentResults.goals),
       goalDifference,
-      wins: sql<number>`sum(case when ${leagueMatchResults.points} = 3 then 1 else 0 end)`,
-      draws: sql<number>`sum(case when ${leagueMatchResults.points} = 1 then 1 else 0 end)`,
-      losses: sql<number>`sum(case when ${leagueMatchResults.points} = -3 then 1 else 0 end)`,
+      wins: sql<string>`sum(case when ${leagueMatchResults.points} = 3 then 1 else 0 end)`,
+      draws: sql<string>`sum(case when ${leagueMatchResults.points} = 1 then 1 else 0 end)`,
+      losses: sql<string>`sum(case when ${leagueMatchResults.points} = -3 then 1 else 0 end)`,
     })
     .from(leagueMatchResults)
     .innerJoin(
@@ -75,7 +75,7 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
       desc(goalDifference)
     );
 
-  return results;
+  return parseStandingResults(rawResults);
 }
 
 export type StandingData = Awaited<
@@ -87,13 +87,42 @@ export async function getDefaultStandingData(leagueId: string) {
 
   return teams.map((team) => ({
     team,
-    totalScore: "0",
-    points: "0",
-    goalsScored: "0",
-    goalsConceded: "0",
+    totalScore: 0,
+    points: 0,
+    goalsScored: 0,
+    goalsConceded: 0,
     goalDifference: 0,
     wins: 0,
     draws: 0,
     losses: 0,
+  }));
+}
+
+function parseStandingResults(
+  results: {
+    team: {
+      id: string;
+      name: string | null;
+    };
+    totalScore: string | null;
+    points: string | null;
+    goalsScored: string | null;
+    goalsConceded: string | null;
+    goalDifference: string | null;
+    wins: string;
+    draws: string;
+    losses: string;
+  }[]
+) {
+  return results.map((row) => ({
+    ...row,
+    totalScore: Number(row.totalScore),
+    points: Number(row.points),
+    goalsScored: Number(row.goalsScored),
+    goalsConceded: Number(row.goalsConceded),
+    goalDifference: Number(row.goalDifference),
+    wins: Number(row.wins),
+    draws: Number(row.draws),
+    losses: Number(row.losses),
   }));
 }
