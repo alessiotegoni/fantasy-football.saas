@@ -8,7 +8,7 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueStandingTag } from "../db/cache/standing";
 import { alias } from "drizzle-orm/pg-core";
 import { getLeagueTeamsTag } from "../../teams/db/cache/leagueTeam";
-import { getLeagueTeams } from "../../teams/queries/leagueTeam";
+import { getLeagueTeams, LeagueTeam } from "../../teams/queries/leagueTeam";
 
 export async function getLeagueStandingData(leagueId: string, splitId: number) {
   "use cache";
@@ -20,7 +20,7 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
     opponentResults.goals
   )}`;
 
-  const rawResults = await db
+  const results = await db
     .select({
       team: {
         id: leagueMatchResults.teamId,
@@ -75,17 +75,15 @@ export async function getLeagueStandingData(leagueId: string, splitId: number) {
       desc(goalDifference)
     );
 
-  return parseStandingResults(rawResults);
+  return parseStandingResults(results);
 }
 
 export type StandingData = Awaited<
   ReturnType<typeof getLeagueStandingData>
 >[number];
 
-export async function getDefaultStandingData(leagueId: string) {
-  const teams = await getLeagueTeams(leagueId);
-
-  return teams.map((team) => ({
+export function getDefaultStandingData(leagueTeams: LeagueTeam[]) {
+  return leagueTeams.map((team) => ({
     team,
     totalScore: 0,
     points: 0,
@@ -97,6 +95,7 @@ export async function getDefaultStandingData(leagueId: string) {
     losses: 0,
   }));
 }
+
 
 function parseStandingResults(
   results: {

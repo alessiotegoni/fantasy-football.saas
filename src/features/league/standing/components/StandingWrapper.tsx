@@ -9,21 +9,32 @@ import { FinalPhaseAccess } from "../../admin/calendar/final-phase/utils/calenda
 
 type Props = {
   data: StandingData[];
-  isSplitEnded: boolean;
-  isDefaultStanding: boolean;
   finalPhaseAccess: FinalPhaseAccess;
+  isSplitEnded?: boolean;
+  isDefaultStanding?: boolean;
 };
 
-export default function StandingWrapper(props: Props) {
+export default function StandingWrapper({
+  isSplitEnded = false,
+  isDefaultStanding = true,
+  ...restProps
+}: Props) {
   const [isExtended, setIsExtended] = useLocalStorage(
     "standing-extended-view",
     false
   );
 
+  const props = {
+    isExtended,
+    isSplitEnded,
+    isDefaultStanding,
+    ...restProps
+  };
+
   return (
     <>
       <StandingToggle isExtended={isExtended} onToggle={setIsExtended} />
-      <StandingTable isExtended={isExtended} {...props} />
+      <StandingTable  {...props} />
       <StandingLegend {...props} />
     </>
   );

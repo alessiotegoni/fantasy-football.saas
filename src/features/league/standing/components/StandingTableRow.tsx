@@ -24,8 +24,7 @@ export default function StandingTableRow({
   isSplitEnded,
   ...props
 }: Props) {
-  const isWinner =
-    isSplitEnded && rank === 0 && parseInt(standing?.points ?? "0") > 0;
+  const isWinner = isSplitEnded && rank === 0 && standing?.points > 0;
 
   return (
     <div key={standing.team.id} className="p-2.5 xs:p-3 sm:p-4">

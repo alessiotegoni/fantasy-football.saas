@@ -20,7 +20,7 @@ export default function StandingTable({
   isDefaultStanding,
   finalPhaseAccess,
 }: Props) {
-  const totalScores = data.map((s) => parseFloat(s.totalScore ?? "0"));
+  const totalScores = data.map((s) => s.totalScore);
 
   return (
     <div className="bg-muted/30 rounded-2xl overflow-hidden">
@@ -96,7 +96,7 @@ function getMinScoreIndex(data: StandingData[], scores: number[]) {
   const minTotalScore = Math.min(...scores);
 
   const minScoreIndex = data.findLastIndex(
-    (s) => parseFloat(s.totalScore ?? "0") === minTotalScore
+    (s) => s.totalScore === minTotalScore
   );
 
   return minScoreIndex;
@@ -105,9 +105,7 @@ function getMinScoreIndex(data: StandingData[], scores: number[]) {
 function getMaxScoreindex(data: StandingData[], scores: number[]) {
   const maxTotalScore = Math.max(...scores);
 
-  const maxScoreIndex = data.findIndex(
-    (s) => parseFloat(s.totalScore ?? "0") === maxTotalScore
-  );
+  const maxScoreIndex = data.findIndex((s) => s.totalScore === maxTotalScore);
 
   return maxScoreIndex;
 }

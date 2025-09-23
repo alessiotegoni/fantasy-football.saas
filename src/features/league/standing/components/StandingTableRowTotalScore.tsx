@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 type Props = {
-  totalScore: string | null;
+  totalScore: number;
   isMaxScore: boolean;
   isMinScore: boolean;
   isDefaultStanding: boolean;
@@ -23,12 +23,7 @@ export default function StandingTableRowTotalScore({
         !isDefaultStanding && isMinScore && "text-destructive"
       )}
     >
-      {formatTotalScore(totalScore)}
+      {Math.ceil(totalScore)}
     </p>
   );
-}
-
-function formatTotalScore(score: string | null) {
-  const number = parseFloat(score ?? "0");
-  return Math.ceil(number);
 }

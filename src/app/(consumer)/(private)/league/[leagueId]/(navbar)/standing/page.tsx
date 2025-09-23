@@ -1,6 +1,5 @@
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
-import { Button } from "@/components/ui/button";
 import SplitSelect from "@/features/dashboard/admin/splits/components/SplitSelect";
 import {
   getSplits,
@@ -9,12 +8,16 @@ import {
 import { getFinalPhaseAccess } from "@/features/league/admin/calendar/final-phase/utils/calendar";
 import StandingWrapper from "@/features/league/standing/components/StandingWrapper";
 import {
+  getAdjustedStandingData,
   getDefaultStandingData,
   getLeagueStandingData,
+  StandingData,
 } from "@/features/league/standing/queries/standing";
-import { validateSerialId } from "@/schema/helpers";
-import { NavArrowRight } from "iconoir-react";
-import Link from "next/link";
+import {
+  getLeagueTeams,
+  LeagueTeam,
+} from "@/features/league/teams/queries/leagueTeam";
+import { validateSerialId } from "@/schema/helpers";;
 import { ComponentPropsWithoutRef, Suspense } from "react";
 
 export default async function LeagueStandingPage({
@@ -23,7 +26,10 @@ export default async function LeagueStandingPage({
 }: PageProps<"/league/[leagueId]/standing">) {
   const [splits, { leagueId }] = await Promise.all([getSplits(), params]);
 
-  const lastSplit = splits.at(-1);
+  const leagueTeams = await getLeagueTeams(leagueId);
+
+  const standingData = getDefaultStandingData(leagueTeams);
+  const finalPhaseAccess = getFinalPhaseAccess(standingData);
 
   return (
     <Container
@@ -31,15 +37,26 @@ export default async function LeagueStandingPage({
       headerLabel="Classifica"
       className="max-w-[700px]"
       renderHeaderRight={() => (
-        <SplitSelect splits={splits} defaultSplit={lastSplit} />
+        <SplitSelect splits={splits} defaultSplit={splits.at(-1)} />
       )}
     >
-      <Suspense>
+      <Suspense
+        fallback={
+          <StandingWrapper
+            data={standingData}
+            finalPhaseAccess={finalPhaseAccess}
+          />
+        }
+      >
         <SuspenseBoundary
+          defaultStandingData={standingData}
+          leagueTeams={leagueTeams}
           leagueId={leagueId}
-          selectedSplitPromise={searchParams.then((sp) => sp.splitId as string)}
+          selectedSplitPromise={searchParams.then(
+            (sp) => sp.splitId as string | undefined
+          )}
           splits={splits}
-          lastSplit={lastSplit}
+          lastSplit={splits.at(-1)}
         />
       </Suspense>
     </Container>
@@ -47,6 +64,8 @@ export default async function LeagueStandingPage({
 }
 
 async function SuspenseBoundary({
+  defaultStandingData,
+  leagueTeams,
   leagueId,
   selectedSplitPromise,
   splits,
@@ -54,6 +73,8 @@ async function SuspenseBoundary({
 }: {
   leagueId: string;
   selectedSplitPromise: Promise<string | undefined>;
+  leagueTeams: LeagueTeam[];
+  defaultStandingData: StandingData[];
   splits: Split[];
   lastSplit?: Split;
 }) {
@@ -72,38 +93,20 @@ async function SuspenseBoundary({
   }
 
   let standingData = await getLeagueStandingData(leagueId, selectedSplit.id);
-  console.log(standingData);
-  
-  let isDefaultStainding = false;
 
   if (!standingData.length && selectedSplit.status === "ended") {
     return (
       <StandingEmptyState
         description={`La classifica non e' disponibile perche questa lega non ha partecipato allo split ${selectedSplit.id}`}
-      />
-    );
-  }
-
-  if (!standingData.length && selectedSplit.status !== "ended") {
-    const defaultData = await getDefaultStandingData(leagueId);
-
-    if (defaultData.length < 4) {
-      return (
-        <StandingEmptyState
-          description="Per vedere la classifica sono necessarie almeno 4 squadre all'interno della lega"
-          renderButton={() => (
-            <Button className="w-44" asChild>
-              <Link href={`/league/${leagueId}/teams`}>
-                Vedi squadre <NavArrowRight className="size-5" />
-              </Link>
-            </Button>
-          )}
         />
       );
-    }
+  }
 
-    standingData = defaultData;
-    isDefaultStainding = true;
+  if (
+    standingData.length !== leagueTeams.length &&
+    selectedSplit.status !== "ended"
+  ) {
+    standingData = getAdjustedStandingData(standingData, defaultStandingData);
   }
 
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
@@ -112,8 +115,8 @@ async function SuspenseBoundary({
     <StandingWrapper
       data={standingData}
       isSplitEnded={selectedSplit.status === "ended"}
-      isDefaultStanding={isDefaultStainding}
       finalPhaseAccess={finalPhaseAccess}
+      isDefaultStanding={false}
     />
   );
 }
@@ -123,186 +126,3 @@ function StandingEmptyState(
 ) {
   return <EmptyState title="Classifica non disponibile" {...props} />;
 }
-
-// const mockStandingsData = [
-//   {
-//     team: {
-//       id: "1",
-//       name: "RESTIVO FC",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1250",
-//     points: "45",
-//     goalsScored: "28",
-//     goalsConceded: "12",
-//     goalDifference: 16,
-//     wins: 14,
-//     draws: 3,
-//     losses: 1,
-//   },
-//   {
-//     team: {
-//       id: "2",
-//       name: "botafiga fc",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1180",
-//     points: "42",
-//     goalsScored: "25",
-//     goalsConceded: "15",
-//     goalDifference: 10,
-//     wins: 13,
-//     draws: 3,
-//     losses: 2,
-//   },
-//   {
-//     team: {
-//       id: "3",
-//       name: "VillainsAlwaysWin",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1165",
-//     points: "38",
-//     goalsScored: "22",
-//     goalsConceded: "18",
-//     goalDifference: 4,
-//     wins: 11,
-//     draws: 5,
-//     losses: 2,
-//   },
-//   {
-//     team: {
-//       id: "4",
-//       name: "FREEBOSSETTIFC",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1145",
-//     points: "35",
-//     goalsScored: "20",
-//     goalsConceded: "16",
-//     goalDifference: 4,
-//     wins: 10,
-//     draws: 5,
-//     losses: 3,
-//   },
-//   {
-//     team: {
-//       id: "5",
-//       name: "Coca Juniors",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1120",
-//     points: "32",
-//     goalsScored: "19",
-//     goalsConceded: "20",
-//     goalDifference: -1,
-//     wins: 9,
-//     draws: 5,
-//     losses: 4,
-//   },
-//   {
-//     team: {
-//       id: "6",
-//       name: "poggioletto",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1095",
-//     points: "28",
-//     goalsScored: "16",
-//     goalsConceded: "22",
-//     goalDifference: -6,
-//     wins: 8,
-//     draws: 4,
-//     losses: 6,
-//   },
-//   {
-//     team: {
-//       id: "7",
-//       name: "BERLUSCA DORTMUND",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1070",
-//     points: "25",
-//     goalsScored: "14",
-//     goalsConceded: "25",
-//     goalDifference: -11,
-//     wins: 7,
-//     draws: 4,
-//     losses: 7,
-//   },
-//   {
-//     team: {
-//       id: "8",
-//       name: "riportainvitailveccjioditatore",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1080",
-//     points: "22",
-//     goalsScored: "12",
-//     goalsConceded: "28",
-//     goalDifference: -16,
-//     wins: 6,
-//     draws: 4,
-//     losses: 8,
-//   },
-//   {
-//     team: {
-//       id: "9",
-//       name: "riportainvitailveccjioditatore",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1080",
-//     points: "22",
-//     goalsScored: "12",
-//     goalsConceded: "28",
-//     goalDifference: -16,
-//     wins: 6,
-//     draws: 4,
-//     losses: 8,
-//   },
-//   {
-//     team: {
-//       id: "10",
-//       name: "riportainvitailveccjioditatore",
-//       imageUrl: "/placeholder.svg?height=32&width=32",
-//     },
-//     totalScore: "1080",
-//     points: "22",
-//     goalsScored: "12",
-//     goalsConceded: "28",
-//     goalDifference: -16,
-//     wins: 6,
-//     draws: 4,
-//     losses: 8,
-//   },
-//   // {
-//   //   team: {
-//   //     id: "11",
-//   //     name: "riportainvitailveccjioditatore",
-//   //     imageUrl: "/placeholder.svg?height=32&width=32",
-//   //   },
-//   //   totalScore: "1080",
-//   //   points: "22",
-//   //   goalsScored: "12",
-//   //   goalsConceded: "28",
-//   //   goalDifference: -16,
-//   //   wins: 6,
-//   //   draws: 4,
-//   //   losses: 8,
-//   // },
-//   // {
-//   //   team: {
-//   //     id: "12",
-//   //     name: "riportainvitailveccjioditatore",
-//   //     imageUrl: "/placeholder.svg?height=32&width=32",
-//   //   },
-//   //   totalScore: "1080",
-//   //   points: "22",
-//   //   goalsScored: "12",
-//   //   goalsConceded: "28",
-//   //   goalDifference: -16,
-//   //   wins: 6,
-//   //   draws: 4,
-//   //   losses: 8,
-//   // },
-// ];
