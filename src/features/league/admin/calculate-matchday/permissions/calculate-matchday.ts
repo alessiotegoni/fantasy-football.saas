@@ -7,7 +7,15 @@ import { and, count, eq } from "drizzle-orm";
 import { isMatchdayCalculable } from "../utils/calculate-matchday";
 import { hasGeneratedCalendar } from "../../calendar/regular/permissions/calendar";
 import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
-import { getLastEndedMatchday, getLiveSplit, getSplitMatchdays } from "@/features/dashboard/admin/splits/queries/split";
+import {
+  getLastEndedMatchday,
+  getLiveSplit,
+  getSplitMatchdays,
+} from "@/features/dashboard/admin/splits/queries/split";
+import {
+  CancelCalculationSchema,
+  RecalculateMatchdaySchema,
+} from "../schema/calculate-matchday";
 
 enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",
@@ -18,6 +26,7 @@ enum CALCULATE_ERRORS {
   MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
   CALCULATION_NOT_FOUND = "Calcolo della giornata non trovato",
   CALENDAR_NOT_GENERATED = "Non puoi calcolare/annullare le giornate senza aver prima generato un calendario",
+  CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
 }
 
 export async function basePermissions({
@@ -54,7 +63,7 @@ export async function basePermissions({
   }
 
   const isValidMatchday = splitMatchdays.some(
-    (matchday) => matchday.id === matchdayId
+    (matchday) => matchday.id === matchdayId,
   );
   if (!isValidMatchday) {
     return createError(CALCULATE_ERRORS.INVALID_SPLIT_MATCHDAY);
@@ -113,6 +122,32 @@ export async function canCalculateMatchday({
   return createSuccess("", null);
 }
 
+export async function canRecalculateMatchday(data: RecalculateMatchdaySchema) {
+  const baseValidation = await basePermissions(data);
+  if (baseValidation.error) return baseValidation;
+
+  const { calculation } = baseValidation.data;
+
+  if (calculation!.status === "calculated") {
+    return createError(CALCULATE_ERRORS.MATCHDAY_ALREADY_CALCULATED);
+  }
+
+  return createSuccess("", { calculation });
+}
+
+export async function canCancelCalculation(data: CancelCalculationSchema) {
+  const baseValidation = await basePermissions(data);
+  if (baseValidation.error) return baseValidation;
+
+  const { calculation } = baseValidation.data;
+
+  if (calculation!.status === "cancelled") {
+    return createError(CALCULATE_ERRORS.CALCULATION_ALREADY_CANCELED);
+  }
+
+  return createSuccess("", { calculation });
+}
+
 async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
   const [res] = await db
     .select({ count: count() })
@@ -121,8 +156,8 @@ async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
       and(
         eq(leagueMatchdayCalculations.leagueId, leagueId),
         eq(leagueMatchdayCalculations.matchdayId, matchdayId),
-        eq(leagueMatchdayCalculations.status, "calculated")
-      )
+        eq(leagueMatchdayCalculations.status, "calculated"),
+      ),
     );
 
   return res.count > 0;

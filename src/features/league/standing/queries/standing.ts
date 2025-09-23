@@ -8,7 +8,7 @@ import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import { getLeagueStandingTag } from "../db/cache/standing";
 import { alias } from "drizzle-orm/pg-core";
 import { getLeagueTeamsTag } from "../../teams/db/cache/leagueTeam";
-import { getLeagueTeams, LeagueTeam } from "../../teams/queries/leagueTeam";
+import { LeagueTeam } from "../../teams/queries/leagueTeam";
 
 export async function getLeagueStandingData(leagueId: string, splitId: number) {
   "use cache";

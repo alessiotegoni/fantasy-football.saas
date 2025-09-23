@@ -6,6 +6,7 @@ import { StandingToggle } from "./StandingToggle";
 import StandingTable from "./StandingTable";
 import StandingLegend from "./StandingLegend";
 import { FinalPhaseAccess } from "../../admin/calendar/final-phase/utils/calendar";
+import Disclaimer from "@/components/Disclaimer";
 
 type Props = {
   data: StandingData[];
@@ -36,6 +37,7 @@ export default function StandingWrapper({
       <StandingToggle isExtended={isExtended} onToggle={setIsExtended} />
       <StandingTable  {...props} />
       <StandingLegend {...props} />
+      <Disclaimer />
     </>
   );
 }
