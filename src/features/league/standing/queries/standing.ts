@@ -96,6 +96,17 @@ export function getDefaultStandingData(leagueTeams: LeagueTeam[]) {
   }));
 }
 
+export function getAdjustedStandingData(
+  data: StandingData[],
+  defaultData: StandingData[]
+) {
+  const inStandingTeamsIds = new Set(data.map((d) => d.team.id));
+  const notInStanding = defaultData.filter(
+    (dd) => !inStandingTeamsIds.has(dd.team.id)
+  );
+
+  return [...data, ...notInStanding];
+}
 
 function parseStandingResults(
   results: {
