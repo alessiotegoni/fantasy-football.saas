@@ -21,6 +21,7 @@ import {
 type Item = {
   value: string;
   label: string;
+  subLabel?: string;
 };
 
 type Props = {
@@ -69,7 +70,12 @@ export function Combobox({
                   value={item.value}
                   onSelect={onSelect}
                 >
-                  {item.label}
+                  <div>
+                    {item.label}
+                    <p className="text-xs text-muted-foreground">
+                      {item.subLabel}
+                    </p>
+                  </div>
                   {item.value === value && (
                     <Check className="ml-auto text-white" />
                   )}

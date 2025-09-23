@@ -19,8 +19,12 @@ export async function getRedactionMatchdaysVotes(
     with: {
       player: {
         columns: {
-          id: true,
-          displayName: true,
+          roleId: false,
+          teamId: false,
+        },
+        with: {
+          team: true,
+          role: true,
         },
       },
     },

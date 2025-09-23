@@ -15,7 +15,7 @@ import { MatchdayVote } from "../queries/vote";
 type Props = {
   namePrefix?: string;
   vote?: MatchdayVote;
-  players?: Pick<Player, "id" | "displayName">[];
+  players?: Player[];
 };
 
 export default function VoteFormFields<T extends FieldValues>({

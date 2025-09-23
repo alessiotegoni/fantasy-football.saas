@@ -11,7 +11,7 @@ import { Player } from "../queries/player";
 
 type Props = {
   fieldName?: Path<{ playerId: number }>;
-  players: Pick<Player, "id" | "displayName">[];
+  players: Player[];
   disabled?: boolean;
 };
 
@@ -24,7 +24,8 @@ export default function PlayersSelect({
 
   const items = players.map((player) => ({
     value: player.id.toString(),
-    label: player.displayName,
+    label: `${player.firstName} ${player.lastName}`,
+    subLabel: player.team.displayName
   }));
 
   return (
