@@ -34,6 +34,7 @@ import {
   getPoints,
 } from "@/features/league/matches/utils/matchResult";
 import { calculateLineupsTotalVote } from "@/features/league/matches/utils/lineup";
+import { formatVoteValue } from "@/features/dashboard/redaction/votes/utils/vote";
 
 enum CALCULATION_MESSAGES {
   MATCHDAY_CALCULATED_SUCCESFULLY = "Giornata calcolata con successo!",
@@ -153,9 +154,6 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
     leagueBonusMalus: bonusMalusSettings,
   });
 
-  console.log(players);
-
-
   const matchesResults: (typeof leagueMatchResults.$inferInsert)[] = [];
 
   for (const { id: matchId, homeTeamId, awayTeamId } of matches) {
@@ -190,7 +188,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       matchesResults.push({
         leagueMatchId: matchId,
         teamId: homeTeamId,
-        totalScore: totalVotes.homeScore.toString(),
+        totalScore: formatVoteValue(totalVotes.homeScore),
         points: homePoints,
         goals: goals.homeGoals,
       });
@@ -200,7 +198,7 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       matchesResults.push({
         leagueMatchId: matchId,
         teamId: awayTeamId,
-        totalScore: totalVotes.awayScore.toString(),
+        totalScore: formatVoteValue(totalVotes.awayScore),
         points: awayPoints,
         goals: goals.awayGoals,
       });
