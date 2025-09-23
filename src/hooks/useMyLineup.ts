@@ -8,9 +8,9 @@ import { LineupPlayer } from "@/features/league/matches/queries/match";
 import {
   formatTeamPlayer,
   getPositionOrder,
-} from "@/features/league/matches/utils/LineupPlayers";
+} from "@/features/league/matches/utils/lineupPlayers";
 import { PositionId } from "@/drizzle/schema";
-import { reorderBench } from "@/features/league/matches/utils/Lineup";
+import { reorderBench } from "@/features/league/matches/utils/lineup";
 import { arrayMove } from "@dnd-kit/sortable";
 
 export default function useMyLineup(teamPlayers: TeamPlayer[] = []) {

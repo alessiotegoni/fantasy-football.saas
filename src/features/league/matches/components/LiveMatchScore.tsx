@@ -1,5 +1,5 @@
 import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
-import { calculateLineupsTotalVote } from "../utils/Lineup";
+import { calculateLineupsTotalVote } from "../utils/lineup";
 import ScoresSeparator from "./ScoresSeparator";
 import { formatVoteValue } from "@/features/dashboard/redaction/votes/utils/vote";
 import { Badge } from "@/components/ui/badge";

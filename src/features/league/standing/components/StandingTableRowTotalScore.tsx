@@ -23,7 +23,7 @@ export default function StandingTableRowTotalScore({
         !isDefaultStanding && isMinScore && "text-destructive"
       )}
     >
-      {Math.ceil(totalScore)}
+      {totalScore}
     </p>
   );
 }

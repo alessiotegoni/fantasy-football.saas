@@ -1,15 +1,10 @@
-export function getGoals(
-  score: number,
-  settings: { base: number; interval: number }
-) {
-  const { base, interval } = settings;
+import { GoalThresholdSettings } from "@/drizzle/schema";
 
-  if (score < base) return 0;
 
-  return Math.floor((score - base) / interval) + 1;
-}
-
-export function getPoints(homeGoals: number, awayGoals: number) {
+export function getPoints({
+  homeGoals,
+  awayGoals,
+}: NonNullable<ReturnType<typeof getGoals>>) {
   if (homeGoals > awayGoals) {
     return { homePoints: 3, awayPoints: -3 };
   } else if (awayGoals > homeGoals) {

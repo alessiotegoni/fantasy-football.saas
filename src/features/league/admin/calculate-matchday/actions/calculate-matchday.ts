@@ -10,10 +10,11 @@ import {
   RecalculateMatchdaySchema,
 } from "../schema/calculate-matchday";
 import {
-  basePermissions,
   canCalculateMatchday,
+  canCancelCalculation,
+  canRecalculateMatchday,
 } from "../permissions/calculate-matchday";
-import { createError, createSuccess } from "@/utils/helpers";
+import { createSuccess } from "@/utils/helpers";
 import { db } from "@/drizzle/db";
 import { insertCalculation, updateCalculation } from "../db/calculate-matchday";
 import {
@@ -26,17 +27,15 @@ import {
 } from "@/features/league/settings/queries/setting";
 import { getLineupsPlayers } from "@/features/league/matches/queries/match";
 import { getPlayersMatchdayBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
-import { enrichLineupPlayers } from "@/features/league/matches/utils/LineupPlayers";
+import { enrichLineupPlayers } from "@/features/league/matches/utils/lineupPlayers";
 import { leagueMatchResults, TacticalModule } from "@/drizzle/schema";
 import {
   getGoals,
   getPoints,
 } from "@/features/league/matches/utils/matchResult";
-import { calculateLineupsTotalVote } from "@/features/league/matches/utils/Lineup";
+import { calculateLineupsTotalVote } from "@/features/league/matches/utils/lineup";
 
 enum CALCULATION_MESSAGES {
-  CALCULATION_ALREADY_CANCELED = "Calcolo della giornata gia annullato",
-  MATCHDAY_ALREADY_CALCULATED = "La giornata e' gia stata calcolata",
   MATCHDAY_CALCULATED_SUCCESFULLY = "Giornata calcolata con successo!",
   MATCHDAY_RECALCULATED_SUCCESFULLY = "Giornata ricalcolata con successo!",
   CANCULATION_CANCELLED_SUCCESFULLY = "Giornata cancellata con successo!",
@@ -77,14 +76,10 @@ export async function recalculateMatchday(
   );
   if (!isValid) return error;
 
-  const baseValidation = await basePermissions(data);
-  if (baseValidation.error) return baseValidation;
+  const permissions = await canRecalculateMatchday(data);
+  if (permissions.error) return permissions;
 
-  const { calculation } = baseValidation.data;
-
-  if (calculation!.status === "calculated") {
-    return createError(CALCULATION_MESSAGES.MATCHDAY_ALREADY_CALCULATED);
-  }
+  const { calculation } = permissions.data;
 
   const matchesResults = await calculateMatchesResults(data);
 
@@ -112,14 +107,10 @@ export async function cancelCalculation(values: CancelCalculationSchema) {
   );
   if (!isValid) return error;
 
-  const baseValidation = await basePermissions(data);
-  if (baseValidation.error) return baseValidation;
+  const permissions = await canCancelCalculation(data);
+  if (permissions.error) return permissions;
 
-  const { calculation } = baseValidation.data;
-
-  if (calculation!.status === "cancelled") {
-    return createError(CALCULATION_MESSAGES.CALCULATION_ALREADY_CANCELED);
-  }
+  const { calculation } = permissions.data;
 
   const matches = await getLeagueMatchdayMatches(calculation!);
   const matchesIds = matches.map((match) => match.id);
@@ -185,34 +176,30 @@ async function calculateMatchesResults(data: CalculateMatchdaySchema) {
       homeTeam: { id: homeTeamId, tacticalModule: homeTacticalModule },
       awayTeam: { id: awayTeamId, tacticalModule: awayTacticalModule },
     });
-
     if (!totalVotes) continue;
 
-    const homeGoals = totalVotes.home
-      ? getGoals(totalVotes.home, goalThresholdSettings)
-      : 0;
-    const awayGoals = totalVotes.away
-      ? getGoals(totalVotes.away, goalThresholdSettings)
-      : 0;
-    const { homePoints, awayPoints } = getPoints(homeGoals, awayGoals);
+    const goals = getGoals(totalVotes, goalThresholdSettings);
+    if (!goals) continue;
 
-    if (homeTeamId && totalVotes.home) {
+    const { homePoints, awayPoints } = getPoints(goals);
+
+    if (homeTeamId && totalVotes.homeScore) {
       matchesResults.push({
         leagueMatchId: matchId,
         teamId: homeTeamId,
-        totalScore: totalVotes.home.toString(),
+        totalScore: totalVotes.homeScore.toString(),
         points: homePoints,
-        goals: homeGoals,
+        goals: goals.homeGoals,
       });
     }
 
-    if (awayTeamId && totalVotes.away) {
+    if (awayTeamId && totalVotes.awayScore) {
       matchesResults.push({
         leagueMatchId: matchId,
         teamId: awayTeamId,
-        totalScore: totalVotes.away.toString(),
+        totalScore: totalVotes.awayScore.toString(),
         points: awayPoints,
-        goals: awayGoals,
+        goals: goals.awayGoals,
       });
     }
   }

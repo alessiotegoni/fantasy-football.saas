@@ -1,5 +1,5 @@
 import { LineupPlayer } from "../queries/match";
-import { calculateLineupsTotalVote } from "../utils/Lineup";
+import { calculateLineupsTotalVote } from "../utils/lineup";
 import { LineupTeam } from "../utils/match";
 import MatchCard from "./MatchCard";
 import LiveMatchScore from "./LiveMatchScore";

@@ -1,7 +1,7 @@
 "use client";
 import { PositionId } from "@/drizzle/schema";
 import { LineupPlayer } from "@/features/league/matches/queries/match";
-import { getPositionOrder } from "@/features/league/matches/utils/LineupPlayers";
+import { getPositionOrder } from "@/features/league/matches/utils/lineupPlayers";
 import useMyLineup from "@/hooks/useMyLineup";
 import {
   Collision,

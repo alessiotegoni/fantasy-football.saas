@@ -6,7 +6,7 @@ import {
   MatchInfo,
 } from "@/features/league/matches/queries/match";
 import { getMyTeam } from "@/features/league/matches/utils/match";
-import { enrichLineupPlayers } from "@/features/league/matches/utils/LineupPlayers";
+import { enrichLineupPlayers } from "@/features/league/matches/utils/lineupPlayers";
 import { getPlayersMatchdayBonusMaluses } from "@/features/dashboard/admin/bonusMaluses/queries/bonusMalus";
 import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { getUserId } from "@/features/dashboard/user/utils/user";

@@ -21,20 +21,16 @@ export function calculateLineupsTotalVote(
 
   const playerWithVotes = players.filter((player) => player.totalVote !== null);
 
-  const totalVotes = {
-    home: calculateTeamTotalVote(playerWithVotes, homeTeam),
-    away: calculateTeamTotalVote(playerWithVotes, awayTeam),
-  };
+  const homeScore = calculateTeamTotalVote(playerWithVotes, homeTeam);
+  const awayScore = calculateTeamTotalVote(playerWithVotes, awayTeam);
 
-  return totalVotes;
+  return { homeScore, awayScore };
 }
 
 function calculateTeamTotalVote(
   players: LineupPlayer[],
   team: { id: string | null; tacticalModule: TacticalModule | null }
 ) {
-  if (!team.tacticalModule) return null;
-
   const teamPlayers = players.filter(
     (player) => player.leagueTeamId === team.id
   );
@@ -48,10 +44,10 @@ function calculateTeamTotalVote(
     starterPlayers.map((player) => player.positionId)
   );
 
-  const freeSlots = team.tacticalModule.layout.filter((slot) =>
+  const freeSlots = team.tacticalModule?.layout.filter((slot) =>
     slot.positionsIds.some((positionId) => !occupiedPositions.has(positionId))
   );
-  if (!freeSlots.length) return calculatePlayersTotalVote(starterPlayers);
+  if (!freeSlots?.length) return calculatePlayersTotalVote(starterPlayers);
 
   const benchPlayers = players.filter(
     (player) =>
@@ -70,7 +66,7 @@ function calculatePlayersTotalVote(players: { totalVote: number | null }[]) {
     0
   );
 
-  return totalVote
+  return totalVote;
 }
 
 function replacePlayers(

@@ -9,7 +9,7 @@ import {
   findNextAvailablePositionId,
   formatTeamPlayer,
   getPositionOrder,
-} from "../utils/LineupPlayers";
+} from "../utils/lineupPlayers";
 import { PositionId, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
 import { useMemo } from "react";
 

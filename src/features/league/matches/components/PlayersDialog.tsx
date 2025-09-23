@@ -19,7 +19,7 @@ import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
 import { useIsMobile } from "@/hooks/useMobile";
 import PlayersSelectList from "./PlayersSelectList";
-import { findNextAvailablePositionId } from "../utils/LineupPlayers";
+import { findNextAvailablePositionId } from "../utils/lineupPlayers";
 
 export default function PlayersDialog({
   playersPromise,

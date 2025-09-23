@@ -10,7 +10,7 @@ import { getTeamsPlayers } from "../../teamsPlayers/queries/teamsPlayer";
 import { LineupTeam } from "../utils/match";
 import SaveLineupButton from "./SaveLineupButton";
 import PlayersDialog from "./PlayersDialog";
-import { getPresident, groupLineupsPlayers } from "../utils/LineupPlayers";
+import { getPresident, groupLineupsPlayers } from "../utils/lineupPlayers";
 import LineupMatchCard from "./LineupMatchCard";
 import BenchSkeleton from "./skeletons/BenchSkeleton";
 import { AwayLineupSlot, HomeLineupSlot } from "./LineupSlot";

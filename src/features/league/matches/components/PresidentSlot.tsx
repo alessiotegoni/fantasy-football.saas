@@ -3,7 +3,7 @@
 import { LineupPlayer } from "../queries/match";
 import useMyLineup from "@/hooks/useMyLineup";
 import { Crown, Plus, UserCrown, UserXmark } from "iconoir-react";
-import { getPresident } from "../utils/LineupPlayers";
+import { getPresident } from "../utils/lineupPlayers";
 import PlayersSelectTrigger from "./PlayersSelectTrigger";
 import PresidentCard from "./PresidentCard";
 import { PRESIDENT_POSITION_ID, PRESIDENT_ROLE_ID } from "@/drizzle/schema";
