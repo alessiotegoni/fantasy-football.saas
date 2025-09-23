@@ -16,7 +16,7 @@ export default function LiveMatchScore({
   splitMatchday: matchMatchday,
   isBye,
 }: Props) {
-  if (matchMatchday.status === "upcoming" || !totalVotes || isBye) {
+  if (!totalVotes || isBye || matchMatchday.status === "upcoming") {
     return <ScoresSeparator />;
   }
 
@@ -27,11 +27,11 @@ export default function LiveMatchScore({
     >
       <span className="text-xl font-bold text-primary">
         <span className="font-bold">
-          {formatVoteValue(totalVotes.home ?? 0)}
+          {formatVoteValue(totalVotes.homeScore ?? 0)}
         </span>{" "}
         -{" "}
         <span className="font-bold">
-          {formatVoteValue(totalVotes.away ?? 0)}
+          {formatVoteValue(totalVotes.awayScore ?? 0)}
         </span>
       </span>
     </Badge>
