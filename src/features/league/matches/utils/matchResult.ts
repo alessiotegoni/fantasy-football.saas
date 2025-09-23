@@ -39,9 +39,9 @@ export function getPoints({
   awayGoals,
 }: NonNullable<ReturnType<typeof getGoals>>) {
   if (homeGoals > awayGoals) {
-    return { homePoints: 3, awayPoints: -3 };
+    return { homePoints: 3, awayPoints: 0 };
   } else if (awayGoals > homeGoals) {
-    return { homePoints: -3, awayPoints: 3 };
+    return { homePoints: 0, awayPoints: 3 };
   } else {
     return { homePoints: 1, awayPoints: 1 };
   }

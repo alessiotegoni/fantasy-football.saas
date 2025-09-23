@@ -17,19 +17,6 @@ import { useCallback, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 
-const defaultFilters = { search: "" };
-
-function filterVotes(
-  { player, vote }: MatchdayVote,
-  { search }: typeof defaultFilters
-) {
-  if (!search) return true;
-  return (
-    player.displayName.toLowerCase().includes(search.toLowerCase()) ||
-    vote.includes(search)
-  );
-}
-
 type Props = {
   matchday: SplitMatchday;
   votes: MatchdayVote[];
@@ -64,7 +51,7 @@ export default function VotesTable(props: Props) {
                   >
                     <div
                       className="flex items-center transition-colors
-                     rounded-lg gap-2 p-2 hover:bg-primary"
+                      rounded-lg gap-2 p-2 hover:bg-primary"
                     >
                       Voto
                       <ArrowUpDown className="ml-2 size-4" />
@@ -77,7 +64,9 @@ export default function VotesTable(props: Props) {
             <TableBody className="overflow-y-auto max-h-[800px]">
               {sortedItems.map((item) => (
                 <TableRow key={item.id}>
-                  <TableCell>{item.player.displayName}</TableCell>
+                  <TableCell>
+                    {item.player.firstName} {item.player.lastName}
+                  </TableCell>
                   <TableCell>{item.vote}</TableCell>
                   <TableCell>
                     <VotesRowActions vote={item} {...props} />
@@ -124,4 +113,17 @@ function useSortVotes(items: MatchdayVote[]) {
   );
 
   return { sortedItems, toggleSortOrder };
+}
+
+const defaultFilters = { search: "" };
+
+function filterVotes(
+  { player, vote }: MatchdayVote,
+  { search }: typeof defaultFilters
+) {
+  if (!search) return true;
+  return (
+    player.displayName.toLowerCase().includes(search.toLowerCase()) ||
+    vote.includes(search)
+  );
 }
