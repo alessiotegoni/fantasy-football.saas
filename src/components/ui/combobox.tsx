@@ -33,8 +33,6 @@ type Props = {
   emptyText?: string;
 };
 
-// FIXME: filtering not working
-
 export function Combobox({
   items,
   value,
@@ -67,8 +65,8 @@ export function Combobox({
               {items.map((item) => (
                 <CommandItem
                   key={item.value}
-                  value={item.value}
-                  onSelect={onSelect}
+                  value={item.label}
+                  onSelect={() => onSelect(item.value)}
                 >
                   <div>
                     {item.label}
