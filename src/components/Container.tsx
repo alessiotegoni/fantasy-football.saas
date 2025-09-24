@@ -6,7 +6,6 @@ import { ArrowLeft } from "iconoir-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { PropsWithChildren, ReactNode } from "react";
-import BackButton from "./BackButton";
 import { Button } from "./ui/button";
 
 type Props = {
@@ -18,54 +17,59 @@ type Props = {
 };
 
 export default function Container({
-  headerLabel,
   className,
   showHeader = true,
-  headerRight,
-  backLinkHref,
   children,
+  ...props
 }: PropsWithChildren<Props>) {
-  const params = useParams();
-  const router = useRouter();
-
-  const leagueId = params.leagueId as string | undefined;
-
   return (
     <div className={cn("max-w-[700px] mx-auto md:p-4", className)}>
-      {showHeader && (
-        <header className="flex justify-between items-center gap-2 mb-4 md:mb-8">
-          <div className="flex gap-2 items-center md:hidden">
-            {backLinkHref || leagueId ? (
-              <Button variant="ghost" className="size-8" asChild>
-                <Link href={backLinkHref ?? `/league/${leagueId}`}>
-                  <ArrowLeft className="size-5" />
-                </Link>
-              </Button>
-            ) : (
-              <Button
-                onClick={() => router.back()}
-                variant="ghost"
-                className="size-8"
-              >
-                <ArrowLeft className="size-5" />
-              </Button>
-            )}
-            <h2
-              className={cn(
-                "text-2xl font-heading",
-                headerRight && "text-xl xs:text-2xl"
-              )}
-            >
-              {headerLabel}
-            </h2>
-          </div>
-          <h2 className="hidden md:block text-3xl font-heading">
-            {headerLabel}
-          </h2>
-          {headerRight}
-        </header>
-      )}
+      {showHeader && <Header {...props} />}
       {children}
     </div>
+  );
+}
+
+function Header({
+  headerLabel,
+  headerRight,
+  backLinkHref,
+}: Pick<Props, "headerLabel" | "headerRight" | "backLinkHref">) {
+  const router = useRouter();
+  const params = useParams();
+
+  let button = (
+    <Button onClick={() => router.back()} variant="ghost" className="size-8">
+      <ArrowLeft className="size-5" />
+    </Button>
+  );
+
+  const leagueId = params.leagueId as string | undefined;
+  if (backLinkHref || leagueId) {
+    button = (
+      <Button variant="ghost" className="size-8" asChild>
+        <Link href={backLinkHref ?? `/league/${leagueId}`}>
+          <ArrowLeft className="size-5" />
+        </Link>
+      </Button>
+    );
+  }
+
+  return (
+    <header className="flex justify-between items-center gap-2 mb-4 md:mb-8">
+      <div className="flex gap-2 items-center md:hidden">
+        {button}
+        <h2
+          className={cn(
+            "text-2xl font-heading",
+            headerRight && "text-xl xs:text-2xl"
+          )}
+        >
+          {headerLabel}
+        </h2>
+      </div>
+      <h2 className="hidden md:block text-3xl font-heading">{headerLabel}</h2>
+      {headerRight}
+    </header>
   );
 }
