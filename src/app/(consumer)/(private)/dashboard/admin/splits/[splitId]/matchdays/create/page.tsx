@@ -46,7 +46,7 @@ export default function CreateMatchdayPage({
   return (
     <Container
       headerLabel="Crea giornate"
-      renderHeaderRight={() => (
+      headerRight={
         <Button
           className="w-fit"
           onClick={() => append(getDefaultValue(splitId))}
@@ -54,7 +54,7 @@ export default function CreateMatchdayPage({
           <Plus className="size-5" />
           Aggiungi giornata
         </Button>
-      )}
+      }
     >
       <Form {...form}>
         <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>

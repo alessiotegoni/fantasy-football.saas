@@ -6,6 +6,7 @@ import { ArrowLeft } from "iconoir-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { PropsWithChildren, ReactNode } from "react";
+import BackButton from "./BackButton";
 
 type Props = {
   headerLabel: string;
@@ -31,12 +32,18 @@ export default function Container({
       {showHeader && (
         <header className="flex justify-between items-center gap-2 mb-4 md:mb-8">
           <div className="flex items-center md:hidden">
-            <Link
-              href={backLinkHref ?? (leagueId ? `/league/${leagueId}` : "/")}
-              className="mr-3"
-            >
-              <ArrowLeft className="size-5" />
-            </Link>
+            {backLinkHref || leagueId ? (
+              <Link
+                href={backLinkHref ?? `/league/${leagueId}`}
+                className="mr-3"
+              >
+                <ArrowLeft className="size-5" />
+              </Link>
+            ) : (
+              <BackButton>
+                <ArrowLeft className="size-5" />
+              </BackButton>
+            )}
             <h2
               className={cn(
                 "text-2xl font-heading",
