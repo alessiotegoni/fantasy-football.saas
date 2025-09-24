@@ -4,21 +4,20 @@ import { revalidatePlayers } from "@/features/dashboard/admin/players/db/cache/p
 import { createSuccess, SuccessResult } from "@/utils/helpers";
 
 export default function PlayersPage() {
-
-    return (
-        <Container
-        headerLabel="Giocatori"
-        renderHeaderRight={() => (
-            <ActionButton
-            loadingText="Rivalido"
-            action={handleRevalidatePlayers}
-            className="w-fit"
-            >
+  return (
+    <Container
+      headerLabel="Giocatori"
+      headerRight={
+        <ActionButton
+          loadingText="Rivalido"
+          action={handleRevalidatePlayers}
+          className="w-fit"
+        >
           Rivalida cache
         </ActionButton>
-      )}
-      ></Container>
-    );
+      }
+    />
+  );
 }
 
 async function handleRevalidatePlayers(): Promise<SuccessResult<null>> {
