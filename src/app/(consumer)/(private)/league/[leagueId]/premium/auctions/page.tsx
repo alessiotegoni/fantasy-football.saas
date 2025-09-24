@@ -31,10 +31,7 @@ export default async function LeagueAuctionsPage({
   return (
     <Container
       headerLabel="Aste della lega"
-      leagueId={leagueId}
-      renderHeaderRight={() => (
-        <SplitSelect splits={splits} defaultSplit={lastSplit} />
-      )}
+      headerRight={<SplitSelect splits={splits} defaultSplit={lastSplit} />}
     >
       <Suspense>
         <SuspenseBoundary

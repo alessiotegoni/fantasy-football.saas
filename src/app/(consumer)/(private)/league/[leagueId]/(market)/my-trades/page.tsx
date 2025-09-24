@@ -30,9 +30,8 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
 
   return (
     <Container
-      leagueId={leagueId}
       headerLabel="I miei scambi"
-      renderHeaderRight={() => (
+      headerRight={
         <MobileButtonsContainer>
           <TradeProposalButton
             leagueId={leagueId}
@@ -40,7 +39,7 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
             className="mt-0 w-full sm:w-fit"
           />
         </MobileButtonsContainer>
-      )}
+      }
     >
       <Tabs defaultValue="proposed" className="max-w-[700px] mx-auto">
         <TabsList>
@@ -85,11 +84,10 @@ async function SuspenseBoundary({ leagueId }: { leagueId: string }) {
 function TradesPageSkeleton() {
   return (
     <Container
-      leagueId=""
       headerLabel="I miei scambi"
-      renderHeaderRight={() => (
+      headerRight={
         <div className="w-32 h-10 bg-gray-200 animate-pulse rounded" />
-      )}
+      }
     >
       <div className="max-w-[700px] mx-auto">
         <div className="flex space-x-1 mb-6">

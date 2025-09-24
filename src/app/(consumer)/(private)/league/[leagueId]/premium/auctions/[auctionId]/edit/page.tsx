@@ -21,7 +21,7 @@ export default async function EditAuctionPage({
   const { settings, ...restAuction } = auction;
 
   return (
-    <Container leagueId={leagueId} headerLabel="Crea asta">
+    <Container headerLabel="Crea asta">
       <Suspense
         fallback={
           <AuctionForm auction={restAuction} auctionSettings={settings} />

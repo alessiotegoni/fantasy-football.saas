@@ -33,12 +33,9 @@ export default async function LeagueStandingPage({
 
   return (
     <Container
-      leagueId={leagueId}
       headerLabel="Classifica"
       className="max-w-[700px]"
-      renderHeaderRight={() => (
-        <SplitSelect splits={splits} defaultSplit={splits.at(-1)} />
-      )}
+      headerRight={<SplitSelect splits={splits} defaultSplit={splits.at(-1)} />}
     >
       <Suspense
         fallback={

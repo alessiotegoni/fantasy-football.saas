@@ -18,13 +18,12 @@ export default async function HandleCreditsPage({
   return (
     <TeamsCreditsProvider>
       <Container
-        leagueId={leagueId}
         headerLabel="Gestisci crediti"
-        renderHeaderRight={() => (
+        headerRight={
           <Suspense>
             <HeaderRightButtons leagueId={leagueId} />
           </Suspense>
-        )}
+        }
       >
         <div className="space-y-4 pb-28 sm:pb-0">
           {leagueTeams.map((team) => (

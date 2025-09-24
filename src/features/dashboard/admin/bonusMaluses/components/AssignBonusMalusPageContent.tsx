@@ -51,7 +51,7 @@ export default function AssignBonusMalusPageContent(props: Props) {
   return (
     <Container
       headerLabel="Assegna bonus/malus"
-      renderHeaderRight={() => (
+      headerRight={
         <Button
           className="w-fit"
           onClick={() => append(getDefaultValue(props))}
@@ -59,7 +59,7 @@ export default function AssignBonusMalusPageContent(props: Props) {
           <Plus className="size-5" />
           Aggiungi
         </Button>
-      )}
+      }
     >
       <h3 className="text-xl font-semibold mb-4">
         Giornata: {props.matchday.number}

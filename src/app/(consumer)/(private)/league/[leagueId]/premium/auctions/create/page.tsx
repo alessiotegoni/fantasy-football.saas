@@ -27,7 +27,7 @@ export default async function CreateAuctionPage({
   };
 
   return (
-    <Container leagueId={leagueId} headerLabel="Crea asta">
+    <Container headerLabel="Crea asta">
       <Suspense fallback={<AuctionForm auctionSettings={auctionSettings} />}>
         <SuspenseBoundary auctionSettings={auctionSettings} />
       </Suspense>

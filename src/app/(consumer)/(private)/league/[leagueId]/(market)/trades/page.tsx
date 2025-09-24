@@ -11,7 +11,7 @@ export default async function LeagueTradesPage({
   const { leagueId } = await params;
 
   return (
-    <Container leagueId={leagueId} headerLabel="Scambi della lega">
+    <Container headerLabel="Scambi della lega">
       <Suspense>
         <SuspendedComponent leagueId={leagueId} />
       </Suspense>

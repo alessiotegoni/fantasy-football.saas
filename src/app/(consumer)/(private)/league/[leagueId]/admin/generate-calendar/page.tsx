@@ -21,7 +21,7 @@ export default async function GenerateCalendarPage({
   ]);
 
   return (
-    <Container leagueId={leagueId} headerLabel="Genera calendario">
+    <Container headerLabel="Genera calendario">
       {upcomingSplit ? (
         <Suspense>
           <SuspenseBoundary leagueId={leagueId} splitId={upcomingSplit.id} />

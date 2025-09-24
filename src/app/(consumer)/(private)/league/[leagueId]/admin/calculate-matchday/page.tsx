@@ -19,7 +19,6 @@ export default async function CalculateMatchdayPage({
   return (
     <Container
       headerLabel="Calcola giornate"
-      leagueId={leagueId}
       className="max-w-[800px]"
     >
       {liveSplit ? (

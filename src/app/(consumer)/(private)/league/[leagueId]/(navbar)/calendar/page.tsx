@@ -29,10 +29,7 @@ export default async function LeagueCalendarPage({
   return (
     <Container
       headerLabel="Calendario"
-      leagueId={leagueId}
-      renderHeaderRight={() => (
-        <SplitSelect splits={splits} defaultSplit={lastSplit} />
-      )}
+      headerRight={<SplitSelect splits={splits} defaultSplit={lastSplit} />}
     >
       <Suspense>
         <SuspenseBoundary

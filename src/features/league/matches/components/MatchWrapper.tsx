@@ -54,7 +54,6 @@ export default function MatchWrapper({
 
   return (
     <Container
-      {...ids}
       headerLabel="Partita"
       showHeader={false}
       className="xl:max-w-[800px] 2xl:max-w-[1200px] pb-24 sm:pb-0"

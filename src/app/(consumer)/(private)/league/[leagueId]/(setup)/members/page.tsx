@@ -16,7 +16,7 @@ export default async function LeagueMembersPage({
   const members = await getLeagueMembers(leagueId);
 
   return (
-    <Container leagueId={leagueId} headerLabel="Membri della lega">
+    <Container headerLabel="Membri della lega">
       <Suspense
         fallback={<MembersWrapper leagueId={leagueId} members={members} />}
       >

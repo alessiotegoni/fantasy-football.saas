@@ -46,7 +46,7 @@ export default async function LeagueTeamPage({
   };
 
   return (
-    <Container {...ids} headerLabel="Squadra">
+    <Container headerLabel="Squadra">
       <LeagueTeamCard
         team={leagueTeam}
         {...ids}

@@ -10,12 +10,12 @@ export default async function TeamsPage() {
   return (
     <Container
       headerLabel="Squadre"
-      renderHeaderRight={() => (
+      headerRight={
         <LinkButton href="/dashboard/admin/teams/create" className="w-fit">
           <Plus className="size-5" />
           Crea team
         </LinkButton>
-      )}
+      }
     >
       <div className="space-y-2">
         {teams.map((team) => (

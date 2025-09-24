@@ -25,7 +25,7 @@ export default async function SplitDetailPage({
   return (
     <Container
       headerLabel={split.name}
-      renderHeaderRight={() => (
+      headerRight={
         <LinkButton
           href={`/dashboard/admin/splits/${split.id}/matchdays/create`}
           className="w-fit"
@@ -33,7 +33,7 @@ export default async function SplitDetailPage({
           <Plus className="size-5" />
           Crea giornate
         </LinkButton>
-      )}
+      }
     >
       <div className="mb-8">
         <div className="flex justify-between items-center mb-4">

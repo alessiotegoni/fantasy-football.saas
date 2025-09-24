@@ -16,7 +16,6 @@ export default async function LeagueTeamsPage({
   return (
     <Container
       headerLabel="Squadre"
-      leagueId={leagueId}
       className="max-w-[900px]"
     >
       {!leagueTeams.length ? (

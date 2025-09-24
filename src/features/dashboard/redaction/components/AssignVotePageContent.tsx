@@ -46,7 +46,7 @@ export default function AssignVotePageContent(props: Props) {
   return (
     <Container
       headerLabel="Assegna voti"
-      renderHeaderRight={() => (
+      headerRight={
         <Button
           className="w-fit"
           onClick={() => append(getDefaultValue(props))}
@@ -54,7 +54,7 @@ export default function AssignVotePageContent(props: Props) {
           <Plus className="size-5" />
           Aggiungi
         </Button>
-      )}
+      }
     >
       <h3 className="text-xl font-semibold mb-4">
         Giornata: {props.matchday.number}

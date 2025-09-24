@@ -15,7 +15,6 @@ export default async function TradeProposalPage({
 
   return (
     <Container
-      leagueId={leagueId}
       className="max-w-[1000px]"
       headerLabel="Proponi scambio"
     >

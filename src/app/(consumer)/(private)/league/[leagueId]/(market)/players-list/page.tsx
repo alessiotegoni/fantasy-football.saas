@@ -42,7 +42,7 @@ export default async function LeaguePlayersListPage({
   };
 
   return (
-    <Container leagueId={leagueId} headerLabel="Listone giocatori">
+    <Container headerLabel="Listone giocatori">
       <Suspense
         fallback={
           <PlayersList
