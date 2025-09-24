@@ -29,19 +29,19 @@ const LINKS_INFO: Omit<RoleInfo, "role">[] = [
     href: "/dashboard/admin/splits",
     icon: Axes,
     title: "Splits",
-    description: "Gestisci gli split di campionato",
+    description: "Gestisci gli split e le giornate del campionato",
   },
   {
     href: "/dashboard/admin/teams",
     icon: Shield,
     title: "Squadre",
-    description: "Gestisci le squadre di Serie A",
+    description: "Gestisci le squadre della lega",
   },
   {
     href: "/dashboard/admin/players",
     icon: Running,
     title: "Giocatori",
-    description: "Gestisci i giocatori e le loro quotazioni",
+    description: "Gestisci i giocatori della lega",
   },
   {
     href: "/dashboard/admin/bonus-maluses",

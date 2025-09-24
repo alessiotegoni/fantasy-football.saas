@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 export const getPlayerIdTag = (playerId: number) =>
   getIdTag("players", playerId.toString());
 
-export const revalidatePlayers = (playerId: number) => {
+export const revalidatePlayers = (playerId?: number) => {
   revalidateTag(getPlayersTag());
-  revalidateTag(getPlayerIdTag(playerId));
-}
+  if (playerId) revalidateTag(getPlayerIdTag(playerId));
+};
