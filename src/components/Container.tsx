@@ -4,9 +4,10 @@ import { cn } from "@/lib/utils";
 import { Href } from "@/utils/helpers";
 import { ArrowLeft } from "iconoir-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { PropsWithChildren, ReactNode } from "react";
 import BackButton from "./BackButton";
+import { Button } from "./ui/button";
 
 type Props = {
   headerLabel: string;
@@ -25,24 +26,29 @@ export default function Container({
   children,
 }: PropsWithChildren<Props>) {
   const params = useParams();
+  const router = useRouter();
+
   const leagueId = params.leagueId as string | undefined;
 
   return (
     <div className={cn("max-w-[700px] mx-auto md:p-4", className)}>
       {showHeader && (
         <header className="flex justify-between items-center gap-2 mb-4 md:mb-8">
-          <div className="flex items-center md:hidden">
+          <div className="flex gap-2 items-center md:hidden">
             {backLinkHref || leagueId ? (
-              <Link
-                href={backLinkHref ?? `/league/${leagueId}`}
-                className="mr-3"
+              <Button variant="ghost" className="size-8" asChild>
+                <Link href={backLinkHref ?? `/league/${leagueId}`}>
+                  <ArrowLeft className="size-5" />
+                </Link>
+              </Button>
+            ) : (
+              <Button
+                onClick={() => router.back()}
+                variant="ghost"
+                className="size-8"
               >
                 <ArrowLeft className="size-5" />
-              </Link>
-            ) : (
-              <BackButton>
-                <ArrowLeft className="size-5" />
-              </BackButton>
+              </Button>
             )}
             <h2
               className={cn(
