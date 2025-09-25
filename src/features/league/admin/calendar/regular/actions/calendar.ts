@@ -1,17 +1,11 @@
 "use server";
 
-import { getUserId } from "@/features/dashboard/user/utils/user";
-import { createError, createSuccess } from "@/utils/helpers";
-import {
-  getUUIdSchema,
-  validateSchema,
-  VALIDATION_ERROR,
-} from "@/schema/helpers";
+import { createError } from "@/utils/helpers";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
 import { deleteCalendar, insertCalendar } from "../../db/calendar";
-import { canGenerateCalendar } from "../permissions/calendar";
+import { calendarValidation } from "../permissions/calendar";
 import { getSplitMatchdays } from "@/features/dashboard/admin/splits/queries/split";
 
 export async function generateCalendar(leagueId: string) {
@@ -52,23 +46,6 @@ async function getCalendar({
   ]);
 
   return buildCalendar(leagueTeams, splitMatchdays, leagueId);
-}
-
-async function calendarValidation(leagueId: string) {
-  const validation = validateSchema<string>(getUUIdSchema(), leagueId);
-  if (!validation.isValid) return validation.error;
-
-  const userId = await getUserId();
-  if (!userId) return createError(VALIDATION_ERROR);
-
-  const permissions = await canGenerateCalendar(userId, leagueId);
-  if (permissions.error) return permissions;
-
-  return createSuccess("", {
-    leagueId: validation.data,
-    userId,
-    ...permissions.data,
-  });
 }
 
 type Team = {

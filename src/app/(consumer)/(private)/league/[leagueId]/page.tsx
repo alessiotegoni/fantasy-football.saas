@@ -11,6 +11,8 @@ import { default as CalculateMatchday } from "@/features/league/admin/calculate-
 import OverviewContainer from "@/features/league/overview/components/OverviewContainer";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
+import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
+import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
 
 export default async function LeagueOverviewPage({
   params,
@@ -38,6 +40,13 @@ export default async function LeagueOverviewPage({
             matchday={lastEndedMatchday}
             leagueId={leagueId}
           />
+        </Suspense>
+      )}
+      {lastSplit?.status === "upcoming" && (
+        <Suspense>
+          {!(await hasGeneratedCalendar(leagueId, lastSplit.id)) && (
+            <GenerateCalendarBanner leagueId={leagueId} />
+          )}
         </Suspense>
       )}
     </OverviewContainer>
