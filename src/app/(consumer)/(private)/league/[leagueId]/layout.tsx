@@ -9,6 +9,7 @@ import { getUser } from "@/features/dashboard/user/utils/user";
 import { isLeagueAdmin } from "@/features/league/members/permissions/leagueMember";
 import { isPremiumUnlocked } from "@/features/league/leagues/permissions/league";
 import { User } from "@supabase/supabase-js";
+import LeagueProvider from "@/contexts/LeagueProvider";
 
 export default async function LeagueLayout(
   props: LayoutProps<"/league/[leagueId]">
@@ -19,9 +20,11 @@ export default async function LeagueLayout(
   if (!leagueId) notFound();
 
   return (
-    <Suspense fallback={<LeagueLayoutWrapper league={league} {...props} />}>
-      <SuspenseBoundary league={league} {...props} />
-    </Suspense>
+    <LeagueProvider league={league}>
+      <Suspense fallback={<LeagueLayoutWrapper league={league} {...props} />}>
+        <SuspenseBoundary league={league} {...props} />
+      </Suspense>
+    </LeagueProvider>
   );
 }
 

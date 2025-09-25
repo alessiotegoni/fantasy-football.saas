@@ -35,7 +35,7 @@ export function useDashboardRoles() {
   const context = useContext(DashboardRolesContext);
   if (!context) {
     throw new Error(
-      "useDashboardRoles must be used within DashboardRolesContext"
+      "useDashboardRoles must be used within DashboardRolesProvider"
     );
   }
   return context;
