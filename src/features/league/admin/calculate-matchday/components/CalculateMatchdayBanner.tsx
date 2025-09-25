@@ -1,9 +1,9 @@
 "use client";
 
-import { SplitMatchday } from "@/features/splits/queries/split";
 import { Calculator, WarningTriangle } from "iconoir-react";
 import CalculateMatchdayButton from "./CalculateMatchdayButton";
 import { isMatchdayCalculable } from "../utils/calculate-matchday";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 export default function CalculateMatchdayBanner({
   matchday,

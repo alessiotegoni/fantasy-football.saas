@@ -1,10 +1,25 @@
-export default function LeagueOverviewPage({}: PageProps<"/league/[leagueId]">) {
+import { getSplits } from "@/features/dashboard/admin/splits/queries/split";
+import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
+
+export default async function LeagueOverviewPage({
+  params,
+}: PageProps<"/league/[leagueId]">) {
+  const { leagueId } = await params;
+
+  const [splits, leagueTeams] = await Promise.all([
+    getSplits(),
+    getLeagueTeams(leagueId),
+  ]);
+
+  const lastSplit = splits.at(-1);
+
   return <div>LeagueOverviewPage</div>;
 }
 
 // TODO: Banner invita utenti: se split e' upcoming e i partecipanti della lega sono meno di 4
 // TODO: Banner genera calendario: se lo split e' upcoming e non e' ancora stato generato
 // TODO: Banner calcola giornata: se l'ultima giornata non e' ancora stata calcolata
+// TODO: Banner crea giornata: se l'ultima giornata non e' ancora stata calcolata
 
 // TODO: Banner match della giornata corrente: se c'e un match (e quindi una giornata) in corso
 // TODO: Banner match della giornata vinta: se c'e un match vinto e la giornata e' terminata

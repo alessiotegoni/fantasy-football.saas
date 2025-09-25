@@ -1,4 +1,4 @@
-import { SplitMatchday } from "@/features/splits/queries/split";
+import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 export function isMatchdayCalculable(matchday: SplitMatchday) {
   const calculableFromDate = new Date(matchday.endAt);
