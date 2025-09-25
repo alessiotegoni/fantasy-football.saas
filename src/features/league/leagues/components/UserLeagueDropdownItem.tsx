@@ -8,16 +8,40 @@ import { NavArrowRight, Trophy } from "iconoir-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
-export default function UserLeagueDropdownItem({
-  league,
-}: {
+type Props = {
   league: Pick<League, "id" | "name" | "imageUrl">;
-}) {
-  const { leagueId } = useParams();
+};
 
+export default function UserLeagueDropdownItem({ league }: Props) {
+  const { leagueId } = useParams();
   const isCurrent = league.id === leagueId;
 
-  const content = (
+  const content = <UserLeagueContent league={league} isCurrent={isCurrent} />;
+
+  return (
+    <DropdownMenuItem
+      key={league.id}
+      className="flex justify-between items-center gap-2 group"
+      asChild
+      disabled={isCurrent}
+    >
+      {isCurrent ? (
+        <div>{content}</div>
+      ) : (
+        <Link
+          href={`/league/${league.id}`}
+          className="flex w-full justify-between"
+        >
+          {content}
+          <NavArrowRight className="text-muted-foreground group-hover:text-white" />
+        </Link>
+      )}
+    </DropdownMenuItem>
+  );
+}
+
+function UserLeagueContent({ league, isCurrent }: Props & { isCurrent: boolean }) {
+  return (
     <div className="flex items-center gap-2">
       <Avatar
         imageUrl={league.imageUrl}
@@ -42,30 +66,4 @@ export default function UserLeagueDropdownItem({
       <p className={cn(isCurrent && "font-semibold")}>{league.name}</p>
     </div>
   );
-
-  return (
-    <DropdownMenuItem
-      key={league.id}
-      className="flex justify-between items-center gap-2 group"
-      asChild
-      disabled={isCurrent}
-    >
-      {isCurrent ? (
-        <div>{content}</div>
-      ) : (
-        <Link
-          key={league.id}
-          href={`/league/${league.id}`}
-          className="flex w-full justify-between"
-        >
-          {content}
-          <NavArrowRight className="text-muted-foreground group-hover:text-white" />
-        </Link>
-      )}
-    </DropdownMenuItem>
-  );
-}
-
-function UserLeague() {
-
 }
