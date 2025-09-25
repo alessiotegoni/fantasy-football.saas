@@ -1,11 +1,16 @@
 import BackButton from "@/components/BackButton";
+import { Banner } from "@/components/banner";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
-import { getLastEndedMatchday, getLiveSplit } from "@/features/dashboard/admin/splits/queries/split";
+import {
+  getLastEndedMatchday,
+  getLiveSplit,
+} from "@/features/dashboard/admin/splits/queries/split";
 import CalculateMatchdayBanner from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
 import CalculationsList from "@/features/league/admin/calculate-matchday/components/CalculationsList";
 import { getCalculations } from "@/features/league/admin/calculate-matchday/queries/calculate-matchday";
+import { isMatchdayCalculable } from "@/features/league/admin/calculate-matchday/utils/calculate-matchday";
 import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import { NavArrowRight, WarningTriangle } from "iconoir-react";
 import Link from "next/link";
@@ -17,10 +22,7 @@ export default async function CalculateMatchdayPage({
   const [liveSplit, { leagueId }] = await Promise.all([getLiveSplit(), params]);
 
   return (
-    <Container
-      headerLabel="Calcola giornate"
-      className="max-w-[800px]"
-    >
+    <Container headerLabel="Calcola giornate" className="max-w-[800px]">
       {liveSplit ? (
         <Suspense>
           <SuspenseBoundary leagueId={leagueId} splitId={liveSplit.id} />
@@ -67,10 +69,15 @@ async function SuspenseBoundary({
   const isAlreadyCalculated = matchdayCalcs.some(
     (matchdayCalc) => matchdayCalc.matchday.id === matchday.id
   );
+  const isCalculable = isMatchdayCalculable(matchday);
 
   return (
     <>
-      {!isAlreadyCalculated && <CalculateMatchdayBanner matchday={matchday} />}
+      {!isCalculable && <MatchdayNotCalculableYet />}
+      <CalculateMatchdayBanner
+        matchday={matchday}
+        showBanner={isCalculable && !isAlreadyCalculated}
+      />
       <div>
         <h2 className="text-lg font-semibold mb-2">Giornate calcolate</h2>
         {matchdayCalcs.length > 0 ? (
@@ -99,6 +106,17 @@ function CalendarNotGeneratedEmptyState({ leagueId }: { leagueId: string }) {
           </Link>
         </Button>
       )}
+    />
+  );
+}
+
+function MatchdayNotCalculableYet() {
+  return (
+    <Banner
+      className="border border-destructive"
+      icon={<WarningTriangle className="size-8 text-destructive" />}
+      title="Giornata non calcolabile"
+      description="Potrai calcolare la giornata dopo la mezzanotte e mezza"
     />
   );
 }

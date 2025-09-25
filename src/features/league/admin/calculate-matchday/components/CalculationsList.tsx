@@ -15,7 +15,7 @@ export default function CalculationsList({
       {calculations.map((c) => (
         <li
           key={c.id}
-          className="flex items-center justify-between rounded-2xl border bg-card p-4 text-card-foreground"
+          className="flex items-center justify-between rounded-3xl border bg-input/30 p-4 text-card-foreground"
         >
           <div>
             <p className="font-semibold mb-1">Giornata {c.matchday.number}</p>

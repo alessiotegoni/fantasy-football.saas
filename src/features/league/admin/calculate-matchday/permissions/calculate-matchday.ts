@@ -63,7 +63,7 @@ export async function basePermissions({
   }
 
   const isValidMatchday = splitMatchdays.some(
-    (matchday) => matchday.id === matchdayId,
+    (matchday) => matchday.id === matchdayId
   );
   if (!isValidMatchday) {
     return createError(CALCULATE_ERRORS.INVALID_SPLIT_MATCHDAY);
@@ -148,7 +148,10 @@ export async function canCancelCalculation(data: CancelCalculationSchema) {
   return createSuccess("", { calculation });
 }
 
-async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
+export async function isAlreadyCalculated(
+  leagueId: string,
+  matchdayId: number
+) {
   const [res] = await db
     .select({ count: count() })
     .from(leagueMatchdayCalculations)
@@ -156,8 +159,8 @@ async function isAlreadyCalculated(leagueId: string, matchdayId: number) {
       and(
         eq(leagueMatchdayCalculations.leagueId, leagueId),
         eq(leagueMatchdayCalculations.matchdayId, matchdayId),
-        eq(leagueMatchdayCalculations.status, "calculated"),
-      ),
+        eq(leagueMatchdayCalculations.status, "calculated")
+      )
     );
 
   return res.count > 0;
