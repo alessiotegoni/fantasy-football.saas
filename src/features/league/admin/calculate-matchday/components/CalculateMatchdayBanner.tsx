@@ -5,13 +5,11 @@ import { Banner } from "@/components/banner";
 
 export default function CalculateMatchdayBanner({
   matchday,
-  showBanner,
+  calculationId,
 }: {
   matchday: SplitMatchday;
-  showBanner: boolean;
+  calculationId?: string;
 }) {
-  if (!showBanner) return null;
-
   return (
     <Banner
       title={`Giornata ${matchday.number}`}
@@ -20,9 +18,10 @@ export default function CalculateMatchdayBanner({
       className="mb-4 md:mb-8"
     >
       <CalculateMatchdayButton
+        calculationId={calculationId}
         matchdayId={matchday.id}
         variant="gradient"
-        className="w-30 rounded-2xl"
+        className="min-w-30 max-w-34 rounded-2xl"
       >
         Calcola
       </CalculateMatchdayButton>

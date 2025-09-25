@@ -2,7 +2,7 @@ import { Banner } from "@/components/banner";
 import { InviteButton } from "@/features/league/leagues/components/InviteButton";
 import { ShareAndroid } from "iconoir-react";
 
-export function InviteMembersBanner() {
+export default function InviteMembersBanner() {
   return (
     <Banner
       icon={<ShareAndroid className="text-white size-5" />}

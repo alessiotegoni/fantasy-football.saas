@@ -4,10 +4,11 @@ import {
   Split,
   SplitMatchday,
 } from "@/features/dashboard/admin/splits/queries/split";
-import CalculateMatchdayBanner from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
 import { isAlreadyCalculated } from "@/features/league/admin/calculate-matchday/permissions/calculate-matchday";
+import { getCalculation } from "@/features/league/admin/calculate-matchday/queries/calculate-matchday";
 import { isMatchdayCalculable } from "@/features/league/admin/calculate-matchday/utils/calculate-matchday";
-import { InviteMembersBanner } from "@/features/league/members/components/InviteMembersBanner";
+import InviteMembersBanner from "@/features/league/members/components/InviteMembersBanner";
+import { default as CalculateMatchday } from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
 import OverviewContainer from "@/features/league/overview/components/OverviewContainer";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
@@ -36,15 +37,31 @@ export default async function LeagueOverviewPage({
         <Suspense>
           <CalculateMatchdayBanner
             matchday={lastEndedMatchday}
-            showBanner={
-              isMatchdayCalculable(lastEndedMatchday) &&
-              !(await isAlreadyCalculated(leagueId, lastEndedMatchday.id))
-            }
+            leagueId={leagueId}
           />
         </Suspense>
       )}
     </OverviewContainer>
   );
+}
+
+async function CalculateMatchdayBanner({
+  leagueId,
+  matchday,
+}: {
+  leagueId: string;
+  matchday: SplitMatchday;
+}) {
+  if (
+    !isMatchdayCalculable(matchday) ||
+    (await isAlreadyCalculated(leagueId, matchday.id))
+  ) {
+    return null;
+  }
+
+  const calculation = await getCalculation(leagueId, matchday.id);
+
+  <CalculateMatchday matchday={matchday} calculationId={calculation?.id} />;
 }
 
 // TODO: Banner calcola giornata: se l'ultima giornata non e' ancora stata calcolata

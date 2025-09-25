@@ -16,6 +16,7 @@ import {
   CancelCalculationSchema,
   RecalculateMatchdaySchema,
 } from "../schema/calculate-matchday";
+import { getCalculation } from "../queries/calculate-matchday";
 
 enum CALCULATE_ERRORS {
   REQUIRE_ADMIN = "Per calcolare le giornate devi essere un admin della lega",
@@ -81,8 +82,8 @@ export async function basePermissions({
   } = { splitId: liveSplit.id, calculation: null };
 
   if (calculationId) {
-    const calculation = await getCalculation(calculationId);
-    if (!calculation) {
+    const calculation = await getCalculation(leagueId, matchdayId);
+    if (!calculation || calculationId !== calculation.id) {
       return createError(CALCULATE_ERRORS.CALCULATION_NOT_FOUND);
     }
 
@@ -164,10 +165,4 @@ export async function isAlreadyCalculated(
     );
 
   return res.count > 0;
-}
-
-async function getCalculation(id: string) {
-  return db.query.leagueMatchdayCalculations.findFirst({
-    where: (calculation, { eq }) => eq(calculation.id, id),
-  });
 }

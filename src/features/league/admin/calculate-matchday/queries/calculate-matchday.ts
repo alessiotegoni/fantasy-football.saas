@@ -40,3 +40,15 @@ export async function getCalculations(leagueId: string, splitId: number) {
 }
 
 export type Calculation = Awaited<ReturnType<typeof getCalculations>>[number];
+
+export async function getCalculation(leagueId: string, matchdayId: number) {
+  const calculation = await db.query.leagueMatchdayCalculations.findFirst({
+    where: (calculation, { and, eq }) =>
+      and(
+        eq(calculation.leagueId, leagueId),
+        eq(calculation.matchdayId, matchdayId)
+      ),
+  });
+
+  return calculation;
+}

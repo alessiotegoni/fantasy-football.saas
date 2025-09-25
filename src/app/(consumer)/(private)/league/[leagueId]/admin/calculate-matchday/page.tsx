@@ -74,10 +74,9 @@ async function SuspenseBoundary({
   return (
     <>
       {!isCalculable && <MatchdayNotCalculableYet />}
-      <CalculateMatchdayBanner
-        matchday={matchday}
-        showBanner={isCalculable && !isAlreadyCalculated}
-      />
+      {isCalculable && !isAlreadyCalculated && (
+        <CalculateMatchdayBanner matchday={matchday} />
+      )}
       <div>
         <h2 className="text-lg font-semibold mb-2">Giornate calcolate</h2>
         {matchdayCalcs.length > 0 ? (
