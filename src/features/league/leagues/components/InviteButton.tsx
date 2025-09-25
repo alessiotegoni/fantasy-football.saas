@@ -12,14 +12,7 @@ type Props = {
 export function InviteButton({ league, children, ...props }: Props) {
   const [, setCopied] = useState(false);
 
-  const inviteUrl = useMemo(() => {
-    const privateLeagueUrl = `private?code=${league.joinCode}`;
-    const publicLeagueUrl = `public/${league.id}`;
-
-    return `${window.location.origin}/leagues/join/${
-      league.visibility === "public" ? publicLeagueUrl : privateLeagueUrl
-    }`;
-  }, [league.id, league]);
+  const inviteUrl = getInviteUrl(league);
 
   async function handleCopy() {
     try {
@@ -59,4 +52,14 @@ export function InviteButton({ league, children, ...props }: Props) {
       {children}
     </Button>
   );
+}
+
+function getInviteUrl({ id, joinCode, visibility }: League) {
+  const privateLeagueUrl = `private?code=${joinCode}`;
+  const publicLeagueUrl = `public/${id}`;
+
+  const leagueTypeUrl =
+    visibility === "public" ? publicLeagueUrl : privateLeagueUrl;
+
+  return `${window.location.origin}/join-league/${leagueTypeUrl}`;
 }
