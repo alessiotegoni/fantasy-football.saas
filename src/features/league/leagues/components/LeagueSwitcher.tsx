@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -21,24 +20,27 @@ export default async function LeagueSwitcher({
   if (!user) return null;
 
   return (
-    <UserLeagues>
+    <UserLeagues user={user}>
       {(leagues) => {
-        if (!leagues.length) return null;
-        const currentLeague = leagues.find((league) => league.id === leagueId);
+        const othersLeague = leagues.filter((league) => league.id !== leagueId);
+        if (!othersLeague.length) return null;
 
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
-                <span className="truncate max-w-48">{currentLeague?.name}</span>
+              <Button
+                variant="outline"
+                className="w-fit min-w-40 flex items-center gap-2"
+              >
+                <span className="truncate max-w-48">Cambia lega</span>
                 <ArrowSeparateVertical className="!size-4 flex-shrink-0" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="min-w-[18rem]">
               <DropdownMenuLabel>Cambia lega</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {leagues.map((league) => (
-                <UserLeagueDropdownItem league={league} />
+              {othersLeague.map((league) => (
+                <UserLeagueDropdownItem key={league.id} league={league} />
               ))}
             </DropdownMenuContent>
           </DropdownMenu>

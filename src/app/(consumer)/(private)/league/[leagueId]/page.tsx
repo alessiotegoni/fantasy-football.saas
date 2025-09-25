@@ -8,13 +8,12 @@ import { getCalculation } from "@/features/league/admin/calculate-matchday/queri
 import { isMatchdayCalculable } from "@/features/league/admin/calculate-matchday/utils/calculate-matchday";
 import InviteMembersBanner from "@/features/league/members/components/InviteMembersBanner";
 import { default as CalculateMatchday } from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
-import OverviewContainer from "@/features/league/overview/components/OverviewContainer";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
 import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
-import { Skeleton } from "@/components/ui/skeleton";
 import LeagueSwitcher from "@/features/league/leagues/components/LeagueSwitcher";
+import Container from "@/components/Container";
 
 export default async function LeagueOverviewPage({
   params,
@@ -34,9 +33,10 @@ export default async function LeagueOverviewPage({
   }
 
   return (
-    <OverviewContainer
+    <Container
+      headerLabel="Home"
       headerRight={
-        <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
+        <Suspense>
           <LeagueSwitcher leagueId={leagueId} />
         </Suspense>
       }
@@ -59,7 +59,7 @@ export default async function LeagueOverviewPage({
           </Suspense>
         )}
       </div>
-    </OverviewContainer>
+    </Container>
   );
 }
 

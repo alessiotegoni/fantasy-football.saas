@@ -21,7 +21,6 @@ import { Suspense } from "react";
 import { InviteButton } from "./InviteButton";
 import { League } from "../queries/league";
 import { User } from "@supabase/supabase-js";
-import UserLeaguesDropdownItems from "./UserLeaguesDropdownItems";
 import UserLeagues from "./UserLeagues";
 import UserLeagueDropdownItem from "./UserLeagueDropdownItem";
 
@@ -52,7 +51,7 @@ export default function LeagueDropdown({
               <UserLeagues user={user}>
                 {(leagues) =>
                   leagues.map((league) => (
-                    <UserLeagueDropdownItem league={league} />
+                    <UserLeagueDropdownItem key={league.id} league={league} />
                   ))
                 }
               </UserLeagues>

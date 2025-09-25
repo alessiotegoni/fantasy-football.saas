@@ -5,7 +5,7 @@ import { League } from "../queries/league";
 type UserLeague = Pick<League, "id" | "name" | "imageUrl">;
 
 type Props = {
-  user?: User;
+  user: User | undefined;
   children: (leagues: UserLeague[]) => React.ReactNode;
 };
 
