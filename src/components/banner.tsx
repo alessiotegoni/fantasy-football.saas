@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { XIcon } from "lucide-react";
+import { Xmark } from "iconoir-react";
 
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 interface BannerProps {
@@ -12,6 +13,7 @@ interface BannerProps {
   children?: ReactNode;
   onClose?: () => void;
   closeButton?: boolean;
+  className?: string;
 }
 
 export function Banner({
@@ -20,59 +22,51 @@ export function Banner({
   description,
   children,
   onClose,
-  closeButton = true,
+  closeButton = false,
+  className,
 }: BannerProps) {
   const [isVisible, setIsVisible] = useState(true);
-
-  if (!isVisible) return null;
 
   function handleClose() {
     setIsVisible(false);
     onClose?.();
   }
-  
+
+  if (!isVisible) return null;
+
   return (
-    <div className="dark bg-muted text-foreground px-4 py-3">
-      <div className="flex gap-2 md:items-center">
-        <div className="flex grow gap-3 md:items-center">
-          {icon && (
-            <div
-              className="bg-primary/15 flex size-9 shrink-0 items-center justify-center rounded-full max-md:mt-0.5"
-              aria-hidden="true"
-            >
-              {icon}
-            </div>
-          )}
-          <div className="flex grow flex-col justify-between gap-3 md:flex-row md:items-center">
-            <div className="space-y-0.5">
-              <p className="text-sm font-medium">{title}</p>
-              {description && (
-                <p className="text-muted-foreground text-sm">{description}</p>
-              )}
-            </div>
-            {children && (
-              <div className="flex items-center gap-2 max-md:flex-wrap">
-                {children}
-              </div>
-            )}
+    <div
+      className={cn(
+        "relative flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-3xl",
+        className
+      )}
+    >
+      {closeButton && (
+        <Button
+          variant="destructive"
+          className="group size-8 shrink-0 p-0 rounded-2xl self-end md:self-center md:mr-3"
+          onClick={handleClose}
+          aria-label="Close banner"
+        >
+          <Xmark className="size-5" />
+        </Button>
+      )}
+      <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 mb-6 md:mb-0">
+        {icon && (
+          <div className="size-16 bg-muted rounded-full flex items-center justify-center shrink-0">
+            {icon}
           </div>
-        </div>
-        {closeButton && (
-          <Button
-            variant="ghost"
-            className="group -my-1.5 -me-2 size-8 shrink-0 p-0 hover:bg-transparent"
-            onClick={handleClose}
-            aria-label="Close banner"
-            aria-hidden={!isVisible}
-          >
-            <XIcon
-              size={16}
-              className="opacity-60 transition-opacity group-hover:opacity-100"
-              aria-hidden="true"
-            />
-          </Button>
         )}
+        <div className="text-center md:text-start">
+          <h3 className="text-lg md:text-xl font-heading">{title}</h3>
+          {description && (
+            <p className="text-sm md:text-base text-muted-foreground">
+              {description}
+            </p>
+          )}
+        </div>
       </div>
+      {children}
     </div>
   );
 }
