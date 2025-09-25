@@ -4,17 +4,20 @@ import { toast } from "sonner";
 import { ComponentProps, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { League } from "../queries/league";
+import { useLeague } from "@/contexts/LeagueProvider";
 
-type Props = {
-  league: League;
-} & ComponentProps<typeof Button>;
+type Props = ComponentProps<typeof Button>;
 
-export function InviteButton({ league, children, ...props }: Props) {
+export function InviteButton({ children, ...props }: Props) {
   const [, setCopied] = useState(false);
+
+  const { league } = useLeague();
 
   const inviteUrl = getInviteUrl(league);
 
   async function handleCopy() {
+    if (!inviteUrl) return;
+
     try {
       await navigator.clipboard.writeText(inviteUrl);
       setCopied(true);
@@ -26,6 +29,8 @@ export function InviteButton({ league, children, ...props }: Props) {
   }
 
   async function handleShare() {
+    if (!inviteUrl) return;
+
     try {
       const message =
         `Unisciti alla mia lega.\n` +
@@ -55,6 +60,8 @@ export function InviteButton({ league, children, ...props }: Props) {
 }
 
 function getInviteUrl({ id, joinCode, visibility }: League) {
+  if (typeof window === "undefined") return null;
+
   const privateLeagueUrl = `private?code=${joinCode}`;
   const publicLeagueUrl = `public/${id}`;
 

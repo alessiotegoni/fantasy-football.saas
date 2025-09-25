@@ -64,7 +64,7 @@ export default async function UserLeagues({
         {isCurrentLeague(league) ? (
           <div>{content}</div>
         ) : (
-          <Link key={league.id} href={`/leagues/${league.id}`}>
+          <Link key={league.id} href={`/league/${league.id}`}>
             {content}
           </Link>
         )}

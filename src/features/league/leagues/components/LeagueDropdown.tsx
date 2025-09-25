@@ -65,8 +65,8 @@ export default function LeagueDropdown({
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild>
-              <InviteButton league={league} className="rounded-lg p-2.5">
-                <ShareAndroid className="size-5" />
+              <InviteButton className="rounded-lg p-2.5">
+                <ShareAndroid className="text-white size-5" />
                 Invita i tuoi amici!
               </InviteButton>
             </DropdownMenuItem>
