@@ -1,7 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
-import { ComponentProps, useMemo, useState } from "react";
+import { ComponentProps, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { League } from "../queries/league";
 

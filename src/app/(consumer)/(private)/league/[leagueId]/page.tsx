@@ -1,4 +1,5 @@
 import { getSplits } from "@/features/dashboard/admin/splits/queries/split";
+import InviteMembersBanner from "@/features/league/members/components/InviteMembersBanner";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 
 export default async function LeagueOverviewPage({
@@ -13,7 +14,9 @@ export default async function LeagueOverviewPage({
 
   const lastSplit = splits.at(-1);
 
-  return <div>LeagueOverviewPage</div>;
+  return <>
+    {leagueTeams.length < 4 && <InviteMembersBanner />}
+  </>
 }
 
 // TODO: Banner invita utenti: se split e' upcoming e i partecipanti della lega sono meno di 4
