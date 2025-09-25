@@ -4,16 +4,15 @@ import { League } from "../queries/league";
 
 type UserLeague = Pick<League, "id" | "name" | "imageUrl">;
 
-export default async function UserLeagues({
-  user,
-  children,
-}: {
+type Props = {
   user?: User;
   children: (leagues: UserLeague[]) => React.ReactNode;
-}) {
+};
+
+export default async function UserLeagues({ user, children }: Props) {
   if (!user) return null;
 
   const userLeagues = await getUserLeagues(user.id);
 
-  return <>{children(userLeagues)}</>;
+  return children(userLeagues);
 }
