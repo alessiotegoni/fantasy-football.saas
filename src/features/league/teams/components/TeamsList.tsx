@@ -5,16 +5,16 @@ import CreateTeamBanner from "./CreateTeamBanner";
 type Props = {
   teams: Awaited<ReturnType<typeof getLeagueTeams>>;
   leagueId: string;
-  teamUserId?: string;
+  userId?: string;
 };
 
-export default function TeamsList({ teams, leagueId, teamUserId }: Props) {
-  const hasTeam = teams.some((team) => team.userId === teamUserId);
-  const sortedTeams = sortTeams({ teams, teamUserId });
+export default function TeamsList({ teams, leagueId, userId }: Props) {
+  const hasTeam = teams.some((team) => team.userId === userId);
+  const sortedTeams = sortTeams({ teams, userId });
 
   return (
     <>
-      {teamUserId !== undefined && !hasTeam && (
+      {userId !== undefined && hasTeam && (
         <CreateTeamBanner leagueId={leagueId} />
       )}
       <div className="grid gap-4 xl:grid-cols-2">
@@ -22,7 +22,7 @@ export default function TeamsList({ teams, leagueId, teamUserId }: Props) {
           <LeagueTeamCard
             key={team.id}
             team={team}
-            teamUserId={teamUserId}
+            userId={userId}
             leagueId={leagueId}
             className="min-h-[110px]"
           />
@@ -32,11 +32,11 @@ export default function TeamsList({ teams, leagueId, teamUserId }: Props) {
   );
 }
 
-function sortTeams({ teams, teamUserId }: Omit<Props, "leagueId">) {
-  return teamUserId
+function sortTeams({ teams, userId }: Omit<Props, "leagueId">) {
+  return userId
     ? teams.toSorted((a, b) => {
-        if (a.userId === teamUserId) return -1;
-        if (b.userId === teamUserId) return 1;
+        if (a.userId === userId) return -1;
+        if (b.userId === userId) return 1;
         return 0;
       })
     : teams;

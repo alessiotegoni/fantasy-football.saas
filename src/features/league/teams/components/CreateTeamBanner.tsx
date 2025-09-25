@@ -3,7 +3,7 @@ import { NavArrowRight, Search } from "iconoir-react";
 
 export default function CreateTeamBanner({ leagueId }: { leagueId: string }) {
   return (
-    <div className="flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-2xl mb-4 md:mb-8">
+    <div className="flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-3xl mb-4 md:mb-8">
       <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
         <div className="size-16 bg-muted rounded-full flex items-center justify-center">
           <Search className="size-8 text-muted-foreground" />
@@ -19,7 +19,7 @@ export default function CreateTeamBanner({ leagueId }: { leagueId: string }) {
       </div>
       <LinkButton
         variant="gradient"
-        className="w-fit mt-6 md:mt-0 gap-4 p-2.5 md:py-3.5 md:px-4"
+        className="w-fit mt-6 md:mt-0 gap-4 py-3.5 px-4"
         href={`/league/${leagueId}/teams/create`}
       >
         Crea la tua squadra

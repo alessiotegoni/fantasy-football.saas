@@ -34,7 +34,7 @@ async function SuspenseBoundary(props: {
 }) {
   const userId = await getUserId();
 
-  return <TeamsList {...props} teamUserId={userId} />;
+  return <TeamsList {...props} userId={userId} />;
 }
 
 function CreateFirstTeamBanner({ leagueId }: { leagueId: string }) {

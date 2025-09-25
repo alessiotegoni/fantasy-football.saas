@@ -14,7 +14,7 @@ type Props = {
     credits: number;
     userId?: string;
   };
-  teamUserId?: string;
+  userId?: string;
   className?: string;
   showIsUserTeam?: boolean;
   showTeamCredits?: boolean;
@@ -23,7 +23,7 @@ type Props = {
 
 export default function LeagueTeamCard({
   team,
-  teamUserId,
+  userId,
   showIsUserTeam = true,
   showTeamCredits = true,
   leagueId,
@@ -36,7 +36,7 @@ export default function LeagueTeamCard({
       className={cn(
         "bg-background rounded-3xl border border-border hover:border-primary/20 transition-colors",
         "flex p-4 gap-4 h-full justify-between",
-        showIsUserTeam && team.userId === teamUserId && "border-primary",
+        showIsUserTeam && team.userId === userId && "border-primary",
         className
       )}
     >
@@ -54,7 +54,7 @@ export default function LeagueTeamCard({
           <h3 className="text-lg font-semibold truncate">
             {team.name}{" "}
             {showIsUserTeam &&
-              (teamUserId ? team.userId === teamUserId : true) &&
+              (userId ? team.userId === userId : true) &&
               "(Tu)"}
           </h3>
           <p className="text-sm text-muted-foreground truncate">
@@ -70,7 +70,7 @@ export default function LeagueTeamCard({
           </div>
         )}
         {renderTeamPpr?.()}
-        {showIsUserTeam && team.userId === teamUserId && (
+        {showIsUserTeam && team.userId === userId && (
           <Button variant="gradient" size="sm" className="mt-2">
             <Link
               href={`/league/${leagueId}/teams/${team.id}/edit`}
