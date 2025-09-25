@@ -13,6 +13,7 @@ import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
 import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function LeagueOverviewPage({
   params,
@@ -32,7 +33,13 @@ export default async function LeagueOverviewPage({
   }
 
   return (
-    <OverviewContainer>
+    <OverviewContainer
+      headerRight={
+        <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
+          <UserLeaguesSelect />
+        </Suspense>
+      }
+    >
       <div className="space-y-4">
         {leagueTeams.length < 4 && <InviteMembersBanner />}
         {lastEndedMatchday?.status === "ended" && (

@@ -6,13 +6,12 @@ import { NavArrowRight, Trophy } from "iconoir-react";
 import Link from "next/link";
 import UserLeagues from "./UserLeagues";
 
-export default function UserLeaguesDropdown({
-  leagueId,
-  user,
-}: {
+type Props = {
   leagueId: string;
   user?: User;
-}) {
+};
+
+export default function UserLeaguesDropdownItems({ leagueId, user }: Props) {
   const isCurrentLeague = (league: { id: string }) => leagueId === league.id;
 
   return (
