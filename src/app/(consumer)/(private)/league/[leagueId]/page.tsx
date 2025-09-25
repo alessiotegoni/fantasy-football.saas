@@ -1,7 +1,6 @@
 import {
   getLastEndedMatchday,
   getSplits,
-  Split,
   SplitMatchday,
 } from "@/features/dashboard/admin/splits/queries/split";
 import { isAlreadyCalculated } from "@/features/league/admin/calculate-matchday/permissions/calculate-matchday";
@@ -61,10 +60,11 @@ async function CalculateMatchdayBanner({
 
   const calculation = await getCalculation(leagueId, matchday.id);
 
-  <CalculateMatchday matchday={matchday} calculationId={calculation?.id} />;
+  return (
+    <CalculateMatchday matchday={matchday} calculationId={calculation?.id} />
+  );
 }
 
-// TODO: Banner calcola giornata: se l'ultima giornata non e' ancora stata calcolata
 // TODO: Banner crea calendario: se l'ultima giornata non e' ancora stata calcolata
 
 // TODO: Banner match della giornata corrente: se c'e un match (e quindi una giornata) in corso

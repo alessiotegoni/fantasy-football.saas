@@ -5,12 +5,12 @@ import EmptyState from "@/components/EmptyState";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
 import { Button } from "@/components/ui/button";
 import { regenerateCalendar } from "@/features/league/admin/calendar/regular/actions/calendar";
-import CalendarEmptyState from "@/features/league/admin/calendar/regular/components/CalendarEmptyState";
 import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import { getUpcomingSplit } from "@/features/dashboard/admin/splits/queries/split";
-import { NavArrowRight, WarningTriangle } from "iconoir-react";
+import { CalendarRotate, NavArrowRight, WarningTriangle } from "iconoir-react";
 import Link from "next/link";
 import { Suspense } from "react";
+import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
 
 export default async function GenerateCalendarPage({
   params,
@@ -46,35 +46,37 @@ async function SuspenseBoundary({
   splitId: number;
 }) {
   const hasCalendar = await hasGeneratedCalendar(leagueId, splitId);
-
-  return hasCalendar ? (
-    <>
-      <p className="text-muted-foreground mb-4">
-        Il calendario è già stato generato. Puoi rigenerarlo se necessario.
-      </p>
-      <MobileButtonsContainer>
-        <div
-          className="mt-7 sm:mt-0 flex flex-col sm:flex-row
+  if (hasCalendar) {
+    return (
+      <>
+        <p className="text-muted-foreground mb-4">
+          Il calendario è già stato generato. Puoi rigenerarlo se necessario.
+        </p>
+        <MobileButtonsContainer>
+          <div
+            className="mt-7 sm:mt-0 flex flex-col sm:flex-row
       sm:items-center sm:justify-end gap-3"
-        >
-          <ActionButton
-            className="sm:w-fit sm:mt-7 !px-5"
-            variant="outline"
-            loadingText="Rigenero calendario"
-            action={regenerateCalendar.bind(null, leagueId)}
           >
-            Rigenera
-          </ActionButton>
-          <Button asChild className="sm:w-fit sm:mt-7 !px-5">
-            <Link href={`/league/${leagueId}/calendar?splitId=${splitId}`}>
-              Vedi
-              <NavArrowRight className="size-5" />
-            </Link>
-          </Button>
-        </div>
-      </MobileButtonsContainer>
-    </>
-  ) : (
-    <CalendarEmptyState leagueId={leagueId} />
-  );
+            <ActionButton
+              className="sm:w-fit sm:mt-7 !px-5"
+              variant="outline"
+              loadingText="Rigenero calendario"
+              action={regenerateCalendar.bind(null, leagueId)}
+            >
+              <CalendarRotate className="size-5" />
+              Rigenera
+            </ActionButton>
+            <Button asChild className="sm:w-fit sm:mt-7 !px-5">
+              <Link href={`/league/${leagueId}/calendar?splitId=${splitId}`}>
+                Vedi
+                <NavArrowRight className="size-5" />
+              </Link>
+            </Button>
+          </div>
+        </MobileButtonsContainer>
+      </>
+    );
+  }
+
+  return <GenerateCalendarBanner leagueId={leagueId} />;
 }
