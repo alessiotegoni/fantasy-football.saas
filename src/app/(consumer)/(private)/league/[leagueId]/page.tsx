@@ -1,6 +1,6 @@
-import Container from "@/components/Container";
 import { getSplits } from "@/features/dashboard/admin/splits/queries/split";
 import { InviteMembersBanner } from "@/features/league/members/components/InviteMembersBanner";
+import OverviewContainer from "@/features/league/overview/components/OverviewContainer";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 
 export default async function LeagueOverviewPage({
@@ -16,9 +16,9 @@ export default async function LeagueOverviewPage({
   const lastSplit = splits.at(-1);
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <OverviewContainer>
       {leagueTeams.length <= 4 && <InviteMembersBanner />}
-    </div>
+    </OverviewContainer>
   );
 }
 
