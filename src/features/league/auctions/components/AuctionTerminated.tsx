@@ -17,16 +17,18 @@ export default function AuctionTerminated() {
       subtitle={auctionDuration && `Durata: ${auctionDuration}`}
       description="Tutte le rose sono state automaticamente importate all'interno della lega"
       className="static translate-none !bg-muted/30 max-w-full"
-      renderButton={() => (
-        <Button asChild>
-          <Link
-            href={`/leagues/${auction.leagueId}/teams/${userParticipant?.teamId}`}
-          >
-            Vedi i tuoi giocatori
-            <NavArrowRight className="size-5" />
-          </Link>
-        </Button>
-      )}
+      renderButton={() =>
+        userParticipant?.teamId && (
+          <Button asChild>
+            <Link
+              href={`/league/${auction.leagueId}/teams/${userParticipant.teamId}`}
+            >
+              Vedi i tuoi giocatori
+              <NavArrowRight className="size-5" />
+            </Link>
+          </Button>
+        )
+      }
     />
   );
 }

@@ -21,7 +21,7 @@ import { Suspense } from "react";
 import { InviteButton } from "./InviteButton";
 import { League } from "../queries/league";
 import { User } from "@supabase/supabase-js";
-import UserLeagues from "./UserLeagues";
+import UserLeaguesDropdown from "./UserLeaguesDropdown";
 
 export default function LeagueDropdown({
   league,
@@ -47,7 +47,7 @@ export default function LeagueDropdown({
           <DropdownMenuContent className="min-w-[18rem] rounded-xl border border-primary/20">
             <DropdownMenuLabel>Le mie leghe</DropdownMenuLabel>
             <Suspense>
-              <UserLeagues leagueId={league.id} user={user} />
+              <UserLeaguesDropdown leagueId={league.id} user={user} />
             </Suspense>
 
             <DropdownMenuSeparator />

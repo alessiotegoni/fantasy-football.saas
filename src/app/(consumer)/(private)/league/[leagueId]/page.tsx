@@ -33,22 +33,24 @@ export default async function LeagueOverviewPage({
 
   return (
     <OverviewContainer>
-      {leagueTeams.length < 4 && <InviteMembersBanner />}
-      {lastEndedMatchday?.status === "ended" && (
-        <Suspense>
-          <CalculateMatchdayBanner
-            matchday={lastEndedMatchday}
-            leagueId={leagueId}
-          />
-        </Suspense>
-      )}
-      {lastSplit?.status === "upcoming" && (
-        <Suspense>
-          {!(await hasGeneratedCalendar(leagueId, lastSplit.id)) && (
-            <GenerateCalendarBanner leagueId={leagueId} />
-          )}
-        </Suspense>
-      )}
+      <div className="space-y-4">
+        {leagueTeams.length < 4 && <InviteMembersBanner />}
+        {lastEndedMatchday?.status === "ended" && (
+          <Suspense>
+            <CalculateMatchdayBanner
+              matchday={lastEndedMatchday}
+              leagueId={leagueId}
+            />
+          </Suspense>
+        )}
+        {lastSplit?.status === "upcoming" && (
+          <Suspense>
+            {!(await hasGeneratedCalendar(leagueId, lastSplit.id)) && (
+              <GenerateCalendarBanner leagueId={leagueId} />
+            )}
+          </Suspense>
+        )}
+      </div>
     </OverviewContainer>
   );
 }
@@ -74,11 +76,7 @@ async function CalculateMatchdayBanner({
   );
 }
 
-// TODO: Banner crea calendario: se l'ultima giornata non e' ancora stata calcolata
-
-// TODO: Banner match della giornata corrente: se c'e un match (e quindi una giornata) in corso
-// TODO: Banner match della giornata vinta: se c'e un match vinto e la giornata e' terminata
-// TODO: Banner match della giornata persa: se c'e un match perso e la giornata e' terminata
-// TODO: Banner match della giornata in arrivo: se c'e un match successivo e la giornata non e' live
-
-// TODO: Classifica riassuntiva
+// TODO: Banner con background dove all'interno possono essere mostrate info
+// TODO: Accanto a banner carousel con tutti i team della lega (primo team da motrare e' il team dell'utente)
+// TODO: Sotto ultima giornata e prossima giornata (se l'ultima giornata c'e)
+// TODO: accanto classifica non estesa (solo se se l'ultima giornata c'e)
