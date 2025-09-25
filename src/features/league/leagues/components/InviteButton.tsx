@@ -1,16 +1,15 @@
 "use client";
 
-import { ShareAndroid } from "iconoir-react";
 import { toast } from "sonner";
-import { use, useMemo, useState } from "react";
+import { ComponentProps, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { League } from "../queries/league";
 
-export function InviteButton({
-  league
-}: {
-  league: League
-}) {
+type Props = {
+  league: League;
+} & ComponentProps<typeof Button>;
+
+export function InviteButton({ league, children, ...props }: Props) {
   const [, setCopied] = useState(false);
 
   const inviteUrl = useMemo(() => {
@@ -56,11 +55,8 @@ export function InviteButton({
   }
 
   return (
-    <div className="flex gap-2 mt-2">
-      <Button onClick={handleShare} className=" rounded-lg p-2.5">
-        <ShareAndroid className="size-5" />
-        Invita i tuoi amici!
-      </Button>
-    </div>
+    <Button onClick={handleShare} {...props}>
+      {children}
+    </Button>
   );
 }

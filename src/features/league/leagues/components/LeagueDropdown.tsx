@@ -1,4 +1,4 @@
-import { ArrowSeparateVertical, NavArrowRight } from "iconoir-react";
+import { ArrowSeparateVertical, NavArrowRight, ShareAndroid } from "iconoir-react";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -65,7 +65,10 @@ export default function LeagueDropdown({
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild>
-              <InviteButton league={league} />
+              <InviteButton league={league} className="rounded-lg p-2.5">
+                <ShareAndroid className="size-5" />
+                Invita i tuoi amici!
+              </InviteButton>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
