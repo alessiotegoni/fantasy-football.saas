@@ -14,6 +14,7 @@ import { Suspense } from "react";
 import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
 import { Skeleton } from "@/components/ui/skeleton";
+import LeagueSwitcher from "@/features/league/leagues/components/LeagueSwitcher";
 
 export default async function LeagueOverviewPage({
   params,
@@ -36,7 +37,7 @@ export default async function LeagueOverviewPage({
     <OverviewContainer
       headerRight={
         <Suspense fallback={<Skeleton className="h-10 w-[180px]" />}>
-          <UserLeaguesSelect />
+          <LeagueSwitcher leagueId={leagueId} />
         </Suspense>
       }
     >
