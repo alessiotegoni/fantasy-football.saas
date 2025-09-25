@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { QrCode } from "iconoir-react";
@@ -21,28 +20,23 @@ import {
 } from "../../schema/privateLeague";
 import { joinPrivateLeague } from "@/features/league/members/actions/leagueMember";
 import useActionToast from "@/hooks/useActionToast";
-import { useRouter } from "next/navigation";
 
 export default function JoinPrivateLeagueForm({
-  isAuthenticated = false,
+  joinCode,
 }: {
-  isAuthenticated?: boolean;
+  joinCode?: string;
 }) {
   const toast = useActionToast();
-  const router = useRouter();
-
-  const searchParams = useSearchParams();
 
   const form = useForm<JoinPrivateLeagueSchema>({
     resolver: zodResolver(joinPrivateLeagueSchema),
     defaultValues: {
-      joinCode: searchParams.get("code") ?? "",
+      joinCode,
       password: "",
     },
   });
 
   async function onSubmit(data: JoinPrivateLeagueSchema) {
-    if (!isAuthenticated) return router.push("/auth/login");
     const res = await joinPrivateLeague(data);
     toast(res);
   }

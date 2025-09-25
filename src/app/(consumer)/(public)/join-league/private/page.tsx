@@ -4,12 +4,11 @@ import Disclaimer from "@/components/Disclaimer";
 import JoinPrivateLeagueForm from "@/features/league/leagues/components/forms/JoinPrivateLeagueForm";
 import BackButton from "@/components/BackButton";
 import { JOIN_CODE_LENGTH } from "@/features/league/leagues/schema/leagueBase";
-import { getUser } from "@/features/dashboard/user/utils/user";
 import { Suspense } from "react";
 
-export const experimental_ppr = true;
-
-export default function JoinPrivateLeaguePage() {
+export default function JoinPrivateLeaguePage(
+  pageProps: PageProps<"/join-league/private">
+) {
   return (
     <>
       <LeagueHeader className="relative">
@@ -38,7 +37,7 @@ export default function JoinPrivateLeaguePage() {
           </div>
 
           <Suspense fallback={<JoinPrivateLeagueForm />}>
-            <SuspenseBoundary />
+            <SuspenseBoundary {...pageProps} />
           </Suspense>
 
           <div className="mt-6 p-4 bg-muted/50 rounded-xl">
@@ -59,7 +58,11 @@ export default function JoinPrivateLeaguePage() {
   );
 }
 
-async function SuspenseBoundary() {
-  const user = await getUser();
-  return <JoinPrivateLeagueForm isAuthenticated={!!user} />;
+async function SuspenseBoundary({
+  searchParams,
+}: PageProps<"/join-league/private">) {
+  const sp = await searchParams;
+  const joinCode = sp.code as string | undefined;
+
+  return <JoinPrivateLeagueForm joinCode={joinCode} />;
 }
