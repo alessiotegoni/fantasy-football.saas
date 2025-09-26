@@ -8,7 +8,7 @@ import { StandingData } from "../../standing/queries/standing";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import StandingTable from "../../standing/components/StandingTable";
 import { getFinalPhaseAccess } from "../../admin/calendar/final-phase/utils/calendar";
-import MatchdaySection from "../../admin/calendar/regular/components/MatchdaySection";
+import LeagueMatches from "./LeagueMatches";
 
 type Props = {
   leagueId: string;
@@ -19,14 +19,12 @@ type Props = {
   firstUpcomingMatchday?: SplitMatchday;
   liveMatchday?: SplitMatchday;
   lastEndedMatchday?: SplitMatchday;
-  splitMatchdays?: SplitMatchday[];
   lastSplit?: Split;
   userId?: string;
 };
 
 export default function LeagueWrapper({
   lastSplit,
-  splitMatchdays,
   firstUpcomingMatchday,
   liveMatchday,
   lastEndedMatchday,
@@ -35,71 +33,22 @@ export default function LeagueWrapper({
   isDefaultStanding = true,
   ...restProps
 }: Props) {
-  const upcomingMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === firstUpcomingMatchday?.id
-  );
-  const liveMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === liveMatchday?.id
-  );
-  const endedMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === lastEndedMatchday?.id
-  );
-
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
 
   return (
     <div className="flex gap-4 flex-col md:flex-row">
-      <div className="basis-2/3">
+      <div className="basis-10/12">
         <div className="bg-input/30 e-full h-80 rounded-3xl"></div>
         <div className="mt-4">
-          {liveMatchday && !!liveMatches?.length && (
-            <MatchdaySection matchday={liveMatchday} matches={liveMatches} />
-          )}
-          {!liveMatchday &&
-            !endedMatches &&
-            firstUpcomingMatchday &&
-            !!upcomingMatches?.length && (
-              <MatchdaySection
-                title={`Prossima giornata (${firstUpcomingMatchday.number}ª)`}
-                className="grow"
-                matchday={firstUpcomingMatchday}
-                matches={upcomingMatches}
-              />
-            )}
-          {!liveMatchday &&
-            !firstUpcomingMatchday &&
-            lastEndedMatchday &&
-            !!endedMatches?.length && (
-              <MatchdaySection
-                title={`Ultima giornata (${lastEndedMatchday.number}ª)`}
-                className="grow"
-                matchday={lastEndedMatchday}
-                matches={endedMatches}
-              />
-            )}
-          {!liveMatchday &&
-            firstUpcomingMatchday &&
-            lastEndedMatchday &&
-            !!upcomingMatches?.length &&
-            !!endedMatches?.length && (
-              <div className="flex gap-4">
-                <MatchdaySection
-                  title={`Ultima giornata (${lastEndedMatchday.number}ª)`}
-                  className="grow"
-                  matchday={lastEndedMatchday}
-                  matches={endedMatches}
-                />
-                <MatchdaySection
-                  title={`Prossima giornata (${firstUpcomingMatchday.number}ª)`}
-                  className="grow"
-                  matchday={firstUpcomingMatchday}
-                  matches={upcomingMatches}
-                />
-              </div>
-            )}
+          <LeagueMatches
+            calendar={calendar}
+            liveMatchday={liveMatchday}
+            firstUpcomingMatchday={firstUpcomingMatchday}
+            lastEndedMatchday={lastEndedMatchday}
+          />
         </div>
       </div>
-      <div className="basis-1/3">
+      <div className="basis-1/12 max-w-70 xl:max-w-90">
         <TeamsCarousel {...restProps} />
         {standingData.length > 0 && (
           <StandingTable
