@@ -10,10 +10,10 @@ import {
 } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
 import LeagueSwitcher from "@/features/league/leagues/components/LeagueSwitcher";
-import TeamsCarousel from "@/features/league/teams/components/TeamsCarousel";
 import Container from "@/components/Container";
 import LeagueBanners from "@/features/league/overview/components/LeagueBanners";
 import { getUserId } from "@/features/dashboard/user/utils/user";
+import LeagueWrapper from "@/features/league/overview/components/LeagueWrapper";
 
 export default async function LeagueOverviewPage({
   params,
@@ -32,6 +32,13 @@ export default async function LeagueOverviewPage({
     lastEndedMatchday = await getLastEndedMatchday(lastSplit.id);
   }
 
+  const props = {
+    leagueId,
+    leagueTeams,
+    lastEndedMatchday,
+    lastSplit,
+  };
+
   return (
     <Container
       className="max-w-4xl"
@@ -42,13 +49,9 @@ export default async function LeagueOverviewPage({
         </Suspense>
       }
     >
-      <Suspense></Suspense>
-      <div className="flex flex-col lg:flex-row">
-        <div className="basis-2/3">dwdw</div>
-        <div className="basis-1/3">
-          <TeamsCarousel teams={leagueTeams} />
-        </div>
-      </div>
+      <Suspense fallback={<LeagueWrapper {...props} />}>
+        <SuspenseBoundary {...props} />
+      </Suspense>
     </Container>
   );
 }
@@ -64,7 +67,8 @@ async function SuspenseBoundary(props: {
 
   return (
     <>
-      <LeagueBanners {...props} />
+      <LeagueBanners {...props} userId={userId} />
+      <LeagueWrapper {...props} />
     </>
   );
 }

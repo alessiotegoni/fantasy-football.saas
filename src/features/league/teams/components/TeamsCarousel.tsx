@@ -12,9 +12,9 @@ import TeamsEmptyState from "./TeamsEmptyState";
 export default async function TeamsCarousel({
   teams,
 }: {
-  teams: LeagueTeam[]
+  teams: LeagueTeam[];
 }) {
-  if (!teams.length) return <TeamsEmptyState />
+  if (!teams.length) return <TeamsEmptyState />;
 
   return (
     <Carousel
@@ -42,8 +42,8 @@ export default async function TeamsCarousel({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="-left-7" />
-      <CarouselNext className="-right-7" />
+      <CarouselPrevious className="-left-3" />
+      <CarouselNext className="-right-3" />
     </Carousel>
   );
 }
