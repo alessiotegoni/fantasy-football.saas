@@ -20,11 +20,9 @@ export default async function LeagueLayout(
   if (!leagueId) notFound();
 
   return (
-    <LeagueProvider league={league}>
-      <Suspense fallback={<LeagueLayoutWrapper league={league} {...props} />}>
-        <SuspenseBoundary league={league} {...props} />
-      </Suspense>
-    </LeagueProvider>
+    <Suspense fallback={<LeagueLayoutWrapper league={league} {...props} />}>
+      <SuspenseBoundary league={league} {...props} />
+    </Suspense>
   );
 }
 
@@ -77,12 +75,14 @@ function LeagueLayoutWrapper({
 
   return (
     <SidebarProvider>
-      <LeagueSidebar {...props} />
-      <Topbar {...props} />
-      <div className="relative w-full pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:py-0">
-        <LeagueNav {...props} />
-        <main className="p-4 pt-0 lg:pt-[calc(60px+16px)]">{children}</main>
-      </div>
+      <LeagueProvider {...props}>
+        <LeagueSidebar {...props} />
+        <Topbar {...props} />
+        <div className="relative w-full pt-[calc(60px+20px)] pb-[calc(73px+20px)] lg:py-0">
+          <LeagueNav {...props} />
+          <main className="p-4 pt-0 lg:pt-[calc(60px+16px)]">{children}</main>
+        </div>
+      </LeagueProvider>
     </SidebarProvider>
   );
 }

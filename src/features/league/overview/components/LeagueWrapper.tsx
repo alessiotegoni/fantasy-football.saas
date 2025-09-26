@@ -11,6 +11,7 @@ import { getFinalPhaseAccess } from "../../admin/calendar/final-phase/utils/cale
 import LeagueMatches from "./LeagueMatches";
 import EmptyState from "@/components/EmptyState";
 import { CalendarXmark } from "iconoir-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type Props = {
   leagueId: string;
@@ -57,8 +58,9 @@ export default function LeagueWrapper({
                 description="Il calendario per questa lega non è stato ancora generato, contatta un admin della lega per generarlo"
               />
             )
-          ) : // TODO: Skeleton for MatchCard will go here
-          null}
+          ) : (
+            <Skeleton className="size-full min-h-80" />
+          )}
         </div>
       </div>
       <div className="basis-1/12 max-w-70 xl:max-w-80 2xl:max-w-90">

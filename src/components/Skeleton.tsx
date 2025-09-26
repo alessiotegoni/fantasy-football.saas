@@ -40,7 +40,7 @@ export function SkeletonText({
       <SkeletonArray amount={rows}>
         <div
           className={cn(
-            "bg-muted w-full rounded-sm",
+            "w-full rounded-sm",
             rows > 1 && "last:w-3/4",
             size === "md" && "h-3.5",
             size === "lg" && "h-5",
