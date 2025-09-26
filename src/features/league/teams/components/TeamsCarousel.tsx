@@ -31,7 +31,7 @@ export default function TeamsCarousel({
         dragFree: false,
         align: "start",
       }}
-      className="w-full md:max-w-xs"
+      className="hidden md:block md:max-w-xs"
     >
       <CarouselContent>
         {sortedTeams.map((team) => (

@@ -7,23 +7,34 @@ import TeamsCarousel from "../../teams/components/TeamsCarousel";
 import { StandingData } from "../../standing/queries/standing";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import StandingTable from "../../standing/components/StandingTable";
+import { getFinalPhaseAccess } from "../../admin/calendar/final-phase/utils/calendar";
 
 type Props = {
   leagueId: string;
   leagueTeams: LeagueTeam[];
   standingData: StandingData[];
+  isDefaultStanding?: boolean;
   calendar?: Match[];
-  lastEndedMatchday?: SplitMatchday;
+  splitMatchdays?: SplitMatchday[];
   lastSplit?: Split;
   userId?: string;
 };
 
 export default function LeagueWrapper({
   lastSplit,
+  calendar,
   standingData,
+  isDefaultStanding = true,
   ...restProps
 }: Props) {
-  //   console.dir(props.calendar);
+  const endedMatches = calendar?.filter(
+    (c) => c.splitMatchday.status === "ended"
+  );
+  const upcomingMatches = calendar?.filter(
+    (c) => c.splitMatchday.status === "upcoming"
+  );
+
+  const finalPhaseAccess = getFinalPhaseAccess(standingData);
 
   return (
     <div className="flex gap-4 flex-col md:flex-row">
@@ -32,14 +43,16 @@ export default function LeagueWrapper({
       </div>
       <div className="basis-1/3">
         <TeamsCarousel {...restProps} />
-        <StandingTable
-          data={standingData}
-          isExtended={false}
-          isSplitEnded={lastSplit?.status === "ended"}
-          finalPhaseAccess={{}}
-          isDefaultStanding={false}
-          className="mt-4"
-        />
+        {standingData.length > 0 && (
+          <StandingTable
+            className="hidden md:block mt-4"
+            data={standingData}
+            finalPhaseAccess={finalPhaseAccess}
+            isExtended={false}
+            isSplitEnded={lastSplit?.status === "ended"}
+            isDefaultStanding={isDefaultStanding}
+          />
+        )}
       </div>
     </div>
   );

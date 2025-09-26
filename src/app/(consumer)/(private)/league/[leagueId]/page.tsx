@@ -1,5 +1,5 @@
 import {
-  getLastEndedMatchday,
+  getSplitMatchdays,
   getSplits,
   Split,
   SplitMatchday,
@@ -37,22 +37,22 @@ export default async function LeagueOverviewPage({
 
   const lastSplit = splits.at(-1);
 
-  let lastEndedMatchday: SplitMatchday | undefined;
+  let splitMatchdays: SplitMatchday[] | undefined;
   if (lastSplit) {
-    lastEndedMatchday = await getLastEndedMatchday(lastSplit.id);
+    splitMatchdays = await getSplitMatchdays(lastSplit.id);
   }
 
   const props = {
     leagueId,
     leagueTeams,
-    lastEndedMatchday,
+    splitMatchdays,
     lastSplit,
     standingData: getDefaultStandingData(leagueTeams),
   };
 
   return (
     <Container
-      className="max-w-4xl"
+      className="max-w-5xl"
       headerLabel="Home"
       headerRight={
         <Suspense>
@@ -77,7 +77,7 @@ async function SuspenseBoundary({
   leagueId: string;
   leagueTeams: LeagueTeam[];
   defaultStandingData: StandingData[];
-  lastEndedMatchday?: SplitMatchday;
+  splitMatchdays?: SplitMatchday[];
   lastSplit?: Split;
 }) {
   const userId = await getUserId();
@@ -98,12 +98,13 @@ async function SuspenseBoundary({
   }
 
   const props = {
+    ...restProps,
     leagueId,
     lastSplit,
     leagueTeams,
     standingData,
     calendar,
-    ...restProps,
+    isDefaultStanding: false,
   };
 
   return (
