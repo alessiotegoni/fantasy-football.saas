@@ -21,10 +21,12 @@ export default function LeagueWrapper({
   userId,
 }: Props) {
   return (
-    <div className="flex flex-col lg:flex-row">
-      <div className="basis-2/3">dwdw</div>
+    <div className="flex gap-4 flex-col md:flex-row">
+      <div className="basis-2/3">
+      <div className="bg-input/30 size-full rounded-3xl"></div>
+      </div>
       <div className="basis-1/3">
-        <TeamsCarousel teams={leagueTeams} />
+        <TeamsCarousel teams={leagueTeams} userId={userId} />
       </div>
     </div>
   );

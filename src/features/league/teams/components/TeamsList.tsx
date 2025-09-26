@@ -1,6 +1,7 @@
 import { getLeagueTeams } from "../queries/leagueTeam";
 import LeagueTeamCard from "./LeagueTeamCard";
 import CreateTeamBanner from "./CreateTeamBanner";
+import { sortTeams } from "../utils/leagueTeam";
 
 type Props = {
   teams: Awaited<ReturnType<typeof getLeagueTeams>>;
@@ -14,9 +15,7 @@ export default function TeamsList({ teams, leagueId, userId }: Props) {
 
   return (
     <>
-      {userId !== undefined && !hasTeam && (
-        <CreateTeamBanner leagueId={leagueId} />
-      )}
+      {userId !== undefined && !hasTeam && <CreateTeamBanner />}
       <div className="grid gap-4 xl:grid-cols-2">
         {sortedTeams.map((team) => (
           <LeagueTeamCard
@@ -30,14 +29,4 @@ export default function TeamsList({ teams, leagueId, userId }: Props) {
       </div>
     </>
   );
-}
-
-function sortTeams({ teams, userId }: Omit<Props, "leagueId">) {
-  return userId
-    ? teams.toSorted((a, b) => {
-        if (a.userId === userId) return -1;
-        if (b.userId === userId) return 1;
-        return 0;
-      })
-    : teams;
 }

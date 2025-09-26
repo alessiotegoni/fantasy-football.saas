@@ -68,7 +68,7 @@ async function SuspenseBoundary(props: {
   return (
     <>
       <LeagueBanners {...props} userId={userId} />
-      <LeagueWrapper {...props} />
+      <LeagueWrapper {...props} userId={userId} />
     </>
   );
 }
