@@ -11,28 +11,40 @@ import { isMatchdayCalculable } from "@/features/league/admin/calculate-matchday
 import { isAlreadyCalculated } from "@/features/league/admin/calculate-matchday/permissions/calculate-matchday";
 import { getCalculation } from "@/features/league/admin/calculate-matchday/queries/calculate-matchday";
 import CalculateMatchdayBanner from "../../admin/calculate-matchday/components/CalculateMatchdayBanner";
+import { isLeagueAdmin } from "../../members/permissions/leagueMember";
+import CreateTeamBanner from "../../teams/components/CreateTeamBanner";
 
-interface LeagueBannersProps {
+type Props = {
   leagueId: string;
   leagueTeams: LeagueTeam[];
   lastEndedMatchday?: SplitMatchday;
   lastSplit?: Split;
-}
+  userId: string;
+};
 
 export default async function LeagueBanners({
   leagueId,
   leagueTeams,
   lastEndedMatchday,
   lastSplit,
-}: LeagueBannersProps) {
+  userId,
+}: Props) {
+  const isAdmin = await isLeagueAdmin(userId, leagueId);
+
+  const showCreateTeamBanner = !leagueTeams.some(
+    (team) => team.userId === userId
+  );
+
   const showInviteMembersBanner = leagueTeams.length < 4;
 
   const showCalculateMatchdayBanner =
+    isAdmin &&
     lastEndedMatchday?.status === "ended" &&
     isMatchdayCalculable(lastEndedMatchday) &&
     !(await isAlreadyCalculated(leagueId, lastEndedMatchday.id));
 
   const showGenerateCalendarBanner =
+    isAdmin &&
     lastSplit?.status === "upcoming" &&
     !(await hasGeneratedCalendar(leagueId, lastSplit.id));
 
@@ -51,6 +63,7 @@ export default async function LeagueBanners({
 
   return (
     <div className="space-y-4">
+      {showCreateTeamBanner && <CreateTeamBanner />}
       {showInviteMembersBanner && <InviteMembersBanner />}
       {showCalculateMatchdayBanner && (
         <CalculateMatchdayBanner
@@ -58,9 +71,7 @@ export default async function LeagueBanners({
           matchday={lastEndedMatchday}
         />
       )}
-      {showGenerateCalendarBanner && (
-        <GenerateCalendarBanner leagueId={leagueId} />
-      )}
+      {showGenerateCalendarBanner && <GenerateCalendarBanner />}
     </div>
   );
 }

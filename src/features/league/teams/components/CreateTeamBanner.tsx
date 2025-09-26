@@ -1,15 +1,18 @@
+"use client"
+
 import LinkButton from "@/components/LinkButton";
 import { NavArrowRight, Search } from "iconoir-react";
 import { Banner } from "@/components/banner";
 import { cn } from "@/lib/utils";
+import { useParams } from "next/navigation";
 
 export default function CreateTeamBanner({
-  leagueId,
   className,
 }: {
-  leagueId: string;
   className?: string;
 }) {
+  const { leagueId } = useParams();
+
   return (
     <Banner
       icon={<Search className="size-8 text-muted-foreground" />}

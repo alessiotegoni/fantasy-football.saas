@@ -1,9 +1,13 @@
+"use client"
+
 import { CalendarPlus } from "iconoir-react";
 import { Banner } from "@/components/banner";
 import ActionButton from "@/components/ActionButton";
 import { generateCalendar } from "../actions/calendar";
+import { useParams } from "next/navigation";
 
-export default function GenerateCalendarBanner({ leagueId }: { leagueId: string }) {
+export default function GenerateCalendarBanner() {
+  const { leagueId } = useParams();
   return (
     <Banner
       title="Genera il calendario"
@@ -14,7 +18,7 @@ export default function GenerateCalendarBanner({ leagueId }: { leagueId: string 
       <ActionButton
         className="w-fit !px-5 min-w-36 md:min-w-fit"
         loadingText="Genero"
-        action={generateCalendar.bind(null, leagueId)}
+        action={generateCalendar.bind(null, leagueId as string)}
       >
         Genera
       </ActionButton>

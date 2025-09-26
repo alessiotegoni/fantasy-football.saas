@@ -1,18 +1,19 @@
 import {
   getLastEndedMatchday,
   getSplits,
+  Split,
   SplitMatchday,
 } from "@/features/dashboard/admin/splits/queries/split";
-import { isAlreadyCalculated } from "@/features/league/admin/calculate-matchday/permissions/calculate-matchday";
-import { getCalculation } from "@/features/league/admin/calculate-matchday/queries/calculate-matchday";
-import { isMatchdayCalculable } from "@/features/league/admin/calculate-matchday/utils/calculate-matchday";
-import { default as CalculateMatchday } from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
-import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
+import {
+  getLeagueTeams,
+  LeagueTeam,
+} from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
 import LeagueSwitcher from "@/features/league/leagues/components/LeagueSwitcher";
 import TeamsCarousel from "@/features/league/teams/components/TeamsCarousel";
 import Container from "@/components/Container";
 import LeagueBanners from "@/features/league/overview/components/LeagueBanners";
+import { getUserId } from "@/features/dashboard/user/utils/user";
 
 export default async function LeagueOverviewPage({
   params,
@@ -41,14 +42,7 @@ export default async function LeagueOverviewPage({
         </Suspense>
       }
     >
-      <Suspense>
-        <LeagueBanners
-          leagueId={leagueId}
-          leagueTeams={leagueTeams}
-          lastEndedMatchday={lastEndedMatchday}
-          lastSplit={lastSplit}
-        />
-      </Suspense>
+      <Suspense></Suspense>
       <div className="flex flex-col lg:flex-row">
         <div className="basis-2/3">dwdw</div>
         <div className="basis-1/3">
@@ -59,28 +53,22 @@ export default async function LeagueOverviewPage({
   );
 }
 
-async function CalculateMatchdayBanner({
-  leagueId,
-  matchday,
-}: {
+async function SuspenseBoundary(props: {
   leagueId: string;
-  matchday: SplitMatchday;
+  leagueTeams: LeagueTeam[];
+  lastEndedMatchday?: SplitMatchday;
+  lastSplit?: Split;
 }) {
-  if (
-    !isMatchdayCalculable(matchday) ||
-    (await isAlreadyCalculated(leagueId, matchday.id))
-  ) {
-    return null;
-  }
-
-  const calculation = await getCalculation(leagueId, matchday.id);
+  const userId = await getUserId();
+  if (!userId) return null;
 
   return (
-    <CalculateMatchday matchday={matchday} calculationId={calculation?.id} />
+    <>
+      <LeagueBanners {...props} />
+    </>
   );
 }
 
 // TODO: Banner con background dove all'interno possono essere mostrate info
-// TODO: Accanto a banner carousel con tutti i team della lega (primo team da motrare e' il team dell'utente)
 // TODO: Sotto ultima giornata e prossima giornata (se l'ultima giornata c'e)
 // TODO: accanto classifica non estesa (solo se se l'ultima giornata c'e)
