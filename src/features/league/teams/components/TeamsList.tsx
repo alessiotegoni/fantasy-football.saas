@@ -14,7 +14,7 @@ export default function TeamsList({ teams, leagueId, userId }: Props) {
 
   return (
     <>
-      {userId !== undefined && hasTeam && (
+      {userId !== undefined && !hasTeam && (
         <CreateTeamBanner leagueId={leagueId} />
       )}
       <div className="grid gap-4 xl:grid-cols-2">

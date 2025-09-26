@@ -7,6 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import TeamsEmptyState from "./TeamsEmptyState";
 
 export default async function TeamsCarousel({
   leagueId,
@@ -15,7 +16,7 @@ export default async function TeamsCarousel({
 }) {
   const teams = await getLeagueTeams(leagueId);
 
-  if (!teams.length) return null
+  if (!teams.length) return <TeamsEmptyState />
 
   return (
     <Carousel
@@ -27,7 +28,7 @@ export default async function TeamsCarousel({
       <CarouselContent>
         {teams.map((team) => (
           <CarouselItem key={team.id} className="rounded-2xl">
-            <div className="rounded-3xl flex flex-col items-center justify-center p-6 bg-input/30 min-h-60">
+            <div className="rounded-3xl flex flex-col items-center justify-center p-6 bg-input/30 min-h-70">
               <Avatar
                 imageUrl={team.imageUrl}
                 name={team.name}
@@ -43,8 +44,8 @@ export default async function TeamsCarousel({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="-left-5" />
-      <CarouselNext className="-right-5" />
+      <CarouselPrevious className="-left-7" />
+      <CarouselNext className="-right-7" />
     </Carousel>
   );
 }
