@@ -72,7 +72,7 @@ async function SuspenseBoundary({
   lastSplit,
   leagueTeams,
   defaultStandingData,
-  ...restProps
+  splitMatchdays,
 }: {
   leagueId: string;
   leagueTeams: LeagueTeam[];
@@ -98,12 +98,21 @@ async function SuspenseBoundary({
   }
 
   const props = {
-    ...restProps,
     leagueId,
-    lastSplit,
     leagueTeams,
-    standingData,
+    lastSplit,
+    splitMatchdays,
+    firstUpcomingMatchday: splitMatchdays?.find(
+      (matchday) => matchday.status === "upcoming"
+    ),
+    liveMatchday: splitMatchdays?.find(
+      (matchday) => matchday.status === "live"
+    ),
+    lastEndedMatchday: splitMatchdays?.findLast(
+      (matchday) => matchday.status === "ended"
+    ),
     calendar,
+    standingData,
     isDefaultStanding: false,
   };
 

@@ -17,7 +17,7 @@ import CreateTeamBanner from "../../teams/components/CreateTeamBanner";
 type Props = {
   leagueId: string;
   leagueTeams: LeagueTeam[];
-  splitMatchdays?: SplitMatchday[];
+  lastEndedMatchday?: SplitMatchday;
   lastSplit?: Split;
   userId: string;
 };
@@ -25,15 +25,11 @@ type Props = {
 export default async function LeagueBanners({
   leagueId,
   leagueTeams,
-  splitMatchdays,
+  lastEndedMatchday,
   lastSplit,
   userId,
 }: Props) {
   const isAdmin = await isLeagueAdmin(userId, leagueId);
-
-  const lastEndedMatchday = splitMatchdays?.findLast(
-    (matchday) => matchday.status === "ended"
-  );
 
   const showCreateTeamBanner = !leagueTeams.some(
     (team) => team.userId === userId

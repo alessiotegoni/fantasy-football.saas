@@ -15,6 +15,9 @@ type Props = {
   standingData: StandingData[];
   isDefaultStanding?: boolean;
   calendar?: Match[];
+  firstUpcomingMatchday?: SplitMatchday;
+  liveMatchday?: SplitMatchday;
+  lastEndedMatchday?: SplitMatchday;
   splitMatchdays?: SplitMatchday[];
   lastSplit?: Split;
   userId?: string;
@@ -22,17 +25,25 @@ type Props = {
 
 export default function LeagueWrapper({
   lastSplit,
+  splitMatchdays,
+  firstUpcomingMatchday,
+  liveMatchday,
+  lastEndedMatchday,
   calendar,
   standingData,
   isDefaultStanding = true,
   ...restProps
 }: Props) {
-  const endedMatches = calendar?.filter(
-    (c) => c.splitMatchday.status === "ended"
-  );
   const upcomingMatches = calendar?.filter(
-    (c) => c.splitMatchday.status === "upcoming"
+    (c) => c.splitMatchday.id === firstUpcomingMatchday?.id
   );
+  const liveMatches = calendar?.filter(
+    (c) => c.splitMatchday.id === liveMatchday?.id
+  );
+  const endedMatches = calendar?.filter(
+    (c) => c.splitMatchday.id === lastEndedMatchday?.id
+  );
+
 
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
 
