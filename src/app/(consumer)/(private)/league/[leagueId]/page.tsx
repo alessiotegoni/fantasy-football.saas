@@ -6,15 +6,13 @@ import {
 import { isAlreadyCalculated } from "@/features/league/admin/calculate-matchday/permissions/calculate-matchday";
 import { getCalculation } from "@/features/league/admin/calculate-matchday/queries/calculate-matchday";
 import { isMatchdayCalculable } from "@/features/league/admin/calculate-matchday/utils/calculate-matchday";
-import InviteMembersBanner from "@/features/league/members/components/InviteMembersBanner";
 import { default as CalculateMatchday } from "@/features/league/admin/calculate-matchday/components/CalculateMatchdayBanner";
 import { getLeagueTeams } from "@/features/league/teams/queries/leagueTeam";
 import { Suspense } from "react";
-import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
-import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
 import LeagueSwitcher from "@/features/league/leagues/components/LeagueSwitcher";
 import TeamsCarousel from "@/features/league/teams/components/TeamsCarousel";
 import Container from "@/components/Container";
+import LeagueBanners from "@/features/league/overview/components/LeagueBanners";
 
 export default async function LeagueOverviewPage({
   params,
@@ -43,30 +41,18 @@ export default async function LeagueOverviewPage({
         </Suspense>
       }
     >
-      <div className="space-y-4">
-        {leagueTeams.length < 4 && <InviteMembersBanner />}
-        {lastEndedMatchday?.status === "ended" && (
-          <Suspense>
-            <CalculateMatchdayBanner
-              matchday={lastEndedMatchday}
-              leagueId={leagueId}
-            />
-          </Suspense>
-        )}
-        {lastSplit?.status === "upcoming" && (
-          <Suspense>
-            {!(await hasGeneratedCalendar(leagueId, lastSplit.id)) && (
-              <GenerateCalendarBanner leagueId={leagueId} />
-            )}
-          </Suspense>
-        )}
-      </div>
+      <Suspense>
+        <LeagueBanners
+          leagueId={leagueId}
+          leagueTeams={leagueTeams}
+          lastEndedMatchday={lastEndedMatchday}
+          lastSplit={lastSplit}
+        />
+      </Suspense>
       <div className="flex flex-col lg:flex-row">
         <div className="basis-2/3">dwdw</div>
         <div className="basis-1/3">
-          <Suspense>
-            <TeamsCarousel leagueId={leagueId} />
-          </Suspense>
+          <TeamsCarousel teams={leagueTeams} />
         </div>
       </div>
     </Container>

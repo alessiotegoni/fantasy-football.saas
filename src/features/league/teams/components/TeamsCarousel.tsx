@@ -1,5 +1,5 @@
 import Avatar from "@/components/Avatar";
-import { getLeagueTeams } from "../queries/leagueTeam";
+import { getLeagueTeams, LeagueTeam } from "../queries/leagueTeam";
 import {
   Carousel,
   CarouselContent,
@@ -10,12 +10,10 @@ import {
 import TeamsEmptyState from "./TeamsEmptyState";
 
 export default async function TeamsCarousel({
-  leagueId,
+  teams,
 }: {
-  leagueId: string;
+  teams: LeagueTeam[]
 }) {
-  const teams = await getLeagueTeams(leagueId);
-
   if (!teams.length) return <TeamsEmptyState />
 
   return (
