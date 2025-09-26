@@ -17,7 +17,7 @@ import {
   getLeagueTeams,
   LeagueTeam,
 } from "@/features/league/teams/queries/leagueTeam";
-import { validateSerialId } from "@/schema/helpers";;
+import { validateSerialId } from "@/schema/helpers";
 import { ComponentPropsWithoutRef, Suspense } from "react";
 
 export default async function LeagueStandingPage({
@@ -95,8 +95,8 @@ async function SuspenseBoundary({
     return (
       <StandingEmptyState
         description={`La classifica non e' disponibile perche questa lega non ha partecipato allo split ${selectedSplit.id}`}
-        />
-      );
+      />
+    );
   }
 
   if (

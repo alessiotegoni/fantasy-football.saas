@@ -11,6 +11,7 @@ type Props = {
   isSplitEnded: boolean;
   isDefaultStanding: boolean;
   finalPhaseAccess: FinalPhaseAccess;
+  className?: string;
 };
 
 export default function StandingTable({
@@ -19,11 +20,12 @@ export default function StandingTable({
   isSplitEnded,
   isDefaultStanding,
   finalPhaseAccess,
+  className,
 }: Props) {
   const totalScores = data.map((s) => s.totalScore);
 
   return (
-    <div className="bg-muted/30 rounded-2xl overflow-hidden">
+    <div className={cn("bg-muted/30 rounded-2xl overflow-hidden", className)}>
       {/* Header */}
       <div className="bg-primary p-2.5 xs:p-3 sm:p-4 px-4 py-3">
         <div

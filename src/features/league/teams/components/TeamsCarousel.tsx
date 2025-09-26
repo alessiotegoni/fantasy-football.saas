@@ -15,15 +15,15 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 
 export default function TeamsCarousel({
-  teams,
+  leagueTeams,
   userId,
 }: {
-  teams: LeagueTeam[];
+  leagueTeams: LeagueTeam[];
   userId?: string;
 }) {
-  if (!teams.length) return <TeamsEmptyState />;
+  if (!leagueTeams.length) return <TeamsEmptyState />;
 
-  const sortedTeams = sortTeams({ teams, userId });
+  const sortedTeams = sortTeams({ teams: leagueTeams, userId });
 
   return (
     <Carousel

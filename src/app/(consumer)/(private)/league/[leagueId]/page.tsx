@@ -14,6 +14,16 @@ import Container from "@/components/Container";
 import LeagueBanners from "@/features/league/overview/components/LeagueBanners";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import LeagueWrapper from "@/features/league/overview/components/LeagueWrapper";
+import {
+  getRegularCalendar,
+  Match,
+} from "@/features/league/admin/calendar/regular/queries/calendar";
+import {
+  getAdjustedStandingData,
+  getDefaultStandingData,
+  getLeagueStandingData,
+  StandingData,
+} from "@/features/league/standing/queries/standing";
 
 export default async function LeagueOverviewPage({
   params,
@@ -37,6 +47,7 @@ export default async function LeagueOverviewPage({
     leagueTeams,
     lastEndedMatchday,
     lastSplit,
+    standingData: getDefaultStandingData(leagueTeams),
   };
 
   return (
@@ -50,20 +61,50 @@ export default async function LeagueOverviewPage({
       }
     >
       <Suspense fallback={<LeagueWrapper {...props} />}>
-        <SuspenseBoundary {...props} />
+        <SuspenseBoundary {...props} defaultStandingData={props.standingData} />
       </Suspense>
     </Container>
   );
 }
 
-async function SuspenseBoundary(props: {
+async function SuspenseBoundary({
+  leagueId,
+  lastSplit,
+  leagueTeams,
+  defaultStandingData,
+  ...restProps
+}: {
   leagueId: string;
   leagueTeams: LeagueTeam[];
+  defaultStandingData: StandingData[];
   lastEndedMatchday?: SplitMatchday;
   lastSplit?: Split;
 }) {
   const userId = await getUserId();
   if (!userId) return null;
+
+  let infos: [Match[], StandingData[]] | undefined;
+  if (lastSplit) {
+    infos = await Promise.all([
+      getRegularCalendar(leagueId, lastSplit.id),
+      getLeagueStandingData(leagueId, lastSplit.id),
+    ]);
+  }
+
+  let [calendar = [], standingData = []] = infos ?? [];
+
+  if (standingData?.length !== leagueTeams.length) {
+    standingData = getAdjustedStandingData(standingData, defaultStandingData);
+  }
+
+  const props = {
+    leagueId,
+    lastSplit,
+    leagueTeams,
+    standingData,
+    calendar,
+    ...restProps,
+  };
 
   return (
     <>
