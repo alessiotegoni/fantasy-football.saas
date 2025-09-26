@@ -21,7 +21,7 @@ export default function TeamsCarousel({
   leagueTeams: LeagueTeam[];
   userId?: string;
 }) {
-  if (!leagueTeams.length) return <TeamsEmptyState />;
+  if (!leagueTeams.length) return <TeamsEmptyState className="hidden md:block h-80" />;
 
   const sortedTeams = sortTeams({ teams: leagueTeams, userId });
 

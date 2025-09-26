@@ -52,7 +52,7 @@ export default async function LeagueOverviewPage({
 
   return (
     <Container
-      className="max-w-full"
+      className="max-w-[1300px]"
       headerLabel="Home"
       headerRight={
         <Suspense>
@@ -125,5 +125,3 @@ async function SuspenseBoundary({
 }
 
 // TODO: Banner con background dove all'interno possono essere mostrate info
-// TODO: Sotto ultima giornata e prossima giornata (se l'ultima giornata c'e)
-// TODO: accanto classifica non estesa (solo se se l'ultima giornata c'e)
