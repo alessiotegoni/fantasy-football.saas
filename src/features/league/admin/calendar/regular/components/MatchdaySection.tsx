@@ -7,12 +7,14 @@ import MatchCard from "@/features/league/matches/components/MatchCard";
 import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 type Props = {
+  title?: string;
   matchday: Match["splitMatchday"];
   matches: Match[];
   currentMatchday?: SplitMatchday;
 };
 
 export default function MatchdaySection({
+  title,
   matchday,
   matches,
   currentMatchday,
@@ -25,7 +27,7 @@ export default function MatchdaySection({
       behavior: "smooth",
       block: "center",
     });
-  };
+  }
 
   useEffect(() => {
     if (currentMatchday?.id === matchday.id && matchdayRef.current) {
@@ -37,7 +39,7 @@ export default function MatchdaySection({
     <div ref={matchdayRef}>
       <div className="bg-primary rounded-t-2xl px-4 py-3">
         <h2 className="text-lg font-bold text-white">
-          {matchday.number}ª giornata
+          {title ?? `${matchday.number}ª giornata}`}
         </h2>
       </div>
 
