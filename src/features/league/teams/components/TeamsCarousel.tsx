@@ -31,7 +31,7 @@ export default function TeamsCarousel({
         dragFree: false,
         align: "start",
       }}
-      className="hidden md:block md:max-w-xs"
+      className="hidden md:block w-full"
     >
       <CarouselContent>
         {sortedTeams.map((team) => (
@@ -48,7 +48,7 @@ function TeamCardItem({ team }: { team: LeagueTeam }) {
   const { leagueId } = useParams();
   return (
     <CarouselItem key={team.id} className="rounded-2xl">
-      <div className="rounded-3xl flex flex-col items-center justify-center p-6 bg-input/30 min-h-70">
+      <div className="rounded-3xl flex flex-col items-center justify-center p-6 bg-input/30 h-80">
         <Link
           className="text-center"
           href={`/league/${leagueId}/teams/${team.id}`}

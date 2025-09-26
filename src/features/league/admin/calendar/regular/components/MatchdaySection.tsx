@@ -8,6 +8,7 @@ import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
 
 type Props = {
   title?: string;
+  className?: string;
   matchday: Match["splitMatchday"];
   matches: Match[];
   currentMatchday?: SplitMatchday;
@@ -15,6 +16,7 @@ type Props = {
 
 export default function MatchdaySection({
   title,
+  className = "",
   matchday,
   matches,
   currentMatchday,
@@ -36,10 +38,10 @@ export default function MatchdaySection({
   }, [matchdayRef, currentMatchday]);
 
   return (
-    <div ref={matchdayRef}>
-      <div className="bg-primary rounded-t-2xl px-4 py-3">
+    <div ref={matchdayRef} className={className}>
+      <div className="bg-primary rounded-t-2xl px-4 py-3 h-14">
         <h2 className="text-lg font-bold text-white">
-          {title ?? `${matchday.number}ª giornata}`}
+          {title ?? `${matchday.number}ª giornata`}
         </h2>
       </div>
 

@@ -52,7 +52,7 @@ export default async function LeagueOverviewPage({
 
   return (
     <Container
-      className="max-w-5xl"
+      className="max-w-full"
       headerLabel="Home"
       headerRight={
         <Suspense>
