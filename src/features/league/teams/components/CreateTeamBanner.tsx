@@ -3,6 +3,7 @@ import { NavArrowRight, Search } from "iconoir-react";
 
 export default function CreateTeamBanner({ leagueId }: { leagueId: string }) {
   return (
+    
     <div className="flex flex-col md:flex-row justify-between items-center p-6 md:p-4 bg-muted/30 rounded-3xl mb-4 md:mb-8">
       <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
         <div className="size-16 bg-muted rounded-full flex items-center justify-center">

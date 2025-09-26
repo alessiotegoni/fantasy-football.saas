@@ -13,6 +13,7 @@ import { Suspense } from "react";
 import { hasGeneratedCalendar } from "@/features/league/admin/calendar/regular/permissions/calendar";
 import GenerateCalendarBanner from "@/features/league/admin/calendar/regular/components/GenerateCalendarBanner";
 import LeagueSwitcher from "@/features/league/leagues/components/LeagueSwitcher";
+import TeamsCarousel from "@/features/league/teams/components/TeamsCarousel";
 import Container from "@/components/Container";
 
 export default async function LeagueOverviewPage({
@@ -34,6 +35,7 @@ export default async function LeagueOverviewPage({
 
   return (
     <Container
+      className="max-w-4xl"
       headerLabel="Home"
       headerRight={
         <Suspense>
@@ -58,6 +60,14 @@ export default async function LeagueOverviewPage({
             )}
           </Suspense>
         )}
+      </div>
+      <div className="flex flex-col lg:flex-row">
+        <div className="basis-2/3">dwdw</div>
+        <div className="basis-1/3">
+          <Suspense>
+            <TeamsCarousel leagueId={leagueId} />
+          </Suspense>
+        </div>
       </div>
     </Container>
   );
