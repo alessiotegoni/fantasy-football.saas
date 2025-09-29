@@ -20,17 +20,17 @@ type Props = {
   isDefaultStanding?: boolean;
   calendar?: Match[];
   firstUpcomingMatchday?: SplitMatchday;
+  upcomingMatches?: Match[];
   liveMatchday?: SplitMatchday;
+  liveMatches?: Match[];
   lastEndedMatchday?: SplitMatchday;
+  endedMatches?: Match[];
   lastSplit?: Split;
   userId?: string;
 };
 
 export default function LeagueWrapper({
   lastSplit,
-  firstUpcomingMatchday,
-  liveMatchday,
-  lastEndedMatchday,
   calendar,
   standingData,
   isDefaultStanding = true,
@@ -45,12 +45,7 @@ export default function LeagueWrapper({
         <div className="mt-4">
           {calendar ? (
             calendar.length > 0 ? (
-              <LeagueMatches
-                calendar={calendar}
-                liveMatchday={liveMatchday}
-                firstUpcomingMatchday={firstUpcomingMatchday}
-                lastEndedMatchday={lastEndedMatchday}
-              />
+              <LeagueMatches {...restProps} />
             ) : (
               <EmptyState
                 icon={CalendarXmark}

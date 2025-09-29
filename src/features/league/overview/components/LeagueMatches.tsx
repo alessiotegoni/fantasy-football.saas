@@ -3,28 +3,22 @@ import { Match } from "../../admin/calendar/regular/queries/calendar";
 import MatchdaySection from "../../admin/calendar/regular/components/MatchdaySection";
 
 type Props = {
-  calendar?: Match[];
-  liveMatchday?: SplitMatchday;
   firstUpcomingMatchday?: SplitMatchday;
+  upcomingMatches?: Match[];
+  liveMatchday?: SplitMatchday;
+  liveMatches?: Match[];
   lastEndedMatchday?: SplitMatchday;
+  endedMatches?: Match[];
 };
 
 export default function LeagueMatches({
-  calendar,
   liveMatchday,
+  liveMatches,
   firstUpcomingMatchday,
+  upcomingMatches,
   lastEndedMatchday,
+  endedMatches,
 }: Props) {
-  const liveMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === liveMatchday?.id
-  );
-  const upcomingMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === firstUpcomingMatchday?.id
-  );
-  const endedMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === lastEndedMatchday?.id
-  );
-
   if (liveMatchday && liveMatches?.length) {
     return <MatchdaySection matchday={liveMatchday} matches={liveMatches} />;
   }
@@ -37,13 +31,13 @@ export default function LeagueMatches({
       <div className="flex flex-col 2xl:flex-row gap-4">
         <MatchdaySection
           title={`Ultima giornata (${lastEndedMatchday.number}ª)`}
-          className="grow"
+          className="basis-1/2"
           matchday={lastEndedMatchday}
           matches={endedMatches}
         />
         <MatchdaySection
           title={`Prossima giornata (${firstUpcomingMatchday.number}ª)`}
-          className="grow"
+          className="basis-1/2"
           matchday={firstUpcomingMatchday}
           matches={upcomingMatches}
         />

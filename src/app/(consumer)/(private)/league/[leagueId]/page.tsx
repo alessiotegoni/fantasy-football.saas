@@ -97,20 +97,37 @@ async function SuspenseBoundary({
     standingData = getAdjustedStandingData(standingData, defaultStandingData);
   }
 
+  const firstUpcomingMatchday = splitMatchdays?.find(
+    (matchday) => matchday.status === "upcoming"
+  );
+  const liveMatchday = splitMatchdays?.find(
+    (matchday) => matchday.status === "live"
+  );
+  const lastEndedMatchday = splitMatchdays?.findLast(
+    (matchday) => matchday.status === "ended"
+  );
+
+  const liveMatches = calendar?.filter(
+    (c) => c.splitMatchday.id === liveMatchday?.id
+  );
+  const upcomingMatches = calendar?.filter(
+    (c) => c.splitMatchday.id === firstUpcomingMatchday?.id
+  );
+  const endedMatches = calendar?.filter(
+    (c) => c.splitMatchday.id === lastEndedMatchday?.id
+  );
+
   const props = {
     leagueId,
     leagueTeams,
     lastSplit,
     splitMatchdays,
-    firstUpcomingMatchday: splitMatchdays?.find(
-      (matchday) => matchday.status === "upcoming"
-    ),
-    liveMatchday: splitMatchdays?.find(
-      (matchday) => matchday.status === "live"
-    ),
-    lastEndedMatchday: splitMatchdays?.findLast(
-      (matchday) => matchday.status === "ended"
-    ),
+    firstUpcomingMatchday,
+    upcomingMatches,
+    liveMatchday,
+    liveMatches,
+    lastEndedMatchday,
+    endedMatches,
     calendar,
     standingData,
     isDefaultStanding: false,
@@ -124,4 +141,11 @@ async function SuspenseBoundary({
   );
 }
 
-// TODO: Banner con background dove all'interno possono essere mostrate info
+
+// TODO: Prendere da calendar un match con una giornata con status live e team id uguale
+//  a quello dell'utente (acquisibile filtrando leagueTeams con lo userId)
+// Mandare a schermo una simil MatchCard ma con vedi match in verde
+// TODO: Prendere da calendar gli endedMatches (spostarli quindi nel boundary e passarli come prop)
+//  filtrare per il match con il team dell'utente
+//  a quello dell'utente (acquisibile filtrando leagueTeams con lo userId)
+// Mandare a schermo una simil MatchCard ma con vedi match in verde
