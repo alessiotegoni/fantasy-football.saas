@@ -4,6 +4,9 @@ import {
 } from "@/features/dashboard/admin/splits/queries/split";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
+import LeagueMatchCard from "./LeagueMatchCard";
+import { ComponentProps } from "react";
+import LinkButton from "@/components/LinkButton";
 
 type Props = {
   leagueId: string;
@@ -20,6 +23,7 @@ type Props = {
 };
 
 export default function LeagueWidget({
+  leagueId,
   leagueTeams,
   userId,
   upcomingMatches,
@@ -38,22 +42,115 @@ export default function LeagueWidget({
     [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
   );
 
+  function renderContent() {
+    if (userLiveMatch) {
+      return (
+        <LeagueMatchCard
+          leagueId={leagueId}
+          match={userLiveMatch}
+          buttonProps={{
+            children: "Vedi match",
+            className: "bg-green-500",
+          }}
+        />
+      );
+    }
+
+    if (userUpcomingMatch && userEndedMatch) {
+      return (
+        <div className="flex gap-4 p-6 w-full justify-around items-center">
+          <LeagueMatchCard
+            leagueId={leagueId}
+            match={userEndedMatch}
+            buttonProps={getEndedMatchButtonProps(userEndedMatch, userTeam?.id)}
+          />
+          <LeagueMatchCard
+            leagueId={leagueId}
+            match={userUpcomingMatch}
+            buttonProps={{
+              children: "Inserisci formazione",
+              className: "bg-blue-500 hover:bg-blue-600",
+            }}
+          />
+        </div>
+      );
+    }
+
+    if (userUpcomingMatch) {
+      return (
+        <LeagueMatchCard
+          leagueId={leagueId}
+          match={userUpcomingMatch}
+          buttonProps={{
+            children: "Inserisci formazione",
+            className: "bg-blue-500 hover:bg-blue-600",
+          }}
+        />
+      );
+    }
+
+    if (userEndedMatch) {
+      return (
+        <LeagueMatchCard
+          leagueId={leagueId}
+          match={userEndedMatch}
+          buttonProps={getEndedMatchButtonProps(userEndedMatch, userTeam?.id)}
+        />
+      );
+    }
+
+    return null;
+  }
+
   return (
-    <div className="p-6 bg-input/30 w-full h-80 rounded-3xl flex justify-center items-center">dw</div>
+    <div className="league-widget">
+      <div className="size-full backdrop-blur-2xl flex justify-center items-center">
+        {renderContent()}
+      </div>
+    </div>
   );
 }
 
-// TODO: Creare un componente LeagueMatchCard che dovra integrare il componente MatchCard
-// e al di sotto mostrare il componente LinkButton che manda sempre a /league/[leagueId]/matches/[matchId]
-// ed a seconda del contesto cambia colore e testo
-// TODO: se userUpcomingMatch c'e e userLiveMatch non c'e mostrare LeagueMatchCard
-// con il LinkButton che deve essere blue con testo Inserisci formazione
-// TODO: se userLiveMatch c'e mostarre LeagueMatchCard con il LinkButton che deve essere verde
-// con il testo Vedi match
-// TODO: se userEndedMatch c'e e userLiveMatch non c'e mostrare LeagueMatchCard.
-// Se matchResult e' un array vuoto e isBye e' false il LinkButton deve essere verde scuro
-// con il testo Vedi finale, se invece MatchResult non e' vuoto e isBye e' false se lo userTeam ha perso
-//  mostrare qualcosa di customizzato che lo dimostri, se ha vinto uguale
+function getEndedMatchButtonProps(
+  match: Match,
+  userTeamId: string | undefined
+): Omit<ComponentProps<typeof LinkButton>, "href"> {
+  const { matchResults, homeTeam, awayTeam } = match;
 
-// TODO: e' possibile che userUpcomingMatch e userEndedMatch vengano mostrati insieme
-// in quel caso quest'ultimo deve essere mostrato a sinistra mentre l'altro a destra
+  if (!matchResults.length) {
+    return {
+      children: "Vedi finale",
+      className: "bg-green-900 hover:bg-green-800 text-white",
+    };
+  }
+
+  const homeScore = matchResults.find(
+    (r) => r.teamId === homeTeam.id
+  )?.totalScore;
+  const awayScore = matchResults.find(
+    (r) => r.teamId === awayTeam.id
+  )?.totalScore;
+
+  if (typeof homeScore !== "number" || typeof awayScore !== "number") {
+    return {
+      children: "Vedi finale",
+      className: "bg-green-900 hover:bg-green-800 text-white",
+    };
+  }
+
+  const isDraw = homeScore === awayScore;
+  if (isDraw) {
+    return { children: "Hai pareggiato", className: "bg-gray-500" };
+  }
+
+  const isUserHomeTeam = homeTeam.id === userTeamId;
+  const userWon =
+    (isUserHomeTeam && homeScore > awayScore) ||
+    (!isUserHomeTeam && awayScore > homeScore);
+
+  if (userWon) {
+    return { children: "Hai vinto!", className: "bg-primary" };
+  }
+
+  return { children: "Hai perso", variant: "destructive" };
+}

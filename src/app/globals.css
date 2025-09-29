@@ -150,4 +150,10 @@
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     @apply bg-primary cursor-grab;
   }
+
+  .league-widget {
+    background: url("https://tpeehtrlgmfimvwrswif.supabase.co/storage/v1/object/public/kik-league/app-images/k-fantasy-widget-logo.png");
+    background-size: cover;
+    @apply bg-cover bg-center w-full h-80 rounded-3xl overflow-hidden
+  }
 }
