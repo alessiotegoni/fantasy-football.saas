@@ -49,7 +49,7 @@ export default function LeagueWidget({
           leagueId={leagueId}
           match={userLiveMatch}
           buttonProps={{
-            children: "Vedi match",
+            children: "Vedi live",
             className: "bg-green-500",
           }}
         />
@@ -62,11 +62,13 @@ export default function LeagueWidget({
           <LeagueMatchCard
             leagueId={leagueId}
             match={userEndedMatch}
+            title="Ultima Giornata"
             buttonProps={getEndedMatchButtonProps(userEndedMatch, userTeam?.id)}
           />
           <LeagueMatchCard
             leagueId={leagueId}
             match={userUpcomingMatch}
+            title="Prossima Giornata"
             buttonProps={{
               children: "Inserisci formazione",
               className: "bg-blue-500 hover:bg-blue-600",
@@ -81,6 +83,7 @@ export default function LeagueWidget({
         <LeagueMatchCard
           leagueId={leagueId}
           match={userUpcomingMatch}
+          title="Prossima Giornata"
           buttonProps={{
             children: "Inserisci formazione",
             className: "bg-blue-500 hover:bg-blue-600",
@@ -94,6 +97,7 @@ export default function LeagueWidget({
         <LeagueMatchCard
           leagueId={leagueId}
           match={userEndedMatch}
+          title="Ultima Giornata"
           buttonProps={getEndedMatchButtonProps(userEndedMatch, userTeam?.id)}
         />
       );
