@@ -140,12 +140,3 @@ async function SuspenseBoundary({
     </>
   );
 }
-
-
-// TODO: Prendere da calendar un match con una giornata con status live e team id uguale
-//  a quello dell'utente (acquisibile filtrando leagueTeams con lo userId)
-// Mandare a schermo una simil MatchCard ma con vedi match in verde
-// TODO: Prendere da calendar gli endedMatches (spostarli quindi nel boundary e passarli come prop)
-//  filtrare per il match con il team dell'utente
-//  a quello dell'utente (acquisibile filtrando leagueTeams con lo userId)
-// Mandare a schermo una simil MatchCard ma con vedi match in verde

@@ -12,6 +12,7 @@ import LeagueMatches from "./LeagueMatches";
 import EmptyState from "@/components/EmptyState";
 import { CalendarXmark } from "iconoir-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import LeagueWidget from "./LeagueWidget";
 
 type Props = {
   leagueId: string;
@@ -41,7 +42,7 @@ export default function LeagueWrapper({
   return (
     <div className="flex gap-4 flex-col md:flex-row">
       <div className="basis-10/12">
-        <div className="bg-input/30 w-full h-80 rounded-3xl"></div>
+        <LeagueWidget {...restProps} />
         <div className="mt-4">
           {calendar ? (
             calendar.length > 0 ? (
