@@ -1,23 +1,17 @@
-import {
-  Split,
-  SplitMatchday,
-} from "@/features/dashboard/admin/splits/queries/split";
+import { Split } from "@/features/dashboard/admin/splits/queries/split";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import LeagueMatchCard from "./LeagueMatchCard";
 import { ComponentProps } from "react";
 import LinkButton from "@/components/LinkButton";
 
+import { groupMatches } from "@/features/league/overview/utils/match";
+
 type Props = {
   leagueId: string;
   leagueTeams: LeagueTeam[];
   calendar?: Match[];
-  firstUpcomingMatchday?: SplitMatchday;
-  upcomingMatches?: Match[];
-  liveMatchday?: SplitMatchday;
-  liveMatches?: Match[];
-  lastEndedMatchday?: SplitMatchday;
-  endedMatches?: Match[];
+  matches?: ReturnType<typeof groupMatches>;
   lastSplit?: Split;
   userId?: string;
 };
@@ -26,23 +20,18 @@ export default function LeagueWidget({
   leagueId,
   leagueTeams,
   userId,
-  upcomingMatches,
-  liveMatches,
-  endedMatches,
+  matches,
 }: Props) {
-  const userTeam = leagueTeams.find((team) => team.userId === userId);
-
-  const userUpcomingMatch = upcomingMatches?.find((match) =>
-    [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
-  );
-  const userLiveMatch = liveMatches?.find((match) =>
-    [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
-  );
-  const userEndedMatch = endedMatches?.find((match) =>
-    [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
-  );
-
   function renderContent() {
+    if (!matches) return null;
+
+    const {
+      live: { userMatch: userLiveMatch },
+      upcoming: { userMatch: userUpcomingMatch },
+      ended: { userMatch: userEndedMatch },
+    } = matches;
+    const userTeam = leagueTeams.find((team) => team.userId === userId);
+
     if (userLiveMatch) {
       return (
         <LeagueMatchCard

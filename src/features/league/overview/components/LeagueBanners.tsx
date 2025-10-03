@@ -14,10 +14,12 @@ import CalculateMatchdayBanner from "../../admin/calculate-matchday/components/C
 import { isLeagueAdmin } from "../../members/permissions/leagueMember";
 import CreateTeamBanner from "../../teams/components/CreateTeamBanner";
 
+import { groupMatches } from "@/features/league/overview/utils/match";
+
 type Props = {
   leagueId: string;
   leagueTeams: LeagueTeam[];
-  lastEndedMatchday?: SplitMatchday;
+  matches: ReturnType<typeof groupMatches>;
   lastSplit?: Split;
   userId: string;
 };
@@ -25,11 +27,12 @@ type Props = {
 export default async function LeagueBanners({
   leagueId,
   leagueTeams,
-  lastEndedMatchday,
+  matches,
   lastSplit,
   userId,
 }: Props) {
   const isAdmin = await isLeagueAdmin(userId, leagueId);
+  const lastEndedMatchday = matches.ended.matchday;
 
   const showCreateTeamBanner = !leagueTeams.some(
     (team) => team.userId === userId

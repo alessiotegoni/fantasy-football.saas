@@ -1,24 +1,17 @@
-import { SplitMatchday } from "@/features/dashboard/admin/splits/queries/split";
-import { Match } from "../../admin/calendar/regular/queries/calendar";
+import { groupMatches } from "@/features/league/overview/utils/match";
 import MatchdaySection from "../../admin/calendar/regular/components/MatchdaySection";
 
 type Props = {
-  firstUpcomingMatchday?: SplitMatchday;
-  upcomingMatches?: Match[];
-  liveMatchday?: SplitMatchday;
-  liveMatches?: Match[];
-  lastEndedMatchday?: SplitMatchday;
-  endedMatches?: Match[];
+  matches: ReturnType<typeof groupMatches>;
 };
 
-export default function LeagueMatches({
-  liveMatchday,
-  liveMatches,
-  firstUpcomingMatchday,
-  upcomingMatches,
-  lastEndedMatchday,
-  endedMatches,
-}: Props) {
+export default function LeagueMatches({ matches }: Props) {
+  const {
+    live: { matchday: liveMatchday, matches: liveMatches },
+    upcoming: { matchday: firstUpcomingMatchday, matches: upcomingMatches },
+    ended: { matchday: lastEndedMatchday, matches: endedMatches },
+  } = matches;
+
   if (liveMatchday && liveMatches?.length) {
     return <MatchdaySection matchday={liveMatchday} matches={liveMatches} />;
   }

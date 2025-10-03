@@ -1,7 +1,4 @@
-import {
-  Split,
-  SplitMatchday,
-} from "@/features/dashboard/admin/splits/queries/split";
+import { Split } from "@/features/dashboard/admin/splits/queries/split";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import TeamsCarousel from "../../teams/components/TeamsCarousel";
 import { StandingData } from "../../standing/queries/standing";
@@ -13,6 +10,7 @@ import EmptyState from "@/components/EmptyState";
 import { CalendarXmark } from "iconoir-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import LeagueWidget from "./LeagueWidget";
+import { groupMatches } from "@/features/league/overview/utils/match";
 
 type Props = {
   leagueId: string;
@@ -20,12 +18,7 @@ type Props = {
   standingData: StandingData[];
   isDefaultStanding?: boolean;
   calendar?: Match[];
-  firstUpcomingMatchday?: SplitMatchday;
-  upcomingMatches?: Match[];
-  liveMatchday?: SplitMatchday;
-  liveMatches?: Match[];
-  lastEndedMatchday?: SplitMatchday;
-  endedMatches?: Match[];
+  matches?: ReturnType<typeof groupMatches>;
   lastSplit?: Split;
   userId?: string;
 };
@@ -35,6 +28,7 @@ export default function LeagueWrapper({
   calendar,
   standingData,
   isDefaultStanding = true,
+  matches,
   ...restProps
 }: Props) {
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
@@ -42,12 +36,12 @@ export default function LeagueWrapper({
   return (
     <div className="flex gap-4 flex-col md:flex-row">
       <div className="basis-10/12 grow">
-        <LeagueWidget {...restProps} />
+        <LeagueWidget {...restProps} matches={matches} />
         <div className="mt-4 md:flex gap-4 2xl:block">
           <div className="hidden md:block basis-10/12">
             {calendar ? (
-              calendar.length > 0 ? (
-                <LeagueMatches {...restProps} />
+              calendar.length > 0 && matches ? (
+                <LeagueMatches {...restProps} matches={matches} />
               ) : (
                 <EmptyState
                   icon={CalendarXmark}

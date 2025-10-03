@@ -24,6 +24,7 @@ import {
   getLeagueStandingData,
   StandingData,
 } from "@/features/league/standing/queries/standing";
+import { groupMatches } from "@/features/league/overview/utils/match";
 
 export default async function LeagueOverviewPage({
   params,
@@ -97,46 +98,25 @@ async function SuspenseBoundary({
     standingData = getAdjustedStandingData(standingData, defaultStandingData);
   }
 
-  const firstUpcomingMatchday = splitMatchdays?.find(
-    (matchday) => matchday.status === "upcoming"
-  );
-  const liveMatchday = splitMatchdays?.find(
-    (matchday) => matchday.status === "live"
-  );
-  const lastEndedMatchday = splitMatchdays?.findLast(
-    (matchday) => matchday.status === "ended"
-  );
-
-  const liveMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === liveMatchday?.id
-  );
-  const upcomingMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === firstUpcomingMatchday?.id
-  );
-  const endedMatches = calendar?.filter(
-    (c) => c.splitMatchday.id === lastEndedMatchday?.id
-  );
+  const userTeam = leagueTeams.find((team) => team.userId === userId);
+  const matches = groupMatches(splitMatchdays, calendar, userTeam);
 
   const props = {
+    userId,
     leagueId,
     leagueTeams,
     lastSplit,
     splitMatchdays,
-    firstUpcomingMatchday,
-    upcomingMatches,
-    liveMatchday,
-    liveMatches,
-    lastEndedMatchday,
-    endedMatches,
     calendar,
     standingData,
+    matches,
     isDefaultStanding: false,
   };
 
   return (
     <>
-      <LeagueBanners {...props} userId={userId} />
-      <LeagueWrapper {...props} userId={userId} />
+      <LeagueBanners {...props} />
+      <LeagueWrapper {...props} />
     </>
   );
 }
