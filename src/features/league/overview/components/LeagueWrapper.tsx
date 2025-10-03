@@ -4,13 +4,17 @@ import TeamsCarousel from "../../teams/components/TeamsCarousel";
 import { StandingData } from "../../standing/queries/standing";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import StandingTable from "../../standing/components/StandingTable";
-import { getFinalPhaseAccess } from "../../admin/calendar/final-phase/utils/calendar";
+import {
+  FinalPhaseAccess,
+  getFinalPhaseAccess,
+} from "../../admin/calendar/final-phase/utils/calendar";
 import LeagueMatches from "./LeagueMatches";
 import EmptyState from "@/components/EmptyState";
 import { CalendarXmark } from "iconoir-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import LeagueWidget from "./LeagueWidget";
 import { groupMatches } from "@/features/league/overview/utils/match";
+import { cn } from "@/lib/utils";
 
 type Props = {
   leagueId: string;
@@ -24,14 +28,17 @@ type Props = {
 };
 
 export default function LeagueWrapper({
-  lastSplit,
   calendar,
   standingData,
-  isDefaultStanding = true,
   matches,
   ...restProps
 }: Props) {
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
+  const sidebarProps = {
+    standingData,
+    finalPhaseAccess,
+    ...restProps,
+  };
 
   return (
     <div className="flex gap-4 flex-col md:flex-row">
@@ -53,34 +60,39 @@ export default function LeagueWrapper({
               <Skeleton className="size-full min-h-80" />
             )}
           </div>
-          <div className="hidden md:block 2xl:hidden basis-1/12 max-w-80">
-            {standingData.length > 0 && (
-              <StandingTable
-                className="hidden md:block mb-4"
-                data={standingData}
-                finalPhaseAccess={finalPhaseAccess}
-                isExtended={false}
-                isSplitEnded={lastSplit?.status === "ended"}
-                isDefaultStanding={isDefaultStanding}
-              />
-            )}
-            <TeamsCarousel {...restProps} />
-          </div>
+          <Sidebar
+            {...sidebarProps}
+            className="hidden md:flex flex-col-reverse justify-end gap-4 2xl:hidden max-w-80"
+          />
         </div>
       </div>
-      <div className="hidden 2xl:block basis-1/12 max-w-70 xl:max-w-80 2xl:max-w-90">
-        <TeamsCarousel {...restProps} />
-        {standingData.length > 0 && (
-          <StandingTable
-            className="hidden md:block mt-4"
-            data={standingData}
-            finalPhaseAccess={finalPhaseAccess}
-            isExtended={false}
-            isSplitEnded={lastSplit?.status === "ended"}
-            isDefaultStanding={isDefaultStanding}
-          />
-        )}
-      </div>
+      <Sidebar
+        {...sidebarProps}
+        className="hidden 2xl:flex max-w-70 xl:max-w-80 2xl:max-w-90"
+      />
+    </div>
+  );
+}
+
+function Sidebar({
+  className,
+  standingData,
+  lastSplit,
+  isDefaultStanding = true,
+  ...restProps
+}: Props & { finalPhaseAccess: FinalPhaseAccess; className: string }) {
+  return (
+    <div className={cn("flex-col gap-4 basis-1/12", className)}>
+      <TeamsCarousel {...restProps} />
+      {standingData.length > 0 && (
+        <StandingTable
+          data={standingData}
+          isExtended={false}
+          isSplitEnded={lastSplit?.status === "ended"}
+          isDefaultStanding={isDefaultStanding}
+          {...restProps}
+        />
+      )}
     </div>
   );
 }
