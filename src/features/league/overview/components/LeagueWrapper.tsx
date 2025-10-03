@@ -41,25 +41,40 @@ export default function LeagueWrapper({
 
   return (
     <div className="flex gap-4 flex-col md:flex-row">
-      <div className="basis-10/12">
+      <div className="basis-10/12 grow">
         <LeagueWidget {...restProps} />
-        <div className="mt-4">
-          {calendar ? (
-            calendar.length > 0 ? (
-              <LeagueMatches {...restProps} />
+        <div className="mt-4 md:flex gap-4 2xl:block">
+          <div className="hidden md:block basis-10/12">
+            {calendar ? (
+              calendar.length > 0 ? (
+                <LeagueMatches {...restProps} />
+              ) : (
+                <EmptyState
+                  icon={CalendarXmark}
+                  title="Calendario non disponibile"
+                  description="Il calendario per questa lega non è stato ancora generato, contatta un admin della lega per generarlo"
+                />
+              )
             ) : (
-              <EmptyState
-                icon={CalendarXmark}
-                title="Calendario non disponibile"
-                description="Il calendario per questa lega non è stato ancora generato, contatta un admin della lega per generarlo"
+              <Skeleton className="size-full min-h-80" />
+            )}
+          </div>
+          <div className="hidden md:block 2xl:hidden basis-1/12 max-w-80">
+            {standingData.length > 0 && (
+              <StandingTable
+                className="hidden md:block mb-4"
+                data={standingData}
+                finalPhaseAccess={finalPhaseAccess}
+                isExtended={false}
+                isSplitEnded={lastSplit?.status === "ended"}
+                isDefaultStanding={isDefaultStanding}
               />
-            )
-          ) : (
-            <Skeleton className="size-full min-h-80" />
-          )}
+            )}
+            <TeamsCarousel {...restProps} />
+          </div>
         </div>
       </div>
-      <div className="basis-1/12 max-w-70 xl:max-w-80 2xl:max-w-90">
+      <div className="hidden 2xl:block basis-1/12 max-w-70 xl:max-w-80 2xl:max-w-90">
         <TeamsCarousel {...restProps} />
         {standingData.length > 0 && (
           <StandingTable

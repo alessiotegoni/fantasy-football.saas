@@ -17,8 +17,8 @@ export default function LeagueMatchCard({
   title,
 }: Props) {
   return (
-    <div className="flex w-full flex-col items-center gap-2 p-4 bg-muted rounded-2xl">
-      {title && <h3 className="text-lg font-semibold">{title}</h3>}
+    <div className="w-full p-4 bg-input/50 rounded-2xl">
+      {title && <h3 className="text-lg font-semibold text-left">{title}</h3>}
       <div className="w-full">
         <MatchCard
           {...match}
@@ -28,7 +28,7 @@ export default function LeagueMatchCard({
         />
         <LinkButton
           href={`/league/${leagueId}/matches/${match.id}`}
-          className="w-full rounded-t-none"
+          className="w-full rouned-xl"
           {...buttonProps}
         >
           {buttonProps.children}

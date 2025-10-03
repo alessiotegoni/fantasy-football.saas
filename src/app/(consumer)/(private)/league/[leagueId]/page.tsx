@@ -52,7 +52,7 @@ export default async function LeagueOverviewPage({
 
   return (
     <Container
-      className="max-w-[1300px]"
+      className="md:p-0 max-w-[1300px]"
       headerLabel="Home"
       headerRight={
         <Suspense>
