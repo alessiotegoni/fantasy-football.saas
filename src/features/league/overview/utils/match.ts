@@ -27,13 +27,13 @@ export function groupMatches(
     (c) => c.splitMatchday.id === lastEndedMatchday?.id
   );
 
-  const userUpcomingMatch = upcomingMatches?.find((match) =>
+  const userUpcomingMatch = upcomingMatches?.filter((match) =>
     [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
   );
-  const userLiveMatch = liveMatches?.find((match) =>
+  const userLiveMatch = liveMatches?.filter((match) =>
     [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
   );
-  const userEndedMatch = endedMatches?.find((match) =>
+  const userEndedMatch = endedMatches?.filter((match) =>
     [match.homeTeam, match.awayTeam].find((team) => team.id === userTeam?.id)
   );
 
@@ -41,17 +41,17 @@ export function groupMatches(
     upcoming: {
       matchday: firstUpcomingMatchday,
       matches: upcomingMatches,
-      userMatch: userUpcomingMatch,
+      userMatches: userUpcomingMatch,
     },
     live: {
       matchday: liveMatchday,
       matches: liveMatches,
-      userMatch: userLiveMatch,
+      userMatches: userLiveMatch,
     },
     ended: {
       matchday: lastEndedMatchday,
       matches: endedMatches,
-      userMatch: userEndedMatch,
+      userMatches: userEndedMatch,
     },
   };
 }

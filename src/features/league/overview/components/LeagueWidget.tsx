@@ -26,17 +26,17 @@ export default function LeagueWidget({
     if (!matches) return null;
 
     const {
-      live: { userMatch: userLiveMatch },
-      upcoming: { userMatch: userUpcomingMatch },
-      ended: { userMatch: userEndedMatch },
+      live: { userMatches: userLiveMatches },
+      upcoming: { userMatches: userUpcomingMatches },
+      ended: { userMatches: userEndedMatches },
     } = matches;
     const userTeam = leagueTeams.find((team) => team.userId === userId);
 
-    if (userLiveMatch) {
+    if (userLiveMatches.length) {
       return (
         <LeagueMatchCard
           leagueId={leagueId}
-          match={userLiveMatch}
+          match={userLiveMatches.at(0)!}
           buttonProps={{
             children: "Vedi live",
             className: "bg-green-500",
@@ -45,18 +45,21 @@ export default function LeagueWidget({
       );
     }
 
-    if (userUpcomingMatch && userEndedMatch) {
+    if (userUpcomingMatches.length && userEndedMatches.length) {
       return (
         <div className="flex gap-4 p-6 w-full justify-around items-center">
           <LeagueMatchCard
             leagueId={leagueId}
-            match={userEndedMatch}
+            match={userEndedMatches.at(-1)!}
             title="Ultima Giornata"
-            buttonProps={getEndedMatchButtonProps(userEndedMatch, userTeam?.id)}
+            buttonProps={getEndedMatchButtonProps(
+              userEndedMatches.at(-1)!,
+              userTeam?.id
+            )}
           />
           <LeagueMatchCard
             leagueId={leagueId}
-            match={userUpcomingMatch}
+            match={userUpcomingMatches.at(0)!}
             title="Prossima Giornata"
             buttonProps={{
               children: "Inserisci formazione",
@@ -67,11 +70,11 @@ export default function LeagueWidget({
       );
     }
 
-    if (userUpcomingMatch) {
+    if (userUpcomingMatches.length) {
       return (
         <LeagueMatchCard
           leagueId={leagueId}
-          match={userUpcomingMatch}
+          match={userUpcomingMatches.at(0)!}
           title="Prossima Giornata"
           buttonProps={{
             children: "Inserisci formazione",
@@ -81,13 +84,16 @@ export default function LeagueWidget({
       );
     }
 
-    if (userEndedMatch) {
+    if (userEndedMatches.length) {
       return (
         <LeagueMatchCard
           leagueId={leagueId}
-          match={userEndedMatch}
+          match={userEndedMatches.at(-1)!}
           title="Ultima Giornata"
-          buttonProps={getEndedMatchButtonProps(userEndedMatch, userTeam?.id)}
+          buttonProps={getEndedMatchButtonProps(
+            userEndedMatches.at(-1)!,
+            userTeam?.id
+          )}
         />
       );
     }
