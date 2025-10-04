@@ -6,6 +6,7 @@ import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { groupMatches } from "@/features/league/overview/utils/match";
 import UserMatches from "./UserMatches";
 import { useIsMobile } from "@/hooks/useMobile";
+import UserStats from "./UserStats";
 
 type Props = {
   leagueId: string;
@@ -16,13 +17,13 @@ type Props = {
 };
 
 export default function LeagueWidget(props: Props) {
-  const isMobile = useIsMobile();
-  const content = isMobile ? <div /> : <UserMatches {...props} />;
+  const isMobile = useIsMobile(768);
+  const Comp = isMobile ? UserStats : UserMatches;
 
   return (
     <div className="league-widget">
       <div className="size-full backdrop-blur-2xl flex justify-center items-center">
-        {content}
+        <Comp {...props} />
       </div>
     </div>
   );

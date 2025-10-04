@@ -1,3 +1,5 @@
+"use client";
+
 import { Split } from "@/features/dashboard/admin/splits/queries/split";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import TeamsCarousel from "../../teams/components/TeamsCarousel";
@@ -17,6 +19,7 @@ import { groupMatches } from "@/features/league/overview/utils/match";
 import LastFiveMatches from "./LastFiveMatches";
 import UserMatches from "./UserMatches";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/useMobile";
 
 type Props = {
   leagueId: string;
@@ -36,6 +39,8 @@ export default function LeagueWrapper({
   matches,
   ...restProps
 }: Props) {
+  const isMobile = useIsMobile(768);
+
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
   const sidebarProps = {
     standingData,
@@ -47,42 +52,48 @@ export default function LeagueWrapper({
     <div className="flex gap-4 flex-col md:flex-row">
       <div className="basis-10/12 grow">
         <LeagueWidget {...restProps} matches={matches} />
-        <div className="mt-4 md:flex gap-4 2xl:block">
-          <div className="hidden md:block basis-10/12">
-            {calendar ? (
-              calendar.length > 0 && matches ? (
-                <LeagueMatches {...restProps} matches={matches} />
+        {!isMobile && (
+          <div className="mt-4 md:flex gap-4 2xl:block">
+            <div className="hidden md:block basis-10/12">
+              {calendar ? (
+                calendar.length > 0 && matches ? (
+                  <LeagueMatches {...restProps} matches={matches} />
+                ) : (
+                  <EmptyState
+                    icon={CalendarXmark}
+                    title="Calendario non disponibile"
+                    description="Il calendario per questa lega non è stato ancora generato, contatta un admin della lega per generarlo"
+                  />
+                )
               ) : (
-                <EmptyState
-                  icon={CalendarXmark}
-                  title="Calendario non disponibile"
-                  description="Il calendario per questa lega non è stato ancora generato, contatta un admin della lega per generarlo"
-                />
-              )
-            ) : (
-              <Skeleton className="size-full min-h-80" />
-            )}
+                <Skeleton className="size-full min-h-80" />
+              )}
+            </div>
+            <Sidebar
+              {...sidebarProps}
+              className="hidden md:flex flex-col-reverse justify-end gap-4 2xl:hidden max-w-80"
+            />
           </div>
-          <Sidebar
-            {...sidebarProps}
-            className="hidden md:flex flex-col-reverse justify-end gap-4 2xl:hidden max-w-80"
-          />
-        </div>
-      </div>
-      <Sidebar
-        {...sidebarProps}
-        className="hidden 2xl:flex max-w-70 xl:max-w-80 2xl:max-w-90"
-      />
-      <div className="md:hidden space-y-4">
-        {matches ? (
-          <>
-            <UserMatches matches={matches} {...restProps} direction="col" />
-            <LastFiveMatches matches={matches} {...restProps} />
-          </>
-        ) : (
-          <Skeleton className="h-44" />
         )}
       </div>
+      {!isMobile && (
+        <Sidebar
+          {...sidebarProps}
+          className="hidden 2xl:flex max-w-70 xl:max-w-80 2xl:max-w-90"
+        />
+      )}
+      {isMobile && (
+        <div className="space-y-4">
+          {matches ? (
+            <>
+              <UserMatches matches={matches} {...restProps} />
+              <LastFiveMatches matches={matches} {...restProps} />
+            </>
+          ) : (
+            <Skeleton className="h-44" />
+          )}
+        </div>
+      )}
     </div>
   );
 }

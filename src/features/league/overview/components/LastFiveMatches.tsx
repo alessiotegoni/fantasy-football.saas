@@ -26,7 +26,7 @@ export default function LastFiveMatches({ matches, ...restProps }: Props) {
   const placeholderCount = Math.max(0, MAX_MATCHES - lastFiveMatches.length);
 
   return (
-    <div className="p-4 xs:p-6 rounded-3xl bg-muted">
+    <div className="p-4 xs:p-6 rounded-2xl bg-muted">
       <h3 className="font-bold mb-4">Ultimi 5 incontri</h3>
       <div className="flex justify-between xs:justify-evenly gap-4">
         {lastFiveMatches.map((match) => (

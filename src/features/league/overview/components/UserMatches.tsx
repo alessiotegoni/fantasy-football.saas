@@ -4,21 +4,14 @@ import LeagueMatchCard from "./LeagueMatchCard";
 import { ComponentProps } from "react";
 import LinkButton from "@/components/LinkButton";
 import { groupMatches } from "@/features/league/overview/utils/match";
-import { cn } from "@/lib/utils";
 
 type Props = {
   leagueId: string;
   userTeam?: LeagueTeam;
   matches?: ReturnType<typeof groupMatches>;
-  direction?: "row" | "col";
 };
 
-export default function UserMatches({
-  leagueId,
-  userTeam,
-  matches,
-  direction = "row",
-}: Props) {
+export default function UserMatches({ leagueId, userTeam, matches }: Props) {
   if (!matches) return null;
 
   const {
@@ -42,12 +35,7 @@ export default function UserMatches({
 
   if (userUpcomingMatches.length && userEndedMatches.length) {
     return (
-      <div
-        className={cn(
-          "flex gap-4 p-6 w-full justify-around items-center",
-          direction === "col" && "flex-col"
-        )}
-      >
+      <div className="flex flex-col md:flex-row gap-4 md:p-6 w-full justify-around items-center">
         <LeagueMatchCard
           leagueId={leagueId}
           match={userEndedMatches.at(-1)!}
