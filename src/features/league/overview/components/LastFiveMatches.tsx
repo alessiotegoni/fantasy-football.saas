@@ -2,17 +2,19 @@ import { groupMatches } from "@/features/league/overview/utils/match";
 import { cn } from "@/lib/utils";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
+import Link from "next/link";
 
 const MAX_MATCHES = 5;
 
 type Props = {
+  leagueId: string;
   matches: ReturnType<typeof groupMatches>;
   userTeam?: LeagueTeam;
 };
 
 type MatchResultType = "win" | "loss" | "draw" | "bye";
 
-export default function LastFiveMatches({ matches, userTeam }: Props) {
+export default function LastFiveMatches({ matches, ...restProps }: Props) {
   if (!matches) return null;
 
   const endedUserMatches = matches.ended.userMatches.filter(
@@ -28,7 +30,7 @@ export default function LastFiveMatches({ matches, userTeam }: Props) {
       <h3 className="font-bold mb-4">Ultimi 5 incontri</h3>
       <div className="flex justify-between xs:justify-evenly gap-4">
         {lastFiveMatches.map((match) => (
-          <MatchListItem key={match.id} match={match} userTeam={userTeam} />
+          <MatchListItem key={match.id} match={match} {...restProps} />
         ))}
         {Array.from({ length: placeholderCount }).map((_, index) => (
           <PlaceholderListItem key={index} />
@@ -39,9 +41,10 @@ export default function LastFiveMatches({ matches, userTeam }: Props) {
 }
 
 function MatchListItem({
+  leagueId,
   match,
   userTeam,
-}: Pick<Props, "userTeam"> & { match: Match }) {
+}: Omit<Props, "matches"> & { match: Match }) {
   const userTeamResult = match.matchResults.find(
     (r) => r.teamId === userTeam?.id
   );
@@ -51,7 +54,10 @@ function MatchListItem({
   const result = getMatchResult(match, userTeamResult, opponentTeamResult);
 
   return (
-    <div className="flex flex-col items-center gap-2">
+    <Link
+      href={`/league/${leagueId}/matches/${match.id}`}
+      className="flex flex-col items-center gap-2"
+    >
       <div
         className={cn(
           "flex items-center justify-center size-8 xs:size-10 rounded-full font-heading font-bold",
@@ -70,7 +76,7 @@ function MatchListItem({
           </div>
         </div>
       )}
-    </div>
+    </Link>
   );
 }
 

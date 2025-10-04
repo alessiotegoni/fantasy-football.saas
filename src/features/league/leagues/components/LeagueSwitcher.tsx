@@ -17,10 +17,9 @@ export default async function LeagueSwitcher({
   leagueId: string;
 }) {
   const user = await getUser();
-  if (!user) return null;
 
   return (
-    <UserLeagues user={user}>
+    <UserLeagues user={user ?? undefined}>
       {(leagues) => {
         const othersLeague = leagues.filter((league) => league.id !== leagueId);
         if (!othersLeague.length) return null;
