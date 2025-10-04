@@ -73,7 +73,13 @@ export default function LeagueWrapper({
         className="hidden 2xl:flex max-w-70 xl:max-w-80 2xl:max-w-90"
       />
       <div className="md:hidden">
-        <LastFiveMatches matches={matches} {...restProps} />
+        {matches ? (
+          <>
+            <LastFiveMatches matches={matches} {...restProps} />
+          </>
+        ) : (
+          <Skeleton className="h-44" />
+        )}
       </div>
     </div>
   );
