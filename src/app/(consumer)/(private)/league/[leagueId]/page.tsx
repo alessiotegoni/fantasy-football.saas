@@ -105,6 +105,7 @@ async function SuspenseBoundary({
     userId,
     leagueId,
     leagueTeams,
+    userTeam,
     lastSplit,
     splitMatchdays,
     calendar,

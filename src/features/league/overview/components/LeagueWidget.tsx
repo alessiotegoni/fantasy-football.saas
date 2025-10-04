@@ -9,19 +9,13 @@ import { groupMatches } from "@/features/league/overview/utils/match";
 
 type Props = {
   leagueId: string;
-  leagueTeams: LeagueTeam[];
+  userTeam?: LeagueTeam;
   calendar?: Match[];
   matches?: ReturnType<typeof groupMatches>;
   lastSplit?: Split;
-  userId?: string;
 };
 
-export default function LeagueWidget({
-  leagueId,
-  leagueTeams,
-  userId,
-  matches,
-}: Props) {
+export default function LeagueWidget({ leagueId, userTeam, matches }: Props) {
   function renderContent() {
     if (!matches) return null;
 
@@ -30,7 +24,6 @@ export default function LeagueWidget({
       upcoming: { userMatches: userUpcomingMatches },
       ended: { userMatches: userEndedMatches },
     } = matches;
-    const userTeam = leagueTeams.find((team) => team.userId === userId);
 
     if (userLiveMatches.length) {
       return (

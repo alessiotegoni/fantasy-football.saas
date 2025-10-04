@@ -14,11 +14,13 @@ import { CalendarXmark } from "iconoir-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import LeagueWidget from "./LeagueWidget";
 import { groupMatches } from "@/features/league/overview/utils/match";
+import LastFiveMatches from "./LastFiveMatches";
 import { cn } from "@/lib/utils";
 
 type Props = {
   leagueId: string;
   leagueTeams: LeagueTeam[];
+  userTeam?: LeagueTeam;
   standingData: StandingData[];
   isDefaultStanding?: boolean;
   calendar?: Match[];
@@ -70,6 +72,9 @@ export default function LeagueWrapper({
         {...sidebarProps}
         className="hidden 2xl:flex max-w-70 xl:max-w-80 2xl:max-w-90"
       />
+      <div className="md:hidden">
+        <LastFiveMatches matches={matches} {...restProps} />
+      </div>
     </div>
   );
 }
