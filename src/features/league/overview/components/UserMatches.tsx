@@ -4,9 +4,11 @@ import LeagueMatchCard from "./LeagueMatchCard";
 import { ComponentProps } from "react";
 import LinkButton from "@/components/LinkButton";
 import { groupMatches } from "@/features/league/overview/utils/match";
+import { StandingData } from "../../standing/queries/standing";
 
 type Props = {
   leagueId: string;
+  standingData?: StandingData[];
   userTeam?: LeagueTeam;
   matches?: ReturnType<typeof groupMatches>;
 };
@@ -22,14 +24,16 @@ export default function UserMatches({ leagueId, userTeam, matches }: Props) {
 
   if (userLiveMatches.length) {
     return (
-      <LeagueMatchCard
-        leagueId={leagueId}
-        match={userLiveMatches.at(0)!}
-        buttonProps={{
-          children: "Vedi live",
-          className: "bg-green-500",
-        }}
-      />
+      <div className="flex justify-center items-center">
+        <LeagueMatchCard
+          leagueId={leagueId}
+          match={userLiveMatches.at(0)!}
+          buttonProps={{
+            children: "Vedi live",
+            className: "bg-green-500",
+          }}
+        />
+      </div>
     );
   }
 
@@ -60,29 +64,33 @@ export default function UserMatches({ leagueId, userTeam, matches }: Props) {
 
   if (userUpcomingMatches.length) {
     return (
-      <LeagueMatchCard
-        leagueId={leagueId}
-        match={userUpcomingMatches.at(0)!}
-        title="Prossima Giornata"
-        buttonProps={{
-          children: "Inserisci formazione",
-          className: "bg-blue-500 hover:bg-blue-600",
-        }}
-      />
+      <div className="flex justify-center items-center">
+        <LeagueMatchCard
+          leagueId={leagueId}
+          match={userUpcomingMatches.at(0)!}
+          title="Prossima Giornata"
+          buttonProps={{
+            children: "Inserisci formazione",
+            className: "bg-blue-500 hover:bg-blue-600",
+          }}
+        />
+      </div>
     );
   }
 
   if (userEndedMatches.length) {
     return (
-      <LeagueMatchCard
-        leagueId={leagueId}
-        match={userEndedMatches.at(-1)!}
-        title="Ultima Giornata"
-        buttonProps={getEndedMatchButtonProps(
-          userEndedMatches.at(-1)!,
-          userTeam?.id
-        )}
-      />
+      <div className="flex justify-center items-center">
+        <LeagueMatchCard
+          leagueId={leagueId}
+          match={userEndedMatches.at(-1)!}
+          title="Ultima Giornata"
+          buttonProps={getEndedMatchButtonProps(
+            userEndedMatches.at(-1)!,
+            userTeam?.id
+          )}
+        />
+      </div>
     );
   }
 

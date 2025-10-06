@@ -51,7 +51,11 @@ export default function LeagueWrapper({
   return (
     <div className="flex gap-4 flex-col md:flex-row">
       <div className="basis-10/12 grow">
-        <LeagueWidget {...restProps} matches={matches} />
+        <LeagueWidget
+          {...restProps}
+          matches={matches}
+          standingData={standingData}
+        />
         {!isMobile && (
           <div className="mt-4 md:flex gap-4 2xl:block">
             <div className="hidden md:block basis-10/12">

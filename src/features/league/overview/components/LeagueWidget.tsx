@@ -7,9 +7,11 @@ import { groupMatches } from "@/features/league/overview/utils/match";
 import UserMatches from "./UserMatches";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import UserStats from "./UserStats";
+import { StandingData } from "../../standing/queries/standing";
 
 type Props = {
   leagueId: string;
+  standingData: StandingData[];
   userTeam?: LeagueTeam;
   calendar?: Match[];
   matches?: ReturnType<typeof groupMatches>;
@@ -22,7 +24,7 @@ export default function LeagueWidget(props: Props) {
 
   return (
     <div className="league-widget">
-      <div className="size-full backdrop-blur-2xl flex justify-center items-center">
+      <div className="size-full backdrop-blur-2xl">
         <Comp {...props} />
       </div>
     </div>
