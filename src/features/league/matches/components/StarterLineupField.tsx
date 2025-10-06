@@ -2,7 +2,7 @@
 
 import { LineupPlayer } from "../queries/match";
 import { LineupTeam } from "../utils/match";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import RoleGroup from "./RoleGroup";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function StarterLineupField(props: Props) {
-  const isMobile = useIsMobile(640);
+  const isMobile = useMediaQuery(640);
 
   return isMobile ? <MobileField {...props} /> : <DesktopField {...props} />;
 }

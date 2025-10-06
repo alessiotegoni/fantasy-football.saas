@@ -17,7 +17,7 @@ import {
 import { use, useEffect } from "react";
 import { TeamPlayer } from "../../teamsPlayers/queries/teamsPlayer";
 import useMyLineup from "@/hooks/useMyLineup";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import PlayersSelectList from "./PlayersSelectList";
 import { findNextAvailablePositionId } from "../utils/lineupPlayers";
 
@@ -26,7 +26,7 @@ export default function PlayersDialog({
 }: {
   playersPromise: Promise<TeamPlayer[]>;
 }) {
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery();
 
   const players = use(playersPromise);
   const {

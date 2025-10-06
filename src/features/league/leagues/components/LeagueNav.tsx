@@ -3,7 +3,7 @@
 import { Home, Shield, Calendar, Medal1st } from "iconoir-react";
 import NavLink from "@/components/NavLink";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getItemHref, Href } from "@/utils/helpers";
@@ -11,7 +11,7 @@ import { League } from "../queries/league";
 import { ElementType } from "react";
 
 export function LeagueNav({ league }: { league: League }) {
-  const isMobile = useIsMobile(1024);
+  const isMobile = useMediaQuery(1024);
 
   return isMobile ? (
     <nav
@@ -73,9 +73,9 @@ export function LeagueNav({ league }: { league: League }) {
 
 type NavItem = {
   name: string;
-  href: Href
-  icon: ElementType
-}
+  href: Href;
+  icon: ElementType;
+};
 
 const navItems: NavItem[] = [
   {

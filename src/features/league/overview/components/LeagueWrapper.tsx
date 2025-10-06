@@ -19,7 +19,7 @@ import { groupMatches } from "@/features/league/overview/utils/match";
 import LastFiveMatches from "./LastFiveMatches";
 import UserMatches from "./UserMatches";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 type Props = {
   leagueId: string;
@@ -39,7 +39,7 @@ export default function LeagueWrapper({
   matches,
   ...restProps
 }: Props) {
-  const isMobile = useIsMobile(768);
+  const isMobile = useMediaQuery(768);
 
   const finalPhaseAccess = getFinalPhaseAccess(standingData);
   const sidebarProps = {

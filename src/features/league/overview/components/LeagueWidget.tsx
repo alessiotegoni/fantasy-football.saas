@@ -5,7 +5,7 @@ import { Match } from "../../admin/calendar/regular/queries/calendar";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { groupMatches } from "@/features/league/overview/utils/match";
 import UserMatches from "./UserMatches";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import UserStats from "./UserStats";
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
 };
 
 export default function LeagueWidget(props: Props) {
-  const isMobile = useIsMobile(768);
+  const isMobile = useMediaQuery(768);
   const Comp = isMobile ? UserStats : UserMatches;
 
   return (

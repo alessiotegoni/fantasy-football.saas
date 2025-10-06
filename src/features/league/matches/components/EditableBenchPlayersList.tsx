@@ -8,7 +8,7 @@ import { SwipeableList, Type } from "react-swipeable-list";
 import "react-swipeable-list/dist/styles.css";
 
 import ScrollArea from "@/components/ui/scroll-area";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { LineupPlayer } from "../queries/match";
 import SortableLineupPlayerCard from "./SortableLineupPlayerCard";
@@ -19,8 +19,11 @@ type Props = {
   isAwayTeam: boolean;
 };
 
-export default function EditableBenchPlayersList({ players, isAwayTeam }: Props) {
-  const isMobile = useIsMobile(640);
+export default function EditableBenchPlayersList({
+  players,
+  isAwayTeam,
+}: Props) {
+  const isMobile = useMediaQuery(640);
 
   return (
     <SortableContext

@@ -4,7 +4,7 @@ import ActionButton from "@/components/ActionButton";
 import useMyLineup from "@/hooks/useMyLineup";
 import { saveLineup } from "../actions/match";
 import { createError } from "@/utils/helpers";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { MatchLineupSchema } from "../schema/match";
 import { LineupPlayer } from "../queries/match";
 
@@ -15,7 +15,7 @@ export default function SaveLineupButton({
   leagueId: string;
   matchId: string;
 }) {
-  const isMobile = useIsMobile(640);
+  const isMobile = useMediaQuery(640);
 
   const {
     myLineup: { id: lineupId, starterPlayers, benchPlayers, tacticalModule },

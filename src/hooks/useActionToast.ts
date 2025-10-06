@@ -1,9 +1,9 @@
 import { useCallback } from "react";
-import { useIsMobile } from "./useMobile";
+import { useMediaQuery } from "./useMediaQuery";
 import { ExternalToast, toast } from "sonner";
 
 export default function useActionToast() {
-  const isMobile = useIsMobile(1024);
+  const isMobile = useMediaQuery(1024);
 
   const handleToast = useCallback(
     (

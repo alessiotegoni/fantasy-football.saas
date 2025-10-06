@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import useMyLineup from "@/hooks/useMyLineup";
 import { cn } from "@/lib/utils";
 import { Xmark } from "iconoir-react";

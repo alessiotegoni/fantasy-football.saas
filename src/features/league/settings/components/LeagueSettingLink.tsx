@@ -2,7 +2,7 @@
 
 import NavLink from "@/components/NavLink";
 import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { getItemHref } from "@/utils/helpers";
 import Link from "next/link";
@@ -22,7 +22,7 @@ export default function LeagueSettingLink({
   leagueId,
   className,
 }: Props) {
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery();
 
   return (
     <NavLink

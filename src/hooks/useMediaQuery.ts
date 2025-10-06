@@ -2,7 +2,7 @@ import * as React from "react";
 
 const DEFAULT_MOBILE_BREAKPOINT = 768;
 
-export function useIsMobile(breakpoint = DEFAULT_MOBILE_BREAKPOINT) {
+export function useMediaQuery(breakpoint = DEFAULT_MOBILE_BREAKPOINT) {
   const [isMobile, setIsMobile] = React.useState<boolean>();
 
   React.useEffect(() => {

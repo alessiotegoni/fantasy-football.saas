@@ -17,7 +17,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { useIsMobile } from "@/hooks/useMobile";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 import LeagueModules from "../../leagues/components/LeagueModules";
 import { ComponentProps, Suspense, useState } from "react";
 import { TacticalModule } from "@/drizzle/schema";
@@ -27,7 +27,7 @@ import { cn } from "@/lib/utils";
 export default function ModulesSelect(
   props: ComponentProps<typeof LeagueModules>
 ) {
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery();
 
   const {
     myLineup: { tacticalModule, starterPlayers },
