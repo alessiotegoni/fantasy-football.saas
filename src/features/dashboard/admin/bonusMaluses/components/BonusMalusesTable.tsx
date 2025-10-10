@@ -52,7 +52,9 @@ export default function BonusMalusesTable({
             <TableBody className="overflow-y-auto max-h-[800px]">
               {filteredItems.map((bm) => (
                 <TableRow key={bm.id}>
-                  <TableCell>{bm.player.displayName}</TableCell>
+                  <TableCell>
+                    {bm.player.firstName} {bm.player.lastName}
+                  </TableCell>
                   <TableCell>{bm.bonusMalusType.name}</TableCell>
                   <TableCell>{bm.count}</TableCell>
                   <TableCell>
