@@ -25,7 +25,7 @@ export default function PlayersSelect({
   const items = players.map((player) => ({
     value: player.id.toString(),
     label: `${player.firstName} ${player.lastName}`,
-    subLabel: player.team.displayName
+    subLabel: player.team?.displayName
   }));
 
   return (

@@ -18,7 +18,7 @@ type Props = {
   namePrefix?: string;
   bonusMalusTypes: BonusMalusType[];
   bonusMalus?: MatchdayBonusMalus;
-  players?: Pick<Player, "id" | "displayName">[];
+  players?: Player[];
 };
 
 export default function BonusMalusFormFields<T extends FieldValues>({

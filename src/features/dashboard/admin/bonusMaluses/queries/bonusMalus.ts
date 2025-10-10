@@ -28,11 +28,9 @@ export async function getMatchdaysBonusMaluses(matchdaysIds: number[]) {
         },
       },
       player: {
-        columns: {
-          id: true,
-          displayName: true,
-          firstName: true,
-          lastName: true,
+        with: {
+          team: true,
+          role: true,
         },
       },
     },
