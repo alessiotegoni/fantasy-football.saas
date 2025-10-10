@@ -6,7 +6,7 @@ import { Minus, Plus } from "iconoir-react";
 
 export interface NumberInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
-  value: number;
+  value: number | undefined;
   min?: number;
   max?: number;
   step?: number;
@@ -16,7 +16,7 @@ export interface NumberInputProps
 }
 
 export default function NumberInput({
-  value,
+  value = 0,
   min = 0,
   max = 100,
   step = 1,

@@ -10,7 +10,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Player } from "../queries/player";
 
 type Props = {
-  fieldName?: Path<{ playerId: number }>;
+  fieldName?: string;
   players: Player[];
   disabled?: boolean;
 };
@@ -20,7 +20,7 @@ export default function PlayersSelect({
   players,
   disabled,
 }: Props) {
-  const form = useFormContext<{ playerId: number }>();
+  const form = useFormContext();
 
   const items = players.map((player) => ({
     value: player.id.toString(),

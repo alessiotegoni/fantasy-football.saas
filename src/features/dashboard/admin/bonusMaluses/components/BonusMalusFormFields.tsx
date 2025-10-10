@@ -13,28 +13,36 @@ import { Combobox } from "@/components/ui/combobox";
 import PlayersSelect from "../../players/components/PlayersSelect";
 import { Player } from "../../players/queries/player";
 import { cn } from "@/lib/utils";
+import {
+  AssignBonusMalusSchema,
+  CreateBonusMalusSchema,
+} from "../schema/bonusMalus";
+
+type NamePrefix = `bonusMaluses.${number}`;
 
 type Props = {
-  namePrefix?: string;
+  namePrefix?: NamePrefix;
   bonusMalusTypes: BonusMalusType[];
   bonusMalus?: MatchdayBonusMalus;
   players?: Player[];
 };
 
-export default function BonusMalusFormFields<T extends FieldValues>({
+export default function BonusMalusFormFields({
   namePrefix,
   bonusMalusTypes,
   bonusMalus,
   players,
 }: Props) {
-  const form = useFormContext<T>();
+  const form = useFormContext<
+    AssignBonusMalusSchema | CreateBonusMalusSchema
+  >();
 
   function getFieldName(
-    namePrefix: string | undefined,
-    fieldName: Path<T>
-  ): Path<T> {
+    namePrefix: NamePrefix | undefined,
+    fieldName: Path<AssignBonusMalusSchema>
+  ): Path<AssignBonusMalusSchema> | Path<CreateBonusMalusSchema> {
     if (!namePrefix) return fieldName;
-    return `${namePrefix}.${fieldName}` as Path<T>;
+    return `${namePrefix}.${fieldName}`;
   }
 
   return (
@@ -76,11 +84,14 @@ export default function BonusMalusFormFields<T extends FieldValues>({
       <FormField
         control={form.control}
         name={getFieldName(namePrefix, "count")}
-        render={({ field }) => (
+        render={({ field: { value, ...restFields } }) => (
           <FormItem>
             <FormLabel>Conteggio</FormLabel>
             <FormControl>
-              <NumberInput {...field} />
+              <NumberInput
+                {...restFields}
+                value={typeof value === "number" ? value : undefined}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
