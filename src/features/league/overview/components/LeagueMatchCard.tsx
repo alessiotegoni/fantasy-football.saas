@@ -23,7 +23,6 @@ export default function LeagueMatchCard({
         <MatchCard
           {...match}
           leagueId={leagueId}
-          isLink={false}
           className="bg-transparent"
         />
         <LinkButton

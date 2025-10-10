@@ -34,17 +34,19 @@ export default function UserStats({ userTeam, standingData = [] }: Props) {
             <h4 className="xs:text-sm">{standingData.indexOf(userData) + 1}</h4>
             <p>Posizione</p>
           </div>
-          <div className="h-9 w-1 rounded-full bg-card" />
+          <div className="h-9 w-1 rounded-full bg-gray-500/10" />
           <div className="text-xs text-center space-y-1">
             <h4 className="xs:text-sm">{userData.points}</h4>
             <p>Punti</p>
           </div>
+          <div className="h-9 w-1 rounded-full bg-gray-500/10" />
           <div className="text-xs text-center space-y-1">
             <h4 className="xs:text-sm">
               {userData.wins + userData.losses + userData.draws}
             </h4>
             <p>Partite</p>
           </div>
+          <div className="h-9 w-1 rounded-full bg-gray-500/10" />
           <div className="text-xs text-center space-y-1">
             <h4 className="xs:text-sm">{userData.totalScore}</h4>
             <p>Pt. Totali</p>
