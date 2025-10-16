@@ -2,7 +2,7 @@
 
 import TeamsSelectField from "@/features/dashboard/admin/teams/components/TeamsSelectField";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createTradeProposalSchema } from "../schema/trade";
+import { CreateTradeProposalSchema, createTradeProposalSchema } from "../schema/trade";
 import { LeagueTeam } from "../../teams/queries/leagueTeam";
 import { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
@@ -20,7 +20,7 @@ export default function TradeReceiverTeamSelect({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const form = useFormContext<createTradeProposalSchema>();
+  const form = useFormContext<CreateTradeProposalSchema>();
 
   const setReceiverTeamParams = useCallback((teamId: string) => {
     const receiverTeamId = searchParams.get("receiverTeamId");
@@ -33,7 +33,7 @@ export default function TradeReceiverTeamSelect({
   }, []);
 
   return (
-    <TeamsSelectField<createTradeProposalSchema>
+    <TeamsSelectField<CreateTradeProposalSchema>
       className={cn("text-md", className)}
       placeholder={placeholder}
       name="receiverTeamId"

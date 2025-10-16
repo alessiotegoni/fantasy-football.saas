@@ -17,7 +17,7 @@ import {
   validateSchema,
   VALIDATION_ERROR,
 } from "@/schema/helpers";
-import { createError } from "@/utils/helpers";
+import { createError, Href } from "@/utils/helpers";
 
 enum LEAGUE_MEMBER_MESSAGES {
   LEAGUE_CODE_ERROR = "Codice o password della lega errati",
@@ -56,7 +56,7 @@ async function joinMemberToLeague(leagueId: string) {
     addUserLeaguesMetadata(user, leagueId),
   ]);
 
-  redirect(`/leagues/${leagueId}/teams/create`);
+  redirect(`/leagues/${leagueId}/teams/create` as Href);
 }
 
 async function getLeagueFromCode(data: JoinPrivateLeagueSchema) {

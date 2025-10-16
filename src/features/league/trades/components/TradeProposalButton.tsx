@@ -3,6 +3,7 @@ import { isTradeMarketOpen } from "../permissions/trade";
 import Link from "next/link";
 import { NavArrowRight } from "iconoir-react";
 import { cn } from "@/lib/utils";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   text?: string;
@@ -34,7 +35,9 @@ export default async function TradeProposalButton({
     >
       {isMarketOpen ? (
         <Link
-          href={`/leagues/${leagueId}/my-trades/proposal?proposerTeamId=${userTeamId}`}
+          href={
+            `/leagues/${leagueId}/my-trades/proposal?proposerTeamId=${userTeamId}` as Href
+          }
         >
           {text}
           <NavArrowRight />

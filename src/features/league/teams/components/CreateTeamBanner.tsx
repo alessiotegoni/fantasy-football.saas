@@ -5,6 +5,7 @@ import { NavArrowRight, Search } from "iconoir-react";
 import { Banner } from "@/components/banner";
 import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
+import { Href } from "@/utils/helpers";
 
 export default function CreateTeamBanner({
   className,
@@ -23,7 +24,7 @@ export default function CreateTeamBanner({
       <LinkButton
         variant="gradient"
         className="w-fit mt-6 md:mt-0 gap-4 py-3.5 px-4"
-        href={`/league/${leagueId}/teams/create`}
+        href={`/league/${leagueId}/teams/create` as Href}
       >
         Crea la tua squadra
         <NavArrowRight className="size-5" />

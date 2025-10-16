@@ -12,6 +12,7 @@ import { MoreVertical, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { deleteAuction } from "../actions/auction";
 import { PropsWithChildren } from "react";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   auction: { id: string };
@@ -37,7 +38,9 @@ export default function AuctionDropdownMenu({
         {canUpdate && (
           <DropdownMenuItem asChild>
             <Link
-              href={`/leagues/${leagueId}/premium/auctions/${auction.id}/edit`}
+              href={
+                `/leagues/${leagueId}/premium/auctions/${auction.id}/edit` as Href
+              }
             >
               <Edit />
               Modifica asta
@@ -49,7 +52,7 @@ export default function AuctionDropdownMenu({
           variant="destructive"
           loadingText="Elimino"
           action={deleteAuction.bind(null, auction.id)}
-          redirectTo={`/premium/auctions`}
+          redirectTo={`/premium/auctions` as Href}
           requireAreYouSure
           areYouSureDescription="Sei sicuro di voler eliminare l'asta ? L'azione e' irreversibile"
           className="justify-start text-white px-2 py-1.5 rounded-lg text-sm"

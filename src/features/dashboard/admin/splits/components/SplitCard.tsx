@@ -9,6 +9,7 @@ import ActionButton from "@/components/ActionButton";
 import { deleteSplit, updateSplit } from "../actions/split";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
 import { SplitStatusType } from "@/drizzle/schema";
+import { Href } from "@/utils/helpers";
 
 export default function SplitCard({ split }: { split: Split }) {
   const { isPending, onSubmit } = useHandleSubmit(
@@ -55,7 +56,7 @@ export default function SplitCard({ split }: { split: Split }) {
             Elimina
           </ActionButton>
           <LinkButton
-            href={`/dashboard/admin/splits/${split.id}`}
+            href={`/dashboard/admin/splits/${split.id}` as Href}
             className="w-24"
           >
             Vedi

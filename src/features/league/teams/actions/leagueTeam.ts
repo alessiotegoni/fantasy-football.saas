@@ -13,7 +13,7 @@ import { memberHasTeam } from "../permissions/leagueTeam";
 import { after } from "next/server";
 import { uploadImage } from "@/services/supabase/storage/supabase";
 import { redirect } from "next/navigation";
-import { createError } from "@/utils/helpers";
+import { createError, Href } from "@/utils/helpers";
 import { validateSchema, VALIDATION_ERROR } from "@/schema/helpers";
 
 enum TEAM_ERROR_MESSAGES {
@@ -55,7 +55,7 @@ export async function createLeagueTeam(
     after(updateTeamImage.bind(null, teamId, leagueId, data.image));
   }
 
-  redirect(`/leagues/${leagueId}/teams`);
+  redirect(`/leagues/${leagueId}/teams` as Href);
 }
 
 export async function updateLeagueTeams(
@@ -87,7 +87,7 @@ export async function updateLeagueTeams(
     after(updateTeamImage.bind(null, teamId, leagueId, data.image));
   }
 
-  redirect(`/leagues/${leagueId}/teams`);
+  redirect(`/leagues/${leagueId}/teams` as Href);
 }
 
 async function updateTeamImage(teamId: string, leagueId: string, file: File) {

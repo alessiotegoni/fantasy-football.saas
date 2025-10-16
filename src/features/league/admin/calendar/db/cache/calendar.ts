@@ -1,5 +1,5 @@
 import { getLeagueTag } from "@/cache/helpers";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type LEAGUE_CALENDAR_TAG =
   | "league-regular-calendar"
@@ -12,6 +12,6 @@ export const getLeagueFinalPhaseCalendarTag = (leagueId: string) =>
   getLeagueTag("league-final-phase-calendar", leagueId);
 
 export const revalidateLeagueCalendarsCache = (leagueId: string) => {
-  revalidateTag(getLeagueRegularCalendarTag(leagueId));
-  revalidateTag(getLeagueFinalPhaseCalendarTag(leagueId));
+  updateTag(getLeagueRegularCalendarTag(leagueId));
+  updateTag(getLeagueFinalPhaseCalendarTag(leagueId));
 };

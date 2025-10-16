@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { OauthProviderType } from "../schema/login";
 import SubmitButton from "@/components/SubmitButton";
 import { cn } from "@/lib/utils";
+import { Href } from "@/utils/helpers";
 
 export default function SocialLogin({
   onClick,
@@ -25,7 +26,7 @@ export default function SocialLogin({
       { redirectUrl: searchParams.get("next") }
     );
     if (res.error) toast(res);
-    if (res.data?.url) router.push(res.data.url);
+    if (res.data?.url) router.push(res.data.url as Href);
   }
 
   return (

@@ -6,11 +6,14 @@ import { getMetadataFromUser } from "@/features/dashboard/user/utils/user";
 import { redirect } from "next/navigation";
 import { RoleCard, RoleInfo } from "@/features/dashboard/components/RoleCard";
 import Disclaimer from "@/components/Disclaimer";
+import { Href } from "@/utils/helpers";
 
 export default function DashboardPage() {
   const { user, userRoles } = useDashboardRoles();
 
-  if (userRoles.length === 1) redirect(`/dashboard/${userRoles[0]}`);
+  if (userRoles.length === 1) {
+    redirect(`/dashboard/${userRoles[0]}` as Href);
+  }
 
   const availableRoles = ROLES_INFO.filter((info) =>
     userRoles.includes(info.role)

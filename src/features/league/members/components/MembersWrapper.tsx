@@ -32,7 +32,7 @@ export default function MembersWrapper({
         title="Nessun membro nella lega"
         description=" Invita altri giocatori per iniziare a competere insieme."
         renderButton={() =>
-          league ? <InviteButton league={league} /> : <SkeletonButton />
+          league ? <InviteButton /> : <SkeletonButton />
         }
       />
     );

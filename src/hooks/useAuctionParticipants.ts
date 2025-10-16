@@ -3,6 +3,7 @@
 import { AuctionWithSettings } from "@/features/league/auctions/queries/auction";
 import { AuctionParticipant } from "@/features/league/auctions/queries/auctionParticipant";
 import { createClient } from "@/services/supabase/client/supabase";
+import { Href } from "@/utils/helpers";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -95,7 +96,7 @@ export default function useAuctionParticipants({
   useEffect(() => {
     if (userTeamId && !userParticipant) {
       toast.error("Sei stato espulso dall'asta");
-      router.push(`/leagues/${auction.leagueId}/premium/auctions`);
+      router.push(`/leagues/${auction.leagueId}/premium/auctions` as Href);
     }
   }, [userParticipant]);
 

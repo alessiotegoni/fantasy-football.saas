@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { db } from "@/drizzle/db";
 import { getUserId } from "@/features/dashboard/user/utils/user";
-import { createError, createSuccess } from "@/utils/helpers";
+import { createError, createSuccess, Href } from "@/utils/helpers";
 import {
   deleteTrade as deleteTradeDb,
   insertTrade,
@@ -84,7 +84,7 @@ export async function createTrade(values: CreateTradeProposalSchema) {
   if (permissions.error) return createError(permissions.message);
 
   await executeTradeCreation(trade, players);
-  redirect(`/leagues/${data.leagueId}/my-trades`);
+  redirect(`/leagues/${data.leagueId}/my-trades` as Href);
 }
 
 async function executeTradeCreation(
@@ -217,6 +217,7 @@ async function movePlayersBetweenTeams(
   if (grouped.proposed?.length) {
     operations.push(
       movePlayersToTeam({
+        // @ts-ignore
         players: grouped.proposed,
         fromTeamId: trade.proposerTeamId,
         toTeamId: trade.receiverTeamId,
@@ -229,6 +230,7 @@ async function movePlayersBetweenTeams(
   if (grouped.requested?.length) {
     operations.push(
       movePlayersToTeam({
+        // @ts-ignore
         players: grouped.requested,
         fromTeamId: trade.receiverTeamId,
         toTeamId: trade.proposerTeamId,

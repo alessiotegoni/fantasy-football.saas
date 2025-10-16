@@ -1,5 +1,5 @@
 import { getIdTag, getLeagueTag, getTeamTag } from "@/cache/helpers";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type TEAM_TAG = "league-teams";
 
@@ -19,6 +19,6 @@ export const revalidateLeagueTeamsCache = ({
   teamsIds: string[];
   leagueId: string;
 }) => {
-  revalidateTag(getLeagueTeamsTag(leagueId));
-  teamsIds.forEach((teamId) => revalidateTag(getTeamIdTag(teamId)));
+  updateTag(getLeagueTeamsTag(leagueId));
+  teamsIds.forEach((teamId) => updateTag(getTeamIdTag(teamId)));
 };

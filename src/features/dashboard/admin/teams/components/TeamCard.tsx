@@ -5,6 +5,7 @@ import LinkButton from "@/components/LinkButton";
 import { deleteTeam } from "@/features/dashboard/admin/teams/actions/team";
 import ActionButton from "@/components/ActionButton";
 import { NavArrowRight } from "iconoir-react";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   team: Team;
@@ -27,7 +28,10 @@ export default function TeamCard({ team }: Props) {
         >
           Elimina
         </ActionButton>
-        <LinkButton href={`/dashboard/admin/teams/${team.id}`} className="sm:w-36">
+        <LinkButton
+          href={`/dashboard/admin/teams/${team.id}` as Href}
+          className="sm:w-36"
+        >
           Modifica
           <NavArrowRight className="size-5" />
         </LinkButton>

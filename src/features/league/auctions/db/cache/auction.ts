@@ -1,5 +1,5 @@
 import { getIdTag, getLeagueTag } from "@/cache/helpers";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type AUCTION_TAG =
   | "auctions"
@@ -30,21 +30,21 @@ export const revalidateLeagueAuctionsCache = (
   leagueId: string,
   auctionId: string
 ) => {
-  revalidateTag(getLeagueAuctionsTag(leagueId));
-  revalidateTag(getAuctionIdTag(auctionId));
+  updateTag(getLeagueAuctionsTag(leagueId));
+  updateTag(getAuctionIdTag(auctionId));
 };
 
 export const revalidateAuctionSettingsCache = (auctionId: string) => {
-  revalidateTag(getAuctionSettingTag(auctionId));
+  updateTag(getAuctionSettingTag(auctionId));
 };
 
 export const revalidateAuctionParticipantsCache = (auctionId: string) => {
-  revalidateTag(getAuctionParticipantsTag(auctionId));
+  updateTag(getAuctionParticipantsTag(auctionId));
 };
 
 export const revalidateParticipantsAcquisitionsCache = (auctionId: string) => {
-  revalidateTag(getParticipantsAcquisitionsTag(auctionId));
+  updateTag(getParticipantsAcquisitionsTag(auctionId));
 };
 
 export const revalidateAuctionPlayersCache = (auctionId: string) =>
-  revalidateTag(getAuctionAvailablePlayersTag(auctionId));
+  updateTag(getAuctionAvailablePlayersTag(auctionId));

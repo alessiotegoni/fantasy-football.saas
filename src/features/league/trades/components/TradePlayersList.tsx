@@ -17,16 +17,17 @@ export function TradePlayersList({
 }: PlayerCarouselProps) {
   return (
     <div className="flex flex-wrap gap-1.5 mt-4">
-      {tradePlayers.map(({ purchaseCost, ...player }) => (
+      {tradePlayers.map((player) => (
         <div
           key={player.id}
           className="flex items-center gap-3.5 border border-border rounded-3xl p-2 pr-2.5 py-2 bg-background w-fit"
         >
           <PlayerCard
             {...player}
-            showSelectButton={false}
             className="border-transparent p-0 text-xs"
             avatarSize={9}
+            showSelectButton={false}
+            showPurchaseCost={false}
           />
           <Button
             variant="destructive"

@@ -94,6 +94,7 @@ export default function UserTradeCard({
         />
       </div>
 
+      {/* @ts-ignore */}
       <TradeActions {...props} trade={trade} variant={variant} />
     </div>
   );

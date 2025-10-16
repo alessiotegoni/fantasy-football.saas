@@ -1,7 +1,7 @@
 import { getIdTag, getLeagueTag } from "@/cache/helpers";
 import { getLeagueBansTag } from "@/features/league/leagues/db/cache/league";
 import { getUserLeaguesTag } from "@/features/dashboard/user/db/cache/user";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type LEAGUE_MEMBERS_TAG = "league-members" | "league-members-teams";
 
@@ -18,8 +18,8 @@ export const revalidateLeagueMembersCache = ({
   leagueId: string;
   userId: string;
 }) => {
-  revalidateTag(getMemberIdTag(leagueId));
-  revalidateTag(getLeagueMembersTag(leagueId));
-  revalidateTag(getUserLeaguesTag(userId));
-  revalidateTag(getLeagueBansTag(leagueId));
+  updateTag(getMemberIdTag(leagueId));
+  updateTag(getLeagueMembersTag(leagueId));
+  updateTag(getUserLeaguesTag(userId));
+  updateTag(getLeagueBansTag(leagueId));
 };

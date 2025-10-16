@@ -2,6 +2,7 @@ import LinkButton from "@/components/LinkButton";
 import { Match } from "../../admin/calendar/regular/queries/calendar";
 import MatchCard from "../../matches/components/MatchCard";
 import { ComponentProps } from "react";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   title?: string;
@@ -26,7 +27,7 @@ export default function LeagueMatchCard({
           className="bg-transparent"
         />
         <LinkButton
-          href={`/league/${leagueId}/matches/${match.id}`}
+          href={`/league/${leagueId}/matches/${match.id}` as Href}
           className="w-full rouned-xl"
           {...buttonProps}
         >

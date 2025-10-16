@@ -30,6 +30,7 @@ import { useParams } from "next/navigation";
 import { createAuction, updateAuction } from "../actions/auction";
 import NumberInput from "@/components/ui/number-input";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   auction?: {
@@ -61,7 +62,7 @@ export default function AuctionForm({
     ? updateAuction.bind(null, auction.id)
     : createAuction;
   const { isPending, onSubmit } = useHandleSubmit(submitFn, {
-    redirectTo: "/premium/auctions",
+    redirectTo: "/premium/auctions" as Href,
   });
 
   const form = useForm<AuctionSchema>({

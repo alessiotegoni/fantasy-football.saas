@@ -18,6 +18,7 @@ import { getUserTeamId } from "@/features/dashboard/user/queries/user";
 import { getUserId } from "@/features/dashboard/user/utils/user";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
+import { Href } from "@/utils/helpers";
 
 export default async function AuctionPage({
   params,
@@ -77,7 +78,9 @@ async function SuspenseBoundary({
     isLeagueAdmin(userId, leagueId),
   ]);
 
-  if (!userTeamId) redirect(`/leagues/${leagueId}/teams/create`);
+  if (!userTeamId) {
+    redirect(`/leagues/${leagueId}/teams/create` as Href);
+  }
 
   if (!props.defaultParticipants.find((p) => p.team?.id === userTeamId)) {
     redirect(`/league/${leagueId}/premium/auctions`);

@@ -54,7 +54,7 @@ export default function PlayerDetails() {
               <ArrowUpRight className="size-3 absolute top-0 -right-3" />
             </Link>
             <p className="text-sm text-muted-foreground">
-              {player.team.displayName}
+              {player.team?.displayName || "Team eliminato"}
             </p>
           </div>
         </div>

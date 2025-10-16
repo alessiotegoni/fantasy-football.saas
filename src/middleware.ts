@@ -13,6 +13,7 @@ import { User } from "@supabase/supabase-js";
 const ROUTE_MATCHERS = {
   home: createRouteMatcher(["/"]),
   auth: createRouteMatcher(["/auth/*rest"]),
+  private: createRouteMatcher(["/players/*rest"]),
   dashboard: createRouteMatcher(["/dashboard", "/dashboard/*rest"]),
   league: createRouteMatcher(["/league/*rest"]),
 } as const;
@@ -30,6 +31,10 @@ export async function middleware(request: NextRequest) {
 
   if (ROUTE_MATCHERS.auth(request) && user) {
     return NextResponse.redirect(getRedirectUrl(request));
+  }
+
+  if (ROUTE_MATCHERS.private(request) && !user) {
+    return NextResponse.redirect(getRedirectUrl(request, "/auth/login"));
   }
 
   if (ROUTE_MATCHERS.league(request)) {

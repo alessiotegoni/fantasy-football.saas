@@ -128,12 +128,12 @@ const creatorGroup: SidebarGroup = {
   items: [
     {
       name: "Codice sconto",
-      href: "/dashboard/creator/discount-code",
+      href: "/dashboard/content-creator/discount-code",
       icon: Percentage,
     },
     {
       name: "Statistiche varie",
-      href: "/dashboard/creator/stats",
+      href: "/dashboard/content-creator/stats",
       icon: StatsUpSquare,
     },
   ],

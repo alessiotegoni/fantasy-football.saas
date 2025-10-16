@@ -8,8 +8,12 @@ import LinkButton from "@/components/LinkButton";
 import { NavArrowRight } from "iconoir-react";
 import { SplitStatusType } from "@/drizzle/schema";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
-import { deleteSplitMatchday, updateSplitMatchday } from "../actions/splitMatchday";
+import {
+  deleteSplitMatchday,
+  updateSplitMatchday,
+} from "../actions/splitMatchday";
 import ActionButton from "@/components/ActionButton";
+import { Href } from "@/utils/helpers";
 
 export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
   const { isPending, onSubmit } = useHandleSubmit(updateSplitMatchday);
@@ -49,7 +53,9 @@ export function SplitMatchdayCard({ matchday }: { matchday: SplitMatchday }) {
           </ActionButton>
           <LinkButton
             className="w-36"
-            href={`/dashboard/admin/splits/${matchday.splitId}/matchdays/${matchday.id}/edit`}
+            href={
+              `/dashboard/admin/splits/${matchday.splitId}/matchdays/${matchday.id}/edit` as Href
+            }
           >
             Modifica
             <NavArrowRight className="size-5" />

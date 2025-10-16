@@ -78,5 +78,5 @@ async function SuspenseBoundary({
     );
   }
 
-  return <GenerateCalendarBanner leagueId={leagueId} />;
+  return <GenerateCalendarBanner />;
 }

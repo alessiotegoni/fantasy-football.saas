@@ -19,6 +19,7 @@ import { createLeagueTeam, updateLeagueTeams } from "../actions/leagueTeam";
 import { useRouter, useSearchParams } from "next/navigation";
 import useActionToast from "@/hooks/useActionToast";
 import MobileButtonsContainer from "@/components/MobileButtonsContainer";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   leagueId: string;
@@ -56,7 +57,7 @@ export function LeagueTeamForm({ leagueId, teamId, initialData }: Props) {
 
     if (!res.error) {
       const redirectUrl = searchParams.get("redirectUrl");
-      router.push(redirectUrl || `/leagues/${leagueId}`);
+      router.push((redirectUrl || `/leagues/${leagueId}`) as Href);
     }
   }
 

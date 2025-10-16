@@ -34,6 +34,7 @@ export default function DraggableLineupPlayerCard({
       }}
       className={cn("group relative", isDragging && "z-50")}
     >
+      {/* @ts-ignore */}
       <LineupPlayerCard
         type="starter"
         player={player}

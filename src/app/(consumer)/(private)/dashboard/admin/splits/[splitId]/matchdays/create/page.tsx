@@ -40,6 +40,7 @@ export default function CreateMatchdayPage({
 
   const { isPending, onSubmit } = useHandleSubmit(createSplitMatchdays, {
     isLeaguePrefix: false,
+    // @ts-ignore
     redirectTo: `/dashboard/admin/splits/${splitId}`,
   });
 

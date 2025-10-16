@@ -2,7 +2,7 @@ import { getLeagueGlobalTag } from "@/cache/global";
 import { getLeagueTag } from "@/cache/helpers";
 import { LeagueVisibilityStatusType } from "@/drizzle/schema";
 import { getLeagueIdTag } from "@/features/league/leagues/db/cache/league";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type LEAGUE_SETTINGS_TAG =
   | "league-modules"
@@ -39,8 +39,8 @@ export const getLeagueMarketSettingsTag = (leagueId: string) =>
   getLeagueTag("league-market-settings", leagueId);
 
 export const revalidateLeagueRosterSettingsCache = (leagueId: string) => {
-  revalidateTag(getLeagueModulesTag(leagueId));
-  revalidateTag(getLeaguePlayersPerRoleTag(leagueId));
+  updateTag(getLeagueModulesTag(leagueId));
+  updateTag(getLeaguePlayersPerRoleTag(leagueId));
 };
 
 export const revalidateLeagueSettingsCache = ({
@@ -50,7 +50,7 @@ export const revalidateLeagueSettingsCache = ({
   leagueId: string;
   visibility: LeagueVisibilityStatusType;
 }) => {
-  if (visibility === "public") revalidateTag(getLeagueGlobalTag());
-  revalidateTag(getLeagueIdTag(leagueId));
-  revalidateTag(getLeagueSettingsTag(leagueId));
+  if (visibility === "public") updateTag(getLeagueGlobalTag());
+  updateTag(getLeagueIdTag(leagueId));
+  updateTag(getLeagueSettingsTag(leagueId));
 };

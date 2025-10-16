@@ -3,6 +3,7 @@
 import EmptyState from "@/components/EmptyState";
 import { Button } from "@/components/ui/button";
 import { usePlayersFilters } from "@/contexts/PlayersFiltersProvider";
+import { Href } from "@/utils/helpers";
 import { NavArrowRight } from "iconoir-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -43,7 +44,7 @@ export default function PlayersEmptyState({
             onClick={handleResetFilters}
             asChild
           >
-            <Link href={`/leagues/${leagueId}/teams`}>
+            <Link href={`/leagues/${leagueId}/teams` as Href}>
               Vedi squadre
               <NavArrowRight className="size-5" />
             </Link>

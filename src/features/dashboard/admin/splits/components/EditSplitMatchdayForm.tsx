@@ -12,6 +12,7 @@ import {
 } from "../schema/splitMatchday";
 import SplitMatchdayFormFields from "./SplitMatchdayFormFields";
 import { updateSplitMatchday } from "../actions/splitMatchday";
+import { Href } from "@/utils/helpers";
 
 type Props = {
   matchday: SplitMatchday;
@@ -25,7 +26,7 @@ export default function EditSplitMatchdayForm({ matchday }: Props) {
 
   const { isPending, onSubmit } = useHandleSubmit(updateSplitMatchday, {
     isLeaguePrefix: false,
-    redirectTo: `/dashboard/admin/splits/${matchday.splitId}`,
+    redirectTo: `/dashboard/admin/splits/${matchday.splitId}` as Href,
   });
 
   return (

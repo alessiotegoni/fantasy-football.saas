@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { otpSchema, OtpSchema } from "../schema/login";
 import { verifyOtp } from "../actions/login";
 import useHandleSubmit from "@/hooks/useHandleSubmit";
+import { Href } from "@/utils/helpers";
 
 export default function VerifyOtpForm() {
   const { email, clearEmail, resendCode } = useEmailLogin();
@@ -27,7 +28,7 @@ export default function VerifyOtpForm() {
 
   const { isPending, onSubmit: handleVerifyOtp } = useHandleSubmit(onSubmit, {
     isLeaguePrefix: false,
-    redirectTo: searchParams.get("next") || "/",
+    redirectTo: (searchParams.get("next") || "/") as Href,
   });
 
   async function onSubmit(data: OtpSchema) {

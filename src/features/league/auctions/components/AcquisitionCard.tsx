@@ -35,7 +35,7 @@ export default function AcquisitionCard({ acquisition, role }: Props) {
         <div className="text-left">
           <p className="font-semibold">{acquisition.player.displayName}</p>
           <p className="text-white/70 text-[11px]">
-            {acquisition.player.team.displayName}
+            {acquisition.player.team?.displayName || "Team eliminato"}
           </p>
         </div>
         <div className="flex items-center gap-1 text-primary p-1.5">

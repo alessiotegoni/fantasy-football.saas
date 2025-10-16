@@ -1,6 +1,6 @@
 import { getIdTag } from "@/cache/helpers";
 import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/player";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { getSplitMatchdaysIdTag } from "../../../splits/db/cache/split";
 
 export type MATCHDAY_BONUS_MALUS_TAG =
@@ -26,7 +26,7 @@ export const getPlayerMatchdayBonusMalusTag = (
 export const revalidateSplitMatchdaysBonusMalusesCache = (
   matchdayId: number
 ) => {
-  revalidateTag(getMatchdayBonusMalusesTag(matchdayId));
+  updateTag(getMatchdayBonusMalusesTag(matchdayId));
 };
 
 export const revalidatePlayerMatchdayBonusMalusCache = (
@@ -34,6 +34,6 @@ export const revalidatePlayerMatchdayBonusMalusCache = (
   matchdayId: number
 ) => {
   playersIds.forEach((playerId) =>
-    revalidateTag(getPlayerMatchdayBonusMalusTag(playerId, matchdayId))
+    updateTag(getPlayerMatchdayBonusMalusTag(playerId, matchdayId))
   );
 };

@@ -1,7 +1,7 @@
 import { getIdTag } from "@/cache/helpers";
 import { getPlayerIdTag } from "@/features/dashboard/admin/players/db/cache/player";
 import { getSplitMatchdaysIdTag } from "@/features/dashboard/admin/splits/db/cache/split";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type MATCHDAY_VOTE_TAG =
   | "redaction-matchdays-votes"
@@ -21,7 +21,7 @@ export const getPlayerMatchdayVoteTag = (
 };
 
 export const revalidateRedactionMatchdaysVotesCache = (redactionId: string) => {
-  revalidateTag(getRedactionMatchdaysVotesTag(redactionId));
+  updateTag(getRedactionMatchdaysVotesTag(redactionId));
 };
 
 export const revalidatePlayerMatchdayVoteCache = (
@@ -29,6 +29,6 @@ export const revalidatePlayerMatchdayVoteCache = (
   matchdayId: number
 ) => {
   playersIds.forEach((playerId) =>
-    revalidateTag(getPlayerMatchdayVoteTag(playerId, matchdayId))
+    updateTag(getPlayerMatchdayVoteTag(playerId, matchdayId))
   );
 };

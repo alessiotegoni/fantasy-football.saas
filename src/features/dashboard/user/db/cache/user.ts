@@ -1,5 +1,5 @@
 import { getUserTag } from "@/cache/helpers";
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 
 export type USER_TAG =
   | "user-premium"
@@ -20,10 +20,10 @@ export const getUserTeamTag = (userId: string) =>
   getUserTag("user-league-team-id", userId);
 
 export const revalidateUserPremium = (userId: string) =>
-  revalidateTag(getUserPremiumTag(userId));
+  updateTag(getUserPremiumTag(userId));
 
 export const revalidateUserLeagues = (userId: string) =>
-  revalidateTag(getUserLeaguesTag(userId));
+  updateTag(getUserLeaguesTag(userId));
 
 export const revalidateUserTeam = (userId: string) =>
-  revalidateTag(getUserTeamTag(userId));
+  updateTag(getUserTeamTag(userId));

@@ -32,13 +32,18 @@ export default function PlayersSection({
       {players.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {players.map(({ player }) => (
-            <PlayerCard
-              key={player.id}
-              {...player}
-              leagueTeamId={leagueTeamId}
-              showSelectButton={false}
-              className={cn("p-1 rounded-full pr-5", theme.playerCardBg)}
-            />
+            <>
+              {/*@ts-ignore */}
+              <PlayerCard
+                key={player.id}
+                {...player}
+                className={cn("p-1 rounded-full pr-5", theme.playerCardBg)}
+                leagueTeamId={leagueTeamId}
+                showSelectButton={false}
+                showPurchaseCost={false}
+                purchaseCost={0}
+              />
+            </>
           ))}
         </div>
       )}

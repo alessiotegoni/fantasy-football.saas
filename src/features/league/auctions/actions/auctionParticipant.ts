@@ -1,7 +1,7 @@
 "use server";
 
 import { getUUIdSchema, validateSchema } from "@/schema/helpers";
-import { createSuccess } from "@/utils/helpers";
+import { createSuccess, Href } from "@/utils/helpers";
 import {
   canJoinAuction,
   canUpdateParticipantsOrder,
@@ -77,7 +77,7 @@ export async function joinAuction(auctionId: string) {
     if (status === "waiting") await setAuctionActive(id, leagueId, tx);
   });
 
-  redirect(`/leagues/${leagueId}/premium/auctions/${id}`);
+  redirect(`/leagues/${leagueId}/premium/auctions/${id}` as Href);
 }
 
 export async function updateParticipantsOrder(

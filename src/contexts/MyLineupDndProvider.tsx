@@ -118,6 +118,7 @@ export default function MyLineupDndProvider({
       {children}
       {activePlayer && (
         <DragOverlay>
+          {/* @ts-ignore */}
           <LineupPlayerCard
             player={activePlayer}
             type={activePlayer.lineupPlayerType!}
