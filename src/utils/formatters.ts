@@ -25,5 +25,3 @@ export function formatDate(
 
   return formatter.format(date);
 }
-
-// d
